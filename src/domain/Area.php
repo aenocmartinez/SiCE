@@ -8,13 +8,14 @@ class Area {
 
     private int $id;
     private string $nombre;
-    private AreaRepository $repository;
+    private $repository;
 
     public function __construct(string $nombre = "") {
+        $this->id = 0;
         $this->nombre = $nombre;
     }
 
-    public function setRepository(AreaRepository $repository): void {
+    public function setRepository($repository): void {
         $this->repository = $repository;
     }
 
@@ -38,12 +39,16 @@ class Area {
         return null;
     }
 
+    public static function buscarPorNombre(string $nombre, $repository): Area {
+        return $repository->buscarAreaPorNombre($nombre);
+    }    
+
     public static function listar($repository): array {
         return $repository->listarAreas();
     }
 
     public function crear(): bool {
-        return false;
+        return $this->repository->crearArea($this);
     }
 
     public function eliminar(): bool {

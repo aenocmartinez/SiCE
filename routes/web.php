@@ -20,4 +20,5 @@ Route::get('/', function () {
 });
 
 
-Route::get('/areas', [AreaController::class, 'index'])->name('areas');
+Route::get('/areas', [AreaController::class, 'index'])->name('areas.index');
+Route::get('/areas/create/{nombre}', [AreaController::class, 'create'])->name('areas.create');
