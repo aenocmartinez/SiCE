@@ -35,8 +35,8 @@ class Area {
         return $this->nombre;
     }
 
-    public static function buscarPorId(int $id=0): Area {
-        return null;
+    public static function buscarPorId(int $id=0, $repository): Area {
+        return $repository->buscarAreaPorId($id);
     }
 
     public static function buscarPorNombre(string $nombre, $repository): Area {
@@ -52,11 +52,11 @@ class Area {
     }
 
     public function eliminar(): bool {
-        return false;
+        return $this->repository->eliminarArea($this);
     }
 
     public function actualizar(): bool {
-        return false;
+        return $this->repository->actualizarArea($this);
     }
 
     public function existe(): bool {

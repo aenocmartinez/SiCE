@@ -21,4 +21,7 @@ Route::get('/', function () {
 
 
 Route::get('/areas', [AreaController::class, 'index'])->name('areas.index');
-Route::get('/areas/create/{nombre}', [AreaController::class, 'create'])->name('areas.create');
+Route::get('/areas/{id}', [AreaController::class, 'buscarPorId'])->name('areas.buscarPorId');
+Route::get('/areas/crear/{nombre}', [AreaController::class, 'create'])->name('areas.create');
+Route::get('/areas/eliminar/{id}', [AreaController::class, 'delete'])->name('areas.delete');
+Route::get('/areas/actualizar/{id}/{nombre}', [AreaController::class, 'update'])->name('areas.update');

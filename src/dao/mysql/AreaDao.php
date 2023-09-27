@@ -16,11 +16,12 @@ class AreaDao extends Model implements AreaRepository {
         $areas = [];
         try {
 
-            $filas = AreaDao::all();
-            foreach($filas as $fila) {            
-                $area = new Area($fila['nombre']);
-                $area->setid($fila['id']);
-                array_push($areas, $area);
+            $rs = AreaDao::all();
+            foreach($rs as $r) {
+                array_push($areas, [
+                    "id" => $r["id"],
+                    "nombre" => $r["nombre"],
+                ]);
             }            
 
         } catch (\Exception $e) {
@@ -32,18 +33,28 @@ class AreaDao extends Model implements AreaRepository {
     public function buscarAreaPorNombre(string $nombre): Area {
         $area = new Area();
         try {
-
             $result = AreaDao::where('nombre', $nombre)->first();
             if ($result) {
                 $area->setId($result['id']);
                 $area->setNombre($result['nombre']);
             }
-
         } catch (\Exception $e) {
-
             throw $e;
         }
+        return $area;
+    }
 
+    public function buscarAreaPorId(int $id = 0): Area {
+        $area = new Area();
+        try {
+            $result = AreaDao::find($id);
+            if ($result) {
+                $area->setId($result['id']);
+                $area->setNombre($result['nombre']);
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }
         return $area;
     }
 
@@ -58,5 +69,33 @@ class AreaDao extends Model implements AreaRepository {
         }   
 
         return $result['id'] > 0;     
+    }
+
+    public function eliminarArea(Area $area): bool {
+        try {
+            $exito = false;
+            $rs = AreaDao::destroy($area->getId());
+            if ($rs) {
+                $exito = true;
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }   
+        return $exito;
+    }
+
+    public function actualizarArea(Area $area): bool {
+        try {
+            $exito = false;
+            $rs = AreaDao::find($area->getId());
+            if ($rs) {
+                $rs->nombre = $area->getNombre();
+                $rs->save();
+                $exito = true;
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }   
+        return $exito; 
     }
 }
