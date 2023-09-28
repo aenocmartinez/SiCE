@@ -27,7 +27,9 @@ class AreaController extends Controller
     public function buscarPorId($id) {
         $esValido = Validador::parametroId($id);
         if (!$esValido) {
-            echo json_encode(["code" => "401", "message" => "parámetro no válido"]);
+            return redirect()->route('areas.index')                
+                    ->with('code', "401")
+                    ->with('status', "parámetro no válido");
         }
 
         $casoUso = new BuscarAreaPorIdUseCase();
@@ -50,19 +52,25 @@ class AreaController extends Controller
         ]);
 
         $casoUso = new CrearAreaUseCase();
-        $casoUso->ejecutar(request('nombre'));
+        $rs = $casoUso->ejecutar(request('nombre'));
         
-        return redirect()->route('areas.index');
+        return redirect()->route('areas.index')                
+                        ->with('code', $rs['code'])
+                        ->with('status', $rs['message']);
     }
 
     public function delete($id) {
         $esValido = Validador::parametroId($id);
         if (!$esValido) {
-            echo json_encode(["code" => "401", "message" => "parámetro no válido"]);
+            return back()->with('status', 'parámetro no válido');
         }
+
         $casoUso = new EliminarAreaUseCase();
-        $casoUso->ejecutar($id);        
-        return redirect()->route('areas.index');
+        $rs = $casoUso->ejecutar($id);
+    
+        return redirect()->route('areas.index')
+                ->with('code', $rs['code'])
+                ->with('status', $rs['message']);
     }
     
     public function update() {
@@ -77,8 +85,10 @@ class AreaController extends Controller
         $areaDto->nombre = request('nombre');
         
         $casoUso = new ActualizarAreaUseCase();
-        $casoUso->ejecutar($areaDto);
-        return redirect()->route('areas.index');
-        // echo json_encode($respuesta);
+        $rs = $casoUso->ejecutar($areaDto);
+
+        return redirect()->route('areas.index')                
+            ->with('code', $rs['code'])
+            ->with('status', $rs['message']);
     }    
 }

@@ -17,7 +17,7 @@ class CreateCursosTable extends Migration
             $table->id();
             $table->string('nombre');
             $table->decimal('costo', 8, 2)->default(0);
-            $table->enum('modalidad', ['Presencial', 'Virtual'])->default('Presencial');
+            $table->enum('modalidad', ['presencial', 'virtual'])->default('presencial');
             $table->unsignedBigInteger('area_id');
             $table->timestamps();
             

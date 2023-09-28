@@ -7,3 +7,5 @@
         <li class="{{ setActive('orientadores.index') }}"><a href="{{ route('orientadores.index') }}">Orientadores</a></li>
     </ul>
 </nav>
+
+@include('parciales.session-status')

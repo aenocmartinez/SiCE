@@ -19,12 +19,6 @@ use App\Http\Controllers\SalonController;
 */
 
 Route::view('/', 'home')->name('home');
-Route::view('/cursos', 'cursos')->name('cursos');
-Route::view('/salones', 'salones')->name('salones');
-Route::view('/orientadores', 'orientadores')->name('orientadores');
-
-
-
 
 Route::get('/areas', [AreaController::class, 'index'])->name('areas.index');
 Route::get('/areas/crear', [AreaController::class, 'create'])->name('areas.create');
@@ -34,13 +28,16 @@ Route::delete('/areas/{id}', [AreaController::class, 'delete'])->name('areas.del
 Route::patch('/areas', [AreaController::class, 'update'])->name('areas.update');
 
 Route::get('/cursos', [CursoController::class, 'index'])->name('cursos.index');
-Route::get('/cursos/{id}', [CursoController::class, 'buscarPorId'])->name('cursos.buscarPorId');
-Route::get('/cursos/crear/{nombre}/{modalidad}/{costo}/{area}', [CursoController::class, 'create'])->name('cursos.create');
-Route::get('/cursos/eliminar/{id}', [CursoController::class, 'delete'])->name('cursos.delete');
-Route::get('/cursos/actualizar/{id}/{nombre}/{modalidad}/{costo}/{area}', [CursoController::class, 'update'])->name('cursos.update');
+Route::get('/cursos/{id}/editar', [CursoController::class, 'buscarPorId'])->name('cursos.edit');
+Route::get('/cursos/create', [CursoController::class, 'create'])->name('cursos.create');
+Route::post('/cursos', [CursoController::class, 'store'])->name('cursos.store');
+Route::delete('/cursos/{id}', [CursoController::class, 'delete'])->name('cursos.delete');
+Route::patch('/cursos/actualizar', [CursoController::class, 'update'])->name('cursos.update');
+
+
 
 Route::get('/salones', [SalonController::class, 'index'])->name('salones.index');
-Route::get('/salones/{id}', [SalonController::class, 'buscarPorId'])->name('salones.buscarPorId');
+Route::get('/salones/{id}/editar', [SalonController::class, 'buscarPorId'])->name('salones.buscarPorId');
 Route::get('/salones/crear/{nombre}/{capacidad}/{disponible}', [SalonController::class, 'create'])->name('salones.create');
 Route::get('/salones/eliminar/{id}', [SalonController::class, 'delete'])->name('salones.delete');
 Route::get('/salones/actualizar/{id}/{nombre}/{capacidad}/{disponible}', [SalonController::class, 'update'])->name('salones.update');
