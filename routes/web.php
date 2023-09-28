@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CursoController;
+use App\Http\Controllers\OrientadorController;
 use App\Http\Controllers\SalonController;
 
 /*
@@ -40,3 +41,11 @@ Route::get('/salones/crear/{nombre}/{capacidad}/{disponible}', [SalonController:
 Route::get('/salones/eliminar/{id}', [SalonController::class, 'delete'])->name('salones.delete');
 Route::get('/salones/actualizar/{id}/{nombre}/{capacidad}/{disponible}', [SalonController::class, 'update'])->name('salones.update');
 Route::get('/salones/buscador/{criterio}', [SalonController::class, 'buscador'])->name('salones.buscador');
+
+Route::get('/orientadores', [OrientadorController::class, 'index'])->name('orientadores.index');
+Route::get('/orientadores/{id}', [OrientadorController::class, 'buscarPorId'])->name('orientadores.buscarPorId');
+Route::get('/orientadores/buscar-por-documento/{tipoDocumento}/{documento}', [OrientadorController::class, 'buscarPorDocumento'])->name('orientadores.buscarPorDocumento');
+Route::get('/orientadores/crear/{id}', [OrientadorController::class, 'create'])->name('orientadores.create');
+Route::get('/orientadores/eliminar/{id}', [OrientadorController::class, 'delete'])->name('orientadores.delete');
+Route::get('/orientadores/actualizar/{id}', [OrientadorController::class, 'update'])->name('orientadores.update');
+Route::get('/orientadores/buscador/{criterio}', [OrientadorController::class, 'buscador'])->name('orientadores.buscador');

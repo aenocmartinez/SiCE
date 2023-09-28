@@ -10,13 +10,8 @@ class BuscadorSalonesUseCase {
     public function ejecutar(string $criterio): array {
         
         $salonRepository = new SalonDao();
-        
-        $filtro = [
-            "nombre" => $criterio,
-            "capacidad" => $criterio,
-        ];
-        
-        $salones = Salon::buscadorSalones($filtro, $salonRepository);
+           
+        $salones = Salon::buscadorSalones($criterio, $salonRepository);
         return [
             "code" => "200",
             "data" => $salones

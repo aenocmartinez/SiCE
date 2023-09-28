@@ -56,8 +56,8 @@ class Salon {
         return $repository->listarSalones();
     }
 
-    public static function buscadorSalones($filtro=[], $repository): array {
-        return $repository->buscadorSalones($filtro);
+    public static function buscadorSalones($criterio, $repository): array {
+        return $repository->buscadorSalones($criterio);
     }
 
     public static function buscarPorId(int $id=0, $repository): Salon {

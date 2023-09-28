@@ -30,11 +30,15 @@ class SalonDao extends Model implements SalonRepository {
         return $salones;
     }
 
-    public function buscadorSalones($filtro = []): array {
+    public function buscadorSalones(string $criterio): array {
         $salones = [];
         try {
-            $query = SalonDao::query();
+            $filtro = [
+                "nombre" => $criterio,
+                "capacidad" => $criterio,
+            ];
 
+            $query = SalonDao::query();
             foreach ($filtro as $campo => $valor) {
                 $query->orWhere($campo, 'like', '%' . $valor . '%');
             }            
