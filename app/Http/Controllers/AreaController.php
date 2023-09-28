@@ -38,7 +38,10 @@ class AreaController extends Controller
     }
 
     public function create() {
-        return view('areas.create');
+        $data = [
+            'nombre' => ''
+        ];
+        return view('areas.create', ['area' => $data]);
     }
 
     public function store() {

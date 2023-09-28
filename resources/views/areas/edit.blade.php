@@ -8,10 +8,11 @@
 
     <form method="post" action="{{route('areas.update')}}">
         @csrf @method('patch')
+        
         <input type="hidden" name="id" value="{{ $area['id'] }}">
-        <input type="text" name="nombre" placeholder="Nombre" value="{{ $area['nombre'] }}">
-        {!! $errors->first('nombre', '<br><small>:message</small>') !!}
-        <br>
-        <button>Guardar</button>
+        
+        @include('areas._form', ['btnText' => 'Actualizar'])
+
     </form>
+    
 @endsection

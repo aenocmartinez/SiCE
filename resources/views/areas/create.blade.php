@@ -8,9 +8,9 @@
 
     <form method="post" action="{{ route('areas.store') }}">
         @csrf
-        <input type="text" name="nombre" placeholder="Nombre" value="{{ old('nombre') }}">
-        {!! $errors->first('nombre', '<br><small>:message</small>') !!}
-        <br>
-        <button>Guardar</button>
+        
+        @include('areas._form', ['btnText' => 'Guardar'])
+
+        
     </form>
 @endsection
