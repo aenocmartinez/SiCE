@@ -17,12 +17,8 @@ class SalonController extends Controller
     public function index() {
         $casoUso = new ListarSalonesUseCase();
         $resp = $casoUso->ejecutar();
-        
-        if ($resp["code"] != "200") {
 
-        }
-
-        return view("salones", [
+        return view("salones.index", [
             "salones" => $resp["data"]
         ]);
     }
@@ -35,24 +31,61 @@ class SalonController extends Controller
 
         $casoUso = new BuscarSalonPorIdUseCase();
         $resp = $casoUso->ejecutar($id);
-        echo json_encode($resp);
+        $salon = $resp['data'];
+        return view("salones.edit", ["salon" => [
+            'id' => $salon['id'],
+            'nombre' => $salon['nombre'],
+            'capacidad' => $salon['capacidad'],
+            'disponible' => $salon['esta_disponible'],
+        ]]);     
     }
 
-    public function buscador($criterio) {
+    public function buscador() {
+        request()->validate([
+            'criterio' => 'required',
+        ]);        
+
+        $criterio = request('criterio');
         $casoUso = new BuscadorSalonesUseCase();
         $resp = $casoUso->ejecutar($criterio);
-        echo json_encode($resp);
+
+        return view("salones.index", [
+            "salones" => $resp["data"],
+            "criterio" => $criterio,
+        ]);        
     }
 
-    public function create($nombre, $capacidad, $disponible) {
-        $salonDto = new SalonDto();
-        $salonDto->nombre = $nombre;
-        $salonDto->capacidad = $capacidad;
-        $salonDto->disponible = $disponible;
+    public function create() {
+        return view("salones.create", ["salon" => [
+            'nombre' => '',
+            'capacidad' => '',
+            'disponible' => '',
+        ]]);        
+    }
 
+    public function store() {
+        request()->validate([
+            'nombre' => 'required',
+            'capacidad' => 'required|numeric',
+        ]);
+
+        $salonDto = new SalonDto();
+
+        $salonDto->disponible = true;
+        if (is_null(request('disponible'))) {
+            $salonDto->disponible = false;
+        }
+
+        $salonDto->nombre = request('nombre');
+        $salonDto->capacidad = request('capacidad');
+        
         $casoUso = new CrearSalonUseCase();
         $resp = $casoUso->ejecutar($salonDto);
-        echo json_encode($resp);
+
+        return redirect()
+                    ->route('salones.index')
+                    ->with('code', $resp['code'])
+                    ->with('status', $resp['message']);        
     }
 
     public function delete($id) {
@@ -63,19 +96,33 @@ class SalonController extends Controller
 
         $casoUso = new EliminarSalonUseCase();
         $resp = $casoUso->ejecutar($id);
-        echo json_encode($resp);
+        return redirect()->route('salones.index')
+                ->with('code', $resp['code'])
+                ->with('status', $resp['message']);
     }
 
-    public function update($id, $nombre, $capacidad, $disponible) {
+    public function update() {
+        request()->validate([
+            'id' => 'required|numeric',
+            'nombre' => 'required',
+            'capacidad' => 'required|numeric',
+        ]);
+
         $salonDto = new SalonDto();
-        $salonDto->id = $id;
-        $salonDto->nombre = $nombre;
-        $salonDto->capacidad = $capacidad;
-        $salonDto->disponible = $disponible;
+        $salonDto->id = request('id');
+        $salonDto->nombre = request('nombre');
+        $salonDto->capacidad = request('capacidad');
+        
+        $salonDto->disponible = true;
+        if (is_null(request('disponible'))) {
+            $salonDto->disponible = false;
+        }
 
         $casoUso = new ActualizarSalonUseCase();
         $resp = $casoUso->ejecutar($salonDto);
-        echo json_encode($resp);
+        return redirect()->route('salones.index')
+                ->with('code', $resp['code'])
+                ->with('status', $resp['message']);
     }
 
 }

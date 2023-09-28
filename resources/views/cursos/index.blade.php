@@ -15,7 +15,7 @@
                 @csrf @method('delete')
                 <button>Eliminar</button>
             </form> 
-            <a href="{{ route('cursos.edit', $curso['id']) }}">Editar</a>           
+            <a href="{{ route('cursos.edit', $curso['id']) }}">Editar</a>
         </li>
         @empty
             <li>No hay cursos para mostrar</li>

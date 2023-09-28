@@ -36,6 +36,15 @@ class Salon {
         $this->disponible = $disponible;
     }
 
+    public function getDisponibleTexto(): string {
+        $texto = "disponible";
+        if (!$this->disponible) {
+            $texto = "no disponible";
+        }
+
+        return $texto;
+    }
+
     public function getId(): int {
         return $this->id;
     }
