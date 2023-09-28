@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\CursoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,3 +26,9 @@ Route::get('/areas/{id}', [AreaController::class, 'buscarPorId'])->name('areas.b
 Route::get('/areas/crear/{nombre}', [AreaController::class, 'create'])->name('areas.create');
 Route::get('/areas/eliminar/{id}', [AreaController::class, 'delete'])->name('areas.delete');
 Route::get('/areas/actualizar/{id}/{nombre}', [AreaController::class, 'update'])->name('areas.update');
+
+Route::get('/cursos', [CursoController::class, 'index'])->name('cursos.index');
+Route::get('/cursos/{id}', [CursoController::class, 'buscarPorId'])->name('cursos.buscarPorId');
+Route::get('/cursos/crear/{nombre}/{modalidad}/{costo}/{area}', [CursoController::class, 'create'])->name('cursos.create');
+Route::get('/cursos/eliminar/{id}', [CursoController::class, 'delete'])->name('cursos.delete');
+Route::get('/cursos/actualizar/{id}/{nombre}/{modalidad}/{costo}/{area}', [CursoController::class, 'update'])->name('cursos.update');

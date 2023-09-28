@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Src\infraestructure\util\Validador;
+
+use Src\view\dto\AreaDto;
+
 use Src\usecase\areas\CrearAreaUseCase;
 use Src\usecase\areas\ListarAreasUseCase;
 
 use Src\usecase\areas\BuscarAreaPorIdUseCase;
 use Src\usecase\areas\ActualizarAreaUseCase;
 use Src\usecase\areas\EliminarAreaUseCase;
-use Src\view\dto\AreaDto;
 
 
 class AreaController extends Controller

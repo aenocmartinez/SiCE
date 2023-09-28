@@ -26,7 +26,7 @@ class ActualizarAreaUseCase {
 
         if (!$exito) {
             return [
-                "code" => "503",
+                "code" => "500",
                 "message" => "ha ocurrido un error en el sistema",
             ];
         }
