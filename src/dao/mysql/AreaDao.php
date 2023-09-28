@@ -63,12 +63,10 @@ class AreaDao extends Model implements AreaRepository {
             $result = AreaDao::create([
                 'nombre' => $area->getNombre()
             ]);
-
         } catch (\Exception $e) {
             throw $e;
         }   
-
-        return $result['id'] > 0;     
+        return $result['id'] > 0;
     }
 
     public function eliminarArea(Area $area): bool {

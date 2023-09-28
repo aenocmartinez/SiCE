@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CursoController;
+use App\Http\Controllers\SalonController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,3 +33,10 @@ Route::get('/cursos/{id}', [CursoController::class, 'buscarPorId'])->name('curso
 Route::get('/cursos/crear/{nombre}/{modalidad}/{costo}/{area}', [CursoController::class, 'create'])->name('cursos.create');
 Route::get('/cursos/eliminar/{id}', [CursoController::class, 'delete'])->name('cursos.delete');
 Route::get('/cursos/actualizar/{id}/{nombre}/{modalidad}/{costo}/{area}', [CursoController::class, 'update'])->name('cursos.update');
+
+Route::get('/salones', [SalonController::class, 'index'])->name('salones.index');
+Route::get('/salones/{id}', [SalonController::class, 'buscarPorId'])->name('salones.buscarPorId');
+Route::get('/salones/crear/{nombre}/{capacidad}/{disponible}', [SalonController::class, 'create'])->name('salones.create');
+Route::get('/salones/eliminar/{id}', [SalonController::class, 'delete'])->name('salones.delete');
+Route::get('/salones/actualizar/{id}/{nombre}/{capacidad}/{disponible}', [SalonController::class, 'update'])->name('salones.update');
+Route::get('/salones/buscador/{criterio}', [SalonController::class, 'buscador'])->name('salones.buscador');
