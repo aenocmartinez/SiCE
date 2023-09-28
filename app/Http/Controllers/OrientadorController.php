@@ -18,7 +18,13 @@ class OrientadorController extends Controller
     public function index() {
         $casoUso = new ListarOrientadoresUseCase();
         $resp = $casoUso->ejecutar();
-        echo json_encode($resp);
+        if ($resp['code'] != "200") {
+
+        }
+
+        return view("orientadores", [
+            "orientadores" => $resp["data"]
+        ]);
     }
 
     public function buscarPorId($id) {

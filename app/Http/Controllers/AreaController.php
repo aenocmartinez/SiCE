@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Src\infraestructure\util\Validador;
-
 use Src\view\dto\AreaDto;
 
 use Src\usecase\areas\CrearAreaUseCase;
@@ -19,8 +17,11 @@ class AreaController extends Controller
 {
     public function index() {
         $casoUso = new ListarAreasUseCase();
-        $lista = $casoUso->ejecutar();
-        echo json_encode($lista);
+        $resp = $casoUso->ejecutar();
+
+        return view('areas.index', [
+            "areas" => $resp['data']
+        ]);
     }
 
     public function buscarPorId($id) {
@@ -30,15 +31,25 @@ class AreaController extends Controller
         }
 
         $casoUso = new BuscarAreaPorIdUseCase();
-        $respuesta = $casoUso->ejecutar($id);
-        echo json_encode($respuesta);
+        $resp = $casoUso->ejecutar($id);
+        return view('areas.edit', [
+            'area' => $resp['data'],
+        ]);        
     }
 
-    public function create(Request $req) {
-        $nombre = $req->nombre;
+    public function create() {
+        return view('areas.create');
+    }
+
+    public function store() {
+        request()->validate([
+            'nombre' => 'required'
+        ]);
+
         $casoUso = new CrearAreaUseCase();
-        $respuesta = $casoUso->ejecutar($nombre);
-        echo json_encode($respuesta);
+        $casoUso->ejecutar(request('nombre'));
+        
+        return redirect()->route('areas.index');
     }
 
     public function delete($id) {
@@ -46,20 +57,25 @@ class AreaController extends Controller
         if (!$esValido) {
             echo json_encode(["code" => "401", "message" => "parámetro no válido"]);
         }
-
         $casoUso = new EliminarAreaUseCase();
-        $respuesta = $casoUso->ejecutar($id);
-        echo json_encode($respuesta);
+        $casoUso->ejecutar($id);        
+        return redirect()->route('areas.index');
     }
     
-    public function update($id, $nombre) {
-        $casoUso = new ActualizarAreaUseCase();
+    public function update() {
+
+        request()->validate([
+            'id' => 'required',
+            'nombre' => 'required|max:150'
+        ]);        
         
         $areaDto = new AreaDto();        
-        $areaDto->id = $id;
-        $areaDto->nombre = $nombre;
-
-        $respuesta = $casoUso->ejecutar($areaDto);
-        echo json_encode($respuesta);
+        $areaDto->id = request('id');
+        $areaDto->nombre = request('nombre');
+        
+        $casoUso = new ActualizarAreaUseCase();
+        $casoUso->ejecutar($areaDto);
+        return redirect()->route('areas.index');
+        // echo json_encode($respuesta);
     }    
 }

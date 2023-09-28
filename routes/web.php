@@ -18,16 +18,20 @@ use App\Http\Controllers\SalonController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::view('/', 'home')->name('home');
+Route::view('/cursos', 'cursos')->name('cursos');
+Route::view('/salones', 'salones')->name('salones');
+Route::view('/orientadores', 'orientadores')->name('orientadores');
+
+
 
 
 Route::get('/areas', [AreaController::class, 'index'])->name('areas.index');
-Route::get('/areas/{id}', [AreaController::class, 'buscarPorId'])->name('areas.buscarPorId');
-Route::get('/areas/crear/{nombre}', [AreaController::class, 'create'])->name('areas.create');
-Route::get('/areas/eliminar/{id}', [AreaController::class, 'delete'])->name('areas.delete');
-Route::get('/areas/actualizar/{id}/{nombre}', [AreaController::class, 'update'])->name('areas.update');
+Route::get('/areas/crear', [AreaController::class, 'create'])->name('areas.create');
+Route::get('/areas/{id}/editar', [AreaController::class, 'buscarPorId'])->name('areas.edit');
+Route::post('areas', [AreaController::class, 'store'])->name('areas.store');
+Route::delete('/areas/{id}', [AreaController::class, 'delete'])->name('areas.delete');
+Route::patch('/areas', [AreaController::class, 'update'])->name('areas.update');
 
 Route::get('/cursos', [CursoController::class, 'index'])->name('cursos.index');
 Route::get('/cursos/{id}', [CursoController::class, 'buscarPorId'])->name('cursos.buscarPorId');

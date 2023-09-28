@@ -87,8 +87,9 @@ class AreaDao extends Model implements AreaRepository {
             $exito = false;
             $rs = AreaDao::find($area->getId());
             if ($rs) {
-                $rs->nombre = $area->getNombre();
-                $rs->save();
+                $rs->update([
+                    'nombre' => $area->getNombre()
+                ]);                
                 $exito = true;
             }
         } catch (\Exception $e) {

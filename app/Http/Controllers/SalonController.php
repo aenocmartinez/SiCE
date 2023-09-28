@@ -17,7 +17,14 @@ class SalonController extends Controller
     public function index() {
         $casoUso = new ListarSalonesUseCase();
         $resp = $casoUso->ejecutar();
-        echo json_encode($resp);
+        
+        if ($resp["code"] != "200") {
+
+        }
+
+        return view("salones", [
+            "salones" => $resp["data"]
+        ]);
     }
 
     public function buscarPorId($id) {

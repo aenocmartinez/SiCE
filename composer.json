@@ -27,7 +27,8 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
             "Src\\": "src/"
-        }
+        },
+        "files": ["app/helpers.php"]
     },
     "autoload-dev": {
         "psr-4": {

@@ -17,8 +17,15 @@ class CursoController extends Controller
 {
     public function index() {
         $casoUso = new ListarCursosUseCase();
-        $respuesta = $casoUso->ejecutar();
-        echo json_encode($respuesta);
+        $resp = $casoUso->ejecutar();
+        
+        if ($resp['code'] != "200") {
+
+        }
+
+        return view("cursos", [
+            "cursos" => $resp["data"]
+        ]);
     }
 
     public function buscarPorId($id) {
