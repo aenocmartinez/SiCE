@@ -2,6 +2,9 @@
 
 @section("title", "Nuevo orientador")
 
+@section("seccion", "Orientadores")
+@section("subseccion", "nuevo orientador")
+
 @section("content")
 
     <form method="post" action="{{ route('orientadores.store') }}">

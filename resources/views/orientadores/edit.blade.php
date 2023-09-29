@@ -1,10 +1,11 @@
 @extends("plantillas.principal")
 
-@section("title", "Editar orientador | " . env("APP_NAME"))
+@section("title", "Editar orientador")
+
+@section("seccion", "Orientadores")
+@section("subseccion", "editar orientador")
 
 @section("content")
-
-    <h1>Editar orientador</h1>
 
     <form method="post" action="{{route('orientadores.update')}}">
         @csrf @method('patch')

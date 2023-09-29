@@ -2,6 +2,9 @@
 
 @section("title", "Nuevo curso")
 
+@section("seccion", "Cursos")
+@section("subseccion", "crear curso")
+
 @section("content")
     <form action="{{ route('cursos.store') }}" method="post">
         @csrf

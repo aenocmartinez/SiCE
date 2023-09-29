@@ -1,10 +1,11 @@
 @extends("plantillas.principal")
 
-@section("title", "Editar área | " . env("APP_NAME"))
+@section("title", "Editar salón")
+
+@section("seccion", "Salones")
+@section("subseccion", "editar salón")
 
 @section("content")
-
-    <h1>Editar área</h1>
 
     <form method="post" action="{{route('salones.update')}}">
         @csrf @method('patch')

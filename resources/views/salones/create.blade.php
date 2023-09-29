@@ -2,6 +2,9 @@
 
 @section("title", "Nuevo salón")
 
+@section("seccion", "Salones")
+@section("subseccion", "nuevo salón")
+
 @section("content")
 
     <form method="post" action="{{ route('salones.store') }}">

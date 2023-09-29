@@ -1,6 +1,9 @@
 @extends("plantillas.principal")
 
-@section("title", "Editar área | " . env("APP_NAME"))
+@section("title", "Editar área")
+
+@section("seccion", "Áreas")
+@section("subseccion", "editar área")
 
 @section("content")
 
