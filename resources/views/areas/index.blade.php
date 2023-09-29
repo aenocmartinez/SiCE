@@ -41,18 +41,6 @@
                             </form>
                         </div>
                     </td>                    
-                    <!-- <td>
-                        <div class="btn-group">
-                            <form method="post" action="{{ route('areas.delete', ['id' => $area['id']]) }}">
-                                @csrf @method('delete')
-                                <button class="btn btn-sm rounded-pill btn-outline-danger fs-sm">eliminar</button>
-                            </form>
-                                                        
-                            <a class="btn btn-sm rounded-pill btn-outline-secondary" href="{{ route('areas.edit', $area['id']) }}">
-                                editar
-                            </a>                    
-                        </div>
-                    </td> -->
                 </tr>
                 @empty
                 <tr>
@@ -81,6 +69,6 @@
             }
         });
     }
-    </script>
+</script>
 
 @endsection
