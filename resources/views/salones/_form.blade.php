@@ -56,14 +56,3 @@
 
     </div>
 </div>    
-
-
-<!-- <input type="number" name="capacidad" min="1" placeholder="Capacidad" value="{{ old('capacidad', $salon['capacidad']) }}">
-{!! $errors->first('capacidad', '<br><small>:message</small>') !!}
-<br><br> -->
-
-<!-- <div>
-    <input type="checkbox" id="disponible" name="disponible" {{ $checked }} />
-    <label for="disponible">Disponible</label>
-</div>
-<br><br> -->

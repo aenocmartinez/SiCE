@@ -24,6 +24,7 @@
 
     <link rel="stylesheet" href="{{asset('assets/js/plugins/sweetalert2/sweetalert2.min.css')}}">
     <link rel="stylesheet" id="css-main" href="{{asset('assets/css/oneui.min.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/js/plugins/simplemde/simplemde.min.css')}}">
 
   </head>
 
@@ -257,9 +258,6 @@
               </div>
               <nav class="flex-shrink-0 mt-3 mt-sm-0 ms-sm-3" aria-label="breadcrumb">
                 <ol class="breadcrumb breadcrumb-alt">
-                  <!-- <li class="breadcrumb-item">
-                    <a class="link-fx" href="javascript:void(0)">Layout</a>
-                  </li> -->
                   <li class="breadcrumb-item">
                     <a class="link-fx" href="javascript:void(0)">Page</a>
                   </li>
@@ -321,5 +319,17 @@
     -->
     <script src="{{asset('assets/js/oneui.app.min.js')}}"></script>
     <script src="{{asset('assets/js/plugins/sweetalert2/sweetalert2.min.js')}}"></script>
+    <script src="{{asset('assets/js/plugins/ckeditor/ckeditor.js')}}"></script>
+    <script src="{{asset('assets/js/plugins/simplemde/simplemde.min.js')}}"></script>
+    <script>One.helpersOnLoad(['js-ckeditor', 'js-simplemde']);</script>
+
+    <script src="{{asset('assets/js/plugins/chart.js/chart.umd.js')}}"></script>
+    <script src="{{asset('assets/js/pages/be_pages_dashboard.min.js')}}"></script>   
+    
+  
+    <script src="assets/js/lib/jquery.min.js"></script>
+    <script src="assets/js/plugins/easy-pie-chart/jquery.easypiechart.min.js"></script>
+    <script src="assets/js/plugins/jquery-sparkline/jquery.sparkline.min.js"></script>
+    <script>One.helpersOnLoad(['jq-easy-pie-chart', 'jq-sparkline']);</script>    
   </body>
 </html>

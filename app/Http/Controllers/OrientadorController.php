@@ -238,7 +238,6 @@ class OrientadorController extends Controller
             $orientadorDto->observacion = request('observacion');
         }
 
-
         $casoUso = new ActualizarOrientadorUseCase();
         $resp = $casoUso->ejecutar($orientadorDto);
         return redirect()->route('orientadores.index')

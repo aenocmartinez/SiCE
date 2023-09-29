@@ -1,10 +1,8 @@
 @extends("plantillas.principal")
 
-@section("title", "Nuevo orientador | " . env("APP_NAME"))
+@section("title", "Nuevo orientador")
 
 @section("content")
-
-    <h1>Nuevo orientador</h1>
 
     <form method="post" action="{{ route('orientadores.store') }}">
         @csrf

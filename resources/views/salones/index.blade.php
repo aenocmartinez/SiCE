@@ -10,6 +10,26 @@ $criterio = isset($criterio) ? $criterio : '';
 @endphp
 
 <div class="row">
+    <div class="col-lg-6">
+    <form method="post" action="{{ route('salones.buscador') }}">
+        @csrf
+        <div class="pt-1">
+            <div class="input-group">                
+                    <button class="btn btn-alt-primary">
+                        <i class="fa fa-search me-1 opacity-50"></i> Buscar
+                    </button>
+                    <input type="text" class="form-control form-control-alt" 
+                                        id="criterio" 
+                                        name="criterio" 
+                                        value="{{ $criterio }}"
+                                        placeholder="Nombre, capacidad">                
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-12" style="text-align: right;">
         <a href="{{ route('salones.create') }}" class="btn btn-lg btn-info">
             <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear salón
