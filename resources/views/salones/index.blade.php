@@ -32,7 +32,7 @@ $criterio = isset($criterio) ? $criterio : '';
                 @csrf @method('delete')
                 <button>Eliminar</button>
             </form>
-            <a href="{{ route('salones.edit', $salon['id']) }}">Editar</a>           
+            <a href="{{ route('salones.edit', $salon['id']) }}">Editar</a>
         </li>
     @empty
         <li>No hay salones para mostrar</li>
