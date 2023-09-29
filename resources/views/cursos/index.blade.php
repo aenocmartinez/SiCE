@@ -31,13 +31,16 @@
                             <a href="{{ route('cursos.edit', $curso['id']) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar curso">
                                 <i class="fa fa-fw fa-pencil-alt"></i>
                             </a>
-                            <form method="post" action="{{ route('cursos.delete', ['id' => $curso['id']]) }}" id="form-del-area" onclick="return deleteCurso();">
-                                @csrf @method('delete')
-                                <button type="button"                                        
-                                        class="btn btn-sm btn-alt-secondary" 
+                            <form method="POST" action="{{ route('cursos.delete', $curso['id']) }}" id="form-del-curso-{{$curso['id']}}">
+                                @csrf
+                                @method('delete')
+                                <button class="btn btn-sm btn-alt-secondary" 
                                         data-bs-toggle="tooltip" 
-                                        title="eliminar curso"
-                                        ><i class="fa fa-fw fa-times"></i>
+                                        title="eliminar curso" 
+                                        type="button"
+                                        data-id="{{ $curso['id'] }}"
+                                        onclick="confirmDelete(this)">
+                                    <i class="fa fa-fw fa-times"></i>
                                 </button>
                             </form>
                         </div>
@@ -54,20 +57,24 @@
 </div>
 
 <script>
-    function deleteCurso() {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: 'Esta acción no se puede deshacer',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Sí, estoy seguro',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('form-del-area').submit();
+function confirmDelete(button) {
+    const areaId = button.getAttribute('data-id'); 
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Esta acción no se puede deshacer',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, estoy seguro',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.getElementById(`form-del-curso-${areaId}`);
+            if (form) {                
+                form.submit();
             }
-        });
-    }
+        }
+    });
+}
 </script>
 
 @endsection

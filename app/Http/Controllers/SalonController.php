@@ -93,9 +93,9 @@ class SalonController extends Controller
         if (!$esValido) {
             return ["code" => "401", "message" => "parámetro no válido"];
         }
-
+        
         $casoUso = new EliminarSalonUseCase();
-        $resp = $casoUso->ejecutar($id);
+        $resp = $casoUso->ejecutar(request('id'));
         return redirect()->route('salones.index')
                 ->with('code', $resp['code'])
                 ->with('status', $resp['message']);

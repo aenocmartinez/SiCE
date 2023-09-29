@@ -9,32 +9,77 @@
 $criterio = isset($criterio) ? $criterio : '';
 @endphp
 
-<form method="post" action="{{ route('salones.buscador') }}">
-    @csrf
-    <label>Buscador</label>
-    <input type="text" name="criterio" value="{{ $criterio }}" placeholder="Nombre, capacidad">
+<div class="row">
+    <div class="col-12" style="text-align: right;">
+        <a href="{{ route('salones.create') }}" class="btn btn-lg btn-info">
+            <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear salón
+        </a>
+    </div>
+</div>
 
-    <button>Buscar</button>
-</form>
 <br>
 
-<a href="{{ route('salones.create') }}">+ Crear salón</a>
-<ul>
-    @forelse ($salones as $salon)
-        <li>
-            {{ $salon['nombre'] }}<br>
-            <small>
-                Capacidad: {{ $salon['capacidad'] }}<br>
-                Estado: {{ $salon['esta_disponible'] ? 'disponible' : 'no disponible' }}
-            </small>
-            <form method="post" action="{{ route('salones.delete', ['id' => $salon['id']]) }}">
-                @csrf @method('delete')
-                <button>Eliminar</button>
-            </form>
-            <a href="{{ route('salones.edit', $salon['id']) }}">Editar</a>
-        </li>
-    @empty
-        <li>No hay salones para mostrar</li>
-    @endforelse
-</ul>
+<div class="row">
+    <div class="block block-rounded">
+        <div class="block-content">
+            <table class="table table-vcenter">
+                @forelse ($salones as $salon)
+                <tr>
+                    <td class="fs-sm" style="width: 95%;">
+                    <h4>{{ $salon['nombre'] }}</h4>
+                    <small>Capacidad: {{ $salon['capacidad'] }}</small><br> 
+                    <small>Estado: {{ $salon['esta_disponible'] ? 'disponible' : 'no disponible' }}</small> 
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group">
+                            <a href="{{ route('salones.edit', $salon['id']) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar salón">
+                                <i class="fa fa-fw fa-pencil-alt"></i>
+                            </a>
+                            <form method="POST" action="{{ route('salones.delete', $salon['id']) }}" id="form-del-salon-{{$salon['id']}}">
+                                @csrf
+                                @method('delete')
+                                <button class="btn btn-sm btn-alt-secondary" 
+                                        data-bs-toggle="tooltip" 
+                                        title="eliminar salón" 
+                                        type="button"
+                                        data-id="{{ $salon['id'] }}"
+                                        onclick="confirmDelete(this)">
+                                    <i class="fa fa-fw fa-times"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>                    
+                </tr>
+                @empty
+                <tr>
+                    <td class="text-center">No hay salones para mostrar</td>
+                </tr>
+                @endforelse 
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+function confirmDelete(button) {
+    const salonId = button.getAttribute('data-id'); 
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Esta acción no se puede deshacer',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, estoy seguro',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.getElementById(`form-del-salon-${salonId}`);
+            if (form) {                
+                form.submit();
+            }
+        }
+    });
+}
+</script>
+
 @endsection

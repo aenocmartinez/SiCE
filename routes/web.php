@@ -39,7 +39,7 @@ Route::get('/salones/{id}/editar', [SalonController::class, 'buscarPorId'])->nam
 Route::get('/salones/crear', [SalonController::class, 'create'])->name('salones.create');
 Route::post('/salones', [SalonController::class, 'store'])->name('salones.store');
 Route::delete('/salones/{id}', [SalonController::class, 'delete'])->name('salones.delete');
-Route::patch('/salones/actualizar}', [SalonController::class, 'update'])->name('salones.update');
+Route::patch('/salones/actualizar', [SalonController::class, 'update'])->name('salones.update');
 Route::post('/salones/buscador', [SalonController::class, 'buscador'])->name('salones.buscador');
 
 
