@@ -4,8 +4,6 @@
 
 @section("content")
 
-    <h1>Editar área</h1>
-
     <form method="post" action="{{route('areas.update')}}">
         @csrf @method('patch')
         

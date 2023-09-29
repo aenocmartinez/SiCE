@@ -1,10 +1,9 @@
 @extends("plantillas.principal")
 
-@section("title", "Salones | " . env("APP_NAME"))
+@section("title", "Salones")
+@section("description", "Listado de salones para cursos de extensión")
 
 @section("content")
-<h1>Salones</h1>
-
 
 @php
 $criterio = isset($criterio) ? $criterio : '';

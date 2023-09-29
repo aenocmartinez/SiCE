@@ -1,7 +1,11 @@
 @extends("plantillas.principal")
 
-@section("title", "Home | " . env("APP_NAME"))
+@section("title", "Dashboard")
+@section("description", "Információn de interés acerca del actual periodo académico")
 
 @section("content")
-    <h1>Home</h1>
+
+
+
+
 @endsection

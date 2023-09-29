@@ -1,11 +1,9 @@
 @extends("plantillas.principal")
 
-@section("title", "Nueva área | " . env("APP_NAME"))
+@section("title", "Nueva área")
+@section("description", "Ingrese todos los datos")
 
 @section("content")
-
-    <h1>Nueva área</h1>
-
     <form method="post" action="{{ route('areas.store') }}">
         @csrf
         

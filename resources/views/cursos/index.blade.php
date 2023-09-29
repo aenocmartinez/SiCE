@@ -1,10 +1,9 @@
 @extends("plantillas.principal")
 
-@section("title", "Cursos | " . env("APP_NAME"))
+@section("title", "Cursos")
+@section("description", "Listado de cursos")
 
 @section("content")
-    <h1>Cursos</h1>
-
     <a href="{{ route('cursos.create') }}">+ Crear curso</a>
 
     <ul>

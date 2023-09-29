@@ -1,9 +1,9 @@
 @extends("plantillas.principal")
 
-@section("title", "Orientadores | " . env("APP_NAME"))
+@section("title", "Orientadores")
+@section("description", "Listado y administración de orientadores de cursos de extensión.")
 
 @section("content")
-<h1>Orientadores</h1>
 
 @php
 $criterio = isset($criterio) ? $criterio : '';
