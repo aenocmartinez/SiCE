@@ -32,13 +32,12 @@ $criterio = isset($criterio) ? $criterio : '';
         </div>    
         
         <div class="col-lg-4 col-sm-12 col-xs-12" style="text-align: right;">
-            <a href="{{ route('orientadores.create') }}" class="btn btn-lg btn-info" style="margin-right: -57px;">
+            <a href="{{ route('orientadores.create') }}" class="btn btn-lg btn-info" style="margin-right:-57px;">
                 <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear orientador
             </a>
         </div>
 
     </div>
-
 </div>
 
 
@@ -54,8 +53,7 @@ $criterio = isset($criterio) ? $criterio : '';
                     <h4 class="fw-normal mb-0">{{ $o['nombre'] }}</h4>
                     <small>
                         {{ $o['tipo_documento'] .". " . $o['documento'] }} <br>
-                        Áreas a las que pertenece: <br>
-                        Correo institucional: {{ $o['email_institucional'] }}
+                        Correo institucional: {{ $o['email_institucional'] }}                        
                     </small>
                     </td>
                     <td class="text-center">

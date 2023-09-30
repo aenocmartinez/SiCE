@@ -55,7 +55,6 @@ class OrientadorController extends Controller
     public function index() {
         $casoUso = new ListarOrientadoresUseCase();
         $resp = $casoUso->ejecutar();
-
         return view("orientadores.index", [
             "orientadores" => $resp["data"]
         ]);
