@@ -1,9 +1,20 @@
 @extends("plantillas.principal")
 
-@section("title", "Nuevo curso")
+@php
+    $titulo = "Crear curso";
+@endphp
 
-@section("seccion", "Cursos")
-@section("subseccion", "crear curso")
+@section("title", $titulo)
+
+@section("description", "Ingrese todos los datos")
+
+@section("seccion")
+    <a class="link-fx" href="{{ route('cursos.index') }}">
+        Cursos
+    </a>
+@endsection
+
+@section("subseccion", $titulo)
 
 @section("content")
     <form action="{{ route('cursos.store') }}" method="post">

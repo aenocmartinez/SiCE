@@ -9,35 +9,36 @@
 $criterio = isset($criterio) ? $criterio : '';
 @endphp
 
-<div class="row">
-    <div class="col-lg-6">
-    <form method="post" action="{{ route('salones.buscador') }}">
-        @csrf
-        <div class="pt-1">
-            <div class="input-group">                
-                    <button class="btn btn-alt-primary">
-                        <i class="fa fa-search me-1 opacity-50"></i> Buscar
-                    </button>
-                    <input type="text" class="form-control form-control-alt" 
-                                        id="criterio" 
-                                        name="criterio" 
-                                        value="{{ $criterio }}"
-                                        placeholder="Nombre, capacidad">                
-            </div>
+<div class="row mb-3">
+
+    <div class="row">
+        
+        <div class="col-lg-8 col-sm-12">
+            <form method="post" action="{{ route('salones.buscador') }}">
+                @csrf
+                <div class="pt-0">
+                    <div class="input-group">                
+                        <button class="btn btn-alt-primary">
+                            <i class="fa fa-search me-1 opacity-50"></i> 
+                        </button>
+                        <input type="text" class="form-control" 
+                        id="criterio" 
+                        name="criterio" 
+                        value="{{ $criterio }}"
+                        placeholder="Buscar en el tablero">  
+                    </div>
+                </div>
+            </form>
+        </div>    
+        
+        <div class="col-lg-4 col-sm-12 col-xs-12" style="text-align: right;">
+            <a href="{{ route('salones.create') }}" class="btn btn-lg btn-info">
+                <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear salón
+            </a>
         </div>
-        </form>
+
     </div>
 </div>
-
-<div class="row">
-    <div class="col-12" style="text-align: right;">
-        <a href="{{ route('salones.create') }}" class="btn btn-lg btn-info">
-            <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear salón
-        </a>
-    </div>
-</div>
-
-<br>
 
 <div class="row">
     <div class="block block-rounded">
@@ -46,9 +47,11 @@ $criterio = isset($criterio) ? $criterio : '';
                 @forelse ($salones as $salon)
                 <tr>
                     <td class="fs-sm" style="width: 95%;">
-                    <h4>{{ $salon['nombre'] }}</h4>
-                    <small>Capacidad: {{ $salon['capacidad'] }}</small><br> 
-                    <small>Estado: {{ $salon['esta_disponible'] ? 'disponible' : 'no disponible' }}</small> 
+                    <h4 class="fw-normal mb-0">{{ $salon['nombre'] }}</h4>
+                    <small>
+                        Capacidad: {{ $salon['capacidad'] }}<br> 
+                        Estado: {{ $salon['esta_disponible'] ? 'disponible' : 'no disponible' }}
+                    </small> 
                     </td>
                     <td class="text-center">
                         <div class="btn-group">

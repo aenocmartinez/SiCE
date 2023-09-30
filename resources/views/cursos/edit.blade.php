@@ -1,9 +1,18 @@
 @extends("plantillas.principal")
 
-@section("title", "Editar curso")
+@php
+    $titulo = "Editar curso";
+@endphp
 
-@section("seccion", "Cursos")
-@section("subseccion", "editar curso")
+@section("title", $titulo)
+
+@section("seccion")
+    <a class="link-fx" href="{{ route('cursos.index') }}">
+        Cursos
+    </a>
+@endsection
+
+@section("subseccion", $titulo)
 
 @section("content")
 

@@ -5,26 +5,27 @@
 
 @section("content")
 
-<div class="row">
-    <div class="col-12" style="text-align: right;">
+<div class="row mb-3">
+    <div class="d-flex justify-content-end">
         <a href="{{ route('cursos.create') }}" class="btn btn-lg btn-info">
             <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear curso
         </a>
     </div>
-</div>
-
-<br>
+</div>    
 
 <div class="row">
     <div class="block block-rounded">
         <div class="block-content">
+
             <table class="table table-vcenter">
                 @forelse ($cursos as $curso)
                 <tr>
                     <td class="fs-sm" style="width: 95%;">
-                    <h4>{{ $curso['nombre'] }}</h4>
-                    <small>{{ $curso['area']['nombre'] }}</small><br> 
-                    <small>{{ $curso['modalidad'] }}</small> 
+                    <h4 class="fw-normal mb-0">{{ $curso['nombre'] }}</h4>
+                    <small>
+                        {{ $curso['area']['nombre'] }}<br> 
+                        {{ $curso['modalidad'] }}
+                    </small> 
                     </td>
                     <td class="text-center">
                         <div class="btn-group">
@@ -40,7 +41,7 @@
                                         type="button"
                                         data-id="{{ $curso['id'] }}"
                                         onclick="confirmDelete(this)">
-                                    <i class="fa fa-fw fa-times"></i>
+                                    <i class="fa fa-fw fa-trash-can"></i>
                                 </button>
                             </form>
                         </div>
