@@ -13,7 +13,7 @@ $criterio = isset($criterio) ? $criterio : '';
 
     <div class="row">
         
-        <div class="col-lg-8 col-sm-12 col-xs-12" style="margin-left: -15px;">
+        <div class="col-lg-8 col-sm-12">
             <form method="post" action="{{ route('orientadores.buscador') }}">
                 @csrf
                 <div class="pt-0">
@@ -32,7 +32,7 @@ $criterio = isset($criterio) ? $criterio : '';
         </div>    
         
         <div class="col-lg-4 col-sm-12 col-xs-12" style="text-align: right;">
-            <a href="{{ route('orientadores.create') }}" class="btn btn-lg btn-info" style="margin-right:-57px;">
+            <a href="{{ route('orientadores.create') }}" class="btn btn-lg btn-info">
                 <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear orientador
             </a>
         </div>

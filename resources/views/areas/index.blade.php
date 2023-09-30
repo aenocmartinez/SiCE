@@ -6,14 +6,10 @@
 @section("content")
 
 <div class="row mb-3">
-    <div class="row">
-
-        <div class="col-12" style="text-align: right;">
-            <a href="{{ route('areas.create') }}" class="btn btn-lg btn-info" style="margin-right:-45px;">
-                <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear área
-            </a>
-        </div>
-
+    <div class="d-flex justify-content-end">
+        <a href="{{ route('areas.create') }}" class="btn btn-lg btn-info">
+            <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear área
+        </a>
     </div>
 </div>        
 
