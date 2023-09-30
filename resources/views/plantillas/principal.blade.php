@@ -55,16 +55,16 @@
                   <!-- <i class="nav-main-link-icon si si-speedometer"></i> -->
                   <span class="nav-main-link-name">Dashboard</span>
                 </a>
-                <a class="nav-main-link {{ setActive('areas.index') }}" href="{{ route('areas.index') }}">
+                <a class="nav-main-link {{ setActive(['areas.index', 'areas.*']) }}" href="{{ route('areas.index') }}">
                   <span class="nav-main-link-name">Áreas</span>
                 </a>
-                <a class="nav-main-link {{ setActive('cursos.index') }}" href="{{ route('cursos.index') }}">
+                <a class="nav-main-link {{ setActive(['cursos.index', 'cursos.*']) }}" href="{{ route('cursos.index') }}">
                   <span class="nav-main-link-name">Cursos</span>
                 </a>   
-                <a class="nav-main-link {{ setActive('salones.index') }}" href="{{ route('salones.index') }}">
+                <a class="nav-main-link {{ setActive(['salones', 'salones.*']) }}" href="{{ route('salones') }}">
                   <span class="nav-main-link-name">Salones</span>
                 </a>
-                <a class="nav-main-link {{ setActive('orientadores.index') }}" href="{{ route('orientadores.index') }}">
+                <a class="nav-main-link {{ setActive(['orientadores.index', 'orientadores.*']) }}" href="{{ route('orientadores.index') }}">
                   <span class="nav-main-link-name">Orientadores</span>
                 </a>                
               </li>
@@ -249,17 +249,17 @@
           <div class="content content-full">
             <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center py-2">
               <div class="flex-grow-1">
-                <h1 class="h3 fw-bold mb-1">
+                <h1 class="fw-light mb-0">
                 @yield('title')
                 </h1>
-                <h2 class="fs-base lh-base fw-medium text-muted mb-0">
+                <h2 class="fs-base lh-base fw-normal text-muted mb-5">              
                 @yield('description')
                 </h2>
               </div>
               <nav class="flex-shrink-0 mt-3 mt-sm-0 ms-sm-3" aria-label="breadcrumb">
                 <ol class="breadcrumb breadcrumb-alt">
                   <li class="breadcrumb-item">
-                    <a class="link-fx" href="javascript:void(0)">@yield('seccion')</a>
+                    @yield('seccion')                    
                   </li>
                   <li class="breadcrumb-item" aria-current="page">
                     @yield('subseccion')
@@ -273,14 +273,13 @@
 
         <!-- Page Content -->
         <div class="content">
-          <div class="block block-rounded">
+        @yield('content')
+          <!-- <div class="block block-rounded">
             <div class="block-content">
-              <!-- <p>
-                Left Sidebar, right Side Overlay and a fixed Header.
-              </p> -->
-              @yield('content')
+              
+              
             </div>
-          </div>
+          </div> -->
         </div>
         <!-- END Page Content -->
       </main>
@@ -319,17 +318,16 @@
     -->
     <script src="{{asset('assets/js/oneui.app.min.js')}}"></script>
     <script src="{{asset('assets/js/plugins/sweetalert2/sweetalert2.min.js')}}"></script>
-    <script src="{{asset('assets/js/plugins/ckeditor/ckeditor.js')}}"></script>
-    <script src="{{asset('assets/js/plugins/simplemde/simplemde.min.js')}}"></script>
-    <script>One.helpersOnLoad(['js-ckeditor', 'js-simplemde']);</script>
+
+    
 
     <script src="{{asset('assets/js/plugins/chart.js/chart.umd.js')}}"></script>
     <script src="{{asset('assets/js/pages/be_pages_dashboard.min.js')}}"></script>   
     
   
-    <script src="assets/js/lib/jquery.min.js"></script>
-    <script src="assets/js/plugins/easy-pie-chart/jquery.easypiechart.min.js"></script>
-    <script src="assets/js/plugins/jquery-sparkline/jquery.sparkline.min.js"></script>
+    <script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
+    <script src="{{asset('assets/js/plugins/easy-pie-chart/jquery.easypiechart.min.js')}}"></script>
+    <script src="{{asset('assets/js/plugins/jquery-sparkline/jquery.sparkline.min.js')}}"></script>
     <script>One.helpersOnLoad(['jq-easy-pie-chart', 'jq-sparkline']);</script>    
   </body>
 </html>

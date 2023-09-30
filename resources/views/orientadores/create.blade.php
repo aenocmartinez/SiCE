@@ -1,9 +1,18 @@
 @extends("plantillas.principal")
 
-@section("title", "Nuevo orientador")
+@php
+    $titulo = "Crear orientador";
+@endphp
 
-@section("seccion", "Orientadores")
-@section("subseccion", "nuevo orientador")
+@section("title", $titulo)
+
+@section("seccion")
+    <a class="link-fx" href="{{ route('orientadores.index') }}">
+        Orientadores
+    </a>
+@endsection
+
+@section("subseccion", $titulo)
 
 @section("content")
 

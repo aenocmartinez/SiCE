@@ -76,7 +76,6 @@ class OrientadorController extends Controller
         $o = $resp['data'];
 
         return view('orientadores.edit', ["orientador" => [
-            'areas' => $areas,
             'id' => $o['id'],
             'nombre' => $o['nombre'],
             'tipoDocumento' => $o['tipo_documento'],
@@ -88,7 +87,9 @@ class OrientadorController extends Controller
             'estado' => $o['estado'],
             'observacion' => $o['observacion'],
             'listaEps' => $this->listaEPS,
-        ]]);
+        ],
+        'areas' => $areas,        
+    ]);
     }
 
     public function buscador() {        
@@ -113,7 +114,6 @@ class OrientadorController extends Controller
         $areas = $rs['data'];
                 
         return view('orientadores.create', ["orientador" => [
-            'areas' => $areas,
             'nombre' => '',
             'tipoDocumento' => '',
             'documento' => '',
@@ -124,7 +124,9 @@ class OrientadorController extends Controller
             'estado' => '',
             'observacion' => '',
             'listaEps' => $this->listaEPS,
-        ]]);
+        ],
+        'areas' => $areas,
+    ]);
     }
 
     public function store() {
@@ -132,12 +134,14 @@ class OrientadorController extends Controller
             'nombre' => 'required',
             'tipoDocumento' => 'required',
             'documento' => 'required|numeric',
-            'emailInstitucional' => 'email|nullable',
+            'emailInstitucional' => 'regex:/^.+@unicolmayor\.edu\.co$/i|nullable',
             'emailPersonal' => 'email|nullable',
             'direccion' => 'nullable',
             'eps' => 'nullable',
             'area' => 'nullable',
             'observacion' => 'nullable'
+        ],[
+            'emailInstitucional.regex' => 'Sólo se permiten email terminados en @unicolmayor.edu.co',
         ]);        
         
         $orientadorDto = new OrientadorDto();

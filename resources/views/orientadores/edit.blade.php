@@ -2,7 +2,12 @@
 
 @section("title", "Editar orientador")
 
-@section("seccion", "Orientadores")
+@section("seccion")
+    <a class="link-fx" href="{{ route('orientadores.index') }}">
+        Orientadores
+    </a>
+@endsection
+
 @section("subseccion", "editar orientador")
 
 @section("content")
