@@ -43,14 +43,15 @@ Route::patch('/salones/actualizar', [SalonController::class, 'update'])->name('s
 Route::post('/salones/buscador', [SalonController::class, 'buscador'])->name('salones.buscador');
 
 
-
-
-
 Route::get('/orientadores', [OrientadorController::class, 'index'])->name('orientadores.index');
-Route::get('/orientadores/{id}/editar', [OrientadorController::class, 'buscarPorId'])->name('orientadores.edit');
+Route::get('/orientadores/{id}/editar', [OrientadorController::class, 'edit'])->name('orientadores.edit');
 Route::get('/orientadores/crear', [OrientadorController::class, 'create'])->name('orientadores.create');
 Route::post('/orientadores', [OrientadorController::class, 'store'])->name('orientadores.store');
 
 Route::delete('/orientadores/eliminar/{id}', [OrientadorController::class, 'delete'])->name('orientadores.delete');
 Route::patch('/orientadores/actualizar', [OrientadorController::class, 'update'])->name('orientadores.update');
 Route::post('/orientadores/buscador', [OrientadorController::class, 'buscador'])->name('orientadores.buscador');
+
+Route::get('/orientadores/{id}/areas', [OrientadorController::class, 'editAreas'])->name('orientadores.editAreas');
+Route::delete('/orientadores/{idOrientador}/areas/{idArea}', [OrientadorController::class, 'removeArea'])->name('orientadores.removeArea');
+Route::post('/orientadores/areas/agregar', [OrientadorController::class, 'addArea'])->name('orientadores.addArea');

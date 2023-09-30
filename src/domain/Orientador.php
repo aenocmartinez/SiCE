@@ -115,12 +115,16 @@ class Orientador {
         return $this->eps;
     }
 
+    public function setAreas(array $areas): void {
+        $this->areas = $areas;
+    }
+
     public function agregarArea(Area $area): void {
-        array_push($this->areas, $area);
+        $this->repository->agregarArea($this, $area);
     }
 
     public function quitarArea(Area $area): void {
-
+        $this->repository->quitarArea($this, $area);
     }
 
     public function misAreas(): array {

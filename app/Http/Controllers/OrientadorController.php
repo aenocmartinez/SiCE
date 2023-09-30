@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Src\infraestructure\util\Validador;
 use Src\usecase\areas\ListarAreasUseCase;
 use Src\usecase\orientadores\ActualizarOrientadorUseCase;
+use Src\usecase\orientadores\AgregarAreaAOrientadorUseCase;
 use Src\usecase\orientadores\BuscadorOrientadorUseCase;
-use Src\usecase\orientadores\BuscarOrientadorPorDocumentoUseCase;
 use Src\usecase\orientadores\BuscarOrientadorPorIdUseCase;
 use Src\usecase\orientadores\CrearOrientadorUseCase;
 use Src\usecase\orientadores\EliminarOrientadorUseCase;
 use Src\usecase\orientadores\ListarOrientadoresUseCase;
+use Src\usecase\orientadores\QuitarAreaAOrientadorUseCase;
 use Src\view\dto\OrientadorDto;
 
 class OrientadorController extends Controller
@@ -61,15 +61,11 @@ class OrientadorController extends Controller
         ]);
     }
 
-    public function buscarPorId($id) {
+    public function edit($id) {
         $esValido = Validador::parametroId($id);
         if (!$esValido) {
             echo json_encode(["code" => "401", "message" => "parámetro no válido"]);
         }
-
-        $listarAreas = new ListarAreasUseCase();
-        $rs = $listarAreas->ejecutar();
-        $areas = $rs['data'];
 
         $casoUso = new BuscarOrientadorPorIdUseCase();
         $resp = $casoUso->ejecutar($id);
@@ -87,10 +83,70 @@ class OrientadorController extends Controller
             'estado' => $o['estado'],
             'observacion' => $o['observacion'],
             'listaEps' => $this->listaEPS,
-        ],
-        'areas' => $areas,        
-    ]);
+        ]]);
     }
+
+    public function editAreas($idOrientador) {
+        $esValido = Validador::parametroId($idOrientador);
+        if (!$esValido) {
+            echo json_encode(["code" => "401", "message" => "parámetro no válido"]);
+        }
+
+        $casoUsoListarAreas = new ListarAreasUseCase();
+        $areas = $casoUsoListarAreas->ejecutar();
+
+        $casoUso = new BuscarOrientadorPorIdUseCase();
+        $resp = $casoUso->ejecutar($idOrientador);
+        $o = $resp['data'];
+        
+
+        return view('orientadores.addAreas', ["orientador" => [
+            'id' => $o['id'],
+            'nombre' => $o['nombre'],
+            'tipoDocumento' => $o['tipo_documento'],
+            'documento' => $o['documento'],
+            'emailInstitucional' => $o['email_institucional'],
+            'emailPersonal' => $o['email_personal'],
+            'direccion' => $o['direccion'],
+            'eps' => $o['eps'],
+            'estado' => $o['estado'],
+            'observacion' => $o['observacion'],
+            'listaEps' => $this->listaEPS,  
+            'areas' => $o['areas'],
+        ], 
+        'areas' => $areas['data'], 
+        ]);
+    }
+
+    public function removeArea($idOrientador, $idArea) {                
+        $esValido = Validador::parametroId($idOrientador);
+        if (!$esValido) 
+            echo json_encode(["code" => "401", "message" => "parámetro no válido"]);
+        
+        $esValido = Validador::parametroId($idArea);
+        if (!$esValido) 
+            echo json_encode(["code" => "401", "message" => "parámetro no válido"]);
+        
+        $casoUso = new QuitarAreaAOrientadorUseCase();
+        $casoUso->ejecutar($idOrientador, $idArea);
+
+        return redirect()->route('orientadores.editAreas', [$idOrientador]);
+    }
+
+    public function addArea() {
+        request()->validate([
+            'idOrientador' => 'required|numeric',
+            'area' => 'required|numeric'
+        ]);
+        
+        $idOrientador = request('idOrientador');
+        $idArea = request('area');
+
+        $casoUso = new AgregarAreaAOrientadorUseCase();
+        $casoUso->ejecutar($idOrientador, $idArea);
+
+        return redirect()->route('orientadores.editAreas', [request('idOrientador')]);
+    }    
 
     public function buscador() {        
         request()->validate([
@@ -108,11 +164,7 @@ class OrientadorController extends Controller
         ]); 
     }
 
-    public function create() {
-        $listarAreas = new ListarAreasUseCase();
-        $rs = $listarAreas->ejecutar();
-        $areas = $rs['data'];
-                
+    public function create() {                
         return view('orientadores.create', ["orientador" => [
             'nombre' => '',
             'tipoDocumento' => '',
@@ -124,8 +176,7 @@ class OrientadorController extends Controller
             'estado' => '',
             'observacion' => '',
             'listaEps' => $this->listaEPS,
-        ],
-        'areas' => $areas,
+        ]
     ]);
     }
 

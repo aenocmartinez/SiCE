@@ -20,6 +20,10 @@ class OrientadorDao extends Model implements OrientadorRepository {
                            'estado', 
                            'observacion'];
 
+    public function areas() {
+        return $this->belongsToMany(AreaDao::class, 'orientador_areas', 'orientador_id', 'area_id');
+    }
+
     public function listarOrientadores(): array {
         $orientadores = [];
         try {
@@ -45,6 +49,12 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $orientador->setEps($rs['eps']);
                 $orientador->setEstado($rs['estado']);
                 $orientador->setObservacion($rs['observacion']);
+
+                $areas = array();
+                foreach($rs->areas as $area) 
+                    array_push($areas, new Area($area->id, $area->nombre));
+                
+                $orientador->setAreas($areas);
             }            
         } catch (\Exception $e) {
             throw $e;
@@ -153,12 +163,28 @@ class OrientadorDao extends Model implements OrientadorRepository {
         return $exito; 
     }
 
-    public function agregarArea(Orientador $orientador, Area $area): bool {
-        return false;
+    public function agregarArea(Orientador $orientador, Area $area): bool {      
+        try {
+            $o = OrientadorDao::find($orientador->getId());
+            if ($o) {
+                $o->areas()->attach([$area->getId()]);
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }               
+        return true;
     }
 
     public function quitarArea(Orientador $orientador, Area $area): bool {
-        return false;
+        try {
+            $o = OrientadorDao::find($orientador->getId());
+            if ($o) {
+                $o->areas()->detach([$area->getId()]);
+            }
+        } catch (\Exception $e) {
+            throw $e;
+        }               
+        return true;
     }
 
     public function listarAreasDeUnOrientador(Orientador $orientador): array {

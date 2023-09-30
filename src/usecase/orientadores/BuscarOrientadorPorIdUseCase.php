@@ -33,6 +33,7 @@ class BuscarOrientadorPorIdUseCase {
                 "eps" => $orientador->getEps(),
                 "estado" => $orientador->getEstadoComoTexto(),
                 "observacion" => $orientador->getObservacion(),
+                "areas" => $orientador->misAreas(),
             ],
         ];
     }

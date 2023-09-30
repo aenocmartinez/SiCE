@@ -112,24 +112,6 @@
     </div>
 </div>
 
-<!-- <div class="block block-rounded">
-    <div class="block-content">
-        <div class="row push">
-            <h5 class="fw-light">ÁREAS A LAS QUE PERTENECE</h5>
-            <div class="col-4">    
-                <select id="area" name="area" class="form-select">
-                <option value="">Selecciona un área</option>
-                    @foreach ($areas as $a)            
-                        <option value="{{ $a['id'] }}">{{ $a['nombre'] }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-4">
-                <button type="button" class="btn btn-large btn-info">Agregar área</button>      
-            </div>
-        </div>
-    </div>
-</div> -->
 
 <div class="block block-rounded">
     <div class="block-content">
