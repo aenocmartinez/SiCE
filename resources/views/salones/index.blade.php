@@ -67,7 +67,7 @@ $criterio = isset($criterio) ? $criterio : '';
                                         type="button"
                                         data-id="{{ $salon['id'] }}"
                                         onclick="confirmDelete(this)">
-                                    <i class="fa fa-fw fa-times"></i>
+                                    <i class="fa fa-fw fa-trash-can"></i>
                                 </button>
                             </form>
                         </div>

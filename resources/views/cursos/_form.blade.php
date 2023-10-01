@@ -23,8 +23,8 @@
                             {{ $message }}
                         </span>
                     @enderror
-
                 <br>
+                
                 <label class="form-label" for="area">Área</label>
                 <select class="form-select @error('area') is-invalid @enderror" id="area" name="area">
                     <option value="">Selecciona un área</option>

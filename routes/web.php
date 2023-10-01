@@ -3,9 +3,11 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\OrientadorController;
 use App\Http\Controllers\SalonController;
+use Src\domain\Calendario;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +36,7 @@ Route::post('/cursos', [CursoController::class, 'store'])->name('cursos.store');
 Route::delete('/cursos/{id}', [CursoController::class, 'delete'])->name('cursos.delete');
 Route::patch('/cursos/actualizar', [CursoController::class, 'update'])->name('cursos.update');
 
-Route::get('/salones', [SalonController::class, 'index'])->name('salones');
+Route::get('/salones', [SalonController::class, 'index'])->name('salones.index');
 Route::get('/salones/{id}/editar', [SalonController::class, 'buscarPorId'])->name('salones.edit');
 Route::get('/salones/crear', [SalonController::class, 'create'])->name('salones.create');
 Route::post('/salones', [SalonController::class, 'store'])->name('salones.store');
@@ -47,11 +49,18 @@ Route::get('/orientadores', [OrientadorController::class, 'index'])->name('orien
 Route::get('/orientadores/{id}/editar', [OrientadorController::class, 'edit'])->name('orientadores.edit');
 Route::get('/orientadores/crear', [OrientadorController::class, 'create'])->name('orientadores.create');
 Route::post('/orientadores', [OrientadorController::class, 'store'])->name('orientadores.store');
-
 Route::delete('/orientadores/eliminar/{id}', [OrientadorController::class, 'delete'])->name('orientadores.delete');
 Route::patch('/orientadores/actualizar', [OrientadorController::class, 'update'])->name('orientadores.update');
 Route::post('/orientadores/buscador', [OrientadorController::class, 'buscador'])->name('orientadores.buscador');
-
 Route::get('/orientadores/{id}/areas', [OrientadorController::class, 'editAreas'])->name('orientadores.editAreas');
 Route::delete('/orientadores/{idOrientador}/areas/{idArea}', [OrientadorController::class, 'removeArea'])->name('orientadores.removeArea');
 Route::post('/orientadores/areas/agregar', [OrientadorController::class, 'addArea'])->name('orientadores.addArea');
+
+
+
+Route::get('/calendario',[CalendarioController::class, 'index'])->name('calendario.index');
+Route::get('/calendario/{id}/editar', [CalendarioController::class, 'edit'])->name('calendario.edit');
+Route::get('/calendario/crear', [CalendarioController::class, 'create'])->name('calendario.create');
+Route::post('/calendario', [CalendarioController::class, 'store'])->name('calendario.store');
+Route::delete('/calendario/{id}', [CalendarioController::class, 'destroy'])->name('calendario.delete');
+Route::patch('/calendario/{id}/actualizar', [CalendarioController::class, 'update'])->name('calendario.update');

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
+  
     <title>{{ config('app.name') }}</title>
 
     <meta name="description" content="OneUI - Bootstrap 5 Admin Template &amp; UI Framework created by pixelcave and published on Themeforest">
@@ -25,6 +25,12 @@
     <link rel="stylesheet" href="{{asset('assets/js/plugins/sweetalert2/sweetalert2.min.css')}}">
     <link rel="stylesheet" id="css-main" href="{{asset('assets/css/oneui.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/js/plugins/simplemde/simplemde.min.css')}}">
+
+    <link rel="stylesheet" href="{{asset('assets/js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/js/plugins/select2/css/select2.min.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/js/plugins/ion-rangeslider/css/ion.rangeSlider.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/js/plugins/dropzone/min/dropzone.min.css')}}">
+    <link rel="stylesheet" href="{{asset('assets/js/plugins/flatpickr/flatpickr.min.css')}}">
 
   </head>
 
@@ -61,7 +67,7 @@
                 <a class="nav-main-link {{ setActive(['cursos.index', 'cursos.*']) }}" href="{{ route('cursos.index') }}">
                   <span class="nav-main-link-name">Cursos</span>
                 </a>   
-                <a class="nav-main-link {{ setActive(['salones', 'salones.*']) }}" href="{{ route('salones') }}">
+                <a class="nav-main-link {{ setActive(['salones.index', 'salones.*']) }}" href="{{ route('salones.index') }}">
                   <span class="nav-main-link-name">Salones</span>
                 </a>
                 <a class="nav-main-link {{ setActive(['orientadores.index', 'orientadores.*']) }}" href="{{ route('orientadores.index') }}">
@@ -71,7 +77,7 @@
 
               <li class="nav-main-heading">Periodo académico</li>
               <li class="nav-main-item">
-                <a class="nav-main-link" href="{{ route('home') }}">
+                <a class="nav-main-link {{ setActive(['calendario.index', 'calendario.*']) }}" href="{{ route('calendario.index') }}">
                   <span class="nav-main-link-name">Calendario</span>
                 </a>
                 <a class="nav-main-link" href="{{ route('home') }}">
