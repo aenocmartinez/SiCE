@@ -19,7 +19,7 @@
     <form method="post" action="{{route('orientadores.update')}}">
         @csrf @method('patch')
         
-        <input type="hidden" name="id" value="{{ $orientador['id'] }}">
+        <input type="hidden" name="id" value="{{ $orientador->getId() }}">
         
         @include('orientadores._form', ['btnText' => 'Actualizar'])
 

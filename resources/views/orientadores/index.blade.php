@@ -47,34 +47,35 @@ $criterio = isset($criterio) ? $criterio : '';
 
 
             <table class="table table-vcenter">
-                @forelse ($orientadores as $o)
+                @forelse ($orientadores as $orientador)
                 <tr>
                     <td class="fs-sm" style="width: 95%;">
-                    <h4 class="fw-normal mb-0">{{ $o['nombre'] }}</h4>
+                    <h4 class="fw-normal mb-0">{{ $orientador->getNombre() }}</h4>
                     <small>
-                        {{ $o['tipo_documento'] .". " . $o['documento'] }} <br>
-                        Correo institucional: {{ $o['email_institucional'] }}                        
+                        {{ $orientador->getTipoNumeroDocumento() }} <br>
+                        Total áreas a las que pertenece: {{ $orientador->numeroAreasPertenece() }} <br>
+                        {{ $orientador->nombreAreasPertenezco() }}
                     </small>
                     </td>
                     <td class="text-center">
                         <div class="btn-group">
-                            <a href="{{ route('orientadores.edit', $o['id']) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar orientador">
+                            <a href="{{ route('orientadores.edit', $orientador->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar orientador">
                                 <i class="fa fa-fw fa-pencil-alt"></i>
                             </a>
-                            <form method="POST" action="{{ route('orientadores.delete', $o['id']) }}" id="form-del-orientador-{{$o['id']}}">
+                            <form method="POST" action="{{ route('orientadores.delete', $orientador->getId()) }}" id="form-del-orientador-{{ $orientador->getId() }}">
                                 @csrf
                                 @method('delete')
                                 <button class="btn btn-sm btn-alt-secondary" 
                                         data-bs-toggle="tooltip" 
                                         title="eliminar orientador" 
                                         type="button"
-                                        data-id="{{ $o['id'] }}"
+                                        data-id="{{ $orientador->getId() }}"
                                         onclick="confirmDelete(this)">
                                     <i class="fa fa-fw fa-trash-can"></i>
                                 </button>
                             </form>
 
-                            <a href="{{ route('orientadores.editAreas', $o['id']) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="áreas a las que pertenece">
+                            <a href="{{ route('orientadores.editAreas', $orientador->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="áreas a las que pertenece">
                                 <i class="fa fa-fw fa-network-wired"></i>
                             </a>
 
@@ -94,7 +95,7 @@ $criterio = isset($criterio) ? $criterio : '';
 
 <script>
 function confirmDelete(button) {
-    const salonId = button.getAttribute('data-id'); 
+    const orientadorId = button.getAttribute('data-id'); 
     Swal.fire({
         title: '¿Estás seguro?',
         text: 'Esta acción no se puede deshacer',
@@ -104,7 +105,7 @@ function confirmDelete(button) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            const form = document.getElementById(`form-del-orientador-${salonId}`);
+            const form = document.getElementById(`form-del-orientador-${orientadorId}`);
             if (form) {                
                 form.submit();
             }

@@ -4,34 +4,25 @@ namespace Src\usecase\orientadores;
 
 use Src\dao\mysql\OrientadorDao;
 use Src\domain\Orientador;
+use Src\view\dto\Response;
 
 class EliminarOrientadorUseCase {
 
-    public function ejecutar(int $id=0): array{
+    public function ejecutar(int $id=0): Response{
 
         $orientadorRepository = new OrientadorDao();
 
         $orientador = Orientador::buscarPorId($id, $orientadorRepository);
         if (!$orientador->existe()) {
-            return [
-                "code" => "404",
-                "message" => "orientador no encontrado"
-            ];            
+            return new Response('404', 'orientador no encontrado');
         }
 
         $orientador->setRepository($orientadorRepository);
         $exito = $orientador->eliminar();
         if (!$exito) {
-            return [
-                "code" => "500",
-                "message" => "ha ocurrido un error en el sistema",
-            ];
+            return new Response('500', 'Ha ocurrido un error en el sistema');
         }        
 
-        return [
-            "code" => "200",
-            "message" => "registro eliminado con éxito"
-        ];
-
+        return new Response('200', 'Registro eliminado con éxito');
     }
 }

@@ -9,11 +9,6 @@ class BuscadorOrientadorUseCase {
 
     public function ejecutar(string $criterio): array {
         $orientadorRepository = new OrientadorDao();
-        $orientadores = Orientador::buscador($criterio, $orientadorRepository);
-
-        return [
-            "code" => "200",
-            "data" => $orientadores
-        ];
+        return Orientador::buscador($criterio, $orientadorRepository);
     }
 }

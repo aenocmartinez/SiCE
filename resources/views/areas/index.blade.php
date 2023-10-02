@@ -21,7 +21,7 @@
                 @forelse ($areas as $area)
                 <tr>
                     <td class="fs-sm" style="width: 95%;">
-                        {{ $area->getNombre() }}
+                    <h4 class="fw-normal mb-0">{{ $area->getNombre() }}</h4>
                     </td>
                     <td class="text-center">
                         <div class="btn-group">

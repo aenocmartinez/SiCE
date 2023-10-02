@@ -5,15 +5,15 @@ namespace Src\domain;
 class Orientador {
 
     private int $id;
-    private string $nombre;
-    private string $tipoDocumento;
-    private string $documento;
-    private string $emailInstitucional;
-    private string $emailPersonal;
-    private bool $estado;
-    private string $observacion;
-    private string $direccion;
-    private string $eps;
+    private string $nombre = "";
+    private string $tipoDocumento = "";
+    private string $documento = "";
+    private string $emailInstitucional = "";
+    private string $emailPersonal = "";
+    private bool $estado = false;
+    private string $observacion = "";
+    private string $direccion = "";
+    private string $eps = "";
     private $areas;
     private $repository;
 
@@ -60,7 +60,7 @@ class Orientador {
     }
 
     public function getTipoNumeroDocumento(): string {
-        return $this->tipoDocumento . " - " . $this->documento;
+        return $this->tipoDocumento . ". " . $this->documento;
     }
 
     public function setEmailInstitucional(string $emailInstitucional): void {
@@ -119,12 +119,12 @@ class Orientador {
         $this->areas = $areas;
     }
 
-    public function agregarArea(Area $area): void {
-        $this->repository->agregarArea($this, $area);
+    public function agregarArea(Area $area): bool {
+        return $this->repository->agregarArea($this, $area);
     }
 
-    public function quitarArea(Area $area): void {
-        $this->repository->quitarArea($this, $area);
+    public function quitarArea(Area $area): bool {
+        return $this->repository->quitarArea($this, $area);
     }
 
     public function misAreas(): array {
@@ -161,5 +161,27 @@ class Orientador {
 
     public function existe(): bool {
         return $this->id > 0;
+    }
+
+    public function tieneAreasAsignadas(): bool {
+        return sizeof($this->areas) > 0;
+    }
+
+    public function numeroAreasPertenece(): int {
+        return sizeof($this->areas);
+    }
+
+    public function nombreAreasPertenezco(): string {
+        $nombreAreas = "";
+
+        if (!$this->tieneAreasAsignadas()) {
+            return "No tiene áreas asignadas";
+        }
+
+        foreach($this->misAreas() as $area) {
+            $nombreAreas .= $area->getNombre() . ", ";
+        }
+
+        return substr($nombreAreas, 0, -2);
     }
 }

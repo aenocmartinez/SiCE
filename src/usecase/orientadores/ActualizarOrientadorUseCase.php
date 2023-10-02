@@ -4,20 +4,18 @@ namespace Src\usecase\orientadores;
 use Src\dao\mysql\OrientadorDao;
 use Src\domain\Orientador;
 use Src\view\dto\OrientadorDto;
+use Src\view\dto\Response;
 
 class ActualizarOrientadorUseCase {
 
-    public function ejecutar(OrientadorDto $orientadorDto): array {
+    public function ejecutar(OrientadorDto $orientadorDto): Response {
        
         $orientadorRepository = new OrientadorDao();
 
         $orientador = Orientador::buscarPorId($orientadorDto->id, $orientadorRepository);
 
         if (!$orientador->existe()) {
-            return [
-                "code" => "200",
-                "message" => "orientador no encontrado"
-            ];
+            return new Response('404', 'Orientador no encontrado');
         }
 
         $orientador->setRepository($orientadorRepository);
@@ -33,15 +31,9 @@ class ActualizarOrientadorUseCase {
 
         $exito = $orientador->actualizar();
         if (!$exito) {
-            return [
-                "code" => "500",
-                "message" => "ha ocurrido un error en el sistema",
-            ];
+            return new Response('500', 'Ha ocurrido un error en el sistema');
         }
 
-        return [
-            "code" => "200",
-            "message" => "registro actualizado con éxito"
-        ];        
+        return new Response('200', 'Registro actualizado con éxito.');
     }
 }

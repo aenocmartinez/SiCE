@@ -1,11 +1,9 @@
-<!-- {{ $orientador['nombre'] }} -->
-
 <div class="block block-rounded">
     <div class="block-content">
         <div class="row push">
 
             <h5 class="fw-light link-fx mb-4 text-primary-darker">
-               {{ mb_strtoupper($orientador['nombre']) }}
+               {{ mb_strtoupper($orientador->getNombre()) }}
             </h5>
 
             <form method="POST" action="{{ route('orientadores.addArea') }}" id="fmAddArea">
@@ -13,11 +11,11 @@
                         <div class="col-4">
                             
                                 @csrf
-                                <input type="hidden" name="idOrientador" value="{{ $orientador['id'] }}">                
+                                <input type="hidden" name="idOrientador" value="{{ $orientador->getId() }}">                
                                 <select class="form-select @error('area') is-invalid @enderror" id="area" name="area">
                                 <option value="">Selecciona un área</option>
                                     @foreach ($areas as $area)            
-                                        <option value="{{ $area['id'] }}">{{ $area['nombre'] }}</option>
+                                        <option value="{{ $area->getId() }}">{{ $area->getNombre() }}</option>
                                     @endforeach
                                 </select>
                                 @error('area')
@@ -35,16 +33,16 @@
 
             <div class="col-12 mt-3">
                 <table class="table table-vcenter">
-                @forelse ($orientador['areas'] as $a)
+                @forelse ($orientador->misAreas() as $area)
                 @php
-                    $idForm = $orientador['id'] . $a->getId();
+                    $idForm = $orientador->getId() . $area->getId();
                 @endphp                
                     <tr>
                         <td class="fs-sm" style="width: 95%;">
-                            <h5 class="fw-light mb-0">{{ $a->getNombre() }}</h5>
+                            <h5 class="fw-light mb-0">{{ $area->getNombre() }}</h5>
                         </td>
                         <td class="text-center">
-                            <form method="POST" action="{{ route('orientadores.removeArea', [$orientador['id'], $a->getId()]) }}" id="fm_{{$idForm}}">
+                            <form method="POST" action="{{ route('orientadores.removeArea', [$orientador->getId(), $area->getId()]) }}" id="fm_{{$idForm}}">
                                 @csrf @method('delete')                                
                                 <button class="btn btn-sm btn-alt-secondary" 
                                         data-bs-toggle="tooltip" 

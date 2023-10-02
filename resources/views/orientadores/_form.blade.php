@@ -1,5 +1,5 @@
 @php
-    $selectedTD = $orientador['tipoDocumento'] != ""  ? $orientador['tipoDocumento'] : '';
+    $selectedTD = $orientador->getTipoDocumento() != ""  ? $orientador->getTipoDocumento() : '';
 @endphp
 
 <div class="block block-rounded">
@@ -14,7 +14,7 @@
                     id="nombre" 
                     name="nombre" 
                     placeholder="Nombre" 
-                    value="{{ old('nombre', $orientador['nombre']) }}"                
+                    value="{{ old('nombre', $orientador->getNombre()) }}"                
                     >
                     @error('nombre')
                         <span class="invalid-feedback" role="alert">
@@ -44,7 +44,7 @@
                     id="documento" 
                     name="documento" 
                     placeholder="Documento" 
-                    value="{{ old('documento', $orientador['documento']) }}"                
+                    value="{{ old('documento', $orientador->getDocumento()) }}"                
                     >
                     @error('documento')
                         <span class="invalid-feedback" role="alert">
@@ -56,8 +56,8 @@
                 <label class="form-label" for="eps">EPS</label>
                 <select class="form-select @error('eps') is-invalid @enderror" id="eps" name="eps">
                 <option value="">Selecciona una eps</option>
-                    @foreach ($orientador['listaEps'] as $eps)            
-                        <option value="{{ $eps }}" {{ $orientador['eps'] == $eps ? 'selected' : '' }}>{{ $eps }}</option>
+                    @foreach ($listaEps as $eps)            
+                        <option value="{{ $eps }}" {{ $orientador->getEps() == $eps ? 'selected' : '' }}>{{ $eps }}</option>
                     @endforeach
                 </select>                    
             </div>
@@ -70,7 +70,7 @@
                     id="emailInstitucional" 
                     name="emailInstitucional" 
                     placeholder="Correo institucional" 
-                    value="{{ old('emailInstitucional', $orientador['emailInstitucional']) }}"                
+                    value="{{ old('emailInstitucional', $orientador->getEmailInstitucional()) }}"                
                     >
                     @error('emailInstitucional')
                         <span class="invalid-feedback" role="alert">
@@ -85,7 +85,7 @@
                     id="emailPersonal" 
                     name="emailPersonal" 
                     placeholder="Correo personal" 
-                    value="{{ old('emailPersonal', $orientador['emailPersonal']) }}"                
+                    value="{{ old('emailPersonal', $orientador->getEmailPersonal()) }}"                
                     >
                     @error('emailPersonal')
                         <span class="invalid-feedback" role="alert">
@@ -100,7 +100,7 @@
                     id="direccion" 
                     name="direccion" 
                     placeholder="Dirección" 
-                    value="{{ old('direccion', $orientador['direccion']) }}"                
+                    value="{{ old('direccion', $orientador->getDireccion()) }}"                
                     >
                     @error('direccion')
                         <span class="invalid-feedback" role="alert">
@@ -118,7 +118,7 @@
         <div class="row push">
             <h5 class="fw-light">OBSERVACIONES GENERALES</h5>   
             <div class="col-12">
-                <textarea class="js-simplemde" rows="4" id="observacion" name="observacion">{{ old('observacion', $orientador['observacion']) }}</textarea>
+                <textarea class="js-simplemde" rows="4" id="observacion" name="observacion">{{ old('observacion', $orientador->getObservacion()) }}</textarea>
             </div>
 
             <div class="col-12">

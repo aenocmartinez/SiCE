@@ -27,7 +27,29 @@ class OrientadorDao extends Model implements OrientadorRepository {
     public function listarOrientadores(): array {
         $orientadores = [];
         try {
-            $orientadores = OrientadorDao::all()->toArray();            
+            $result = OrientadorDao::all();
+            foreach($result as $rs) {
+                $orientador = new Orientador();
+                $orientador->setId($rs->id);
+                $orientador->setNombre($rs->nombre);
+                $orientador->setTipoDocumento($rs->tipo_documento);
+                $orientador->setDocumento($rs->documento);
+                $orientador->setEmailInstitucional($rs->email_institucional);
+                $orientador->setEmailPersonal($rs->email_personal);
+                $orientador->setDireccion($rs->direccion);
+                $orientador->setEps($rs->eps);
+                $orientador->setEstado($rs->estado);
+                $orientador->setObservacion($rs->observacion);
+                
+                $areas = array();
+                foreach($rs->areas as $area) 
+                    array_push($areas, new Area($area->id, $area->nombre));
+                
+                $orientador->setAreas($areas);                
+
+                array_push($orientadores, $orientador);
+            }
+
         } catch (\Exception $e) {
             throw $e;
         }
@@ -78,8 +100,25 @@ class OrientadorDao extends Model implements OrientadorRepository {
             $query = OrientadorDao::query();
             foreach ($filtro as $campo => $valor) {
                 $query->orWhere($campo, 'like', '%' . $valor . '%');
-            }            
-            $orientadores = $query->get()->toArray();
+            }
+
+            $result = $query->get();
+            
+            foreach($result as $rs) {
+                $orientador = new Orientador();
+                $orientador->setId($rs->id);
+                $orientador->setNombre($rs->nombre);
+                $orientador->setTipoDocumento($rs->tipo_documento);
+                $orientador->setDocumento($rs->documento);
+                $orientador->setEmailInstitucional($rs->email_institucional);
+                $orientador->setEmailPersonal($rs->email_personal);
+                $orientador->setDireccion($rs->direccion);
+                $orientador->setEps($rs->eps);
+                $orientador->setEstado($rs->estado);
+                $orientador->setObservacion($rs->observacion);
+                array_push($orientadores, $orientador);
+            }
+            
         } catch (\Exception $e) {
             throw $e;
         }
