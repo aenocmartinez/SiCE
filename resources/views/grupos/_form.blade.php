@@ -6,17 +6,36 @@
 
             <div class="col-6">
 
-            <label class="form-label" for="curso">Curso</label>
+                <label class="form-label" for="curso">Curso</label>
                 <select class="form-select @error('curso') is-invalid @enderror" id="curso" name="curso">
                     <option value="">Selecciona un curso</option>
                     @foreach ($cursos as $curso)
-                        <option value="{{ $curso['id'] }}" >{{ $curso['nombre'] }}</option>
+                        <option value="{{ $curso->getId() }}" >{{ $curso->getNombre() }}</option>
                     @endforeach
-                </select>            
+                </select>
+                <br>
+
+                <label class="form-label" for="salon">Salón</label>
+                <select class="form-select @error('salon') is-invalid @enderror" id="salon" name="salon">
+                    <option value="">Selecciona un salón</option>
+                    @foreach ($salones as $salon)
+                        <option value="{{ $salon->getId() }}" >{{ $salon->getNombre() }}</option>
+                    @endforeach
+                </select>                
 
             </div>
 
             <div class="col-6">
+
+                <label class="form-label" for="calendario">Calendario</label>
+                <select class="form-select @error('calendario') is-invalid @enderror" id="calendario" name="calendario">
+                    <option value="">Selecciona un calendario</option>
+                    @foreach ($calendarios as $calendario)
+                        @if ($calendario->esVigente())                            
+                            <option value="{{ $calendario->getId() }}" >{{ $calendario->getNombre() }}</option>
+                        @endif
+                    @endforeach
+                </select>
 
             </div>
 

@@ -21,28 +21,14 @@ class GrupoController extends Controller
 
     public function create()
     {
-        $casoUsoCursos = new ListarCursosUseCase();
-        $casoUsoCalendarios = new ListarCalendariosUseCase();
-        $casoUsoSalones = new ListarSalonesUseCase();
-        $casoUsoOrientador = new ListarOrientadoresUseCase();
-
-        $cursos = $casoUsoCursos->ejecutar();
-        $calendarios = $casoUsoCalendarios->ejecutar();
-        $salones = $casoUsoSalones->ejecutar();
-        
-        $dias = ListaDeValor::diasSemana();
-        $jornadas = ListaDeValor::jornadas();
-
         return view('grupos.create', [
-            'cursos' => $cursos['data'],
-            'calendarios' => $calendarios,
-            'salones' => $salones,
-            'dias' => $dias,
-            'jornadas' => $jornadas
+            'cursos' => (new ListarCursosUseCase())->ejecutar(),
+            'calendarios' => (new ListarCalendariosUseCase())->ejecutar(),
+            'salones' => (new ListarSalonesUseCase())->ejecutar(),
+            'orientadores' => (new ListarOrientadoresUseCase())->ejecutar(),
+            'dias' => ListaDeValor::diasSemana(),
+            'jornadas' => ListaDeValor::jornadas()
         ]);
-        // $orientadores = $casoUsoOrientador->ejecutar();
-
-
     }
 
     public function store(Request $request)
