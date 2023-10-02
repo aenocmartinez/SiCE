@@ -8,10 +8,6 @@ use Src\dao\mysql\AreaDao;
 class ListarAreasUseCase {
 
     public function ejecutar(): array {        
-        $areas = Area::listar(new AreaDao());
-        return [
-            "code" => "200",
-            "data" => $areas,
-        ];
+        return Area::listar(new AreaDao());
     }
 }

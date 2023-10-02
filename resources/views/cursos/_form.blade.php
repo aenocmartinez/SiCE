@@ -1,6 +1,6 @@
 @php
-    $areaId = isset($curso['areaId']) ? $curso['areaId'] : 0;
-    $checked = isset($curso['modalidad']) && $curso['modalidad'] == 'virtual' ? 'checked' : '';
+    // $areaId = isset($curso['areaId']) ? $curso['areaId'] : 0;
+    $checked = $curso->existe() && $curso->getModalidad() == 'virtual' ? 'checked' : '';
 @endphp
 
 <div class="block block-rounded">
@@ -16,7 +16,7 @@
                     id="nombre" 
                     name="nombre" 
                     placeholder="Nombre" 
-                    value="{{ old('nombre', $curso['nombre']) }}"                
+                    value="{{ old('nombre', $curso->getNombre()) }}"                
                     >
                     @error('nombre')
                         <span class="invalid-feedback" role="alert">
@@ -28,8 +28,8 @@
                 <label class="form-label" for="area">Área</label>
                 <select class="form-select @error('area') is-invalid @enderror" id="area" name="area">
                     <option value="">Selecciona un área</option>
-                    @foreach ($curso['areas'] as $area)
-                        <option value="{{ $area['id'] }}" {{ $areaId == $area['id'] ? 'selected' : '' }} >{{ $area['nombre'] }}</option>
+                    @foreach ($areas as $area)
+                        <option value="{{ $area->getId() }}" {{ $curso->getArea()->getId() == $area->getId() ? 'selected' : '' }} >{{ $area->getNombre() }}</option>
                     @endforeach
                 </select>
                 @error('area')
@@ -40,14 +40,14 @@
                 
                 <br>
                 <label class="form-label" for="costo">Costo</label>
-                <input type="text" 
+                <input type="number" 
                     class="form-control @error('costo') is-invalid @enderror" 
                     id="costo" 
                     name="costo" 
-                    placeholder="Costo" 
-                    value="{{ old('costo', $curso['costo']) }}"                
+                    placeholder="Costo"
+                    value="{{ old('costo', $curso->getCosto()) }}"                
                     >
-                    @error('nombre')
+                    @error('costo')
                         <span class="invalid-feedback" role="alert">
                             {{ $message }}
                         </span>

@@ -21,21 +21,20 @@
                 @forelse ($areas as $area)
                 <tr>
                     <td class="fs-sm" style="width: 95%;">
-                        {{ $area['nombre'] }}
+                        {{ $area->getNombre() }}
                     </td>
                     <td class="text-center">
                         <div class="btn-group">
-                            <a href="{{ route('areas.edit', $area['id']) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar área">
+                            <a href="{{ route('areas.edit', $area->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar área">
                                 <i class="fa fa-fw fa-pencil-alt"></i>
                             </a>
-                            <form method="POST" action="{{ route('areas.delete', $area['id']) }}" id="form-del-area-{{$area['id']}}">
-                                @csrf
-                                @method('delete')
+                            <form method="POST" action="{{ route('areas.delete', $area->getId()) }}" id="form-del-area-{{$area->getId()}}">
+                                @csrf @method('delete')
                                 <button class="btn btn-sm btn-alt-secondary" 
                                         data-bs-toggle="tooltip" 
                                         title="eliminar área" 
                                         type="button"
-                                        data-id="{{ $area['id'] }}"
+                                        data-id="{{ $area->getId() }}"
                                         onclick="confirmDelete(this)">
                                     <i class="fa fa-fw fa-trash-can"></i>
                                 </button>

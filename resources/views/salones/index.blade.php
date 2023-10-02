@@ -47,25 +47,25 @@ $criterio = isset($criterio) ? $criterio : '';
                 @forelse ($salones as $salon)
                 <tr>
                     <td class="fs-sm" style="width: 95%;">
-                    <h4 class="fw-normal mb-0">{{ $salon['nombre'] }}</h4>
+                    <h4 class="fw-normal mb-0">{{ $salon->getNombre() }}</h4>
                     <small>
-                        Capacidad: {{ $salon['capacidad'] }}<br> 
-                        Estado: {{ $salon['esta_disponible'] ? 'disponible' : 'no disponible' }}
+                        Capacidad: {{ $salon->getCapacidad() }}<br> 
+                        Estado: {{ $salon->getDisponibleTexto() }}
                     </small> 
                     </td>
                     <td class="text-center">
                         <div class="btn-group">
-                            <a href="{{ route('salones.edit', $salon['id']) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar salón">
+                            <a href="{{ route('salones.edit', $salon->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar salón">
                                 <i class="fa fa-fw fa-pencil-alt"></i>
                             </a>
-                            <form method="POST" action="{{ route('salones.delete', $salon['id']) }}" id="form-del-salon-{{$salon['id']}}">
+                            <form method="POST" action="{{ route('salones.delete', $salon->getId()) }}" id="form-del-salon-{{ $salon->getId() }}">
                                 @csrf
                                 @method('delete')
                                 <button class="btn btn-sm btn-alt-secondary" 
                                         data-bs-toggle="tooltip" 
                                         title="eliminar salón" 
                                         type="button"
-                                        data-id="{{ $salon['id'] }}"
+                                        data-id="{{ $salon->getId() }}"
                                         onclick="confirmDelete(this)">
                                     <i class="fa fa-fw fa-trash-can"></i>
                                 </button>

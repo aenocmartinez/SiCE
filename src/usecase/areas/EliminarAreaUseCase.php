@@ -2,34 +2,25 @@
 
 namespace Src\usecase\areas;
 
-use Src\dao\mysql\AreaDao;
 use Src\domain\Area;
+use Src\view\dto\Response;
+use Src\dao\mysql\AreaDao;
 
 class EliminarAreaUseCase {
 
-    public function ejecutar(int $id): array {
+    public function ejecutar(int $id): Response {
 
         $areaRepository = new AreaDao();
         $area = Area::buscarPorId($id, $areaRepository);
-        if (!$area->existe()) {
-            return [
-                "code" => "200",
-                "message" => "área no encontrada",
-            ];
-        }
+        if (!$area->existe()) 
+            return new Response('404', 'Área no encontrada');
 
         $area->setRepository($areaRepository);
         $exito = $area->eliminar();
-        if (!$exito) {
-            return [
-                "code" => "500",
-                "message" => "ha ocurrido un error en el sistema",
-            ];
-        }
 
-        return [
-            "code" => "200",
-            "message" => "registro eliminado con éxito",
-        ];
+        if (!$exito) 
+            return new Response('500', 'Ha ocurrido un error en el sistema');
+        
+        return new Response('200', 'Registro eliminado con éxito');
     }
 }

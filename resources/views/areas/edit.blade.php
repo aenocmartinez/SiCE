@@ -19,7 +19,7 @@
     <form method="post" action="{{route('areas.update')}}">
         @csrf @method('patch')
         
-        <input type="hidden" name="id" value="{{ $area['id'] }}">
+        <input type="hidden" name="id" value="{{ $area->getId() }}">
         
         @include('areas._form', ['btnText' => 'Actualizar'])
 

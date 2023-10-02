@@ -6,40 +6,28 @@ use Src\dao\mysql\CursoDao;
 use Src\domain\Area;
 use Src\domain\Curso;
 use Src\view\dto\CursoDto;
+use Src\view\dto\Response;
 
 class ActualizarCursoUseCase {
 
-    public function ejecutar(CursoDto $cursoDto) {
+    public function ejecutar(CursoDto $cursoDto): Response {
 
         $cursoRepository = new CursoDao();
         $curso = Curso::buscarPorId($cursoDto->id, $cursoRepository);
-        if (!$curso->existe()) {
-            return [
-                "code" => "404",
-                "message" => "curso no encontrado",
-            ];
-        }
+        if (!$curso->existe()) 
+            return new Response("404", "Curso no encontrado");
         
         $curso->setRepository($cursoRepository);
-        $curso->setNombre($cursoDto->nombre);
         $curso->setModalidad($cursoDto->modalidad);
+        $curso->setNombre($cursoDto->nombre);
         $curso->setCosto($cursoDto->costo);
-
-        $area = new Area();
-        $area->setId($cursoDto->areaId);
-        $curso->setArea($area);
+        $curso->setArea(new Area($cursoDto->areaId));
 
         $exito = $curso->actualizar();
-        if (!$exito) {
-            return [
-                "code" => "500",
-                "message" => "ha ocurrido un error en el sistema",
-            ];
-        }
 
-        return [
-            "code" => "200",
-            "message" => "el registro se ha actualizado con éxito",
-        ];
+        if (!$exito)
+            return new Response("500", "Ha ocurrido un error en el sistema");
+        
+        return new Response("200", "Registro actualizado con éxito");
     }
 }

@@ -21,25 +21,24 @@
                 @forelse ($cursos as $curso)
                 <tr>
                     <td class="fs-sm" style="width: 95%;">
-                    <h4 class="fw-normal mb-0">{{ $curso['nombre'] }}</h4>
+                    <h4 class="fw-normal mb-0">{{ $curso->getNombre() }}</h4>
                     <small>
-                        {{ $curso['area']['nombre'] }}<br> 
-                        {{ $curso['modalidad'] }}
+                        {{ $curso->getArea()->getNombre() }}<br> 
+                        {{ $curso->getModalidad() }}
                     </small> 
                     </td>
                     <td class="text-center">
                         <div class="btn-group">
-                            <a href="{{ route('cursos.edit', $curso['id']) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar curso">
+                            <a href="{{ route('cursos.edit', $curso->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar curso">
                                 <i class="fa fa-fw fa-pencil-alt"></i>
                             </a>
-                            <form method="POST" action="{{ route('cursos.delete', $curso['id']) }}" id="form-del-curso-{{$curso['id']}}">
-                                @csrf
-                                @method('delete')
+                            <form method="POST" action="{{ route('cursos.delete', $curso->getId()) }}" id="form-del-curso-{{$curso->getId()}}">
+                                @csrf @method('delete')
                                 <button class="btn btn-sm btn-alt-secondary" 
                                         data-bs-toggle="tooltip" 
                                         title="eliminar curso" 
                                         type="button"
-                                        data-id="{{ $curso['id'] }}"
+                                        data-id="{{ $curso->getId() }}"
                                         onclick="confirmDelete(this)">
                                     <i class="fa fa-fw fa-trash-can"></i>
                                 </button>
@@ -59,7 +58,7 @@
 
 <script>
 function confirmDelete(button) {
-    const areaId = button.getAttribute('data-id'); 
+    const cursoId = button.getAttribute('data-id'); 
     Swal.fire({
         title: '¿Estás seguro?',
         text: 'Esta acción no se puede deshacer',
@@ -69,7 +68,7 @@ function confirmDelete(button) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-            const form = document.getElementById(`form-del-curso-${areaId}`);
+            const form = document.getElementById(`form-del-curso-${cursoId}`);
             if (form) {                
                 form.submit();
             }

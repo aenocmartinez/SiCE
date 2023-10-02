@@ -13,7 +13,7 @@
                                 id="nombre" 
                                 name="nombre" 
                                 placeholder="Nombre" 
-                                value="{{ old('nombre', $area['nombre']) }}"                
+                                value="{{ old('nombre', $area->getNombre()) }}"                
                                 >
                                 @error('nombre')
                                     <span class="invalid-feedback" role="alert">

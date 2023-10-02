@@ -18,10 +18,7 @@ class AreaDao extends Model implements AreaRepository {
 
             $rs = AreaDao::all();
             foreach($rs as $r) {
-                array_push($areas, [
-                    "id" => $r["id"],
-                    "nombre" => $r["nombre"],
-                ]);
+                array_push($areas, new Area($r['id'], $r['nombre']));
             }            
 
         } catch (\Exception $e) {

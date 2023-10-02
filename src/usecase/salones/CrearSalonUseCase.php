@@ -4,19 +4,16 @@ namespace Src\usecase\salones;
 
 use Src\dao\mysql\SalonDao;
 use Src\domain\Salon;
+use Src\view\dto\Response;
 use Src\view\dto\SalonDto;
 
 class CrearSalonUseCase {
-    public function ejecutar(SalonDto $salonDto): array{
-        $salonRepository = new SalonDao();
+    public function ejecutar(SalonDto $salonDto): Response{
 
+        $salonRepository = new SalonDao();
         $salon = Salon::buscarPorNombre($salonDto->nombre, $salonRepository);
-        if ($salon->existe()) {
-            return [
-                "code" => "200",
-                "message" => "el salón ya existe"
-            ];            
-        }
+        if ($salon->existe()) 
+            return new Response("200", "El salón ya existe");        
 
         $salon->setRepository($salonRepository);
         $salon->setNombre($salonDto->nombre);
@@ -24,16 +21,9 @@ class CrearSalonUseCase {
         $salon->setDisponible($salonDto->disponible);
 
         $exito = $salon->crear();
-        if (!$exito) {
-            return [
-                "code" => "500",
-                "message" => "ha ocurrido un error en el sistema"
-            ];            
-        }
+        if (!$exito) 
+            return new Response("500", "Ha ocurrido un error en el sistema");
         
-        return [
-            "code" => "201",
-            "message" => "registro creado con éxito"
-        ];
+        return new Response("201", "registro creado con éxito");
     }
 }

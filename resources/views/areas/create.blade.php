@@ -1,7 +1,7 @@
 @extends("plantillas.principal")
 
 @php
-    $titulo = "Crear área";
+    $titulo = "Crear área";    
 @endphp
 
 @section("title", $titulo)

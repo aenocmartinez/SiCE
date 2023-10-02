@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
+use App\Http\Requests\GuardarCurso;
+use Src\domain\Curso;
 use Src\view\dto\CursoDto;
 
 use Src\infraestructure\util\Validador;
+use Src\usecase\areas\BuscarCursoPorNombreYAreaUseCase;
 use Src\usecase\areas\ListarAreasUseCase;
 use Src\usecase\cursos\ActualizarCursoUseCase;
 use Src\usecase\cursos\BuscarCursoPorIdUseCase;
@@ -18,117 +19,82 @@ class CursoController extends Controller
 {
     public function index() {
         $casoUso = new ListarCursosUseCase();
-        $resp = $casoUso->ejecutar();
-        
-        return view("cursos.index", [
-            "cursos" => $resp["data"]
-        ]);
+        $cursos = $casoUso->ejecutar();
+
+        return view("cursos.index", compact('cursos'));
     }
 
     public function buscarPorId($id) {
         $esValido = Validador::parametroId($id);
-        if (!$esValido) {
-            return redirect()->route('cursos.index')                
-                    ->with('code', "401")
-                    ->with('status', "parámetro no válido");            
-        }
+        if (!$esValido)
+            return redirect()->route('cursos.index')->with('code', "401")->with('status', "parámetro no válido");
             
-        $casoUso = new BuscarCursoPorIdUseCase();
-        $curso = $casoUso->ejecutar($id);
-        $curso = $curso['data'];
+        $casoUsoBuscarCurso = new BuscarCursoPorIdUseCase();
+        $curso = $casoUsoBuscarCurso->ejecutar($id);
+        if (!$curso->existe())
+            return redirect()->route('cursos.index')->with('code', "404")->with('status', "Curso no encontrado");
         
-        $listarAreas = new ListarAreasUseCase();
-        $areas = $listarAreas->ejecutar();
-        
-
-        return view("cursos.edit", ["curso" => [
-            'id' => $curso['id'],
-            'areas' => $areas['data'],
-            'nombre' => $curso['nombre'],
-            'costo' => $curso['costo'],
-            'modalidad' => $curso['modalidad'],
-            'areaId' => $curso['area']['id']
-        ]]);                  
+        $casoUso = new ListarAreasUseCase();        
+        return view("cursos.edit", [
+            "curso" => $curso,
+            "areas" => $casoUso->ejecutar(), 
+        ]);
     }
 
     public function create() {
-        $listarAreas = new ListarAreasUseCase();
-        $rs = $listarAreas->ejecutar();
-        $areas = $rs['data'];
-
-        return view("cursos.create", ["curso" => [
-            'areas' => $areas,
-            'nombre' => '',
-            'costo' => '',
-            'modalidad' => '',
-        ]]);
+        $casoUso = new ListarAreasUseCase();
+        return view("cursos.create", [
+            "curso" => new Curso(),
+            "areas" => $casoUso->ejecutar(), 
+        ]);
     }
 
-    public function store() {
+    public function store(GuardarCurso $request) {
 
-        request()->validate([
-            'nombre' => 'required',
-            'costo' => 'required',
-            'area' => 'required',
-        ]);
+        $request->validated();
+        $cursoDto = $this->hydrateCursoDto();
 
-        $cursoDto = new CursoDto();
-        
-        $cursoDto->modalidad = 'presencial';
-        if (!is_null(request('modalidad'))) {
-            $cursoDto->modalidad = 'virtual';
-        }
-        
-        $cursoDto->nombre = request('nombre');
-        $cursoDto->costo = request('costo');
-        $cursoDto->areaId = request('area');
-
-        $casoUso = new CrearCursoUseCase();
-        $resp = $casoUso->ejecutar($cursoDto);   
-
-        return redirect()
-                    ->route('cursos.index')
-                    ->with('code', $resp['code'])
-                    ->with('status', $resp['message']);
+        $casoUsoCrearCurso = new CrearCursoUseCase();
+        $response = $casoUsoCrearCurso->ejecutar($cursoDto);
+       
+        return redirect()->route('cursos.index')->with('code', $response->code)->with('status', $response->message);
     }
 
     public function delete($id) {
-        $esValido = Validador::parametroId($id);
-        if (!$esValido) {
-            echo json_encode(["code" => "401", "message" => "parámetro no válido"]);
-        }
 
-        $casoUso = new EliminarCursoUseCase();
-        $rs = $casoUso->ejecutar($id);
-        return redirect()->route('cursos.index')
-                ->with('code', $rs['code'])
-                ->with('status', $rs['message']);
+        $esValido = Validador::parametroId($id);
+        if (!$esValido)
+            return redirect()->route('cursos.index')->with('code', "401")->with('status', "parámetro no válido");           
+
+        $casoUsoEliminarCurso = new EliminarCursoUseCase();
+        $response = $casoUsoEliminarCurso->ejecutar($id);
+
+        return redirect()->route('cursos.index')->with('code', $response->code)->with('status', $response->message);
     }
     
-    public function update() {
+    public function update(GuardarCurso $request) {
 
-        request()->validate([
-            'id' => 'required',
-            'nombre' => 'required',
-            'costo' => 'required',
-            'area' => 'required',
-        ]);
+        $request->validated();
+        $cursoDto = $this->hydrateCursoDto();
 
-        $cursoDto = new CursoDto();
-        $cursoDto->modalidad = 'presencial';
-        if (!is_null(request('modalidad'))) {
-            $cursoDto->modalidad = 'virtual';
-        }
+        $casoUso = new ActualizarCursoUseCase();
+        $response = $casoUso->ejecutar($cursoDto);
+
+        return redirect()->route('cursos.index')->with('code', $response->code)->with('status', $response->message);
+    }        
+
+    private function hydrateCursoDto(): CursoDto {
+        $cursoDto = new CursoDto();        
         
-        $cursoDto->id = request('id');
+        $cursoDto->modalidad = 'presencial';
+        if (!is_null(request('modalidad'))) 
+            $cursoDto->modalidad = 'virtual';
+        
         $cursoDto->nombre = request('nombre');
         $cursoDto->costo = request('costo');
         $cursoDto->areaId = request('area');
+        $cursoDto->id = request('id');
 
-        $casoUso = new ActualizarCursoUseCase();     
-        $rs = $casoUso->ejecutar($cursoDto);
-        return redirect()->route('cursos.index')
-                ->with('code', $rs['code'])
-                ->with('status', $rs['message']);
-    }        
+        return $cursoDto;
+    }
 }

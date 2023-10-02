@@ -10,7 +10,7 @@ class Area {
     private string $nombre;
     private $repository;
 
-    public function __construct(int $id = 0, string $nombre = "") {
+    public function __construct(int $id=0, string $nombre="") {
         $this->id = $id;
         $this->nombre = $nombre;
     }

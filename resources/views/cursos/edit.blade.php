@@ -19,7 +19,7 @@
     <form method="post" action="{{route('cursos.update')}}">
         @csrf @method('patch')
         
-        <input type="hidden" name="id" value="{{ $curso['id'] }}">
+        <input type="hidden" name="id" value="{{ $curso->getId() }}">
         
         @include('cursos._form', ['btnText' => 'Actualizar'])
 

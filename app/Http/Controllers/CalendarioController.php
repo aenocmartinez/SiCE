@@ -20,17 +20,13 @@ class CalendarioController extends Controller
         $casoUso = new ListarCalendariosUseCase();
         $calendarios = $casoUso->ejecutar();
 
-        return view('calendario.index', [
-            'calendarios' => $calendarios
-        ]);
+        return view('calendario.index', compact('calendarios'));
 
     }
 
     public function create()
     {
-        return view('calendario.create', [
-            'calendario' => new Calendario()
-        ]);
+        return view('calendario.create', ['calendario' => new Calendario()]);
     }
 
     public function store(GuardarCalenadario $request)
@@ -38,9 +34,9 @@ class CalendarioController extends Controller
         $data = $request->validated();        
         $calendarioDto = new CalendarioDto($data['nombre'], $data['fec_ini'], $data['fec_fin']);
         $casoUsoCrearCalendario = new CrearCalendarioUseCase();
-        $casoUsoCrearCalendario->ejecutar($calendarioDto);
+        $response = $casoUsoCrearCalendario->ejecutar($calendarioDto);
         
-        return redirect()->route('calendario.index');
+        return redirect()->route('calendario.index')->with('code', $response->code)->with('status', $response->message);
     }
 
 
@@ -71,9 +67,9 @@ class CalendarioController extends Controller
         $calendarioDto->id = $id;
 
         $casoUsoActualizar = new ActualizarCalendarioUseCase();
-        $casoUsoActualizar->ejecutar($calendarioDto);
+        $response = $casoUsoActualizar->ejecutar($calendarioDto);
 
-        return redirect()->route('calendario.index')->with('status','Registro actualizado con éxito');
+        return redirect()->route('calendario.index')->with('code', $response->code)->with('status', $response->message);
     }
 
 
@@ -84,8 +80,8 @@ class CalendarioController extends Controller
         }
         
         $casoUsoEliminar = new EliminarCalendarioUseCase();
-        $casoUsoEliminar->ejecutar($id);
+        $response = $casoUsoEliminar->ejecutar($id);
 
-        return redirect()->route('calendario.index')->with('status', 'Registro eliminado con éxito');
+        return redirect()->route('calendario.index')->with('code', $response->code)->with('status', $response->message);
     }
 }

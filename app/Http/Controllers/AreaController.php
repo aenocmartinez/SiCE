@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Src\domain\Area;
 use Src\infraestructure\util\Validador;
 use Src\view\dto\AreaDto;
 
@@ -17,11 +18,9 @@ class AreaController extends Controller
 {
     public function index() {
         $casoUso = new ListarAreasUseCase();
-        $resp = $casoUso->ejecutar();
+        $areas = $casoUso->ejecutar();
 
-        return view('areas.index', [
-            "areas" => $resp['data']
-        ]);
+        return view('areas.index', compact('areas'));
     }
 
     public function buscarPorId($id) {
@@ -33,17 +32,20 @@ class AreaController extends Controller
         }
 
         $casoUso = new BuscarAreaPorIdUseCase();
-        $resp = $casoUso->ejecutar($id);
-        return view('areas.edit', [
-            'area' => $resp['data'],
-        ]);        
+        $area = $casoUso->ejecutar($id);
+
+        if (!$area->existe()) {
+            return redirect()->route('areas.index')                
+                    ->with('code', "200")
+                    ->with('status', "área no encontrada");            
+        }
+
+        return view('areas.edit', compact('area'));        
     }
 
     public function create() {
-        $data = [
-            'nombre' => ''
-        ];
-        return view('areas.create', ['area' => $data]);
+        $area = new Area();
+        return view('areas.create', compact('area'));
     }
 
     public function store() {
@@ -52,25 +54,22 @@ class AreaController extends Controller
         ]);
 
         $casoUso = new CrearAreaUseCase();
-        $rs = $casoUso->ejecutar(request('nombre'));
-        
-        return redirect()->route('areas.index')                
-                        ->with('code', $rs['code'])
-                        ->with('status', $rs['message']);
+        $response = $casoUso->ejecutar(request('nombre'));
+                
+        return redirect()->route('areas.index')->with('code', $response->code)->with('status', $response->message);
     }
 
     public function delete($id) {
         $esValido = Validador::parametroId($id);
         if (!$esValido) {
-            return back()->with('status', 'parámetro no válido');
+            return redirect()->route('areas.index')
+                            ->with('status', 'parámetro no válido');
         }
 
         $casoUso = new EliminarAreaUseCase();
-        $rs = $casoUso->ejecutar($id);
+        $response = $casoUso->ejecutar($id);
     
-        return redirect()->route('areas.index')
-                ->with('code', $rs['code'])
-                ->with('status', $rs['message']);
+        return redirect()->route('areas.index')->with('code', $response->code)->with('status', $response->message);
     }
     
     public function update() {
@@ -80,15 +79,11 @@ class AreaController extends Controller
             'nombre' => 'required|max:150'
         ]);        
         
-        $areaDto = new AreaDto();        
-        $areaDto->id = request('id');
-        $areaDto->nombre = request('nombre');
-        
-        $casoUso = new ActualizarAreaUseCase();
-        $rs = $casoUso->ejecutar($areaDto);
+        $areaDto = new AreaDto(request('id'), request('nombre'));
 
-        return redirect()->route('areas.index')                
-            ->with('code', $rs['code'])
-            ->with('status', $rs['message']);
+        $casoUso = new ActualizarAreaUseCase();
+        $response = $casoUso->ejecutar($areaDto);
+
+        return redirect()->route('areas.index')->with('code', $response->code)->with('status', $response->message);
     }    
 }

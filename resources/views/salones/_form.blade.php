@@ -1,8 +1,8 @@
 
 @php
     $checked = 'checked';
-    if (isset($salon['id'])) {
-        $checked = $salon['disponible'] ? 'checked' : '';
+    if ($salon->existe()) {
+        $checked = $salon->estaDisponible() ? 'checked' : '';
     }
     
 @endphp
@@ -20,7 +20,7 @@
                     id="nombre" 
                     name="nombre" 
                     placeholder="Nombre" 
-                    value="{{ old('nombre', $salon['nombre']) }}"                
+                    value="{{ old('nombre', $salon->getNombre()) }}"                
                     >
                     @error('nombre')
                         <span class="invalid-feedback" role="alert">
@@ -37,7 +37,7 @@
                     id="capacidad" 
                     name="capacidad" 
                     placeholder="Capacidad" 
-                    value="{{ old('capacidad', $salon['capacidad']) }}"                
+                    value="{{ old('capacidad', $salon->getCapacidad()) }}"                
                     >
                     @error('capacidad')
                         <span class="invalid-feedback" role="alert">

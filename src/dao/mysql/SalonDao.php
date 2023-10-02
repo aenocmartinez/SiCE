@@ -16,12 +16,11 @@ class SalonDao extends Model implements SalonRepository {
         try {
             $rs = SalonDao::all();
             foreach($rs as $r) {
-                array_push($salones, [
-                    "id" => $r["id"],
-                    "nombre" => $r["nombre"],
-                    "capacidad" => $r["capacidad"],
-                    "esta_disponible" => $r["esta_disponible"],
-                ]);
+                $salon = new Salon($r->nombre);
+                $salon->setId($r->id);
+                $salon->setCapacidad($r->capacidad);
+                $salon->setDisponible($r->esta_disponible);
+                array_push($salones, $salon);
             }            
 
         } catch (\Exception $e) {
@@ -42,7 +41,16 @@ class SalonDao extends Model implements SalonRepository {
             foreach ($filtro as $campo => $valor) {
                 $query->orWhere($campo, 'like', '%' . $valor . '%');
             }            
-            $salones = $query->get()->toArray();
+            $rs = $query->get();
+
+            foreach($rs as $r) {
+                $salon = new Salon($r->nombre);
+                $salon->setId($r->id);
+                $salon->setCapacidad($r->capacidad);
+                $salon->setDisponible($r->esta_disponible);
+                array_push($salones, $salon);
+            }  
+
         } catch (\Exception $e) {
             throw $e;
         }

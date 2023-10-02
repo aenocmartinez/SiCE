@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\CursoController;
+use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\OrientadorController;
 use App\Http\Controllers\SalonController;
 use Src\domain\Calendario;
@@ -57,10 +58,17 @@ Route::delete('/orientadores/{idOrientador}/areas/{idArea}', [OrientadorControll
 Route::post('/orientadores/areas/agregar', [OrientadorController::class, 'addArea'])->name('orientadores.addArea');
 
 
-
 Route::get('/calendario',[CalendarioController::class, 'index'])->name('calendario.index');
 Route::get('/calendario/{id}/editar', [CalendarioController::class, 'edit'])->name('calendario.edit');
 Route::get('/calendario/crear', [CalendarioController::class, 'create'])->name('calendario.create');
 Route::post('/calendario', [CalendarioController::class, 'store'])->name('calendario.store');
 Route::delete('/calendario/{id}', [CalendarioController::class, 'destroy'])->name('calendario.delete');
 Route::patch('/calendario/{id}/actualizar', [CalendarioController::class, 'update'])->name('calendario.update');
+
+
+Route::get('/grupos',[GrupoController::class, 'index'])->name('grupos.index');
+Route::get('/grupos/{id}/editar', [GrupoController::class, 'edit'])->name('grupos.edit');
+Route::get('/grupos/crear', [GrupoController::class, 'create'])->name('grupos.create');
+Route::post('/grupos', [GrupoController::class, 'store'])->name('grupos.store');
+Route::delete('/grupos/{id}', [GrupoController::class, 'destroy'])->name('grupos.delete');
+Route::patch('/grupos/{id}/actualizar', [GrupoController::class, 'update'])->name('grupos.update');

@@ -5,13 +5,13 @@ namespace Src\domain;
 class Salon {
     private int $id;
     private string $nombre;
-    private int $capacidad;
+    private $capacidad;
     private bool $disponible;
     private $repository;
 
     public function __construct(string $nombre = "") {
         $this->id = 0;
-        $this->capacidad = 0;
+        $this->capacidad = "";
         $this->nombre = $nombre;
         $this->disponible = true;
     }
@@ -28,7 +28,7 @@ class Salon {
         $this->nombre = $nombre;
     }
 
-    public function setCapacidad(int $capacidad): void {
+    public function setCapacidad($capacidad): void {
         $this->capacidad = $capacidad;
     }
 
@@ -53,7 +53,7 @@ class Salon {
         return $this->nombre;
     }
 
-    public function getCapacidad(): int {
+    public function getCapacidad() {
         return $this->capacidad;
     }
 
