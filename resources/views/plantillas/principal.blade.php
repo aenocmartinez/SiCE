@@ -346,7 +346,7 @@
     <script src="{{asset('assets/js/plugins/bootstrap-notify/bootstrap-notify.min.js')}}"></script>
     @if (session('status'))
         <script>
-          One.helpers('jq-notify', {type: 'success', icon: 'fa fa-info-circle me-1', message: "{{ session('status') }}"});
+          One.helpers('jq-notify', {type: 'info', icon: 'fa fa-info-circle me-1', message: "{{ session('status') }}"});
         </script>            
       @endif
   </body>
