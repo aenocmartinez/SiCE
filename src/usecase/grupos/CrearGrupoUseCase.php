@@ -39,12 +39,12 @@ class CrearGrupoUseCase {
 
         $existe = Grupo::validarExistencia($grupo, $grupoRepository);
         if ($existe) {
-            return new Response('200', 'El grupo ya existe');
+            return new Response('200', 'Ya existe un grupo con los datos ingresados.');
         }
 
         $salonDisponible = Grupo::validarSalonDisponible($grupo, $grupoRepository);
         if (!$salonDisponible) {
-            return new Response('200', 'El salón no está disponible para este día y jornada');
+            return new Response('401', 'El salón indicado está ocupado con otra clase el día '.$grupoDto->dia.' en la jornada '.$grupoDto->jornada);
         }
 
         $exito = $grupo->crear();

@@ -345,8 +345,16 @@
 
     <script src="{{asset('assets/js/plugins/bootstrap-notify/bootstrap-notify.min.js')}}"></script>
     @if (session('status'))
+        @php
+          $icon = 'fa fa-info-circle me-1';
+          $type = 'info';
+          if (session('code') == '401' || session('code') == '500') {
+            $icon = 'fa fa-times me-1';
+            $type = 'danger';
+          }
+        @endphp
         <script>
-          One.helpers('jq-notify', {type: 'info', icon: 'fa fa-info-circle me-1', message: "{{ session('status') }}"});
+          One.helpers('jq-notify', {type: '{{ $type }}', icon: '{{ $icon }}', message: "{{ session('status') }}"});
         </script>            
       @endif
   </body>

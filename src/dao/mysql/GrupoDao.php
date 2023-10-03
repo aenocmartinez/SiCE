@@ -89,7 +89,7 @@ class GrupoDao extends Model implements GrupoRepository {
     public function eliminarGrupo(Grupo $grupo): bool {
         try {
             $exito = false;
-            $rs = CursoDao::destroy($grupo->getId());
+            $rs = GrupoDao::destroy($grupo->getId());
             if ($rs) {
                 $exito = true;
             }

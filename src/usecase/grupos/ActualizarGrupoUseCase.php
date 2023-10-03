@@ -50,7 +50,12 @@ class ActualizarGrupoUseCase {
         $existe = Grupo::validarExistencia($grupo, $grupoRepository);
         if (!$existe) {
             return new Response('404', 'grupo no encontrado');
-        }        
+        }    
+        
+        // $salonDisponible = Grupo::validarSalonDisponible($grupo, $grupoRepository);
+        // if (!$salonDisponible) {
+        //     return new Response('401', 'El salón está ocupado en el día y jornada indicado.');
+        // }        
         
         $exito = $grupo->actualizar();
         if (!$exito) {

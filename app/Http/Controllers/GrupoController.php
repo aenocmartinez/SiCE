@@ -87,7 +87,7 @@ class GrupoController extends Controller
         }
         
         $response = (new EliminarGrupoUseCase)->ejecutar($id);        
-        return redirect()->route('calendario.index')->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('grupos.index')->with('code', $response->code)->with('status', $response->message);
     }
 
     private function hydrateDto($data): GrupoDto {        
