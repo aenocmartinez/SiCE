@@ -21,11 +21,11 @@
                 @forelse ($grupos as $grupo)
                 <tr>
                     <td class="fs-sm" style="width: 95%;">                        
-                        <h4 class="fw-normal mb-0">{{ $grupo->getId() }}</h4>
+                        <h4 class="fw-normal mb-0">G: {{ $grupo->getId() }}</h4>
                         <small class="fw-light">
                             Curso: {{ $grupo->getCurso()->getNombre() }} <br>
                             Calendario: {{ $grupo->getCalendario()->getNombre() }} <br>
-                            Horario: {{ $grupo->getDia() }} / jornada {{ $grupo->getJornada() }} <br>
+                            Horario: {{ $grupo->getDia() }} / {{ $grupo->getJornada() }} <br>
                             Salón: {{ $grupo->getSalon()->getNombre() }} <br>
                             Orientador: {{ $grupo->getOrientador()->getNombre() }}
                         </small> 

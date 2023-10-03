@@ -1,11 +1,13 @@
 <?php
 
+namespace Src\view\dto;
+
 class GrupoDto {
-    public int $id;
-    public int $cursoId;
-    public int $calendarioId;
-    public int $orientadorId;
-    public int $salonId;
-    public string $dia;
-    public string $jornada;
+    public $id;
+    public $cursoId;
+    public $calendarioId;
+    public $orientadorId;
+    public $salonId;
+    public $dia;
+    public $jornada;
 }

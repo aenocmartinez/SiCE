@@ -37,15 +37,20 @@
   <body>
     <div id="page-container" class="sidebar-o sidebar-dark enable-page-overlay side-scroll page-header-fixed main-content-narrow">
 
-      <nav id="sidebar" aria-label="Main Navigation">
+      <nav id="sidebar" aria-label="Main Navigation">     
         <!-- Side Header -->
-        <div class="content-header">
+        <div class="content-header mt-3">
           <!-- Logo -->
           <a class="fw-semibold text-dual" href="{{ route('home') }}">
             <span class="smini-visible">
               <i class="fa fa-circle-notch text-primary"></i>
             </span>
-            <span class="smini-hide fs-5 tracking-wider">Logo</span>
+            <span class="smini-hide fs-5 tracking-wider">
+              Logo              
+                <!-- <img src="{{asset('assets/media/favicons/logo_principal.png')}}" 
+                     width="30%" 
+                     alt="Universidad Colegio Mayor de Cundinamarca"> -->
+            </span>
           </a>
           <!-- END Logo -->
         </div>
@@ -333,7 +338,16 @@
   
     <script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
     <script src="{{asset('assets/js/plugins/easy-pie-chart/jquery.easypiechart.min.js')}}"></script>
-    <script src="{{asset('assets/js/plugins/jquery-sparkline/jquery.sparkline.min.js')}}"></script>
+    <script src="{{asset('assets/js/plugins/jquery-sparkline/jquery.sparkline.min.js')}}"></script>    
     <script>One.helpersOnLoad(['jq-easy-pie-chart', 'jq-sparkline']);</script>    
+
+
+
+    <script src="{{asset('assets/js/plugins/bootstrap-notify/bootstrap-notify.min.js')}}"></script>
+    @if (session('status'))
+        <script>
+          One.helpers('jq-notify', {type: 'success', icon: 'fa fa-info-circle me-1', message: "{{ session('status') }}"});
+        </script>            
+      @endif
   </body>
 </html>

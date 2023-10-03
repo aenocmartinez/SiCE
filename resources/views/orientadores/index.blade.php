@@ -53,8 +53,7 @@ $criterio = isset($criterio) ? $criterio : '';
                     <h4 class="fw-normal mb-0">{{ $orientador->getNombre() }}</h4>
                     <small>
                         {{ $orientador->getTipoNumeroDocumento() }} <br>
-                        Total áreas a las que pertenece: {{ $orientador->numeroAreasPertenece() }} <br>
-                        {{ $orientador->nombreAreasPertenezco() }}
+                        Áreas: {{ $orientador->nombreAreasPertenezco() }}
                     </small>
                     </td>
                     <td class="text-center">

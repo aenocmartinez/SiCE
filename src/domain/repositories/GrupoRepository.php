@@ -11,4 +11,6 @@ interface GrupoRepository {
     public function crearGrupo(Grupo $grupo): bool;
     public function eliminarGrupo(Grupo $grupo): bool;
     public function actualizarGrupo(Grupo $grupo): bool;
+    public function existeGrupo(Grupo $grupo): bool;
+    public function salonDisponible(Grupo $grupo): bool;
 }

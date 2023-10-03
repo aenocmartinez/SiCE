@@ -29,6 +29,7 @@ class CreateGruposTable extends Migration
             $table->foreign('orientador_id')->references('id')->on('orientadores')->onDelete('cascade');
 
             $table->unique(['curso_id', 'calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada'], 'grupos_index_unique');
+            $table->unique(['calendario_id', 'salon_id', 'dia', 'jornada'], 'salon_ocupado_index_unique');
         });
     }
 

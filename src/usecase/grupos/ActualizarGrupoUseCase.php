@@ -1,14 +1,14 @@
 <?php
 
-namespace Src\usecase\calendarios;
+namespace Src\usecase\grupos;
 
-use GrupoDto;
 use Src\dao\mysql\GrupoDao;
 use Src\domain\Calendario;
 use Src\domain\Curso;
 use Src\domain\Grupo;
 use Src\domain\Orientador;
 use Src\domain\Salon;
+use Src\view\dto\GrupoDto;
 use Src\view\dto\Response;
 
 class ActualizarGrupoUseCase {
@@ -17,7 +17,7 @@ class ActualizarGrupoUseCase {
 
         $grupoRepository = new GrupoDao();
 
-        $grupo = Grupo::buscarPorId($grupoDto->id, $grupoRepository);
+        $grupo = Grupo::buscarPorId(intval($grupoDto->id), $grupoRepository);
 
         if (!$grupo->existe()) {
             return new Response('404', 'Grupo no encontrado');
@@ -37,8 +37,20 @@ class ActualizarGrupoUseCase {
         $salon = new Salon();
         $salon->setId($grupoDto->salonId);
 
+
+        $grupo->setCurso($curso);
+        $grupo->setSalon($salon);        
         $grupo->setDia($grupoDto->dia);
+        $grupo->setOrientador($orientador);
+        $grupo->setCalendario($calendario);
         $grupo->setJornada($grupoDto->jornada);
+        
+        $grupo->setRepository($grupoRepository);
+
+        $existe = Grupo::validarExistencia($grupo, $grupoRepository);
+        if (!$existe) {
+            return new Response('404', 'grupo no encontrado');
+        }        
         
         $exito = $grupo->actualizar();
         if (!$exito) {

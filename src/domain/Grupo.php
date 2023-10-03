@@ -14,6 +14,12 @@ class Grupo {
 
     public function __construct() {
         $this->id = 0;
+        $this->dia = "";
+        $this->jornada = "";
+        $this->curso = new Curso;
+        $this->orientador = new Orientador;
+        $this->calendario = new Calendario; 
+        $this->salon = new Salon;         
     }
 
     public function setRepository($repository): void {
@@ -98,5 +104,13 @@ class Grupo {
 
     public function actualizar(): bool {
         return $this->repository->actualizarGrupo($this);
+    }
+
+    public static function validarExistencia(Grupo $grupo, $repository): bool {
+        return $repository->existeGrupo($grupo);
+    }
+
+    public static function validarSalonDisponible(Grupo $grupo, $repository): bool {
+        return $repository->salonDisponible($grupo);
     }
 }

@@ -119,4 +119,42 @@ class GrupoDao extends Model implements GrupoRepository {
         }   
         return $exito; 
     }
+
+    public function existeGrupo(Grupo $grupo): bool {
+        $existe = false;
+        try {
+            $result = GrupoDao::where('curso_id', $grupo->getCurso()->getId())
+                                ->where('calendario_id', $grupo->getCalendario()->getId())
+                                ->where('salon_id', $grupo->getSalon()->getId())
+                                ->where('orientador_id', $grupo->getOrientador()->getId())
+                                ->where('jornada', $grupo->getJornada())
+                                ->where('dia', $grupo->getDia())
+                                ->first();
+            if ($result)
+                $existe = true;
+
+        } catch(\Exception $e) {
+            throw $e;
+        }
+
+        return $existe;
+    }
+
+    public function salonDisponible(Grupo $grupo): bool {
+        $disponible = true;
+        try {
+            $result = GrupoDao::where('calendario_id', $grupo->getCalendario()->getId())
+                                ->where('salon_id', $grupo->getSalon()->getId())                                
+                                ->where('jornada', $grupo->getJornada())
+                                ->where('dia', $grupo->getDia())
+                                ->first();
+            if ($result)
+                $disponible = false;
+
+        } catch(\Exception $e) {
+            throw $e;
+        }
+
+        return $disponible;        
+    }
 }

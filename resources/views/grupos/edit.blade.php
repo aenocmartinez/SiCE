@@ -9,16 +9,16 @@
 @section("description", "Ingrese todos los datos")
 
 @section("seccion")
-    <a class="link-fx" href="{{ route('calendario.index') }}">
-        Calendario académico
+    <a class="link-fx" href="{{ route('grupos.index') }}">
+        Grupos
     </a>
 @endsection
 
 @section("subseccion", $titulo)
 
 @section("content")
-    <form action="{{ route('calendario.update', [$calendario->getId()]) }}" method="post">
+    <form action="{{ route('grupos.update', [$grupo->getId()]) }}" method="post">
         @csrf @method('patch')
-        @include('calendario._form', ['btnText' => 'Actualizar'])
+        @include('grupos._form', ['btnText' => 'Actualizar'])
     </form>
 @endsection
