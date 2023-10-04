@@ -4,8 +4,12 @@ namespace Src\dao\mysql;
 
 use Illuminate\Database\Eloquent\Model;
 use Src\domain\Area;
+use Src\domain\Calendario;
+use Src\domain\Curso;
+use Src\domain\Grupo;
 use Src\domain\Orientador;
 use Src\domain\repositories\OrientadorRepository;
+use Src\domain\Salon;
 
 class OrientadorDao extends Model implements OrientadorRepository {
 
@@ -22,6 +26,15 @@ class OrientadorDao extends Model implements OrientadorRepository {
 
     public function areas() {
         return $this->belongsToMany(AreaDao::class, 'orientador_areas', 'orientador_id', 'area_id');
+    }
+
+    public function grupos($idOrientador) {
+        return OrientadorDao::select("grupos.id", "grupos.curso_id", "grupos.calendario_id", "grupos.salon_id", "grupos.dia", "grupos.jornada")
+        ->join("grupos", "grupos.orientador_id", "=", "orientadores.id")
+        ->where('orientadores.id', $idOrientador)
+        ->orderBy('grupos.id', 'desc')
+        ->limit(10)
+        ->get();
     }
 
     public function listarOrientadores(): array {
@@ -45,8 +58,8 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 foreach($rs->areas as $area) 
                     array_push($areas, new Area($area->id, $area->nombre));
                 
-                $orientador->setAreas($areas);                
-
+                $orientador->setAreas($areas);      
+                
                 array_push($orientadores, $orientador);
             }
 
@@ -77,6 +90,20 @@ class OrientadorDao extends Model implements OrientadorRepository {
                     array_push($areas, new Area($area->id, $area->nombre));
                 
                 $orientador->setAreas($areas);
+
+                $grupos = array();
+                foreach($this->grupos($rs['id']) as $g) {
+                    $grupo = new Grupo($g->curso_id, $g->calendario_id, $g->salon_id);
+                    $grupo->setCurso(Curso::buscarPorId($g->curso_id, new CursoDao));
+                    $grupo->setCalendario(Calendario::buscarPorId($g->calendario_id, new CalendarioDao));
+                    $grupo->setDia($g->dia);
+                    $grupo->setJornada($g->jornada);
+                    $grupo->setId($g->id);
+                    array_push($grupos, $grupo);
+                }
+
+                $orientador->setGrupos($grupos);
+                
             }            
         } catch (\Exception $e) {
             throw $e;

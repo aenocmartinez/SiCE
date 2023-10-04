@@ -15,6 +15,7 @@ class Orientador {
     private string $direccion = "";
     private string $eps = "";
     private $areas;
+    private $grupos;
     private $repository;
 
     public function __construct() {
@@ -104,6 +105,8 @@ class Orientador {
     }
 
     public function getDireccion(): string {
+        if (empty($this->direccion))
+            return "No registra dirección";
         return $this->direccion;
     }
 
@@ -112,11 +115,17 @@ class Orientador {
     }
 
     public function getEps(): string {
+        if (empty($this->direccion))
+            return "No registra eps";        
         return $this->eps;
     }
 
     public function setAreas(array $areas): void {
         $this->areas = $areas;
+    }
+
+    public function setGrupos(array $grupos): void {
+        $this->grupos = $grupos;
     }
 
     public function agregarArea(Area $area): bool {
@@ -129,6 +138,10 @@ class Orientador {
 
     public function misAreas(): array {
         return $this->areas;
+    }
+
+    public function misGrupos(): array {
+        return $this->grupos;
     }
 
     public static function listar($repository): array {

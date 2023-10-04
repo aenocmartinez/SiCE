@@ -61,7 +61,16 @@ $criterio = isset($criterio) ? $criterio : '';
                             <a href="{{ route('orientadores.edit', $orientador->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar orientador">
                                 <i class="fa fa-fw fa-pencil-alt"></i>
                             </a>
-                            <form method="POST" action="{{ route('orientadores.delete', $orientador->getId()) }}" id="form-del-orientador-{{ $orientador->getId() }}">
+
+                            <a href="{{ route('orientadores.editAreas', $orientador->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="áreas a las que pertenece">
+                                <i class="fa fa-fw fa-network-wired"></i>
+                            </a>
+
+                            <a href="{{ route('orientadores.moreInfo', $orientador->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="más información">
+                            <i class="fa fa-fw fa-circle-info"></i>
+                            </a>
+
+                            <!-- <form method="POST" action="{{ route('orientadores.delete', $orientador->getId()) }}" id="form-del-orientador-{{ $orientador->getId() }}">
                                 @csrf
                                 @method('delete')
                                 <button class="btn btn-sm btn-alt-secondary" 
@@ -72,11 +81,9 @@ $criterio = isset($criterio) ? $criterio : '';
                                         onclick="confirmDelete(this)">
                                     <i class="fa fa-fw fa-trash-can"></i>
                                 </button>
-                            </form>
+                            </form> -->
 
-                            <a href="{{ route('orientadores.editAreas', $orientador->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="áreas a las que pertenece">
-                                <i class="fa fa-fw fa-network-wired"></i>
-                            </a>
+
 
                         </div>
                     </td>                    
@@ -91,7 +98,7 @@ $criterio = isset($criterio) ? $criterio : '';
     </div>
 </div>
 
-
+<!-- 
 <script>
 function confirmDelete(button) {
     const orientadorId = button.getAttribute('data-id'); 
@@ -111,6 +118,6 @@ function confirmDelete(button) {
         }
     });
 }
-</script>
+</script> -->
 
 @endsection

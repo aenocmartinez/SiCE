@@ -12,21 +12,29 @@ class Grupo {
     private Orientador $orientador;
     private $repository;
 
-    public function __construct() {
+    public function __construct($cursoId=0, $calendarioId=0, $salonId=0, $orientadorId=0) {
         $this->id = 0;
         $this->dia = "";
         $this->jornada = "";
-        $this->curso = new Curso;
+
+        $this->curso = new Curso;        
+        $this->curso->setId($cursoId);
+
         $this->orientador = new Orientador;
+        $this->orientador->setId($orientadorId);
+
         $this->calendario = new Calendario; 
+        $this->calendario->setId($calendarioId);
+
         $this->salon = new Salon;         
+        $this->salon->setId($salonId);
     }
 
     public function setRepository($repository): void {
         $this->repository = $repository;
     }
 
-    public function setId(int $id=0): void {
+    public function setId($id=0): void {
         $this->id = $id;
     }
 

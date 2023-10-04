@@ -18,7 +18,7 @@ use Src\usecase\orientadores\ListarOrientadoresUseCase;
 use Src\usecase\orientadores\QuitarAreaAOrientadorUseCase;
 use Src\view\dto\OrientadorDto;
 
-class OrientadorController extends Controller
+class OrientadorController extends Controller 
 {
     public $listaEPS = array();
     public function __construct() {
@@ -33,10 +33,8 @@ class OrientadorController extends Controller
     }
 
     public function edit($id) {
-        $esValido = Validador::parametroId($id);
-        if (!$esValido) {
-            return redirect()->route('cursos.index')->with('code', "401")->with('status', "parámetro no válido");
-        }
+
+        $this->validarParametroId($id);
 
         $casoUso = new BuscarOrientadorPorIdUseCase();
         $orientador = $casoUso->ejecutar($id);
@@ -52,10 +50,7 @@ class OrientadorController extends Controller
     }
 
     public function editAreas($idOrientador) {
-        $esValido = Validador::parametroId($idOrientador);
-        if (!$esValido) {
-            return redirect()->route('cursos.index')->with('code', "401")->with('status', "parámetro no válido");
-        }
+        $this->validarParametroId($idOrientador);
 
         $casoUsoListarAreas = new ListarAreasUseCase();
 
@@ -69,14 +64,10 @@ class OrientadorController extends Controller
         ]);
     }
 
-    public function removeArea($idOrientador, $idArea) {         
-        $esValido = Validador::parametroId($idOrientador);
-        if (!$esValido) 
-            return redirect()->route('cursos.index')->with('code', "401")->with('status', "parámetro no válido");
+    public function removeArea($idOrientador, $idArea) {    
         
-        $esValido = Validador::parametroId($idArea);
-        if (!$esValido) 
-            return redirect()->route('cursos.index')->with('code', "401")->with('status', "parámetro no válido");
+        $this->validarParametroId($idOrientador);
+        $this->validarParametroId($idArea);
         
         $casoUso = new QuitarAreaAOrientadorUseCase();
         $response = $casoUso->ejecutar($idOrientador, $idArea);
@@ -94,9 +85,10 @@ class OrientadorController extends Controller
         $idArea = request('area');
 
         $casoUso = new AgregarAreaAOrientadorUseCase();
-        $casoUso->ejecutar($idOrientador, $idArea);
+        $response = $casoUso->ejecutar($idOrientador, $idArea);
 
-        return redirect()->route('orientadores.editAreas', [request('idOrientador')]);
+        return redirect()->route('orientadores.editAreas', [request('idOrientador')])
+                         ->with('code', $response->code)->with('status', $response->message);
     }    
 
     public function buscador() {        
@@ -133,10 +125,7 @@ class OrientadorController extends Controller
     }
 
     public function delete($id) {
-        $esValido = Validador::parametroId($id);
-        if (!$esValido) {
-            return redirect()->route('cursos.index')->with('code', "401")->with('status', "parámetro no válido");
-        }
+        $this->validarParametroId($id);
 
         $casoUso = new EliminarOrientadorUseCase();
         $response = $casoUso->ejecutar($id);
@@ -190,5 +179,25 @@ class OrientadorController extends Controller
         }
         
         return $orientadorDto;
+    }
+
+    private function validarParametroId($id) {
+        $esValido = Validador::parametroId($id);
+        if (!$esValido) {
+            return redirect()->route('orientadores.index')->with('code', "401")->with('status', "parámetro no válido");
+        }        
+    }
+
+    public function show($id) {
+        $orientador = (new BuscarOrientadorPorIdUseCase)->ejecutar($id);
+        if (!$orientador->existe()) {
+            return redirect()->route('cursos.index')->with('code', "404")->with('status', "Orientador no encontrado");
+        }
+
+        return view('orientadores.moreInfo', [
+            'orientador' => $orientador, 
+        ]);
+
+        dd($orientador);
     }
 }
