@@ -72,6 +72,9 @@
                 <a class="nav-main-link {{ setActive(['cursos.index', 'cursos.*']) }}" href="{{ route('cursos.index') }}">
                   <span class="nav-main-link-name">Cursos</span>
                 </a>   
+                <a class="nav-main-link {{ setActive(['tipo-salones.index', 'tipo-salones.*']) }}" href="{{ route('tipo-salones.index') }}">
+                  <span class="nav-main-link-name">Tipo de salones</span>
+                </a>                
                 <a class="nav-main-link {{ setActive(['salones.index', 'salones.*']) }}" href="{{ route('salones.index') }}">
                   <span class="nav-main-link-name">Salones</span>
                 </a>
@@ -84,7 +87,7 @@
               <li class="nav-main-item">
                 <a class="nav-main-link {{ setActive(['calendario.index', 'calendario.*']) }}" href="{{ route('calendario.index') }}">
                   <span class="nav-main-link-name">Calendario</span>
-                </a>
+                </a>            
                 <a class="nav-main-link {{ setActive(['grupos.index', 'grupos.*']) }}" href="{{ route('grupos.index') }}">
                   <span class="nav-main-link-name">Grupos</span>
                 </a>

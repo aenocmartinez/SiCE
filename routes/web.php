@@ -8,6 +8,7 @@ use App\Http\Controllers\CursoController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\OrientadorController;
 use App\Http\Controllers\SalonController;
+use App\Http\Controllers\TipoSalonController;
 use Src\domain\Calendario;
 
 /*
@@ -73,3 +74,11 @@ Route::get('/grupos/crear', [GrupoController::class, 'create'])->name('grupos.cr
 Route::post('/grupos', [GrupoController::class, 'store'])->name('grupos.store');
 Route::delete('/grupos/{id}', [GrupoController::class, 'destroy'])->name('grupos.delete');
 Route::patch('/grupos/{id}/actualizar', [GrupoController::class, 'update'])->name('grupos.update');
+
+
+Route::get('/tipo-salones', [TipoSalonController::class, 'index'])->name('tipo-salones.index');
+Route::get('/tipo-salones/{id}/editar', [TipoSalonController::class, 'edit'])->name('tipo-salones.edit');
+Route::get('/tipo-salones/crear', [TipoSalonController::class, 'create'])->name('tipo-salones.create');
+Route::post('/tipo-salones', [TipoSalonController::class, 'store'])->name('tipo-salones.store');
+Route::delete('/tipo-salones/{id}', [TipoSalonController::class, 'destroy'])->name('tipo-salones.delete');
+Route::patch('/tipo-salones/actualizar', [TipoSalonController::class, 'update'])->name('tipo-salones.update');

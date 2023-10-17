@@ -70,21 +70,6 @@ $criterio = isset($criterio) ? $criterio : '';
                             <i class="fa fa-fw fa-circle-info"></i>
                             </a>
 
-                            <!-- <form method="POST" action="{{ route('orientadores.delete', $orientador->getId()) }}" id="form-del-orientador-{{ $orientador->getId() }}">
-                                @csrf
-                                @method('delete')
-                                <button class="btn btn-sm btn-alt-secondary" 
-                                        data-bs-toggle="tooltip" 
-                                        title="eliminar orientador" 
-                                        type="button"
-                                        data-id="{{ $orientador->getId() }}"
-                                        onclick="confirmDelete(this)">
-                                    <i class="fa fa-fw fa-trash-can"></i>
-                                </button>
-                            </form> -->
-
-
-
                         </div>
                     </td>                    
                 </tr>
@@ -98,26 +83,5 @@ $criterio = isset($criterio) ? $criterio : '';
     </div>
 </div>
 
-<!-- 
-<script>
-function confirmDelete(button) {
-    const orientadorId = button.getAttribute('data-id'); 
-    Swal.fire({
-        title: '¿Estás seguro?',
-        text: 'Esta acción no se puede deshacer',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, estoy seguro',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const form = document.getElementById(`form-del-orientador-${orientadorId}`);
-            if (form) {                
-                form.submit();
-            }
-        }
-    });
-}
-</script> -->
 
 @endsection

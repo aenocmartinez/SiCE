@@ -47,11 +47,15 @@
                     </div>
                     </div>
                     <div class="list-group push">
-                        @foreach ($orientador->misAreas() as $area)
+                        @forelse ($orientador->misAreas() as $area)
                         <a class="list-group-item list-group-item-action" href="javascript:void(0)">
                         <small>{{ $area->getNombre() }}</small>
                         </a>
-                        @endforeach                    
+                        @empty
+                        <a class="list-group-item list-group-item-action" href="javascript:void(0)">
+                            <small>No tiene áreas asignadas</small>
+                        </a>                        
+                        @endforelse                    
                     </div>
                 </div>
             </div>
@@ -66,7 +70,7 @@
                     </div>
                     </div>
                     <div class="list-group push">
-                        @foreach ($orientador->misGrupos() as $grupo)
+                        @forelse ($orientador->misGrupos() as $grupo)
                         <a class="list-group-item list-group-item-action" href="javascript:void(0)">
                         <small>
                             {{ $grupo->getCurso()->getNombre() }} / Periodo: {{ $grupo->getCalendario()->getNombre() }}
@@ -75,7 +79,11 @@
                             </span>
                         </small>
                         </a>
-                        @endforeach                    
+                        @empty
+                        <a class="list-group-item list-group-item-action" href="javascript:void(0)">
+                            <small>No tiene cursos asignados</small>
+                        </a>                        
+                        @endforelse                    
                     </div>
                 </div>
             </div>            

@@ -47,7 +47,7 @@ class SalonController extends Controller
     }
 
     public function create() {
-        return view("salones.create", ["salon" => new Salon()]);        
+        return view("salones.create", ["salon" => new Salon()]);     
     }
 
     public function store(GuardarSalon $request) {

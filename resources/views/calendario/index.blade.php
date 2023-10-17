@@ -32,6 +32,9 @@
                             <a href="{{ route('calendario.edit', $calendario->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar calendario">
                                 <i class="fa fa-fw fa-pencil-alt"></i>
                             </a>
+                            <a href="{{ route('calendario.edit', $calendario->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="costos por cursos">
+                                <i class="fa fa-fw fa-dollar-sign"></i>
+                            </a>                            
                             <form method="POST" action="{{ route('calendario.delete', $calendario->getId()) }}" id="form-del-calendario-{{$calendario->getId()}}">
                                 @csrf
                                 @method('delete')
