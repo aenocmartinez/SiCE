@@ -30,7 +30,7 @@
                         <option 
                             value="{{ $salon->getId() }}"
                             {{ old('salon', $grupo->getSalon()->getId()) == $salon->getId() ? 'selected' : '' }}
-                            >{{ $salon->getNombre() }}</option>
+                            >{{ $salon->getNombreYTipoSalon() }}</option>
                     @endforeach
                 </select>
                 @error('salon')

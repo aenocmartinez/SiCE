@@ -22,7 +22,7 @@ class AreaDao extends Model implements AreaRepository {
             }            
 
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $areas;
     }
@@ -36,7 +36,7 @@ class AreaDao extends Model implements AreaRepository {
                 $area->setNombre($result['nombre']);
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $area;
     }
@@ -50,7 +50,7 @@ class AreaDao extends Model implements AreaRepository {
                 $area->setNombre($result['nombre']);
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $area;
     }
@@ -61,7 +61,7 @@ class AreaDao extends Model implements AreaRepository {
                 'nombre' => $area->getNombre()
             ]);
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $result['id'] > 0;
     }
@@ -74,7 +74,7 @@ class AreaDao extends Model implements AreaRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $exito;
     }
@@ -90,7 +90,7 @@ class AreaDao extends Model implements AreaRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $exito; 
     }

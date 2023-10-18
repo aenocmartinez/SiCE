@@ -6,15 +6,11 @@ class Curso {
     private int $id;
     private $repository;
     private Area $area;    
-    private $costo;
     private string $nombre;
-    private string $modalidad;
 
     public function __construct(string $nombre="") {
         $this->id = 0;
-        $this->costo = "";
         $this->nombre = $nombre;
-        $this->modalidad = "Presencial";
         $this->area = new Area();
     }
 
@@ -30,14 +26,6 @@ class Curso {
         $this->nombre = $nombre;
     }
 
-    public function setCosto($costo): void {
-        $this->costo = $costo;
-    }
-
-    public function setModalidad(string $modalidad): void {
-        $this->modalidad = $modalidad;
-    }
-
     public function setArea(Area $area): void {
         $this->area = $area;
     }
@@ -48,14 +36,6 @@ class Curso {
 
     public function getNombre(): string {
         return $this->nombre;
-    }
-
-    public function getCosto() {
-        return $this->costo;
-    }
-
-    public function getModalidad(): string {
-        return $this->modalidad;
     }
 
     public function getArea(): Area {

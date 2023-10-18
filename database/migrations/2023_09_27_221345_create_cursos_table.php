@@ -16,12 +16,10 @@ class CreateCursosTable extends Migration
         Schema::create('cursos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->decimal('costo', 8, 2)->default(0);
-            $table->enum('modalidad', ['presencial', 'virtual'])->default('presencial');
             $table->unsignedBigInteger('area_id');
             $table->timestamps();
             
-            $table->foreign('area_id')->references('id')->on('areas')->onDelete('cascade');
+            $table->foreign('area_id')->references('id')->on('areas');
             $table->unique(['nombre', 'area_id']);
         });
     }

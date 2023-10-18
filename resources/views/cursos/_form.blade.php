@@ -1,8 +1,3 @@
-@php
-    // $areaId = isset($curso['areaId']) ? $curso['areaId'] : 0;
-    $checked = $curso->existe() && $curso->getModalidad() == 'virtual' ? 'checked' : '';
-@endphp
-
 <div class="block block-rounded">
     <div class="block-content">
 
@@ -37,28 +32,7 @@
                         {{ $message }}
                     </span>
                 @enderror   
-                
-                <br>
-                <label class="form-label" for="costo">Costo</label>
-                <input type="number" 
-                    class="form-control @error('costo') is-invalid @enderror" 
-                    id="costo" 
-                    name="costo" 
-                    placeholder="Costo"
-                    value="{{ old('costo', $curso->getCosto()) }}"                
-                    >
-                    @error('costo')
-                        <span class="invalid-feedback" role="alert">
-                            {{ $message }}
-                        </span>
-                    @enderror
 
-                    <br>
-                    
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="modalidad" name="modalidad" {{ $checked }}>
-                        <label class="form-check-label" for="modalidad">Modalidad virtual</label>
-                    </div>
 
             </div>
                 

@@ -18,6 +18,7 @@ class CreateSalonesTable extends Migration
             $table->string('nombre')->unique();
             $table->integer('capacidad')->default(0);
             $table->boolean('esta_disponible')->default(true);
+            $table->text('hoja_vida')->nullable();
             $table->timestamps();
         });
     }

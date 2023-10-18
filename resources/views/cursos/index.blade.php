@@ -24,7 +24,6 @@
                     <h4 class="fw-normal mb-0">{{ $curso->getNombre() }}</h4>
                     <small>
                         {{ $curso->getArea()->getNombre() }}<br> 
-                        {{ $curso->getModalidad() }}
                     </small> 
                     </td>
                     <td class="text-center">

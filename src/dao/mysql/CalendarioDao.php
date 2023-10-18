@@ -21,7 +21,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 array_push($calendarios, $calendario);
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
 
         return $calendarios;
@@ -38,7 +38,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 $calendario->setFechaFinal($result['fec_fin']);
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $calendario;
     }
@@ -54,7 +54,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 $calendario->setFechaFinal($result['fec_fin']);
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $calendario;
     }
@@ -67,7 +67,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 'fec_fin' => $calendario->getFechaFinal()
             ]);
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $result['id'] > 0;
     }
@@ -80,7 +80,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $exito;
     }
@@ -98,7 +98,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $exito; 
     }

@@ -7,7 +7,6 @@ use Src\domain\Curso;
 use Src\view\dto\CursoDto;
 
 use Src\infraestructure\util\Validador;
-use Src\usecase\areas\BuscarCursoPorNombreYAreaUseCase;
 use Src\usecase\areas\ListarAreasUseCase;
 use Src\usecase\cursos\ActualizarCursoUseCase;
 use Src\usecase\cursos\BuscarCursoPorIdUseCase;
@@ -84,14 +83,8 @@ class CursoController extends Controller
     }        
 
     private function hydrateCursoDto(): CursoDto {
-        $cursoDto = new CursoDto();        
-        
-        $cursoDto->modalidad = 'presencial';
-        if (!is_null(request('modalidad'))) 
-            $cursoDto->modalidad = 'virtual';
-        
+        $cursoDto = new CursoDto();                    
         $cursoDto->nombre = request('nombre');
-        $cursoDto->costo = request('costo');
         $cursoDto->areaId = request('area');
         $cursoDto->id = request('id');
 

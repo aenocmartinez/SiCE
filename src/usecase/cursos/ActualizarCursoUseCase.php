@@ -18,9 +18,7 @@ class ActualizarCursoUseCase {
             return new Response("404", "Curso no encontrado");
         
         $curso->setRepository($cursoRepository);
-        $curso->setModalidad($cursoDto->modalidad);
         $curso->setNombre($cursoDto->nombre);
-        $curso->setCosto($cursoDto->costo);
         $curso->setArea(new Area($cursoDto->areaId));
 
         $exito = $curso->actualizar();

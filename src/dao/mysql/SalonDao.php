@@ -5,26 +5,31 @@ namespace Src\dao\mysql;
 use Illuminate\Database\Eloquent\Model;
 use Src\domain\repositories\SalonRepository;
 use Src\domain\Salon;
+use Src\domain\TipoSalon;
 
 class SalonDao extends Model implements SalonRepository {
     
     protected $table = 'salones';
-    protected $fillable = ['nombre', 'capacidad', 'esta_disponible'];
+    protected $fillable = ['nombre', 'capacidad', 'esta_disponible', 'tipo_salon_id', 'hoja_vida'];
 
     public function listarSalones(): array {
         $salones = [];
         try {
-            $rs = SalonDao::all();
+            $rs = SalonDao::orderBy('nombre')->get();
             foreach($rs as $r) {
                 $salon = new Salon($r->nombre);
                 $salon->setId($r->id);
                 $salon->setCapacidad($r->capacidad);
                 $salon->setDisponible($r->esta_disponible);
+
+                $tipoSalanDao = new TipoSalonDao();
+                $tipoSalon = $tipoSalanDao->buscarTipoSalonPorId((int)$r->tipo_salon_id);
+                $salon->setTipoSalon($tipoSalon);
                 array_push($salones, $salon);
             }            
 
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $salones;
     }
@@ -48,11 +53,15 @@ class SalonDao extends Model implements SalonRepository {
                 $salon->setId($r->id);
                 $salon->setCapacidad($r->capacidad);
                 $salon->setDisponible($r->esta_disponible);
+                $salon->setHojaVida($r->hoja_vida);
+                $tipoSalanDao = new TipoSalonDao();
+                $tipoSalon = $tipoSalanDao->buscarTipoSalonPorId((int)$r->tipo_salon_id);
+                $salon->setTipoSalon($tipoSalon);                
                 array_push($salones, $salon);
             }  
 
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $salones;
     }
@@ -66,10 +75,16 @@ class SalonDao extends Model implements SalonRepository {
                 $salon->setNombre($rs['nombre']);
                 $salon->setCapacidad($rs['capacidad']);
                 $salon->setDisponible($rs['esta_disponible']);
+                $salon->setHojaVida($rs['hoja_vida']);
+
+                $tipoSalanDao = new TipoSalonDao();
+                $tipoSalon = $tipoSalanDao->buscarTipoSalonPorId((int)$rs->tipo_salon_id);
+                $salon->setTipoSalon($tipoSalon);                
             }            
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
+
         return $salon;
     }
 
@@ -82,9 +97,14 @@ class SalonDao extends Model implements SalonRepository {
                 $salon->setNombre($rs['nombre']);
                 $salon->setCapacidad($rs['capacidad']);
                 $salon->setDisponible($rs['esta_disponible']);
+                $salon->setHojaVida($rs['hoja_vida']);
+
+                $tipoSalanDao = new TipoSalonDao();
+                $tipoSalon = $tipoSalanDao->buscarTipoSalonPorId((int)$rs->tipo_salon_id);
+                $salon->setTipoSalon($tipoSalon);                
             }            
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $salon;        
     }
@@ -95,9 +115,11 @@ class SalonDao extends Model implements SalonRepository {
                 'nombre' => $salon->getNombre(),
                 'capacidad' => $salon->getCapacidad(),
                 'esta_disponible' => $salon->estaDisponible(),
+                'hoja_vida' => $salon->getHojaVida(),
+                'tipo_salon_id' => $salon->getIdTipoSalon(),
             ]);
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $result['id'] > 0;
     }
@@ -110,24 +132,26 @@ class SalonDao extends Model implements SalonRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $exito;
     }
 
-    public function actualizarSalon(Salon $salon): bool {
+    public function actualizarSalon(Salon $salon): bool {            
         try {
             $exito = false;
             $rs = SalonDao::find($salon->getId());
-            if ($rs) {
+            if ($rs) {                
                 $rs->nombre = $salon->getNombre();
                 $rs->capacidad = $salon->getCapacidad();
                 $rs->esta_disponible = $salon->estaDisponible();
+                $rs->tipo_salon_id = $salon->getIdTipoSalon();
+                $rs->hoja_vida = $salon->getHojaVida();
                 $rs->save();
                 $exito = true;
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $exito; 
     }

@@ -11,6 +11,7 @@ use Src\usecase\salones\BuscarSalonPorIdUseCase;
 use Src\usecase\salones\CrearSalonUseCase;
 use Src\usecase\salones\EliminarSalonUseCase;
 use Src\usecase\salones\ListarSalonesUseCase;
+use Src\usecase\tipo_salones\ListarTipoSalonesUseCase;
 use Src\view\dto\SalonDto;
 
 class SalonController extends Controller
@@ -31,7 +32,9 @@ class SalonController extends Controller
         $casoUso = new BuscarSalonPorIdUseCase();
         $salon = $casoUso->ejecutar($id);
 
-        return view("salones.edit", compact('salon'));     
+        $tipoSalones = (new ListarTipoSalonesUseCase())->ejecutar();
+
+        return view("salones.edit", compact('salon', 'tipoSalones'));     
     }
 
     public function buscador() {
@@ -47,7 +50,11 @@ class SalonController extends Controller
     }
 
     public function create() {
-        return view("salones.create", ["salon" => new Salon()]);     
+        $tipoSalones = (new ListarTipoSalonesUseCase())->ejecutar();
+        return view("salones.create", [
+            "salon" => new Salon(),
+            "tipoSalones" => $tipoSalones,
+        ]);     
     }
 
     public function store(GuardarSalon $request) {
@@ -85,6 +92,8 @@ class SalonController extends Controller
         $salonDto->id = request('id');
         $salonDto->nombre = request('nombre');
         $salonDto->capacidad = request('capacidad');
+        $salonDto->tipo_salon_id = request('tipo_salon_id');
+        $salonDto->hoja_vida = request('hoja_vida');
         
         $salonDto->disponible = true;
         if (is_null(request('disponible'))) {

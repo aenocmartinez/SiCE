@@ -21,7 +21,7 @@ class EliminarTipoSalonUseCase {
         $tipoSalon->setRepository($salonRepository);
         $exito = $tipoSalon->eliminar();
         if (!$exito) {
-            return new Response("500", "Ha ocurrido un error en el sistema");
+            return new Response("500", "No se puede eliminar tiene registros relacionados");
         }
         
         return $response;

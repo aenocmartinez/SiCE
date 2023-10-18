@@ -32,7 +32,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 array_push($grupos, $grupo);
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
 
         return $grupos;
@@ -57,7 +57,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setJornada($r['jornada']);
             }            
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
 
         return $grupo;
@@ -80,7 +80,7 @@ class GrupoDao extends Model implements GrupoRepository {
             ]);
 
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
 
         return $result['id'] > 0;  
@@ -94,7 +94,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $exito;
     }
@@ -115,7 +115,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $exito; 
     }
@@ -134,7 +134,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $existe = true;
 
         } catch(\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
 
         return $existe;
@@ -152,7 +152,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $disponible = false;
 
         } catch(\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
 
         return $disponible;        

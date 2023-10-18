@@ -4,21 +4,44 @@ namespace Src\domain;
 
 class Salon {
     private int $id;
-    private string $nombre;
     private $capacidad;
-    private bool $disponible;
     private $repository;
+    private string $nombre;
+    private string $hojaVida;
+    private bool $disponible;
+    private TipoSalon $tipoSalon;
 
     public function __construct(string $nombre = "") {
         $this->id = 0;
+        $this->hojaVida = "";
         $this->capacidad = "";
         $this->nombre = $nombre;
         $this->disponible = true;
+        $this->tipoSalon = new TipoSalon();
     }
 
     public function setRepository($repository) {
         $this->repository = $repository;
     }
+
+    public function setTipoSalon(TipoSalon $tipoSalon): void {
+        $this->tipoSalon = $tipoSalon;
+    }
+
+    public function getNombreTipoSalon(): string {
+        if (empty($this->tipoSalon->getNombre())) {
+            return "No se ha definido el tipo de salón";
+        }
+        return $this->tipoSalon->getNombre();
+    }    
+
+    public function getNombreYTipoSalon(): string {
+        return $this->nombre . " - " . $this->tipoSalon->getNombre();
+    }
+
+    public function getIdTipoSalon(): int {
+        return $this->tipoSalon->getId();
+    }        
 
     public function setId(int $id): void {
         $this->id = $id;
@@ -34,6 +57,10 @@ class Salon {
 
     public function setDisponible(bool $disponible): void {
         $this->disponible = $disponible;
+    }
+
+    public function setHojaVida(string $hojaVida): void {
+        $this->hojaVida = $hojaVida;
     }
 
     public function getDisponibleTexto(): string {
@@ -60,6 +87,10 @@ class Salon {
     public function estaDisponible(): bool {
         return $this->disponible;
     }
+
+    public function getHojaVida(): string {
+        return $this->hojaVida;
+    }    
 
     public static function listarSalones($repository): array {
         return $repository->listarSalones();

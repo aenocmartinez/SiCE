@@ -13,7 +13,7 @@ class CrearTipoSalonUseCase {
         $tipoSalonRepository = new TipoSalonDao();
         $tipoSalon = TipoSalon::buscarPorNombre($tipoSalonDto->nombre, $tipoSalonRepository);
         if ($tipoSalon->existe()) 
-            return new Response("200", "El tipo de salón ya existe");        
+            return new Response("500", "El tipo de salón ya existe");        
 
         $tipoSalon->setRepository($tipoSalonRepository);
         $tipoSalon->setNombre($tipoSalonDto->nombre);

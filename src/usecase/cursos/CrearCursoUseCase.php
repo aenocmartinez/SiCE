@@ -18,9 +18,7 @@ class CrearCursoUseCase {
 
         $curso = new Curso();
         $curso->setRepository($cursoRepository);
-        $curso->setModalidad($cursoDto->modalidad);
         $curso->setNombre($cursoDto->nombre);
-        $curso->setCosto($cursoDto->costo);
         $curso->setArea(new Area($cursoDto->areaId));
 
         $exito = $curso->crear();

@@ -64,7 +64,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
             }
 
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $orientadores;
     }
@@ -106,7 +106,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 
             }            
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $orientador;
     }
@@ -147,7 +147,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
             }
             
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $orientadores;
     }
@@ -169,7 +169,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $orientador->setObservacion($rs['observacion']);
             }            
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $orientador;
     }
@@ -188,7 +188,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 'observacion' => $orientador->getObservacion()
             ]);
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $result['id'] > 0;
     }
@@ -201,7 +201,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $exito;
     }
@@ -224,7 +224,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $exito; 
     }
@@ -236,7 +236,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $o->areas()->attach([$area->getId()]);
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }               
         return true;
     }
@@ -248,7 +248,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $o->areas()->detach([$area->getId()]);
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }               
         return true;
     }

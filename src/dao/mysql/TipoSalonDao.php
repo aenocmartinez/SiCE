@@ -23,7 +23,7 @@ class TipoSalonDao extends Model implements TipoSalonRepository {
             }            
 
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $tipoSalones;
     }
@@ -37,7 +37,7 @@ class TipoSalonDao extends Model implements TipoSalonRepository {
                 $tipoSalon->setNombre($rs['nombre']);
             }            
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $tipoSalon;
     }
@@ -51,7 +51,7 @@ class TipoSalonDao extends Model implements TipoSalonRepository {
                 $tipoSalon->setNombre($rs['nombre']);
             }            
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $tipoSalon;        
     }
@@ -62,7 +62,7 @@ class TipoSalonDao extends Model implements TipoSalonRepository {
                 'nombre' => $tipoSalon->getNombre(),
             ]);
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $result['id'] > 0;
     }
@@ -75,7 +75,7 @@ class TipoSalonDao extends Model implements TipoSalonRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $exito;
     }
@@ -90,7 +90,7 @@ class TipoSalonDao extends Model implements TipoSalonRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $exito; 
     }

@@ -50,7 +50,8 @@ $criterio = isset($criterio) ? $criterio : '';
                     <h4 class="fw-normal mb-0">{{ $salon->getNombre() }}</h4>
                     <small>
                         Capacidad: {{ $salon->getCapacidad() }}<br> 
-                        Estado: {{ $salon->getDisponibleTexto() }}
+                        Estado: {{ $salon->getDisponibleTexto() }} <br>
+                        Tipo de salón: {{ $salon->getNombreTipoSalon() }}
                     </small> 
                     </td>
                     <td class="text-center">

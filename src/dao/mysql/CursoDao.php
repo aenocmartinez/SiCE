@@ -10,7 +10,7 @@ use Src\domain\repositories\CursoRepository;
 class CursoDao extends Model implements CursoRepository {  
       
     protected $table = 'cursos';
-    protected $fillable = ['nombre', 'costo', 'modalidad', 'area_id'];
+    protected $fillable = ['nombre', 'area_id'];
 
     public function area() {
         return $this->belongsTo(AreaDao::class);
@@ -23,14 +23,12 @@ class CursoDao extends Model implements CursoRepository {
             foreach($rs as $r) {
                 $curso = new Curso($r->nombre);
                 $curso->setId($r->id);
-                $curso->setModalidad($r->modalidad);
-                $curso->setCosto($r->costo);
                 $curso->setArea(new Area($r->area->id, $r->area->nombre));
                 array_push($cursos, $curso);
             }            
 
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $cursos;
     }
@@ -42,8 +40,6 @@ class CursoDao extends Model implements CursoRepository {
             if ($rs) {
                 $curso->setId($rs['id']);
                 $curso->setNombre($rs['nombre']);
-                $curso->setModalidad($rs['modalidad']);
-                $curso->setCosto($rs['costo']);
 
                 $area = new Area();
                 $area->setId($rs['area']->id);
@@ -52,7 +48,7 @@ class CursoDao extends Model implements CursoRepository {
                 $curso->setArea($area);
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $curso;
     }
@@ -65,8 +61,6 @@ class CursoDao extends Model implements CursoRepository {
             if ($rs) {
                 $curso->setId($rs['id']);
                 $curso->setNombre($rs['nombre']);
-                $curso->setModalidad($rs['modalidad']);
-                $curso->setCosto($rs['costo']);
 
                 $area = new Area();
                 $area->setId($rs['area']->id);
@@ -75,7 +69,7 @@ class CursoDao extends Model implements CursoRepository {
                 $curso->setArea($area);
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }
         return $curso;
     }
@@ -84,13 +78,11 @@ class CursoDao extends Model implements CursoRepository {
         try {
             $result = CursoDao::create([
                 'nombre' => $curso->getNombre(),
-                'modalidad' => $curso->getModalidad(),
-                'costo' => $curso->getCosto(),
                 'area_id' => $curso->getArea()->getId(),
             ]);
 
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
 
         return $result['id'] > 0;     
@@ -104,7 +96,7 @@ class CursoDao extends Model implements CursoRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $exito;
     }
@@ -115,15 +107,13 @@ class CursoDao extends Model implements CursoRepository {
             $rs = CursoDao::find($curso->getId());
             if ($rs) {
                 $rs->nombre = $curso->getNombre();
-                $rs->modalidad = $curso->getModalidad();
-                $rs->costo = $curso->getCosto();
                 $rs->area_id = $curso->getArea()->getId();
                 $rs->save();
                 
                 $exito = true;
             }
         } catch (\Exception $e) {
-            throw $e;
+            $e->getMessage();
         }   
         return $exito; 
     }
