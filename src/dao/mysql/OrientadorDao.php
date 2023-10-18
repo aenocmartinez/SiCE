@@ -22,7 +22,9 @@ class OrientadorDao extends Model implements OrientadorRepository {
                            'direccion', 
                            'eps', 
                            'estado', 
-                           'observacion'];
+                           'observacion',
+                           'fec_nacimiento',
+                           'nivel_estudio'];
 
     public function areas() {
         return $this->belongsToMany(AreaDao::class, 'orientador_areas', 'orientador_id', 'area_id');
@@ -53,6 +55,8 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $orientador->setEps($rs->eps);
                 $orientador->setEstado($rs->estado);
                 $orientador->setObservacion($rs->observacion);
+                $orientador->setFechaNacimiento($rs->fec_nacimiento);
+                $orientador->setNivelEducativo($rs->nivel_estudio);
                 
                 $areas = array();
                 foreach($rs->areas as $area) 
@@ -84,6 +88,8 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $orientador->setEps($rs['eps']);
                 $orientador->setEstado($rs['estado']);
                 $orientador->setObservacion($rs['observacion']);
+                $orientador->setFechaNacimiento($rs['fec_nacimiento']);
+                $orientador->setNivelEducativo($rs['nivel_estudio']);
 
                 $areas = array();
                 foreach($rs->areas as $area) 
@@ -121,7 +127,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 "email_personal" => $criterio,
                 "eps" => $criterio,
                 "direccion" => $criterio,
-    
+                "nivel_estudio" => $criterio,
             ];
 
             $query = OrientadorDao::query();
@@ -143,6 +149,8 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $orientador->setEps($rs->eps);
                 $orientador->setEstado($rs->estado);
                 $orientador->setObservacion($rs->observacion);
+                $orientador->setFechaNacimiento($rs->fec_nacimiento);
+                $orientador->setNivelEducativo($rs->nivel_estudio);                
                 array_push($orientadores, $orientador);
             }
             
@@ -167,6 +175,9 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $orientador->setEps($rs['eps']);
                 $orientador->setEstado($rs['estado']);
                 $orientador->setObservacion($rs['observacion']);
+                $orientador->setFechaNacimiento($rs['fec_nacimiento']);
+                $orientador->setNivelEducativo($rs['nivel_estudio']);                  
+                
             }            
         } catch (\Exception $e) {
             $e->getMessage();
@@ -185,7 +196,9 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 'direccion' => $orientador->getDireccion(), 
                 'eps' => $orientador->getEps(), 
                 'estado' => $orientador->getEstado(), 
-                'observacion' => $orientador->getObservacion()
+                'observacion' => $orientador->getObservacion(),
+                'fec_nacimiento' => $orientador->getFechaNacimiento(),
+                'nivel_estudio' => $orientador->getNivelEducativo(),
             ]);
         } catch (\Exception $e) {
             $e->getMessage();
@@ -207,7 +220,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
     }
 
     public function actualizarOrientador(Orientador $orientador): bool {
-        try {
+        try {            
             $exito = false;
             $rs = OrientadorDao::find($orientador->getId());
             if ($rs) {
@@ -220,11 +233,20 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $rs->eps = $orientador->getEps();
                 $rs->estado = $orientador->getEstado();
                 $rs->observacion = $orientador->getObservacion();
+                
+                if ($orientador->getFechaNacimiento() != "") {
+                    $rs->fec_nacimiento = $orientador->getFechaNacimiento();
+                }
+
+                if ($orientador->getNivelEducativo() != "") {
+                    $rs->nivel_estudio = $orientador->getNivelEducativo();
+                }
+
                 $rs->save();
                 $exito = true;
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            dd($e->getMessage());
         }   
         return $exito; 
     }

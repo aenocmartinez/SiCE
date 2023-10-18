@@ -53,19 +53,45 @@
                     @enderror 
                     <br>
 
-                <label class="form-label" for="eps">EPS</label>
-                <select class="form-select @error('eps') is-invalid @enderror" id="eps" name="eps">
-                <option value="">Selecciona una eps</option>
-                    @foreach ($listaEps as $eps)            
-                        <option value="{{ $eps }}" {{ $orientador->getEps() == $eps ? 'selected' : '' }}>{{ $eps }}</option>
-                    @endforeach
-                </select>                    
+                    <label class="form-label mt-2" for="fecNacimiento">Fecha de nacimiento</label>
+                    <input type="text" 
+                       class="js-flatpickr form-control @error('fecNacimiento') is-invalid @enderror" 
+                       id="fecNacimiento" 
+                       name="fecNacimiento" 
+                       placeholder="Y-m-d"
+                       value="{{ old('fecNacimiento', $orientador->getFechaNacimiento()) }}"
+                       >
+                    @error('fecNacimiento')
+                        <span class="invalid-feedback" role="alert">
+                            {{ $message }}
+                        </span>
+                    @enderror
+
+                    <br>
+
+                    <label class="form-label" for="eps">EPS</label>
+                    <select class="form-select @error('eps') is-invalid @enderror" id="eps" name="eps">
+                    <option value="">Selecciona una eps</option>
+                        @foreach ($listaEps as $eps)            
+                            <option value="{{ $eps }}" {{ $orientador->getEps() == $eps ? 'selected' : '' }}>{{ $eps }}</option>
+                        @endforeach
+                    </select>                      
+
             </div>
 
             <div class="col-sm-6">
 
+                <label class="form-label" for="nivelEstudio">Nivel de estudio</label>
+                <select class="form-select @error('nivelEstudio') is-invalid @enderror" id="nivelEstudio" name="nivelEstudio">
+                <option value="">Selecciona una opción</option>
+                    @foreach ($nivelesEstudio as $nivel)            
+                        <option value="{{ $nivel }}" {{ $orientador->getNivelEducativo() == $nivel ? 'selected' : '' }}>{{ $nivel }}</option>
+                    @endforeach
+                </select>  
+                <br>
+
                 <label class="form-label" for="emailInstitucional">Correo institucional</label>
-                <input type="text" 
+                <input type="email" 
                     class="form-control @error('emailInstitucional') is-invalid @enderror"
                     id="emailInstitucional" 
                     name="emailInstitucional" 
@@ -79,8 +105,8 @@
                     @enderror 
                     <br>
                         
-                <label class="form-label" for="emailPersonal">Correo personal</label>
-                <input type="text" 
+                <label class="form-label" for="emailPersonal">Correo personal <small class="fw-light">(obligatorio)</small></label>
+                <input type="email" 
                     class="form-control @error('emailPersonal') is-invalid @enderror"
                     id="emailPersonal" 
                     name="emailPersonal" 
@@ -134,3 +160,7 @@
 <script src="{{asset('assets/js/plugins/ckeditor/ckeditor.js')}}"></script>
 <script src="{{asset('assets/js/plugins/simplemde/simplemde.min.js')}}"></script>
 <script>One.helpersOnLoad(['js-ckeditor', 'js-simplemde']);</script>
+
+<script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
+<script src="{{asset('assets/js/plugins/flatpickr/flatpickr.min.js')}}"></script>
+<script>One.helpersOnLoad(['js-flatpickr']);</script>

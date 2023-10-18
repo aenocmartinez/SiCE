@@ -14,6 +14,8 @@ class Orientador {
     private string $observacion = "";
     private string $direccion = "";
     private string $eps = "";
+    private string $fechaNacimiento = "";
+    private string $nivelEducativo = "";
     private $areas;
     private $grupos;
     private $repository;
@@ -26,6 +28,21 @@ class Orientador {
 
     public function setRepository($repository): void {
         $this->repository = $repository;
+    }
+
+    public function setFechaNacimiento($fechaNacimiento): void {
+        if (is_null($fechaNacimiento)) {
+            $fechaNacimiento = "";
+        }
+
+        $this->fechaNacimiento = $fechaNacimiento;
+    }
+
+    public function setNivelEducativo($nivelEducativo): void {
+        if (is_null($nivelEducativo)) {
+            $nivelEducativo = "";
+        }        
+        $this->nivelEducativo = $nivelEducativo;
     }
 
     public function setId(int $id): void {
@@ -98,6 +115,20 @@ class Orientador {
 
     public function getObservacion(): string {
         return $this->observacion;
+    }
+
+    public function getFechaNacimiento(): string {
+        if (is_null($this->fechaNacimiento))
+            return "";
+
+        return $this->fechaNacimiento;
+    }
+
+    public function getNivelEducativo(): string {
+        if (is_null($this->nivelEducativo)) 
+            return "";
+
+        return $this->nivelEducativo;
     }
 
     public function setDireccion(string $direccion): void {

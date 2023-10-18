@@ -13,4 +13,6 @@ class OrientadorDto {
     public $eps; 
     public $estado;
     public $observacion;
+    public $fechaNacimiento;
+    public $nivelEducativo;
 }

@@ -28,6 +28,8 @@ class ActualizarOrientadorUseCase {
         $orientador->setEps($orientadorDto->eps);
         $orientador->setEstado($orientadorDto->estado);
         $orientador->setObservacion($orientadorDto->observacion);
+        $orientador->setFechaNacimiento($orientadorDto->fechaNacimiento);
+        $orientador->setNivelEducativo($orientadorDto->nivelEducativo);
 
         $exito = $orientador->actualizar();
         if (!$exito) {

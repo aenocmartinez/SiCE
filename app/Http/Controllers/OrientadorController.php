@@ -43,9 +43,12 @@ class OrientadorController extends Controller
             return redirect()->route('cursos.index')->with('code', "404")->with('status', "Orientador no encontrado");
         }
 
+        $nivelesEstudio = explode(',', env('APP_NIVEL_ESTUDIO'));
+
         return view('orientadores.edit', [
             'orientador' => $orientador, 
-            'listaEps' => ListaDeValor::eps()
+            'listaEps' => ListaDeValor::eps(),
+            'nivelesEstudio' => $nivelesEstudio,
         ]);
     }
 
@@ -107,10 +110,12 @@ class OrientadorController extends Controller
         ]); 
     }
 
-    public function create() {                
+    public function create() {    
+        $nivelesEstudio = explode(',', env('APP_NIVEL_ESTUDIO'));
         return view('orientadores.create', [
             'orientador' => new Orientador(),
             'listaEps' => ListaDeValor::eps(),
+            'nivelesEstudio' => $nivelesEstudio,
         ]);
     }
 
@@ -151,6 +156,8 @@ class OrientadorController extends Controller
         $orientadorDto->nombre = request('nombre');
         $orientadorDto->tipoDocumento = request('tipoDocumento');
         $orientadorDto->documento = request('documento');
+        $orientadorDto->fechaNacimiento = request('fecNacimiento');
+        $orientadorDto->nivelEducativo = request('nivelEstudio');
         $orientadorDto->estado = true;
         
         $orientadorDto->emailPersonal = "";
