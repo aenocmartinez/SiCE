@@ -187,7 +187,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
 
     public function crearOrientador(Orientador $orientador): bool {
         try {
-            $result = OrientadorDao::create([
+            $data = [
                 'nombre' => $orientador->getNombre(), 
                 'tipo_documento' => $orientador->getTipoDocumento(), 
                 'documento' => $orientador->getDocumento(), 
@@ -197,11 +197,19 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 'eps' => $orientador->getEps(), 
                 'estado' => $orientador->getEstado(), 
                 'observacion' => $orientador->getObservacion(),
-                'fec_nacimiento' => $orientador->getFechaNacimiento(),
-                'nivel_estudio' => $orientador->getNivelEducativo(),
-            ]);
+            ];
+
+            if ($orientador->getFechaNacimiento() != "") {
+                $data['fec_nacimiento'] = $orientador->getFechaNacimiento();
+            }
+
+            if ($orientador->getNivelEducativo() != "") {
+                $data['nivel_estudio'] = $orientador->getNivelEducativo();
+            }            
+
+            $result = OrientadorDao::create($data);
         } catch (\Exception $e) {
-            $e->getMessage();
+            dd($e->getMessage());
         }   
         return $result['id'] > 0;
     }
