@@ -29,11 +29,13 @@
                     </td>
                     <td class="text-center">
                         <div class="btn-group">
+
+                        @if ($calendario->esVigente())                        
                             <a href="{{ route('calendario.edit', $calendario->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar calendario">
                                 <i class="fa fa-fw fa-pencil-alt"></i>
                             </a>
-                            <a href="{{ route('calendario.edit', $calendario->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="costos por cursos">
-                                <i class="fa fa-fw fa-dollar-sign"></i>
+                            <a href="{{ route('calendario.cursos', $calendario->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Gestionar cursos del calendario">
+                                <i class="fa fa-fw fa-arrow-up-right-dots"></i>
                             </a>                            
                             <form method="POST" action="{{ route('calendario.delete', $calendario->getId()) }}" id="form-del-calendario-{{$calendario->getId()}}">
                                 @csrf
@@ -47,6 +49,8 @@
                                     <i class="fa fa-fw fa-trash-can"></i>
                                 </button>
                             </form>
+                        @endif
+
                         </div>
                     </td>                    
                 </tr>

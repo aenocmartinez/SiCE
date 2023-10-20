@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GuardarCalenadario;
-use Illuminate\Http\Request;
 use Src\domain\Calendario;
+use Src\view\dto\CalendarioDto;
+use Src\view\dto\CursoCalendarioDto;
 use Src\infraestructure\util\Validador;
+use Src\usecase\areas\ListarAreasUseCase;
+use Src\usecase\cursos\ListarCursosPorAreaUseCase;
+use Src\usecase\calendarios\CrearCalendarioUseCase;
+use Src\usecase\calendarios\ListarCalendariosUseCase;
+use Src\usecase\calendarios\EliminarCalendarioUseCase;
 use Src\usecase\calendarios\ActualizarCalendarioUseCase;
 use Src\usecase\calendarios\BuscarCalendarioPorIdUseCase;
-use Src\usecase\calendarios\CrearCalendarioUseCase;
-use Src\usecase\calendarios\EliminarCalendarioUseCase;
-use Src\usecase\calendarios\ListarCalendariosUseCase;
-use Src\view\dto\CalendarioDto;
+use Src\usecase\calendarios\AgregarCursoACalendarioUseCase;
 
 class CalendarioController extends Controller
 {
@@ -83,5 +86,84 @@ class CalendarioController extends Controller
         $response = $casoUsoEliminar->ejecutar($id);
 
         return redirect()->route('calendario.index')->with('code', $response->code)->with('status', $response->message);
+    }
+
+    public function cursosDelCalendario($calendarioId) {
+        if (!Validador::parametroId($calendarioId)) {
+            return redirect()->route('calendario.index')->with('code', 401)->with('status','parámetro no válido');
+        }
+
+        $calendario = (new BuscarCalendarioPorIdUseCase)->ejecutar($calendarioId);
+        if (!$calendario->existe()) {
+            return redirect()->route('calendario.index')->with('code', 500)->with('status','El calendario no existe');
+        }
+
+        if (!$calendario->esVigente()) {
+            return redirect()->route('calendario.index')->with('code', 500)->with('status','No se permite realizar esta acción, el calendario ya está caducado.');
+        }
+        
+
+        return view('calendario.cursos_calendario',[
+            'calendario' => $calendario,
+            'areas' => (new ListarAreasUseCase)->ejecutar()
+        ]);
+    }
+
+    public function agregarCursoACalendario() {  
+        $cursoCalendarioDto = $this->hydrateCursoCalendarioDto();        
+        $casoUso = new AgregarCursoACalendarioUseCase();
+        $response = $casoUso->ejecutar($cursoCalendarioDto);
+        
+        return redirect()->route('calendario.cursos', [
+                        'id' => $cursoCalendarioDto->calendarioId,
+                        'area_id' => request('area_id'),
+                        ])
+                        ->with('code', $response->code)
+                        ->with('status', $response->message);
+    }
+
+    public function listarCursosPorArea($calendarioId, $areaId) {
+
+        if (!Validador::parametroId($areaId)) {
+            return redirect()->route('calendario.index')->with('code', 401)->with('status','parámetro no válido');
+        }        
+        
+        return view('calendario._cursos', [
+            'cursos' => (new ListarCursosPorAreaUseCase)->ejecutar($areaId),
+            'calendario_id' => $calendarioId,
+            'area_id' => $areaId,
+        ]);
+    }
+
+    private function hydrateCursoCalendarioDto(): CursoCalendarioDto{        
+        $cursoCalendarioDto = new CursoCalendarioDto();
+        $cursoCalendarioDto->calendarioId = (int)request('calendario_id');
+        $cursoCalendarioDto->cursoId = (int)request('curso_id');
+
+        $clave = request('curso_id') . request('calendario_id');
+        $modalidad = 'modalidad_' . $clave;    
+        
+        $costo = 0;
+        if (!is_null(request('costo_' . $clave))) {
+            $costo = str_replace("$", "", request('costo_' . $clave));
+            $costo = str_replace(".", "", $costo);        
+            $costo = str_replace(" ", "", $costo);  
+        }
+
+        $cupos = 0;
+        if (!is_null(request('cupos_' . $clave))) {
+            $cupos = request('cupos_' . $clave);
+        }
+
+        $modalidad = 'Presencial';
+        if (!is_null(request('modalidad_' . $clave))) {
+            $modalidad = request('modalidad_' . $clave);
+        }        
+
+        $cursoCalendarioDto->costo = floatval($costo);
+        $cursoCalendarioDto->cupos = (int)$cupos;
+        $cursoCalendarioDto->modalidad = $modalidad;
+
+        return $cursoCalendarioDto;
     }
 }

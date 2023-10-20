@@ -4,12 +4,20 @@ namespace Src\dao\mysql;
 
 use Illuminate\Database\Eloquent\Model;
 use Src\domain\Calendario;
+use Src\domain\Curso;
+use Src\domain\CursoCalendario;
 use Src\domain\repositories\CalendarioRepository;
 
 class CalendarioDao extends Model implements CalendarioRepository {
 
     protected $table = 'calendarios';
-    protected $fillable = ['nombre', 'fec_ini', 'fec_fin'];    
+    protected $fillable = ['nombre', 'fec_ini', 'fec_fin'];   
+    
+    public function cursos() {
+        return $this->belongsToMany(CursoDao::class, 'curso_calendario', 'calendario_id', 'curso_id')
+                    ->withPivot(['costo', 'modalidad', 'cupo'])
+                    ->withTimestamps();
+    }
 
     public function listarCalendarios(): array {
         $calendarios = array();
@@ -101,5 +109,40 @@ class CalendarioDao extends Model implements CalendarioRepository {
             $e->getMessage();
         }   
         return $exito; 
+    }
+
+    public function agregarCurso(CursoCalendario $cursoCalendario): bool {
+        $exito = true;
+
+        try {
+
+            $calendario = CalendarioDao::find($cursoCalendario->getCalendarioId());
+            if ($calendario) {
+                $calendario->cursos()->attach($cursoCalendario->getCursoId(), [
+                    'costo' => $cursoCalendario->getCosto(), 
+                    'modalidad' => $cursoCalendario->getModalidad(), 
+                    'cupo' => $cursoCalendario->getCupo()
+                ]);
+
+            }            
+
+        } catch(\Exception $e) {
+            $exito = false;            
+        }
+
+        return $exito;
+    }
+
+    public function retirarCurso(CursoCalendario $cursoCalendario): bool {
+        return false;
+    }
+
+    public function listarCursos(Calendario $calendario): array {
+        return [];
+    }
+
+    public function buscarCursoCalendario(int $calendariId=0, int $cursoId=0, string $modalidad=''): CursoCalendario {
+        $cursoCalendario = new CursoCalendario(new Calendario(), new Curso());
+        return $cursoCalendario;
     }
 }

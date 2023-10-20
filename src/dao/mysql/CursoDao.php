@@ -3,6 +3,7 @@
 namespace Src\dao\mysql;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Src\domain\Area;
 use Src\domain\Curso;
 use Src\domain\repositories\CursoRepository;
@@ -14,6 +15,16 @@ class CursoDao extends Model implements CursoRepository {
 
     public function area() {
         return $this->belongsTo(AreaDao::class);
+    }
+
+    public function calendarios() {
+        return $this->belongsToMany(CalendarioDao::class, 'curso_calendario', 'curso_id', 'calendario_id')
+                    ->withPivot(['costo', 'modalidad', 'cupo'])
+                    ->withTimestamps();
+    } 
+
+    public function cuantasVecesEnUnCalendario(int $calendarioId): int {
+        return $this->calendarios()->where('calendario_id', $calendarioId)->count();
     }
 
     public function listarCursos(): array {
@@ -116,5 +127,24 @@ class CursoDao extends Model implements CursoRepository {
             $e->getMessage();
         }   
         return $exito; 
+    }
+
+    public function listarCursosPorArea(int $areaId): array {
+        $cursos = array();
+        $calendarioId = 1;
+        try {
+            $filas = CursoDao::where('area_id', $areaId)->get();
+            foreach($filas as $fila) {
+                $curso = new Curso($fila->nombre);
+                $curso->setId($fila->id);
+                $curso->setArea(new Area($fila->area->id, $fila->area->nombre));
+                $curso->setNumeroEnCalendario($fila->cuantasVecesEnUnCalendario($calendarioId));
+
+                array_push($cursos, $curso);
+            }
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+        return $cursos;       
     }
 }

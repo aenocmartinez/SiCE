@@ -7,6 +7,7 @@ class Curso {
     private $repository;
     private Area $area;    
     private string $nombre;
+    private int $numeroEnCalendario;
 
     public function __construct(string $nombre="") {
         $this->id = 0;
@@ -42,6 +43,10 @@ class Curso {
         return $this->area;
     }
 
+    public function getNombreArea(): string {
+        return $this->area->getNombre();
+    }
+
     public static function listar($repository): array {
         return $repository->listarCursos();
     }
@@ -69,4 +74,13 @@ class Curso {
     public function existe(): bool {
         return $this->id > 0;
     }
+
+    public function setNumeroEnCalendario(int $numeroEnCalendario): void {
+        $this->numeroEnCalendario = $numeroEnCalendario;
+    }
+
+    public function getNumeroEnCalendario(): int {
+        return $this->numeroEnCalendario;
+    }    
+    
 }

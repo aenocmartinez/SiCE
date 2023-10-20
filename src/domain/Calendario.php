@@ -10,6 +10,7 @@ class Calendario {
     private $fechaInicio;
     private $fechaFinal;
     private $repository;
+    private $cursos = [];
 
     public function __construct(string $nombre="", $fechaInicio="", $fechaFinal="") {
         $this->id = 0;
@@ -83,13 +84,39 @@ class Calendario {
     }
 
     public function esVigente(): bool {        
+        $vigente = false;
         $fechaActual = new DateTime(date("Y-m-d"));
         $fechaInicio = new DateTime($this->fechaInicio);
         $fechaFin = new DateTime($this->fechaFinal);
-        return $fechaActual >= $fechaInicio && $fechaActual <= $fechaFin;        
+
+        if ($fechaActual >= $fechaInicio && $fechaActual <= $fechaFin) {
+            $vigente = true;
+        } else if ($fechaInicio >= $fechaActual) {
+            $vigente = true;
+        }
+
+        return $vigente;
+        // return $fechaActual >= $fechaInicio && $fechaActual <= $fechaFin;
     }
 
     public function estado(): string {
         return $this->esVigente() ? "Vigente" : "Caducado";
+    }
+
+
+    /**    
+     * @param Curso: $curso
+     * @param $datos: [(int)'cupo', (float)'costo', (string)'modalidad']
+     */
+    public function agregarCurso(Curso $curso, $datos=[]): bool {
+        return $this->repository->agregarCurso(new CursoCalendario($this, $curso, $datos));
+    }
+
+    public function retirarCurso(Curso $curso): bool {        
+        return $this->repository->retirarCurso(new CursoCalendario($this, $curso));
+    }
+
+    public function listarCursos(): array {
+        return $this->repository->listarCursos($this);
     }
 }

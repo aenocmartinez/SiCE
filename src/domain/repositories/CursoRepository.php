@@ -2,6 +2,7 @@
 
 namespace Src\domain\repositories;
 
+use Src\domain\Area;
 use Src\domain\Curso;
 
 interface CursoRepository {
@@ -11,4 +12,5 @@ interface CursoRepository {
     public function crearCurso(Curso $curso): bool;
     public function eliminarCurso(Curso $curso): bool;
     public function actualizarCurso(Curso $curso): bool;    
+    public function listarCursosPorArea(int $areaId): array;
 }

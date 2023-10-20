@@ -3,6 +3,7 @@
 namespace Src\domain\repositories;
 
 use Src\domain\Calendario;
+use Src\domain\CursoCalendario;
 
 interface CalendarioRepository {
     public function listarCalendarios(): array;
@@ -10,5 +11,9 @@ interface CalendarioRepository {
     public function buscarCalendarioPorId(int $id = 0): Calendario;
     public function crearCalendario(Calendario $calendario): bool;
     public function eliminarCalendario(Calendario $calendario): bool;
-    public function actualizarCalendario(Calendario $calendario): bool;       
+    public function actualizarCalendario(Calendario $calendario): bool;
+    public function agregarCurso(CursoCalendario $cursoCalendario): bool;
+    public function retirarCurso(CursoCalendario $cursoCalendario): bool;
+    public function listarCursos(Calendario $calendario): array;
+    public function buscarCursoCalendario(int $calendariId=0, int $cursoId=0, string $modalidad=''): CursoCalendario;
 }
