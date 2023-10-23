@@ -12,6 +12,7 @@ use Src\usecase\grupos\ActualizarGrupoUseCase;
 use Src\usecase\grupos\BuscarGrupoPorIdUseCase;
 use Src\usecase\grupos\CrearGrupoUseCase;
 use Src\usecase\grupos\EliminarGrupoUseCase;
+use Src\usecase\grupos\ListarCursosPorCalendarioUseCase;
 use Src\usecase\grupos\ListarGruposUseCase;
 use Src\usecase\orientadores\ListarOrientadoresUseCase;
 use Src\usecase\salones\ListarSalonesUseCase;
@@ -28,10 +29,10 @@ class GrupoController extends Controller
     public function create()
     {
         return view('grupos.create', [
-            'cursos' => (new ListarCursosUseCase())->ejecutar(),
+            'cursos' => array(),
             'calendarios' => (new ListarCalendariosUseCase())->ejecutar(),
-            'salones' => (new ListarSalonesUseCase())->ejecutar(),
-            'orientadores' => (new ListarOrientadoresUseCase())->ejecutar(),
+            'salones' => array(),
+            'orientadores' => array(),
             'dias' => ListaDeValor::diasSemana(),
             'jornadas' => ListaDeValor::jornadas(),
             'grupo' => new Grupo,
@@ -88,6 +89,16 @@ class GrupoController extends Controller
         
         $response = (new EliminarGrupoUseCase)->ejecutar($id);        
         return redirect()->route('grupos.index')->with('code', $response->code)->with('status', $response->message);
+    }
+
+    public function listarCursosPorCalendario($calendarioId) {
+        if (!Validador::parametroId($calendarioId)) {
+            return redirect()->route('grupos.index')->with('status','parámetro no válido');
+        }
+
+        return view('grupos._cursos_por_calendario',[
+            'cursos' => (new ListarCursosPorCalendarioUseCase)->ejecutar($calendarioId)
+        ]);
     }
 
     private function hydrateDto($data): GrupoDto {        

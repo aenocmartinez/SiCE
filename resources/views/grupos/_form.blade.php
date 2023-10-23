@@ -6,22 +6,26 @@
 
             <div class="col-6">
 
-                <label class="form-label" for="curso">Curso</label>
-                <select class="form-select @error('curso') is-invalid @enderror" id="curso" name="curso">
-                    <option value="">Selecciona un curso</option>
-                    @foreach ($cursos as $curso)
-                        <option 
-                            value="{{ $curso->getId() }}" 
-                            {{ old('curso', $grupo->getCurso()->getId()) == $curso->getId() ? 'selected' : '' }}
-                            >{{ $curso->getNombre() }}</option>
+            <label class="form-label" for="calendario">Calendario</label>
+                <select class="form-select @error('calendario') is-invalid @enderror" id="calendario" name="calendario">
+                    <option value="">Selecciona un calendario</option>
+                    @foreach ($calendarios as $calendario)
+                        @if ($calendario->esVigente())                            
+                            <option 
+                                value="{{ $calendario->getId() }}"
+                                {{ old('calendario', $grupo->getCalendario()->getId()) == $calendario->getId() ? 'selected' : '' }}
+                                >{{ $calendario->getNombre() }}
+                            </option>
+                        @endif
                     @endforeach
                 </select>
-                @error('curso')
+                @error('calendario')
                     <span class="invalid-feedback" role="alert">
                         {{ $message }}
                     </span>
-                @enderror                   
-                <br>
+                @enderror                  
+
+                <br>            
 
                 <label class="form-label" for="salon">Salón</label>
                 <select class="form-select @error('salon') is-invalid @enderror" id="salon" name="salon">
@@ -61,25 +65,8 @@
 
             <div class="col-6">
 
-                <label class="form-label" for="calendario">Calendario</label>
-                <select class="form-select @error('calendario') is-invalid @enderror" id="calendario" name="calendario">
-                    <option value="">Selecciona un calendario</option>
-                    @foreach ($calendarios as $calendario)
-                        @if ($calendario->esVigente())                            
-                            <option 
-                                value="{{ $calendario->getId() }}"
-                                {{ old('calendario', $grupo->getCalendario()->getId()) == $calendario->getId() ? 'selected' : '' }}
-                                >{{ $calendario->getNombre() }}
-                            </option>
-                        @endif
-                    @endforeach
-                </select>
-                @error('calendario')
-                    <span class="invalid-feedback" role="alert">
-                        {{ $message }}
-                    </span>
-                @enderror                  
-
+            <label class="form-label" for="curso">Curso</label>
+                <select class="form-select" id="curso" name="curso"></select>
                 <br>
 
                 <label class="form-label" for="dia">Día</label>
@@ -137,3 +124,42 @@
 
 
 <script>One.helpersOnLoad(['js-flatpickr']);</script>
+
+<script>
+    $(document).ready(function(){
+        $("#calendario").change(function() {
+            if ($("#calendario").val().length === 0) {                
+                return ;
+            }            
+            
+            const calendarioId = $('#calendario').val();
+
+            listarCursos(calendarioId);
+            
+            // $("#cursos_por_area").html("");
+            // $("#cursos_abiertos_en_el_periodo").html("");
+            // if ($("#area").val().length === 0) {                
+            //     return ;
+            // }
+
+            // const areaId = $('#area').val();
+            // listarCursos(areaId);
+            // listarCursosDelPeriodo("{{ $calendario->getId() }}", areaId);
+        });        
+    });
+
+    function listarCursos(calendarioId) {        
+        $("#curso").html("<select class=\"form-select\" id=\"curso\" name=\"curso\"></select>");
+        
+        var url = "{{ route('grupos.cursos_calendario', ['calendarioId' => ':calendarioId']) }}";
+        url = url.replace(':calendarioId', calendarioId);            
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(resp) {
+                $("#curso").html(resp);
+            }            
+        });        
+    }
+</script>

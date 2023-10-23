@@ -15,5 +15,6 @@ interface CalendarioRepository {
     public function agregarCurso(CursoCalendario $cursoCalendario): bool;
     public function retirarCurso(CursoCalendario $cursoCalendario): bool;
     public function listarCursos(int $calendarioId, int $areaId): array;
+    public function listarCursosPorCalendario(int $calendarioId): array;
     public function buscarCursoCalendario(int $calendariId=0, int $cursoId=0, string $modalidad=''): CursoCalendario;
 }

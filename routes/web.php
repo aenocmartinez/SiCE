@@ -81,6 +81,8 @@ Route::post('/grupos', [GrupoController::class, 'store'])->name('grupos.store');
 Route::delete('/grupos/{id}', [GrupoController::class, 'destroy'])->name('grupos.delete');
 Route::patch('/grupos/{id}/actualizar', [GrupoController::class, 'update'])->name('grupos.update');
 
+Route::get('/grupos/calendario/{calendarioId}/cursos',[GrupoController::class, 'listarCursosPorCalendario'])->name('grupos.cursos_calendario');
+
 
 Route::get('/tipo-salones', [TipoSalonController::class, 'index'])->name('tipo-salones.index');
 Route::get('/tipo-salones/{id}/editar', [TipoSalonController::class, 'edit'])->name('tipo-salones.edit');

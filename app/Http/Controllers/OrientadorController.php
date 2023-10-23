@@ -43,7 +43,7 @@ class OrientadorController extends Controller
             return redirect()->route('cursos.index')->with('code', "404")->with('status', "Orientador no encontrado");
         }
 
-        $nivelesEstudio = explode(',', env('APP_NIVEL_ESTUDIO'));
+        $nivelesEstudio = explode(',', env('APP_NIVEL_ESTUDIO'));        
 
         return view('orientadores.edit', [
             'orientador' => $orientador, 

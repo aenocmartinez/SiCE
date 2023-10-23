@@ -179,4 +179,30 @@ class CalendarioDao extends Model implements CalendarioRepository {
         $cursoCalendario = new CursoCalendario(new Calendario(), new Curso());
         return $cursoCalendario;
     }
+
+    public function listarCursosPorCalendario(int $calendarioId): array {
+        $cursosCalendario = array();
+
+        $calendarioEncontrado = CalendarioDao::find($calendarioId);    
+
+        if ($calendarioEncontrado) {
+
+            $calendario = new Calendario($calendarioEncontrado->nombre);
+            $calendario->setId($calendarioId);
+
+            foreach($calendarioEncontrado->cursos as $item) {
+                $curso = new Curso($item->nombre);
+                $curso->setId($item->id);
+                $datos = [
+                    'cupo' => $item->pivot->cupo, 
+                    'costo' => $item->pivot->costo, 
+                    'modalidad' => $item->pivot->modalidad
+                ];
+
+                array_push($cursosCalendario, new CursoCalendario($calendario, $curso, $datos));
+            }
+        }
+
+        return $cursosCalendario;
+    }
 }
