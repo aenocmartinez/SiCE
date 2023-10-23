@@ -15,6 +15,8 @@ use Src\usecase\calendarios\EliminarCalendarioUseCase;
 use Src\usecase\calendarios\ActualizarCalendarioUseCase;
 use Src\usecase\calendarios\BuscarCalendarioPorIdUseCase;
 use Src\usecase\calendarios\AgregarCursoACalendarioUseCase;
+use Src\usecase\calendarios\ListarCursosPorCalendarioUseCase;
+use Src\usecase\calendarios\RetirarCursoACalendarioUseCase;
 
 class CalendarioController extends Controller
 {
@@ -122,6 +124,25 @@ class CalendarioController extends Controller
                         ->with('status', $response->message);
     }
 
+    public function retirarCursoACalendario($calendarioId, $cursoCalendarioId, $areaId) {
+        if (!Validador::parametroId($calendarioId)) {
+            return redirect()->route('calendario.index')->with('code', 401)->with('status','parámetro no válido');
+        }
+
+        if (!Validador::parametroId($cursoCalendarioId)) {
+            return redirect()->route('calendario.index')->with('code', 401)->with('status','parámetro no válido');
+        }   
+        
+        $response = (new RetirarCursoACalendarioUseCase)->ejecutar($calendarioId, $cursoCalendarioId);
+
+        return redirect()->route('calendario.cursos', [
+            'id' => $calendarioId,
+            'area_id' => $areaId,
+            ])
+            ->with('code', $response->code)
+            ->with('status', $response->message);              
+    }
+
     public function listarCursosPorArea($calendarioId, $areaId) {
 
         if (!Validador::parametroId($areaId)) {
@@ -131,6 +152,21 @@ class CalendarioController extends Controller
         return view('calendario._cursos', [
             'cursos' => (new ListarCursosPorAreaUseCase)->ejecutar($areaId),
             'calendario_id' => $calendarioId,
+            'area_id' => $areaId,
+        ]);
+    }
+
+    public function listarCursosDelCalendario($calendarioId, $areaId) {
+        if (!Validador::parametroId($calendarioId)) {
+            return redirect()->route('calendario.index')->with('code', 401)->with('status','parámetro no válido');                    
+        }
+
+        if (!Validador::parametroId($areaId)) {
+            return redirect()->route('calendario.index')->with('code', 401)->with('status','parámetro no válido');
+        }        
+
+        return view('calendario._cursos_calendario', [
+            'cursosCalendario' => (new ListarCursosPorCalendarioUseCase)->ejecutar($calendarioId, $areaId),
             'area_id' => $areaId,
         ]);
     }

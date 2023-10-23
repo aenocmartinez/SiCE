@@ -46,12 +46,11 @@
                     @endforeach
                 </select>          
 
+            </div> 
+            
+            <div class="col-6">
+                <h5 class="fw-light text-end mt-5">Listado de cursos abiertos calendario {{ $calendario->getNombre() }}</h5>
             </div>
-
-            <div class="col-7">
-                <h5 class="fw-light text-center">Listado de cursos abiertos calendario {{ $calendario->getNombre() }}</h5>
-
-            </div>            
 
         </div>
 
@@ -67,6 +66,16 @@
                 </div>
 
             </div>
+
+            <div class="col-6">
+                
+                <div id="cursos_abiertos_en_el_periodo"></div>
+
+                <div id="loading_cursos_abiertos_en_el_periodo" class="spinner-border spinner-border-sm text-secondary" style="display: none;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+
+            </div>   
         </div>
 
     </div>
@@ -79,12 +88,14 @@
         $("#area").change(function() {
 
             $("#cursos_por_area").html("");
+            $("#cursos_abiertos_en_el_periodo").html("");
             if ($("#area").val().length === 0) {                
                 return ;
             }
 
             const areaId = $('#area').val();
             listarCursos(areaId);
+            listarCursosDelPeriodo("{{ $calendario->getId() }}", areaId);
         });
 
     });
@@ -107,9 +118,30 @@
         });
     }
 
+    function listarCursosDelPeriodo(calendarioId, areaId) {
+        $("#cursos_abiertos_en_el_periodo").html("");
+        $('#loading_cursos_abiertos_en_el_periodo').show();
+        
+        var url = "{{ route('calendario.cursos_por_calendario', ['calendarioId' => ':calendarioId', 'areaId' => ':areaId']) }}";
+        url = url.replace(':areaId', areaId);
+        url = url.replace(':calendarioId', calendarioId);            
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(resp) {
+                $('#loading_cursos_abiertos_en_el_periodo').hide();
+                $("#cursos_abiertos_en_el_periodo").html(resp);
+            }            
+        });        
+        
+    }
+
     const areaId = "{{  $areaId }}";
+    const calendarioId = "{{  $calendario->getid() }}";
     if (areaId > 0){
         listarCursos(areaId);
+        listarCursosDelPeriodo(calendarioId, areaId)
     }
     
 </script>

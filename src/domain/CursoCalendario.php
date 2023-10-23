@@ -76,6 +76,10 @@ class CursoCalendario {
         return $this->curso->getId();
     }
 
+    public function getNombreCurso(): string {
+        return $this->curso->getNombre();
+    }
+
     public function getId(): int {
         return $this->id;
     }

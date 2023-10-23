@@ -84,7 +84,7 @@
                                                 data-id="{{ $idForm }}"
                                                 onclick="asignarCursoAlCalendario(this)"
                                                 >
-                                            <i class="fa fa-fw fa-circle-plus"></i>
+                                            <i class="fa fa-fw fa-circle-right"></i>
                                         </button>
                                     </div>                             
                                 </div>

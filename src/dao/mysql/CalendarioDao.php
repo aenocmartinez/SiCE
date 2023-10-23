@@ -3,6 +3,7 @@
 namespace Src\dao\mysql;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Src\domain\Calendario;
 use Src\domain\Curso;
 use Src\domain\CursoCalendario;
@@ -15,7 +16,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
     
     public function cursos() {
         return $this->belongsToMany(CursoDao::class, 'curso_calendario', 'calendario_id', 'curso_id')
-                    ->withPivot(['costo', 'modalidad', 'cupo'])
+                    ->withPivot(['costo', 'modalidad', 'cupo', 'id'])
                     ->withTimestamps();
     }
 
@@ -134,11 +135,44 @@ class CalendarioDao extends Model implements CalendarioRepository {
     }
 
     public function retirarCurso(CursoCalendario $cursoCalendario): bool {
-        return false;
+        $resultado = false;
+        try {
+            $calendario = CalendarioDao::find($cursoCalendario->getCalendarioId());
+            if ($calendario) {
+                $resultado = DB::table('curso_calendario')->where('id', $cursoCalendario->getId())->delete();
+            }
+
+        } catch(\Exception $e) {
+            dd($e->getMessage());
+        }
+        return $resultado;
     }
 
-    public function listarCursos(Calendario $calendario): array {
-        return [];
+    public function listarCursos(int $calendarioId, int $areaId): array {
+        $cursos = array();
+        // $calendarioEncontrado = CalendarioDao::find($calendarioId);
+       
+        $calendario = new Calendario();
+        $calendario->setId($calendarioId);
+
+        $listaCursos = CalendarioDao::find($calendarioId)->cursos()->where('area_id', $areaId)->get();    
+
+        foreach($listaCursos as $c) {
+            $curso = new Curso($c->nombre);
+            $curso->setId($c->id);
+
+            $datos = [
+                    'cupo' => $c->pivot->cupo, 
+                    'costo' => $c->pivot->costo, 
+                    'modalidad' => $c->pivot->modalidad
+                ];
+
+            $cursoCalendario = new CursoCalendario($calendario, $curso, $datos);
+            $cursoCalendario->setId($c->pivot->id);
+            array_push($cursos, $cursoCalendario);
+        }
+
+        return $cursos;
     }
 
     public function buscarCursoCalendario(int $calendariId=0, int $cursoId=0, string $modalidad=''): CursoCalendario {

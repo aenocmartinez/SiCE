@@ -70,6 +70,8 @@ Route::patch('/calendario/{id}/actualizar', [CalendarioController::class, 'updat
 Route::get('/calendario/{id}/cursos', [CalendarioController::class, 'cursosDelCalendario'])->name('calendario.cursos');
 Route::post('/calendario/agregar-curso',[CalendarioController::class, 'agregarCursoACalendario'])->name('calendario.agregar_curso');
 Route::get('/calendario/{calendarioId}/area/{areaId}/cursos', [CalendarioController::class, 'listarCursosPorArea'])->name('calendario.cursos_por_area');
+Route::get('/calendario/{calendarioId}/area/{areaId}/cursos-periodo', [CalendarioController::class, 'listarCursosDelCalendario'])->name('calendario.cursos_por_calendario');
+Route::delete('/calendario/{calendarioId}/curso/{cursoCalendarioId}/area/{areaId}', [CalendarioController::class, 'retirarCursoACalendario'])->name('calendario.retirar_curso');
 
 
 Route::get('/grupos',[GrupoController::class, 'index'])->name('grupos.index');

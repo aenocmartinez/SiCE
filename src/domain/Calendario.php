@@ -119,4 +119,8 @@ class Calendario {
     public function listarCursos(): array {
         return $this->repository->listarCursos($this);
     }
+
+    public function listarCursosDelPeriodo(): array {        
+        return $this->repository->listarCursos($this);
+    }
 }
