@@ -20,11 +20,11 @@ class CrearSalonUseCase {
         $salon->setNombre($salonDto->nombre);
         $salon->setCapacidad($salonDto->capacidad);
         $salon->setDisponible($salonDto->disponible);
-        $salon->setHojaVida($salonDto->hoja_vida);
+        // $salon->setHojaVida($salonDto->hoja_vida);
 
-        $tipoSalon = new TipoSalon();
-        $tipoSalon->setId($salonDto->tipo_salon_id);
-        $salon->setTipoSalon($tipoSalon);
+        // $tipoSalon = new TipoSalon();
+        // $tipoSalon->setId($salonDto->tipo_salon_id);
+        // $salon->setTipoSalon($tipoSalon);
 
         $exito = $salon->crear();
         if (!$exito) 

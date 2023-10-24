@@ -30,25 +30,6 @@
                                 {{ $message }}
                             </span>
                         @enderror
-
-                    <br>
-
-                    <label class="form-label" for="tipo_salon_id">Tipo de salón</label>
-                    <select class="form-select @error('tipo_salon_id') is-invalid @enderror" id="tipo_salon_id" name="tipo_salon_id">
-                        <option>Selecciona un tipo de salón</option>
-                        @foreach ($tipoSalones as $tipo)                        
-                            <option 
-                                value="{{ $tipo->getId() }}"
-                                {{ old('tipo_salon_id', $tipo->getId()) == $salon->getIdTipoSalon() ? 'selected' : '' }}
-                                >{{ $tipo->getNombre() }}
-                            </option>
-                        @endforeach
-                    </select>
-                    @error('tipo_salon_id')
-                        <span class="invalid-feedback" role="alert">
-                            {{ $message }}
-                        </span>
-                    @enderror 
                     
                     <br>
 
@@ -83,10 +64,10 @@
         
             </div>
 
-            <div class="col-6">
+            <!-- <div class="col-6">
                 <h5 class="fw-light">HOJA DE VIDA DEL SALÓN</h5>
                 <textarea class="js-simplemde" rows="4" id="hoja_vida" name="hoja_vida">{{ old('hoja_vida', $salon->getHojaVida()) }}</textarea>
-            </div>
+            </div> -->
 
         </div>
 

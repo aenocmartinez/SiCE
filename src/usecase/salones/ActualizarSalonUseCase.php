@@ -22,11 +22,11 @@ class ActualizarSalonUseCase {
         $salon->setDisponible($salonDto->disponible);
         $salon->setCapacidad($salonDto->capacidad);
         $salon->setNombre($salonDto->nombre);
-        $salon->setHojaVida($salonDto->hoja_vida);
+        // $salon->setHojaVida($salonDto->hoja_vida);
 
-        $tipoSalon = new TipoSalon();
-        $tipoSalon->setId($salonDto->tipo_salon_id);
-        $salon->setTipoSalon($tipoSalon); 
+        // $tipoSalon = new TipoSalon();
+        // $tipoSalon->setId($salonDto->tipo_salon_id);
+        // $salon->setTipoSalon($tipoSalon); 
 
         $exito = $salon->actualizar();
         if (!$exito) 

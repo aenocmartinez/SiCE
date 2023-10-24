@@ -73,9 +73,9 @@
                 <a class="nav-main-link {{ setActive(['cursos.index', 'cursos.*']) }}" href="{{ route('cursos.index') }}">
                   <span class="nav-main-link-name">Cursos</span>
                 </a>   
-                <a class="nav-main-link {{ setActive(['tipo-salones.index', 'tipo-salones.*']) }}" href="{{ route('tipo-salones.index') }}">
+                <!-- <a class="nav-main-link {{ setActive(['tipo-salones.index', 'tipo-salones.*']) }}" href="{{ route('tipo-salones.index') }}">
                   <span class="nav-main-link-name">Tipo de salones</span>
-                </a>                
+                </a>                 -->
                 <a class="nav-main-link {{ setActive(['salones.index', 'salones.*']) }}" href="{{ route('salones.index') }}">
                   <span class="nav-main-link-name">Salones</span>
                 </a>

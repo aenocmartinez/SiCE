@@ -11,7 +11,6 @@ use Src\usecase\salones\BuscarSalonPorIdUseCase;
 use Src\usecase\salones\CrearSalonUseCase;
 use Src\usecase\salones\EliminarSalonUseCase;
 use Src\usecase\salones\ListarSalonesUseCase;
-use Src\usecase\tipo_salones\ListarTipoSalonesUseCase;
 use Src\view\dto\SalonDto;
 
 class SalonController extends Controller
@@ -29,12 +28,11 @@ class SalonController extends Controller
         if (!$esValido)
             return redirect()->route('cursos.index')->with('code', "401")->with('status', "parámetro no válido");
 
-        $casoUso = new BuscarSalonPorIdUseCase();
-        $salon = $casoUso->ejecutar($id);
+        $salon = (new BuscarSalonPorIdUseCase)->ejecutar($id);
 
-        $tipoSalones = (new ListarTipoSalonesUseCase())->ejecutar();
+        // $tipoSalones = (new ListarTipoSalonesUseCase())->ejecutar();
 
-        return view("salones.edit", compact('salon', 'tipoSalones'));     
+        return view("salones.edit", compact('salon'));     
     }
 
     public function buscador() {
@@ -50,10 +48,9 @@ class SalonController extends Controller
     }
 
     public function create() {
-        $tipoSalones = (new ListarTipoSalonesUseCase())->ejecutar();
+        // $tipoSalones = (new ListarTipoSalonesUseCase())->ejecutar();
         return view("salones.create", [
             "salon" => new Salon(),
-            "tipoSalones" => $tipoSalones,
         ]);     
     }
 
@@ -92,8 +89,8 @@ class SalonController extends Controller
         $salonDto->id = request('id');
         $salonDto->nombre = request('nombre');
         $salonDto->capacidad = request('capacidad');
-        $salonDto->tipo_salon_id = request('tipo_salon_id');
-        $salonDto->hoja_vida = request('hoja_vida');
+        // $salonDto->tipo_salon_id = request('tipo_salon_id');
+        // $salonDto->hoja_vida = request('hoja_vida');
         
         $salonDto->disponible = true;
         if (is_null(request('disponible'))) {

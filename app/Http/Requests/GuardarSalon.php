@@ -26,7 +26,7 @@ class GuardarSalon extends FormRequest
         return [
             'nombre' => 'required',
             'capacidad' => 'required|numeric',
-            'tipo_salon_id' => 'required|numeric',
+            'tipo_salon_id' => 'nullable|numeric',
             'disponible' => 'nullable',
             'hoja_vida' => 'nullable'
         ];
@@ -35,7 +35,6 @@ class GuardarSalon extends FormRequest
     public function messages() {
         return [
             'nombre.required' => 'El campo número es obligatorio',
-            'tipo_salon_id.required' => 'El campo tipo de salón es obligatorio',
         ];
     }
 }
