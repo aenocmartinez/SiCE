@@ -16,6 +16,7 @@ class Orientador {
     private string $eps = "";
     private string $fechaNacimiento = "";
     private string $nivelEducativo = "";
+    private string $rangoSalarial = "";
     private $areas;
     private $grupos;
     private $repository;
@@ -157,6 +158,14 @@ class Orientador {
 
     public function setGrupos(array $grupos): void {
         $this->grupos = $grupos;
+    }
+
+    public function setRangoSalarial(string $rangoSalarial): void {
+        $this->rangoSalarial = $rangoSalarial;
+    }
+
+    public function getRangoSalarial(): string {
+        return $this->rangoSalarial;
     }
 
     public function agregarArea(Area $area): bool {

@@ -53,7 +53,7 @@
                     @enderror 
                     <br>
 
-                    <label class="form-label mt-2" for="fecNacimiento">Fecha de nacimiento</label>
+                    <label class="form-label" for="fecNacimiento">Fecha de nacimiento</label>
                     <input type="text" 
                        class="js-flatpickr form-control @error('fecNacimiento') is-invalid @enderror" 
                        id="fecNacimiento" 
@@ -89,6 +89,15 @@
                     @endforeach
                 </select>  
                 <br>
+
+                <label class="form-label" for="rangoSalarial">Rango salarial</label>
+                <select class="form-select @error('rangoSalarial') is-invalid @enderror" id="rangoSalarial" name="rangoSalarial">
+                <option value="">Selecciona una opción</option>
+                    @foreach ($listaRangoSalarial as $rango)            
+                        <option value="{{ $rango }}" {{ $orientador->getRangoSalarial() == $rango ? 'selected' : '' }}>{{ $rango }}</option>
+                    @endforeach
+                </select>  
+                <br>                
 
                 <label class="form-label" for="emailInstitucional">Correo institucional</label>
                 <input type="email" 

@@ -28,6 +28,9 @@ class CrearOrientadorUseCase {
         $orientador->setDireccion($orientadorDto->direccion);
         $orientador->setEps($orientadorDto->eps);
         $orientador->setObservacion($orientadorDto->observacion);
+        $orientador->setRangoSalarial($orientadorDto->rangoSalarial);
+        $orientador->setNivelEducativo($orientadorDto->nivelEducativo);
+        $orientador->setFechaNacimiento($orientadorDto->fechaNacimiento);
 
         $exito = $orientador->crear();
         if (!$exito) {

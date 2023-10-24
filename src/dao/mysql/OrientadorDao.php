@@ -24,7 +24,8 @@ class OrientadorDao extends Model implements OrientadorRepository {
                            'estado', 
                            'observacion',
                            'fec_nacimiento',
-                           'nivel_estudio'];
+                           'nivel_estudio',
+                           'rango_salarial'];
 
     public function areas() {
         return $this->belongsToMany(AreaDao::class, 'orientador_areas', 'orientador_id', 'area_id');
@@ -57,6 +58,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $orientador->setObservacion($rs->observacion);
                 $orientador->setFechaNacimiento($rs->fec_nacimiento);
                 $orientador->setNivelEducativo($rs->nivel_estudio);
+                $orientador->setRangoSalarial($rs->rango_salarial);
                 
                 $areas = array();
                 foreach($rs->areas as $area) 
@@ -90,6 +92,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $orientador->setObservacion($rs['observacion']);
                 $orientador->setFechaNacimiento($rs['fec_nacimiento']);
                 $orientador->setNivelEducativo($rs['nivel_estudio']);
+                $orientador->setRangoSalarial($rs->rango_salarial);
 
                 $areas = array();
                 foreach($rs->areas as $area) 
@@ -128,6 +131,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 "eps" => $criterio,
                 "direccion" => $criterio,
                 "nivel_estudio" => $criterio,
+                "rango_salarial" => $criterio,
             ];
 
             $query = OrientadorDao::query();
@@ -150,7 +154,8 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $orientador->setEstado($rs->estado);
                 $orientador->setObservacion($rs->observacion);
                 $orientador->setFechaNacimiento($rs->fec_nacimiento);
-                $orientador->setNivelEducativo($rs->nivel_estudio);                
+                $orientador->setNivelEducativo($rs->nivel_estudio); 
+                $orientador->setRangoSalarial($rs->rango_salarial);               
                 array_push($orientadores, $orientador);
             }
             
@@ -176,7 +181,8 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $orientador->setEstado($rs['estado']);
                 $orientador->setObservacion($rs['observacion']);
                 $orientador->setFechaNacimiento($rs['fec_nacimiento']);
-                $orientador->setNivelEducativo($rs['nivel_estudio']);                  
+                $orientador->setNivelEducativo($rs['nivel_estudio']);  
+                $orientador->setRangoSalarial($rs->rango_salarial);                
                 
             }            
         } catch (\Exception $e) {
@@ -197,6 +203,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 'eps' => $orientador->getEps(), 
                 'estado' => $orientador->getEstado(), 
                 'observacion' => $orientador->getObservacion(),
+                'rango_salarial' => $orientador->getRangoSalarial(),
             ];
 
             if ($orientador->getFechaNacimiento() != "") {
@@ -241,6 +248,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $rs->eps = $orientador->getEps();
                 $rs->estado = $orientador->getEstado();
                 $rs->observacion = $orientador->getObservacion();
+                $rs->rango_salarial = $orientador->getRangoSalarial();
                 
                 if ($orientador->getFechaNacimiento() != "") {
                     $rs->fec_nacimiento = $orientador->getFechaNacimiento();
