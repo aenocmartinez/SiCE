@@ -7,11 +7,13 @@ class Curso {
     private $repository;
     private Area $area;    
     private string $nombre;
+    private string $tipoCurso;
     private int $numeroEnCalendario;
 
     public function __construct(string $nombre="") {
         $this->id = 0;
         $this->nombre = $nombre;
+        $this->tipoCurso = "";
         $this->area = new Area();
     }
 
@@ -31,6 +33,10 @@ class Curso {
         $this->area = $area;
     }
 
+    public function setTipoCurso(string $tipoCurso): void {
+        $this->tipoCurso = $tipoCurso;
+    }
+
     public function getId(): int {
         return $this->id;
     }
@@ -38,6 +44,10 @@ class Curso {
     public function getNombre(): string {
         return $this->nombre;
     }
+
+    public function getTipoCurso(): string {
+        return $this->tipoCurso;
+    }    
 
     public function getArea(): Area {
         return $this->area;

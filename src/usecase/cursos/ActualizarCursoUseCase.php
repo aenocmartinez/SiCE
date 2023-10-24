@@ -19,6 +19,7 @@ class ActualizarCursoUseCase {
         
         $curso->setRepository($cursoRepository);
         $curso->setNombre($cursoDto->nombre);
+        $curso->setTipoCurso($cursoDto->tipoCurso);
         $curso->setArea(new Area($cursoDto->areaId));
 
         $exito = $curso->actualizar();

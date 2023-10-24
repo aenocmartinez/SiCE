@@ -110,7 +110,7 @@ class OrientadorController extends Controller
         ]); 
     }
 
-    public function create() {    
+    public function create() {
         $nivelesEstudio = explode(',', env('APP_NIVEL_ESTUDIO'));
         return view('orientadores.create', [
             'orientador' => new Orientador(),

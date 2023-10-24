@@ -11,7 +11,7 @@ use Src\domain\repositories\CursoRepository;
 class CursoDao extends Model implements CursoRepository {  
       
     protected $table = 'cursos';
-    protected $fillable = ['nombre', 'area_id'];
+    protected $fillable = ['nombre', 'area_id', 'tipo_curso'];
 
     public function area() {
         return $this->belongsTo(AreaDao::class);
@@ -34,6 +34,9 @@ class CursoDao extends Model implements CursoRepository {
             foreach($rs as $r) {
                 $curso = new Curso($r->nombre);
                 $curso->setId($r->id);
+                if (!is_null($r->tipo_curso)) {
+                    $curso->setTipoCurso($r->tipo_curso);
+                }
                 $curso->setArea(new Area($r->area->id, $r->area->nombre));
                 array_push($cursos, $curso);
             }            
@@ -51,6 +54,9 @@ class CursoDao extends Model implements CursoRepository {
             if ($rs) {
                 $curso->setId($rs['id']);
                 $curso->setNombre($rs['nombre']);
+                if (!is_null($rs->tipo_curso)) {
+                    $curso->setTipoCurso($rs->tipo_curso);
+                }
 
                 $area = new Area();
                 $area->setId($rs['area']->id);
@@ -72,6 +78,9 @@ class CursoDao extends Model implements CursoRepository {
             if ($rs) {
                 $curso->setId($rs['id']);
                 $curso->setNombre($rs['nombre']);
+                if (!is_null($rs->tipo_curso)) {
+                    $curso->setTipoCurso($rs->tipo_curso);
+                }
 
                 $area = new Area();
                 $area->setId($rs['area']->id);
@@ -90,6 +99,7 @@ class CursoDao extends Model implements CursoRepository {
             $result = CursoDao::create([
                 'nombre' => $curso->getNombre(),
                 'area_id' => $curso->getArea()->getId(),
+                'tipo_curso' => $curso->getTipoCurso(),
             ]);
 
         } catch (\Exception $e) {
@@ -119,6 +129,7 @@ class CursoDao extends Model implements CursoRepository {
             if ($rs) {
                 $rs->nombre = $curso->getNombre();
                 $rs->area_id = $curso->getArea()->getId();
+                $rs->tipo_curso = $curso->getTipoCurso();
                 $rs->save();
                 
                 $exito = true;
@@ -137,7 +148,10 @@ class CursoDao extends Model implements CursoRepository {
             foreach($filas as $fila) {
                 $curso = new Curso($fila->nombre);
                 $curso->setId($fila->id);
-                $curso->setArea(new Area($fila->area->id, $fila->area->nombre));
+                if (!is_null($fila->tipo_curso)) {
+                    $curso->setTipoCurso($fila->tipo_curso);
+                }
+                $curso->setArea(new Area($fila->area->id, $fila->area->nombre));                
                 $curso->setNumeroEnCalendario($fila->cuantasVecesEnUnCalendario($calendarioId));
 
                 array_push($cursos, $curso);

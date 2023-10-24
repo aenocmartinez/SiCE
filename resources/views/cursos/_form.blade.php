@@ -33,6 +33,20 @@
                     </span>
                 @enderror   
 
+                <br>
+                
+                <label class="form-label" for="tipo_curso">Tipo curso</label>
+                <select class="form-select @error('tipo_curso') is-invalid @enderror" id="tipo_curso" name="tipo_curso">
+                    <option value="">Selecciona un tipo</option>
+                    @foreach ($tipoCursos as $tipoCurso)
+                        <option value="{{ $tipoCurso }}" {{ $tipoCurso == $curso->getTipoCurso() ? 'selected' : '' }} >{{ $tipoCurso }}</option>
+                    @endforeach
+                </select>
+                @error('tipo_curso')
+                    <span class="invalid-feedback" role="alert">
+                        {{ $message }}
+                    </span>
+                @enderror                  
 
             </div>
                 

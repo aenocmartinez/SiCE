@@ -33,18 +33,21 @@ class CursoController extends Controller
         if (!$curso->existe())
             return redirect()->route('cursos.index')->with('code', "404")->with('status', "Curso no encontrado");
         
-        $casoUso = new ListarAreasUseCase();        
+        $tipoCursos = explode(',', env('APP_TIPO_CURSOS'));
+        
         return view("cursos.edit", [
             "curso" => $curso,
-            "areas" => $casoUso->ejecutar(), 
+            "areas" => (new ListarAreasUseCase)->ejecutar(), 
+            "tipoCursos" => $tipoCursos,
         ]);
     }
 
     public function create() {
-        $casoUso = new ListarAreasUseCase();
+        $tipoCursos = explode(',', env('APP_TIPO_CURSOS'));
         return view("cursos.create", [
             "curso" => new Curso(),
-            "areas" => $casoUso->ejecutar(), 
+            "areas" => (new ListarAreasUseCase)->ejecutar(), 
+            "tipoCursos" => $tipoCursos,
         ]);
     }
 
@@ -86,6 +89,7 @@ class CursoController extends Controller
         $cursoDto = new CursoDto();                    
         $cursoDto->nombre = request('nombre');
         $cursoDto->areaId = request('area');
+        $cursoDto->tipoCurso = request('tipo_curso');
         $cursoDto->id = request('id');
 
         return $cursoDto;

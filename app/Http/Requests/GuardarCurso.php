@@ -26,6 +26,7 @@ class GuardarCurso extends FormRequest
         return [
             'nombre' => 'required',
             'area' => 'required',
+            'tipo_curso' => 'required',
             'id' => 'numeric|nullable',
         ];
     }
