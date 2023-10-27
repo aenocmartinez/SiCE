@@ -5,6 +5,7 @@ namespace Src\usecase\grupos;
 use Src\dao\mysql\GrupoDao;
 use Src\domain\Calendario;
 use Src\domain\Curso;
+use Src\domain\CursoCalendario;
 use Src\domain\Grupo;
 use Src\domain\Orientador;
 use Src\domain\Salon;
@@ -17,21 +18,27 @@ class CrearGrupoUseCase {
         $grupoRepository = new GrupoDao();
         $grupo = new Grupo();
 
-        $curso = new Curso;
-        $curso->setId($grupoDto->cursoId);
+        // $curso = new Curso;
+        // $curso->setId($grupoDto->cursoCalendarioId);
+
+        $cursoCalendario = new CursoCalendario(new Calendario(), new Curso());
+        $cursoCalendario->setId($grupoDto->cursoCalendarioId);
+
+        $grupo->setCursoCalendario($cursoCalendario);
+
 
         $orientador = new Orientador;
         $orientador->setId($grupoDto->orientadorId);
 
-        $calendario = new Calendario; 
-        $calendario->setId($grupoDto->calendarioId);
+        // $calendario = new Calendario; 
+        // $calendario->setId($grupoDto->calendarioId);
 
         $salon = new Salon; 
         $salon->setId($grupoDto->salonId);
 
-        $grupo->setCurso($curso);
+        // $grupo->setCurso($curso);
+        // $grupo->setCalendario($calendario);
         $grupo->setOrientador($orientador);
-        $grupo->setCalendario($calendario);
         $grupo->setSalon($salon);
         $grupo->setDia($grupoDto->dia);
         $grupo->setJornada($grupoDto->jornada);

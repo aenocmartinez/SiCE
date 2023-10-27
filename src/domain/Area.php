@@ -47,6 +47,10 @@ class Area {
         return $repository->listarAreas();
     }
 
+    public function listarOrientadores(): array {
+        return $this->repository->listarOrientadoresPorArea($this->id);
+    }
+
     public function crear(): bool {
         return $this->repository->crearArea($this);
     }

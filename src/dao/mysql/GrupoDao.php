@@ -3,39 +3,58 @@
 namespace Src\dao\mysql;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Src\domain\CursoCalendario;
 use Src\domain\Grupo;
 use Src\domain\repositories\GrupoRepository;
 
 class GrupoDao extends Model implements GrupoRepository {
     protected $table = 'grupos';
-    protected $fillable = ['curso_id', 'calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada'];
+    protected $fillable = ['curso_calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada'];
 
     public function listarGrupos(): array {
-        $grupos = array();
+        $listaGrupos = array();
         $cursoDao = new CursoDao();
         $calendarioDao = new CalendarioDao();
         $orientadorDao = new OrientadorDao();
         $salonDao = new SalonDao();
 
         try {
-            $resultado = GrupoDao::orderBy('calendario_id', 'desc')->get();
-            foreach ($resultado as $r) {
-                $grupo = new Grupo();                
-                $grupo->setid($r['id']);
-                $grupo->setCalendario($calendarioDao->buscarCalendarioPorId($r['calendario_id']));
-                $grupo->setOrientador($orientadorDao->buscarOrientadorPorId($r['orientador_id']));
-                $grupo->setCurso($cursoDao->buscarCursoPorId($r['curso_id']));
-                $grupo->setSalon($salonDao->buscarSalonPorId($r['salon_id']));
-                $grupo->setDia($r['dia']);
-                $grupo->setJornada($r['jornada']);
+            $grupos = DB::table('grupos as g')
+                        ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id',
+                                'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id')
+                        ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
+                        ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
+                        ->join('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
+                        ->join('cursos as c', 'c.id', '=', 'cc.curso_id')
+                        ->join('salones as s', 's.id', '=', 'g.salon_id')
+                        ->get();
 
-                array_push($grupos, $grupo);
+            foreach ($grupos as $g) {
+                $grupo = new Grupo();                
+                $grupo->setid($g->id);
+                $grupo->setDia($g->dia);
+                $grupo->setJornada($g->jornada);
+                
+                $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
+                $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);
+                $curso = $cursoDao->buscarCursoPorId($g->curso_id);
+                $salon = $salonDao->buscarSalonPorId($g->salon_id);
+
+                $cursoCalendario = new CursoCalendario($caledario, $curso);
+                $cursoCalendario->setId($g->curso_calendario_id);
+
+                $grupo->setCursoCalendario($cursoCalendario);
+                $grupo->setOrientador($orientador);
+                $grupo->setSalon($salon);
+
+                array_push($listaGrupos, $grupo);
             }
         } catch (\Exception $e) {
             $e->getMessage();
         }
 
-        return $grupos;
+        return $listaGrupos;
     }
 
     public function buscarGrupoPorId(int $id): Grupo {
@@ -46,15 +65,34 @@ class GrupoDao extends Model implements GrupoRepository {
         $salonDao = new SalonDao();
 
         try {
-            $r = GrupoDao::find($id);
-            if ($r) {
-                $grupo->setid($r['id']);
-                $grupo->setCalendario($calendarioDao->buscarCalendarioPorId($r['calendario_id']));
-                $grupo->setOrientador($orientadorDao->buscarOrientadorPorId($r['orientador_id']));
-                $grupo->setCurso($cursoDao->buscarCursoPorId($r['curso_id']));
-                $grupo->setSalon($salonDao->buscarSalonPorId($r['salon_id']));
-                $grupo->setDia($r['dia']);
-                $grupo->setJornada($r['jornada']);
+            $g = DB::table('grupos as g')
+                    ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id',
+                            'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id')
+                    ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
+                    ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
+                    ->join('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
+                    ->join('cursos as c', 'c.id', '=', 'cc.curso_id')
+                    ->join('salones as s', 's.id', '=', 'g.salon_id')
+                    ->where('g.id', $id)
+                    ->first();
+
+            if ($g) {
+                $grupo = new Grupo();                
+                $grupo->setid($g->id);
+                $grupo->setDia($g->dia);
+                $grupo->setJornada($g->jornada);
+                
+                $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
+                $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);
+                $curso = $cursoDao->buscarCursoPorId($g->curso_id);
+                $salon = $salonDao->buscarSalonPorId($g->salon_id);
+
+                $cursoCalendario = new CursoCalendario($caledario, $curso);
+                $cursoCalendario->setId($g->curso_calendario_id);
+
+                $grupo->setCursoCalendario($cursoCalendario);
+                $grupo->setOrientador($orientador);
+                $grupo->setSalon($salon);
             }            
         } catch (\Exception $e) {
             $e->getMessage();
@@ -69,10 +107,10 @@ class GrupoDao extends Model implements GrupoRepository {
     }
 
     public function crearGrupo(Grupo $grupo): bool {
+        $exito = true;
         try {
             $result = GrupoDao::create([
-                'curso_id' => $grupo->getCurso()->getId(), 
-                'calendario_id' => $grupo->getCalendario()->getId(), 
+                'curso_calendario_id' => $grupo->getCursoCalendarioId(), 
                 'salon_id' => $grupo->getSalon()->getId(), 
                 'orientador_id' => $grupo->getOrientador()->getId(), 
                 'dia' => $grupo->getDia(), 
@@ -80,10 +118,11 @@ class GrupoDao extends Model implements GrupoRepository {
             ]);
 
         } catch (\Exception $e) {
+            $exito = false;
             $e->getMessage();
         }   
 
-        return $result['id'] > 0;  
+        return $exito;
     }
 
     public function eliminarGrupo(Grupo $grupo): bool {
@@ -105,8 +144,8 @@ class GrupoDao extends Model implements GrupoRepository {
             $rs = GrupoDao::find($grupo->getId());
             if ($rs) {
                 $rs->update([
-                    'curso_id' => $grupo->getCurso()->getId(), 
-                    'calendario_id' => $grupo->getCalendario()->getId(), 
+                    // 'curso_id' => $grupo->getCurso()->getId(), 
+                    // 'calendario_id' => $grupo->getCalendario()->getId(), 
                     'salon_id' => $grupo->getSalon()->getId(), 
                     'orientador_id' => $grupo->getOrientador()->getId(), 
                     'dia' => $grupo->getDia(), 
@@ -123,15 +162,15 @@ class GrupoDao extends Model implements GrupoRepository {
     public function existeGrupo(Grupo $grupo): bool {
         $existe = false;
         try {
-            $result = GrupoDao::where('curso_id', $grupo->getCurso()->getId())
-                                ->where('calendario_id', $grupo->getCalendario()->getId())
-                                ->where('salon_id', $grupo->getSalon()->getId())
-                                ->where('orientador_id', $grupo->getOrientador()->getId())
-                                ->where('jornada', $grupo->getJornada())
-                                ->where('dia', $grupo->getDia())
-                                ->first();
-            if ($result)
-                $existe = true;
+            // $result = GrupoDao::where('curso_id', $grupo->getCurso()->getId())
+            //                     ->where('calendario_id', $grupo->getCalendario()->getId())
+            //                     ->where('salon_id', $grupo->getSalon()->getId())
+            //                     ->where('orientador_id', $grupo->getOrientador()->getId())
+            //                     ->where('jornada', $grupo->getJornada())
+            //                     ->where('dia', $grupo->getDia())
+            //                     ->first();
+            // if ($result)
+            //     $existe = true;
 
         } catch(\Exception $e) {
             $e->getMessage();
@@ -143,7 +182,7 @@ class GrupoDao extends Model implements GrupoRepository {
     public function salonDisponible(Grupo $grupo): bool {
         $disponible = true;
         try {
-            $result = GrupoDao::where('calendario_id', $grupo->getCalendario()->getId())
+            $result = GrupoDao::where('curso_calendario_id', $grupo->getCursoCalendarioId())
                                 ->where('salon_id', $grupo->getSalon()->getId())                                
                                 ->where('jornada', $grupo->getJornada())
                                 ->where('dia', $grupo->getDia())

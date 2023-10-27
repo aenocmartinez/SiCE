@@ -12,7 +12,6 @@ class ListaDeValor {
             'Jueves',
             'Viernes',
             'Sábado',
-            'Domingo'
         ];
     }
 

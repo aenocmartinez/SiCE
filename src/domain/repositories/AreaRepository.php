@@ -11,4 +11,5 @@ interface AreaRepository {
     public function crearArea(Area $area): bool;
     public function eliminarArea(Area $area): bool;
     public function actualizarArea(Area $area): bool;
+    public function listarOrientadoresPorArea(int $areaId): array;
 }

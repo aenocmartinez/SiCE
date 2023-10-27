@@ -8,23 +8,21 @@ class Grupo {
     private Curso $curso;
     private Salon $salon;
     private string $jornada;
-    private Calendario $calendario;
     private Orientador $orientador;
+    private CursoCalendario $cursoCalendario;
     private $repository;
 
-    public function __construct($cursoId=0, $calendarioId=0, $salonId=0, $orientadorId=0) {
+    public function __construct($cursoCalendarioId=0, $salonId=0, $orientadorId=0) {
         $this->id = 0;
         $this->dia = "";
         $this->jornada = "";
 
-        $this->curso = new Curso;        
-        $this->curso->setId($cursoId);
-
         $this->orientador = new Orientador;
         $this->orientador->setId($orientadorId);
+        
 
-        $this->calendario = new Calendario; 
-        $this->calendario->setId($calendarioId);
+        $this->cursoCalendario = new CursoCalendario(new Calendario(), new Curso());
+        $this->cursoCalendario->setId($cursoCalendarioId);
 
         $this->salon = new Salon;         
         $this->salon->setId($salonId);
@@ -42,21 +40,41 @@ class Grupo {
         return $this->id;
     }
 
-    public function setCurso(Curso $curso): void {
-        $this->curso = $curso;
+    // public function setCurso(Curso $curso): void {
+    //     $this->curso = $curso;
+    // }
+
+    public function setCursoCalendario(CursoCalendario $cursoCalendario): void {
+        $this->cursoCalendario = $cursoCalendario;
     }
 
-    public function getCurso(): Curso {
-        return $this->curso;
+    // public function getCurso(): Curso {
+    //     return $this->curso;
+    // }
+
+    public function getCursoCalendarioId(): int {
+       return $this->cursoCalendario->getId();
     }
 
-    public function setCalendario(Calendario $calendario): void {
-        $this->calendario = $calendario;
+    public function getNombreCurso(): string {
+        return $this->cursoCalendario->getCurso()->getNombre();
     }
 
-    public function getCalendario(): Calendario {
-        return $this->calendario;
+    public function getNombreCalendario(): string {
+        return $this->cursoCalendario->getCalendario()->getNombre();
     }
+
+    public function getCalendarioId(): int {
+        return $this->cursoCalendario->getCalendario()->getId();
+    }    
+
+    // public function setCalendario(Calendario $calendario): void {
+    //     $this->cursoCalendario->setCalendario($calendario);
+    // }
+
+    // public function getCalendario(): Calendario {
+    //     return $this->cursoCalendario->getCalendario();
+    // }
 
     public function setSalon(Salon $salon): void {
         $this->salon = $salon;

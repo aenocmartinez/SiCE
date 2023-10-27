@@ -188,7 +188,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
         if ($calendarioEncontrado) {
 
             $calendario = new Calendario($calendarioEncontrado->nombre);
-            $calendario->setId($calendarioId);
+            $calendario->setId($calendarioId);            
 
             foreach($calendarioEncontrado->cursos as $item) {
                 $curso = new Curso($item->nombre);
@@ -199,7 +199,10 @@ class CalendarioDao extends Model implements CalendarioRepository {
                     'modalidad' => $item->pivot->modalidad
                 ];
 
-                array_push($cursosCalendario, new CursoCalendario($calendario, $curso, $datos));
+                $cursoCalendario = new CursoCalendario($calendario, $curso, $datos);
+                $cursoCalendario->setId($item->pivot->id);
+
+                array_push($cursosCalendario, $cursoCalendario);
             }
         }
 

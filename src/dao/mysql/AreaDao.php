@@ -3,9 +3,10 @@
 namespace Src\dao\mysql;
 
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\DB;
 use Src\domain\repositories\AreaRepository;
 use Src\domain\Area;
+use Src\domain\Orientador;
 
 class AreaDao extends Model implements AreaRepository {  
       
@@ -93,5 +94,37 @@ class AreaDao extends Model implements AreaRepository {
             $e->getMessage();
         }   
         return $exito; 
+    }
+
+    public function listarOrientadoresPorArea(int $cursoCalendarioId): array {
+        $listOrientadores = [];
+        try {
+
+            $orientadores = DB::table('orientadores as o')
+                ->select('o.id', 'o.nombre', 'o.documento', 'o.tipo_documento')
+                ->distinct()
+                ->join('orientador_areas as oa', 'o.id', '=', 'oa.orientador_id')
+                ->join('areas as a', 'oa.area_id', '=', 'a.id')
+                ->join('cursos as c', 'c.area_id', '=', 'a.id')
+                ->join('curso_calendario as cc', 'cc.curso_id', '=', 'c.id')
+                ->where('cc.id', $cursoCalendarioId)
+                ->orderBy('o.nombre')
+                ->get();
+
+            foreach($orientadores as $o) {
+                $orientador = new Orientador();
+                $orientador->setId($o->id);
+                $orientador->setNombre($o->nombre);
+                $orientador->setDocumento($o->documento);
+                $orientador->setTipoDocumento($o->tipo_documento);
+
+                array_push($listOrientadores, $orientador);
+            }
+
+        } catch(\Exception $e) {
+            $e->getMessage();
+        }
+
+        return $listOrientadores;
     }
 }

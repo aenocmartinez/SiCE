@@ -6,6 +6,7 @@ use App\Http\Requests\GuardarGrupo;
 use Src\domain\Grupo;
 use Src\infraestructure\util\ListaDeValor;
 use Src\infraestructure\util\Validador;
+use Src\usecase\areas\ListarOrientadoresPorCursoCalendarioUseCase;
 use Src\usecase\calendarios\ListarCalendariosUseCase;
 use Src\usecase\cursos\ListarCursosUseCase;
 use Src\usecase\grupos\ActualizarGrupoUseCase;
@@ -31,7 +32,7 @@ class GrupoController extends Controller
         return view('grupos.create', [
             'cursos' => array(),
             'calendarios' => (new ListarCalendariosUseCase())->ejecutar(),
-            'salones' => array(),
+            'salones' => (new ListarSalonesUseCase)->ejecutar(),
             'orientadores' => array(),
             'dias' => ListaDeValor::diasSemana(),
             'jornadas' => ListaDeValor::jornadas(),
@@ -101,10 +102,20 @@ class GrupoController extends Controller
         ]);
     }
 
+    public function listarOrientadoresPorCursoCalendario($cursoCalendarioId) {
+        if (!Validador::parametroId($cursoCalendarioId)) {
+            return redirect()->route('grupos.index')->with('status','parámetro no válido');
+        }
+
+        return view('grupos._orientadores_por_curso',[
+            'orientadores' => (new ListarOrientadoresPorCursoCalendarioUseCase)->ejecutar($cursoCalendarioId)
+        ]);        
+    }
+
     private function hydrateDto($data): GrupoDto {        
         $grupoDto = new GrupoDto();
         $grupoDto->dia = $data['dia'];
-        $grupoDto->cursoId = $data['curso'];
+        $grupoDto->cursoCalendarioId = $data['curso'];
         $grupoDto->salonId = $data['salon'];
         $grupoDto->jornada = $data['jornada'];
         $grupoDto->calendarioId = $data['calendario'];

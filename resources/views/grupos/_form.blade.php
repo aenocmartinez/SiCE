@@ -13,7 +13,7 @@
                         @if ($calendario->esVigente())                            
                             <option 
                                 value="{{ $calendario->getId() }}"
-                                {{ old('calendario', $grupo->getCalendario()->getId()) == $calendario->getId() ? 'selected' : '' }}
+                                {{ old('calendario', $grupo->getCalendarioId()) == $calendario->getId() ? 'selected' : '' }}
                                 >{{ $calendario->getNombre() }}
                             </option>
                         @endif
@@ -34,7 +34,7 @@
                         <option 
                             value="{{ $salon->getId() }}"
                             {{ old('salon', $grupo->getSalon()->getId()) == $salon->getId() ? 'selected' : '' }}
-                            >{{ $salon->getNombreYTipoSalon() }}</option>
+                            >{{ $salon->getNombre() }}</option>
                     @endforeach
                 </select>
                 @error('salon')
@@ -65,7 +65,7 @@
 
             <div class="col-6">
 
-            <label class="form-label" for="curso">Curso</label>
+                <label class="form-label" for="curso">Curso</label>
                 <select class="form-select" id="curso" name="curso"></select>
                 <br>
 
@@ -90,12 +90,6 @@
                 <label class="form-label" for="orientador">Orientador</label>
                 <select class="form-select @error('orientador') is-invalid @enderror" id="orientador" name="orientador">
                     <option value="">Selecciona un orientador</option>
-                    @foreach ($orientadores as $orientador)
-                        <option 
-                            value="{{ $orientador->getId() }}"
-                            {{ old('orientador', $grupo->getOrientador()->getId()) == $orientador->getId() ? 'selected' : '' }}
-                            >{{ $orientador->getNombre() }}</option>
-                    @endforeach
                 </select>   
                 @error('orientador')
                     <span class="invalid-feedback" role="alert">
@@ -128,23 +122,23 @@
 <script>
     $(document).ready(function(){
         $("#calendario").change(function() {
-            if ($("#calendario").val().length === 0) {                
+            if ($("#calendario").val().length === 0) { 
+                $("#curso").html("<select class=\"form-select\" id=\"curso\" name=\"curso\"></select>");   
+                $("#orientador").html("<select class=\"form-select\" id=\"orientador\" name=\"orientador\"></select>");            
                 return ;
             }            
-            
             const calendarioId = $('#calendario').val();
-
             listarCursos(calendarioId);
-            
-            // $("#cursos_por_area").html("");
-            // $("#cursos_abiertos_en_el_periodo").html("");
-            // if ($("#area").val().length === 0) {                
-            //     return ;
-            // }
+        });
 
-            // const areaId = $('#area').val();
-            // listarCursos(areaId);
-            // listarCursosDelPeriodo("{{ $calendario->getId() }}", areaId);
+        $("#curso").change(function() {
+            $("#salon").val("");
+            if ($("#curso").val().length === 0) {       
+                $("#orientador").html("<select class=\"form-select\" id=\"orientador\" name=\"orientador\"></select>");                   
+                return ;
+            }            
+            const cursoCalendarioId = $('#curso').val();
+            listarOrientadores(cursoCalendarioId);
         });        
     });
 
@@ -162,4 +156,21 @@
             }            
         });        
     }
+
+    function listarOrientadores(cursoCalendarioId) {   
+        
+        console.log("cursoCalendarioId: ", cursoCalendarioId);
+        $("#orientador").html("<select class=\"form-select\" id=\"orientador\" name=\"orientador\"></select>");
+        
+        var url = "{{ route('grupos.orientadores_por_curso_calendario', ['cursoCalendarioId' => ':cursoCalendarioId']) }}";
+        url = url.replace(':cursoCalendarioId', cursoCalendarioId);            
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(resp) {
+                $("#orientador").html(resp);
+            }            
+        });        
+    }    
 </script>
