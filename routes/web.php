@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CalendarioController;
+use App\Http\Controllers\ConvenioController;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\OrientadorController;
@@ -84,11 +85,17 @@ Route::patch('/grupos/{id}/actualizar', [GrupoController::class, 'update'])->nam
 Route::get('/grupos/calendario/{calendarioId}/cursos/{cursoCalendarioIdActual}',[GrupoController::class, 'listarCursosPorCalendario'])->name('grupos.cursos_calendario');
 Route::get('/grupos/lista-orientadores/{cursoCalendarioId}/{orientadorIdActual}',[GrupoController::class, 'listarOrientadoresPorCursoCalendario'])->name('grupos.orientadores_por_curso_calendario');
 
-
-
 Route::get('/tipo-salones', [TipoSalonController::class, 'index'])->name('tipo-salones.index');
 Route::get('/tipo-salones/{id}/editar', [TipoSalonController::class, 'edit'])->name('tipo-salones.edit');
 Route::get('/tipo-salones/crear', [TipoSalonController::class, 'create'])->name('tipo-salones.create');
 Route::post('/tipo-salones', [TipoSalonController::class, 'store'])->name('tipo-salones.store');
 Route::delete('/tipo-salones/{id}', [TipoSalonController::class, 'destroy'])->name('tipo-salones.delete');
 Route::patch('/tipo-salones/actualizar', [TipoSalonController::class, 'update'])->name('tipo-salones.update');
+
+
+Route::get('/convenios', [ConvenioController::class, 'index'])->name('convenios.index');
+Route::get('/convenios/crear', [ConvenioController::class, 'create'])->name('convenios.create');
+Route::get('/convenios/{id}/editar', [ConvenioController::class, 'edit'])->name('convenios.edit');
+Route::post('convenios', [ConvenioController::class, 'store'])->name('convenios.store');
+Route::delete('/convenios/{id}', [ConvenioController::class, 'delete'])->name('convenios.delete');
+Route::patch('/convenios', [ConvenioController::class, 'update'])->name('convenios.update');

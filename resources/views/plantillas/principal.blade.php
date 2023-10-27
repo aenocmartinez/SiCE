@@ -92,7 +92,7 @@
                 <a class="nav-main-link {{ setActive(['grupos.index', 'grupos.*']) }}" href="{{ route('grupos.index') }}">
                   <span class="nav-main-link-name">Grupos</span>
                 </a>
-                <a class="nav-main-link" href="{{ route('home') }}">
+                <a class="nav-main-link {{ setActive(['convenios.index', 'convenios.*']) }}" href="{{ route('convenios.index') }}">
                   <span class="nav-main-link-name">Convenios</span>
                 </a>
                 <a class="nav-main-link" href="{{ route('home') }}">
