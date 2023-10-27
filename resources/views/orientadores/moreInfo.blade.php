@@ -73,7 +73,7 @@
                         @forelse ($orientador->misGrupos() as $grupo)
                         <a class="list-group-item list-group-item-action" href="javascript:void(0)">
                         <small>
-                            {{ $grupo->getCurso()->getNombre() }} / Periodo: {{ $grupo->getCalendario()->getNombre() }}
+                            {{ $grupo->getNombreCurso() }} <small>({{ $grupo->getModalidad() }})</small> / Periodo: {{ $grupo->getNombreCalendario() }}
                             <span class="text-muted" style="font-size: 11px;">
                                 ({{ $grupo->getDia() }} en la {{ strtolower($grupo->getJornada()) }})
                             </span>

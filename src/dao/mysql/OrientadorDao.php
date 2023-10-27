@@ -3,9 +3,11 @@
 namespace Src\dao\mysql;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Src\domain\Area;
 use Src\domain\Calendario;
 use Src\domain\Curso;
+use Src\domain\CursoCalendario;
 use Src\domain\Grupo;
 use Src\domain\Orientador;
 use Src\domain\repositories\OrientadorRepository;
@@ -31,13 +33,16 @@ class OrientadorDao extends Model implements OrientadorRepository {
         return $this->belongsToMany(AreaDao::class, 'orientador_areas', 'orientador_id', 'area_id');
     }
 
-    public function grupos($idOrientador) {
-        return OrientadorDao::select("grupos.id", "grupos.curso_id", "grupos.calendario_id", "grupos.salon_id", "grupos.dia", "grupos.jornada")
-        ->join("grupos", "grupos.orientador_id", "=", "orientadores.id")
-        ->where('orientadores.id', $idOrientador)
-        ->orderBy('grupos.id', 'desc')
-        ->limit(10)
-        ->get();
+    public function grupos($idOrientador) {        
+        return DB::table('grupos as g')
+                ->select('g.id', 'g.curso_calendario_id', 'g.salon_id', 'g.dia', 'g.jornada',
+                        'cc.curso_id', 'cc.calendario_id', 'cc.modalidad')
+                ->join('orientadores as o', 'g.orientador_id', '=', 'o.id')
+                ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
+                ->where('o.id', $idOrientador)
+                ->orderBy('g.curso_calendario_id', 'desc')
+                ->limit(10)
+                ->get();
     }
 
     public function listarOrientadores(): array {
@@ -75,11 +80,16 @@ class OrientadorDao extends Model implements OrientadorRepository {
         return $orientadores;
     }
 
-    public function buscarOrientadorPorId($id): Orientador {
+    public function buscarOrientadorPorId($id): Orientador {        
         $orientador = new Orientador();        
+        $cursoDao = new CursoDao();
+        $calendarioDao = new CalendarioDao();
+        $orientadorDao = new OrientadorDao();
+        $salonDao = new SalonDao();
+                
         try {
-            $rs = OrientadorDao::find($id);
-            if ($rs) {
+            $rs = OrientadorDao::find($id);            
+            if ($rs) {            
                 $orientador->setId($rs['id']);
                 $orientador->setNombre($rs['nombre']);
                 $orientador->setTipoDocumento($rs['tipo_documento']);
@@ -102,21 +112,37 @@ class OrientadorDao extends Model implements OrientadorRepository {
 
                 $grupos = array();
                 foreach($this->grupos($rs['id']) as $g) {
-                    $grupo = new Grupo($g->curso_id, $g->calendario_id, $g->salon_id);
-                    $grupo->setCurso(Curso::buscarPorId($g->curso_id, new CursoDao));
-                    $grupo->setCalendario(Calendario::buscarPorId($g->calendario_id, new CalendarioDao));
+                    
+                    $grupo = new Grupo();                
+                    $grupo->setid($g->id);
                     $grupo->setDia($g->dia);
                     $grupo->setJornada($g->jornada);
-                    $grupo->setId($g->id);
+                    
+                    $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);                    
+
+                    $curso = $cursoDao->buscarCursoPorId($g->curso_id);
+                    
+                    $salon = $salonDao->buscarSalonPorId($g->salon_id);
+                    
+
+                    $cursoCalendario = new CursoCalendario($caledario, $curso);
+                    $cursoCalendario->setId($g->curso_calendario_id);
+                    $cursoCalendario->setModalidad($g->modalidad);
+                    
+                    $grupo->setCursoCalendario($cursoCalendario);
+                    // $grupo->setOrientador($orientador);
+                    $grupo->setSalon($salon);
+                    
                     array_push($grupos, $grupo);
+                    
                 }
 
-                $orientador->setGrupos($grupos);
-                
+                $orientador->setGrupos($grupos);                
             }            
         } catch (\Exception $e) {
             $e->getMessage();
         }
+
         return $orientador;
     }
 

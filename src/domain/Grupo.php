@@ -66,7 +66,11 @@ class Grupo {
 
     public function getCalendarioId(): int {
         return $this->cursoCalendario->getCalendario()->getId();
-    }    
+    }
+
+    public function getModalidad(): string {
+        return $this->cursoCalendario->getModalidad();
+    }
 
     // public function setCalendario(Calendario $calendario): void {
     //     $this->cursoCalendario->setCalendario($calendario);

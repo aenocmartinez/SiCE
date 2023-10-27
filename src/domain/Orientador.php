@@ -180,7 +180,7 @@ class Orientador {
         return $this->areas;
     }
 
-    public function misGrupos(): array {
+    public function misGrupos(): array {        
         return $this->grupos;
     }
 
