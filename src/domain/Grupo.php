@@ -92,6 +92,10 @@ class Grupo {
         return $this->orientador;
     }
 
+    public function getOrientadorId(): int {
+        return $this->orientador->getId();
+    }
+
     public function setDia(string $dia): void {
         $this->dia = $dia;
     }

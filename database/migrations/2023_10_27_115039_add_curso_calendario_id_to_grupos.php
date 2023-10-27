@@ -19,7 +19,7 @@ class AddCursoCalendarioIdToGrupos extends Migration
             $table->foreign('curso_calendario_id')->references('id')->on('curso_calendario');            
 
             $table->unique(['curso_calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada'], 'grupos_index_unique');
-            $table->unique(['curso_calendario_id', 'dia', 'jornada'], 'salon_ocupado_index_unique');            
+            $table->unique(['orientador_id', 'dia', 'jornada'], 'orientador_ocupado_index_unique');            
         });
     }
 

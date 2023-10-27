@@ -4,6 +4,7 @@
         <option 
             value="{{ $orientador->getId() }}" 
             {{ old('orientador') }}
+            {{ ($orientador->getId() == $orientadorIdActual) ? 'selected' : ''}}
             >
             {{ $orientador->getNombre() }} ({{ $orientador->getTipoNumeroDocumento() }})
         </option>

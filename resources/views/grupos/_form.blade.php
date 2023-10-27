@@ -1,3 +1,5 @@
+<input type="hidden" id="curso_calendario_id_actual" value="{{ $grupo->getCursoCalendarioId()}}">
+
 <div class="block block-rounded">
 
     <div class="block-content">
@@ -119,9 +121,15 @@
 
 <script>One.helpersOnLoad(['js-flatpickr']);</script>
 
-<script>
+<script>    
+    
+    const orientadorIdActual = '{{ $grupo->getOrientadorId() }}';
+    const cursoCalendarioIdActual =  '{{ $grupo->getCursoCalendarioId() }}';
+
     $(document).ready(function(){
+        
         $("#calendario").change(function() {
+            
             if ($("#calendario").val().length === 0) { 
                 $("#curso").html("<select class=\"form-select\" id=\"curso\" name=\"curso\"></select>");   
                 $("#orientador").html("<select class=\"form-select\" id=\"orientador\" name=\"orientador\"></select>");            
@@ -138,15 +146,17 @@
                 return ;
             }            
             const cursoCalendarioId = $('#curso').val();
-            listarOrientadores(cursoCalendarioId);
+            
+            listarOrientadores(cursoCalendarioId, orientadorIdActual);
         });        
     });
 
-    function listarCursos(calendarioId) {        
+    function listarCursos(calendarioId, cursoCalendarioIdActual) {        
         $("#curso").html("<select class=\"form-select\" id=\"curso\" name=\"curso\"></select>");
         
-        var url = "{{ route('grupos.cursos_calendario', ['calendarioId' => ':calendarioId']) }}";
-        url = url.replace(':calendarioId', calendarioId);            
+        var url = "{{ route('grupos.cursos_calendario', ['calendarioId' => ':calendarioId', 'cursoCalendarioIdActual' => ':cursoCalendarioIdActual']) }}";
+        url = url.replace(':calendarioId', calendarioId);
+        url = url.replace(':cursoCalendarioIdActual', cursoCalendarioIdActual);
 
         $.ajax({
             url: url,
@@ -157,13 +167,13 @@
         });        
     }
 
-    function listarOrientadores(cursoCalendarioId) {   
+    function listarOrientadores(cursoCalendarioId, orientadorIdActual) { 
         
-        console.log("cursoCalendarioId: ", cursoCalendarioId);
         $("#orientador").html("<select class=\"form-select\" id=\"orientador\" name=\"orientador\"></select>");
         
-        var url = "{{ route('grupos.orientadores_por_curso_calendario', ['cursoCalendarioId' => ':cursoCalendarioId']) }}";
-        url = url.replace(':cursoCalendarioId', cursoCalendarioId);            
+        var url = "{{ route('grupos.orientadores_por_curso_calendario', ['cursoCalendarioId' => ':cursoCalendarioId', 'orientadorIdActual' => ':orientadorIdActual']) }}";
+        url = url.replace(':cursoCalendarioId', cursoCalendarioId);
+        url = url.replace(':orientadorIdActual', orientadorIdActual);        
 
         $.ajax({
             url: url,
@@ -172,5 +182,14 @@
                 $("#orientador").html(resp);
             }            
         });        
+    } 
+
+    const cursoCalendarioId = "{{ $grupo->getCursoCalendarioId() }}";
+    const calendarioId = "{{  $grupo->getCalendarioId() }}";
+
+    if (cursoCalendarioId > 0){
+        listarCursos(calendarioId, cursoCalendarioIdActual);
+        listarOrientadores(cursoCalendarioId, orientadorIdActual);
     }    
+    
 </script>

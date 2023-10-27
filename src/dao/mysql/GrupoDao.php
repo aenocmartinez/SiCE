@@ -28,6 +28,7 @@ class GrupoDao extends Model implements GrupoRepository {
                         ->join('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
                         ->join('cursos as c', 'c.id', '=', 'cc.curso_id')
                         ->join('salones as s', 's.id', '=', 'g.salon_id')
+                        ->orderByDesc('g.id')
                         ->get();
 
             foreach ($grupos as $g) {
@@ -144,8 +145,6 @@ class GrupoDao extends Model implements GrupoRepository {
             $rs = GrupoDao::find($grupo->getId());
             if ($rs) {
                 $rs->update([
-                    // 'curso_id' => $grupo->getCurso()->getId(), 
-                    // 'calendario_id' => $grupo->getCalendario()->getId(), 
                     'salon_id' => $grupo->getSalon()->getId(), 
                     'orientador_id' => $grupo->getOrientador()->getId(), 
                     'dia' => $grupo->getDia(), 
@@ -162,15 +161,13 @@ class GrupoDao extends Model implements GrupoRepository {
     public function existeGrupo(Grupo $grupo): bool {
         $existe = false;
         try {
-            // $result = GrupoDao::where('curso_id', $grupo->getCurso()->getId())
-            //                     ->where('calendario_id', $grupo->getCalendario()->getId())
-            //                     ->where('salon_id', $grupo->getSalon()->getId())
-            //                     ->where('orientador_id', $grupo->getOrientador()->getId())
-            //                     ->where('jornada', $grupo->getJornada())
-            //                     ->where('dia', $grupo->getDia())
-            //                     ->first();
-            // if ($result)
-            //     $existe = true;
+            $result = GrupoDao::where('salon_id', $grupo->getSalon()->getId())
+                                ->where('orientador_id', $grupo->getOrientador()->getId())
+                                ->where('jornada', $grupo->getJornada())
+                                ->where('dia', $grupo->getDia())
+                                ->first();
+            if ($result)
+                $existe = true;
 
         } catch(\Exception $e) {
             $e->getMessage();

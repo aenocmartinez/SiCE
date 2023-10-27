@@ -18,9 +18,6 @@ class CrearGrupoUseCase {
         $grupoRepository = new GrupoDao();
         $grupo = new Grupo();
 
-        // $curso = new Curso;
-        // $curso->setId($grupoDto->cursoCalendarioId);
-
         $cursoCalendario = new CursoCalendario(new Calendario(), new Curso());
         $cursoCalendario->setId($grupoDto->cursoCalendarioId);
 
@@ -30,14 +27,9 @@ class CrearGrupoUseCase {
         $orientador = new Orientador;
         $orientador->setId($grupoDto->orientadorId);
 
-        // $calendario = new Calendario; 
-        // $calendario->setId($grupoDto->calendarioId);
-
         $salon = new Salon; 
         $salon->setId($grupoDto->salonId);
 
-        // $grupo->setCurso($curso);
-        // $grupo->setCalendario($calendario);
         $grupo->setOrientador($orientador);
         $grupo->setSalon($salon);
         $grupo->setDia($grupoDto->dia);

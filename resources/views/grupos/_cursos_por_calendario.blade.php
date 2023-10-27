@@ -1,11 +1,12 @@
 <select class="form-select @error('curso') is-invalid @enderror" id="curso" name="curso">
     <option value="">Selecciona un curso</option>
-    @foreach ($cursos as $curso)
+    @foreach ($cursos as $cursoCalendario)
         <option 
-            value="{{ $curso->getId() }}" 
+            value="{{ $cursoCalendario->getId() }}" 
             {{ old('curso') }}
+            {{ ( $cursoCalendario->getId() == $cursoCalendarioIdActual ? 'selected' : '') }}
             >
-            {{ $curso->getNombreCurso() }} ({{ $curso->getModalidad() }})
+            {{ $cursoCalendario->getNombreCurso() }} ({{ $cursoCalendario->getModalidad() }})
         </option>
     @endforeach
 </select>

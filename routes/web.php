@@ -81,8 +81,8 @@ Route::post('/grupos', [GrupoController::class, 'store'])->name('grupos.store');
 Route::delete('/grupos/{id}', [GrupoController::class, 'destroy'])->name('grupos.delete');
 Route::patch('/grupos/{id}/actualizar', [GrupoController::class, 'update'])->name('grupos.update');
 
-Route::get('/grupos/calendario/{calendarioId}/cursos',[GrupoController::class, 'listarCursosPorCalendario'])->name('grupos.cursos_calendario');
-Route::get('/grupos/curso-calendario/{cursoCalendarioId}/orientadores',[GrupoController::class, 'listarOrientadoresPorCursoCalendario'])->name('grupos.orientadores_por_curso_calendario');
+Route::get('/grupos/calendario/{calendarioId}/cursos/{cursoCalendarioIdActual}',[GrupoController::class, 'listarCursosPorCalendario'])->name('grupos.cursos_calendario');
+Route::get('/grupos/lista-orientadores/{cursoCalendarioId}/{orientadorIdActual}',[GrupoController::class, 'listarOrientadoresPorCursoCalendario'])->name('grupos.orientadores_por_curso_calendario');
 
 
 

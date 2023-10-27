@@ -77,7 +77,7 @@ class GrupoController extends Controller
 
     public function update(GuardarGrupo $request, $id)
     {
-        $grupoDto = $this->hydrateDto($request->validated());
+        $grupoDto = $this->hydrateDto($request->validated());        
         $response = (new ActualizarGrupoUseCase)->ejecutar($grupoDto);
         return redirect()->route('grupos.index')->with('code', $response->code)->with('status', $response->message);
     }
@@ -92,23 +92,25 @@ class GrupoController extends Controller
         return redirect()->route('grupos.index')->with('code', $response->code)->with('status', $response->message);
     }
 
-    public function listarCursosPorCalendario($calendarioId) {
+    public function listarCursosPorCalendario($calendarioId, $cursoCalendarioIdActual) {
         if (!Validador::parametroId($calendarioId)) {
             return redirect()->route('grupos.index')->with('status','parámetro no válido');
         }
 
         return view('grupos._cursos_por_calendario',[
-            'cursos' => (new ListarCursosPorCalendarioUseCase)->ejecutar($calendarioId)
+            'cursos' => (new ListarCursosPorCalendarioUseCase)->ejecutar($calendarioId),
+            'cursoCalendarioIdActual' => $cursoCalendarioIdActual,
         ]);
     }
 
-    public function listarOrientadoresPorCursoCalendario($cursoCalendarioId) {
+    public function listarOrientadoresPorCursoCalendario($cursoCalendarioId, $orientadorIdActual) {
         if (!Validador::parametroId($cursoCalendarioId)) {
             return redirect()->route('grupos.index')->with('status','parámetro no válido');
         }
 
         return view('grupos._orientadores_por_curso',[
-            'orientadores' => (new ListarOrientadoresPorCursoCalendarioUseCase)->ejecutar($cursoCalendarioId)
+            'orientadores' => (new ListarOrientadoresPorCursoCalendarioUseCase)->ejecutar($cursoCalendarioId),
+            'orientadorIdActual' => $orientadorIdActual,
         ]);        
     }
 
@@ -121,8 +123,8 @@ class GrupoController extends Controller
         $grupoDto->calendarioId = $data['calendario'];
         $grupoDto->orientadorId = $data['orientador'];
 
-        if (isset($data['id'])) {
-            $grupoDto->id = $data['id'];
+        if (isset(request()->id)) {
+            $grupoDto->id = request()->id;
         }
         
         return $grupoDto;
