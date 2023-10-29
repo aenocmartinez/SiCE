@@ -21,11 +21,10 @@
                 @forelse ($convenios as $convenio)
                 <tr>
                     <td class="fs-sm" style="width: 95%;">
-                    <h4 class="fw-normal mb-0">{{ $convenio->getNombre() }}</h4>
+                    <h4 class="fw-normal mb-0">{{ $convenio->getNombre() }} - {{ $convenio->getDescuento()."%" }} de descuento</h4>
                         <small class="fw-light">
-                            Vigencia: {{ $convenio->getFecInicio() }} a {{ $convenio->getFecFin() }} <br>
-                            Calendario: {{ $convenio->getNombreCalendario() }} <br>
-                            Descuento: {{ $convenio->getDescuento() }} %
+                            {{ $convenio->getCaducadoEnTexto() }} <br>
+                            Calendario: {{ $convenio->getNombreCalendario() }}<br>
                         </small>                     
                     </td>
                     <td class="text-center">

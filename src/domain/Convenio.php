@@ -2,7 +2,9 @@
 
 namespace Src\domain;
 
+use Carbon\Carbon;
 use Src\domain\repositories\ConvenioRepository;
+use Src\infraestructure\util\FormatoFecha;
 
 class Convenio {
     private int $id;
@@ -93,5 +95,34 @@ class Convenio {
 
     public function actualizar(): bool {
         return $this->repository->actualizarConvenio($this);
+    }
+
+    public function haCaducado(): bool {
+        $fechaCaducidad = Carbon::parse($this->fecFin);
+        $hoy = Carbon::now();        
+        if ($hoy->lte($fechaCaducidad))
+            return false;
+
+        $diasRestantes = $hoy->diffInDays($fechaCaducidad, false);
+        if (($diasRestantes + 1 == 1))
+            return false;
+        
+        return true;
+    }
+
+    public function getCaducadoEnTexto(): string {
+        $fechaCaducidad = Carbon::parse($this->fecFin);
+        $hoy = Carbon::now();        
+        if ($hoy->lte($fechaCaducidad)) {
+            $diasRestantes = $hoy->diffInDays($fechaCaducidad, false);            
+            return "El convenio vence en ". ($diasRestantes + 1) . " días";
+        } 
+
+        $diasRestantes = $hoy->diffInDays($fechaCaducidad, false);
+        if ($diasRestantes + 1 == 1)
+            return "El convenio caduca hoy";
+
+        return "El convenio ha caducado";
+
     }
 }
