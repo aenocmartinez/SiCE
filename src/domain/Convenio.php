@@ -97,11 +97,11 @@ class Convenio {
         return $this->repository->actualizarConvenio($this);
     }
 
-    public function haCaducado(): bool {
+    public function esVigente(): bool {
         $fechaCaducidad = Carbon::parse($this->fecFin);
         $hoy = Carbon::now();        
         if ($hoy->lte($fechaCaducidad))
-            return false;
+            return true;
 
         $diasRestantes = $hoy->diffInDays($fechaCaducidad, false);
         if (($diasRestantes + 1 == 1))
@@ -110,7 +110,7 @@ class Convenio {
         return true;
     }
 
-    public function getCaducadoEnTexto(): string {
+    public function getVigenciaEnTexto(): string {
         $fechaCaducidad = Carbon::parse($this->fecFin);
         $hoy = Carbon::now();        
         if ($hoy->lte($fechaCaducidad)) {

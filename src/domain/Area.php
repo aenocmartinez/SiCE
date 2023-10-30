@@ -2,8 +2,6 @@
 
 namespace Src\domain;
 
-use Src\dao\mysql\AreaDao;
-
 class Area {
 
     private int $id;

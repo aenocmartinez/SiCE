@@ -23,6 +23,30 @@ class ListaDeValor {
         ];
     }
 
+    public static function estadoCivil(): array {
+        return [
+            [ 'value' => 'Soltero/a', 'nombre' => 'Soltero/a'],
+            [ 'value' => 'Casado/a', 'nombre' => 'Casado/a'],
+            [ 'value' => 'Unión libre o unión de hecho', 'nombre' => 'Unión libre o unión de hecho'],
+            [ 'value' => 'Separado/a', 'nombre' => 'Separado/a'],
+            [ 'value' => 'Divorciado/a', 'nombre' => 'Divorciado/a'],
+            [ 'value' => 'Viudo/a', 'nombre' => 'Viudo/a'],                                                
+        ];        
+    }
+
+    public static function sexo(): array {
+        return [
+            [
+                'value' => 'M',
+                'nombre' => 'Masculino',
+            ],
+            [
+                'value' => 'F',
+                'nombre' => 'Femenino',
+            ]            
+        ];
+    }
+
     public static function eps(): array {
        return [
             "COOSALUD EPS-S",

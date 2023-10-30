@@ -8,6 +8,7 @@ use App\Http\Controllers\ConvenioController;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\OrientadorController;
+use App\Http\Controllers\ParticipanteController;
 use App\Http\Controllers\SalonController;
 use App\Http\Controllers\TipoSalonController;
 use Src\domain\Calendario;
@@ -99,3 +100,9 @@ Route::get('/convenios/{id}/editar', [ConvenioController::class, 'edit'])->name(
 Route::post('convenios', [ConvenioController::class, 'store'])->name('convenios.store');
 Route::delete('/convenios/{id}', [ConvenioController::class, 'delete'])->name('convenios.delete');
 Route::patch('/convenios', [ConvenioController::class, 'update'])->name('convenios.update');
+
+
+Route::get('/participantes/buscar-participante', [ParticipanteController::class, 'formularioBuscarPorDocumento'])->name('participantes.buscar_participante');
+Route::post('/participantes/buscar-participante', [ParticipanteController::class, 'buscarParticipantePorDocumento'])->name('participantes.buscar_participante_por_documento');
+
+Route::post('/participantes', [ParticipanteController::class, 'store'])->name('participantes.store');

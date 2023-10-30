@@ -23,7 +23,7 @@
                     <td class="fs-sm" style="width: 95%;">
                     <h4 class="fw-normal mb-0">{{ $convenio->getNombre() }} - {{ $convenio->getDescuento()."%" }} de descuento</h4>
                         <small class="fw-light">
-                            {{ $convenio->getCaducadoEnTexto() }} <br>
+                            {{ $convenio->getVigenciaEnTexto() }} <br>
                             Calendario: {{ $convenio->getNombreCalendario() }}<br>
                         </small>                     
                     </td>

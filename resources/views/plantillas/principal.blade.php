@@ -95,7 +95,7 @@
                 <a class="nav-main-link {{ setActive(['convenios.index', 'convenios.*']) }}" href="{{ route('convenios.index') }}">
                   <span class="nav-main-link-name">Convenios</span>
                 </a>
-                <a class="nav-main-link" href="{{ route('home') }}">
+                <a class="nav-main-link {{ setActive(['participantes.buscar_participante', 'participantes.*']) }}" href="{{ route('participantes.buscar_participante') }}">
                   <span class="nav-main-link-name">Inscripción</span>
                 </a>
                 <a class="nav-main-link" href="{{ route('home') }}">

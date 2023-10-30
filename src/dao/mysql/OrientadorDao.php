@@ -5,13 +5,10 @@ namespace Src\dao\mysql;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Src\domain\Area;
-use Src\domain\Calendario;
-use Src\domain\Curso;
 use Src\domain\CursoCalendario;
 use Src\domain\Grupo;
 use Src\domain\Orientador;
 use Src\domain\repositories\OrientadorRepository;
-use Src\domain\Salon;
 
 class OrientadorDao extends Model implements OrientadorRepository {
 

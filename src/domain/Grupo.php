@@ -5,9 +5,8 @@ namespace Src\domain;
 class Grupo {
     private int $id;
     private string $dia;
-    private Curso $curso;
-    private Salon $salon;
     private string $jornada;
+    private Salon $salon;
     private Orientador $orientador;
     private CursoCalendario $cursoCalendario;
     private $repository;
@@ -40,17 +39,9 @@ class Grupo {
         return $this->id;
     }
 
-    // public function setCurso(Curso $curso): void {
-    //     $this->curso = $curso;
-    // }
-
     public function setCursoCalendario(CursoCalendario $cursoCalendario): void {
         $this->cursoCalendario = $cursoCalendario;
     }
-
-    // public function getCurso(): Curso {
-    //     return $this->curso;
-    // }
 
     public function getCursoCalendarioId(): int {
        return $this->cursoCalendario->getId();
@@ -72,20 +63,16 @@ class Grupo {
         return $this->cursoCalendario->getModalidad();
     }
 
-    // public function setCalendario(Calendario $calendario): void {
-    //     $this->cursoCalendario->setCalendario($calendario);
-    // }
-
-    // public function getCalendario(): Calendario {
-    //     return $this->cursoCalendario->getCalendario();
-    // }
-
     public function setSalon(Salon $salon): void {
         $this->salon = $salon;
     }
 
     public function getSalon(): Salon {
         return $this->salon;
+    }
+
+    public function getNombreSalon(): string {
+        return $this->salon->getNombre();
     }
 
     public function setOrientador(Orientador $orientador): void {
@@ -98,6 +85,10 @@ class Grupo {
 
     public function getOrientadorId(): int {
         return $this->orientador->getId();
+    }
+
+    public function getNombreOrientador(): string {
+        return $this->orientador->getNombre();
     }
 
     public function setDia(string $dia): void {
