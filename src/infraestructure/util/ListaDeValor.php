@@ -44,7 +44,7 @@ class ListaDeValor {
                 'nombre' => 'Femenino',
             ],
             [
-                'value' => 'O',
+                'value' => 'Otro',
                 'nombre' => 'Otro',
             ]         
         ];
@@ -80,7 +80,8 @@ class ListaDeValor {
             "ANAS WAYUU EPSI",
             "MALLAMAS EPSI",
             "PIJAOS SALUD EPSI",
-            "SALUD BÓLIVAR EPS SAS"
+            "SALUD BÓLIVAR EPS SAS",
+            "NO ESTÁ AFILIADO"
        ];       
     }
 }

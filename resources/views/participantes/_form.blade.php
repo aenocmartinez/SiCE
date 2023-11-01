@@ -1,3 +1,5 @@
+<input type="hidden" name="id" value="{{ $participante->getId() }}">
+
 <div class="block block-rounded">
 
     <div class="block-content">
@@ -41,10 +43,10 @@
                     <label class="form-label" for="tipoDocumento">Tipo de documento <small class="fw-light">(obligatorio)</small></label>
                     <select class="form-select @error('tipoDocumento') is-invalid @enderror" id="tipoDocumento" name="tipoDocumento">            
                         <option value=""> - </option>
-                        <option value="CC" {{ $participante->getTipoDocumento() == "CC" ? 'selected' : '' }}>Cédula</option>
-                        <option value="TI" {{ $participante->getTipoDocumento() == "TI" ? 'selected' : '' }}>Tarjeta de identidad</option>
-                        <option value="CE" {{ $participante->getTipoDocumento() == "CE" ? 'selected' : '' }}>Cédula de extranjería</option>
-                        <option value="PP" {{ $participante->getTipoDocumento() == "PP" ? 'selected' : '' }}>Pasaporte</option>
+                        <option value="CC" {{ old('tipoDocumento', $participante->getTipoDocumento()) == "CC" ? 'selected' : '' }}>Cédula</option>
+                        <option value="TI" {{ old('tipoDocumento', $participante->getTipoDocumento()) == "TI" ? 'selected' : '' }}>Tarjeta de identidad</option>
+                        <option value="CE" {{ old('tipoDocumento', $participante->getTipoDocumento()) == "CE" ? 'selected' : '' }}>Cédula de extranjería</option>
+                        <option value="PP" {{ old('tipoDocumento', $participante->getTipoDocumento()) == "PP" ? 'selected' : '' }}>Pasaporte</option>
                     </select>
                     @error('tipoDocumento')
                         <span class="invalid-feedback" role="alert">
@@ -105,9 +107,14 @@
                         <select class="form-select @error('eps') is-invalid @enderror" id="eps" name="eps">
                         <option value="">Selecciona una eps</option>
                             @foreach ($listaEps as $eps)            
-                                <option value="{{ $eps }}" {{ $participante->getEps() == $eps ? 'selected' : '' }}>{{ $eps }}</option>
+                                <option value="{{ $eps }}" {{ old('eps', $participante->getEps()) == $eps ? 'selected' : '' }}>{{ $eps }}</option>
                             @endforeach
-                        </select>                       
+                        </select>
+                        @error('eps')
+                            <span class="invalid-feedback" role="alert">
+                                {{ $message }}
+                            </span>
+                        @enderror                                             
 
             </div>
 
@@ -164,7 +171,7 @@
                     <select class="form-select @error('sexo') is-invalid @enderror" id="sexo" name="sexo">            
                         <option value=""> - </option>
                         @foreach ($sexo as $s)                            
-                            <option value="{{ $s['value'] }}" {{ $participante->getSexo() == $s['value'] ? 'selected' : '' }}>{{ $s['nombre'] }}</option>
+                            <option value="{{ $s['value'] }}" {{ old('sexo', $participante->getSexo()) == $s['value'] ? 'selected' : '' }}>{{ $s['nombre'] }}</option>
                         @endforeach
                     </select>
                     @error('sexo')
@@ -179,10 +186,10 @@
                     <select class="form-select @error('estadoCivil') is-invalid @enderror" id="estadoCivil" name="estadoCivil">            
                         <option value=""> - </option>
                         @foreach ($estadoCivil as $s)                            
-                            <option value="{{ $s['value'] }}" {{ $participante->getEstadoCivil() == $s['value'] ? 'selected' : '' }}>{{ $s['nombre'] }}</option>
+                            <option value="{{ $s['value'] }}" {{ old('estadoCivil', $participante->getEstadoCivil()) == $s['value'] ? 'selected' : '' }}>{{ $s['nombre'] }}</option>
                         @endforeach
                     </select>
-                    @error('sexo')
+                    @error('estadoCivil')
                         <span class="invalid-feedback" role="alert">
                             {{ $message }}
                         </span>
@@ -210,6 +217,54 @@
     </div>
 
 </div>    
+
+<div class="block block-rounded">
+
+    <div class="block-content">
+
+        <div class="row push">
+
+            <h5 class="fw-light link-fx mb-4 text-primary-darker">INFORMACIÓN DE CONTACTO EN CASO DE EMERGENCIA</h5> 
+
+            <div class="col-6">
+
+                <label class="form-label" for="contactoEmergencia">Contacto <small class="fw-light">(obligatorio)</small></label>
+                <input type="text" 
+                    class="form-control @error('contactoEmergencia') is-invalid @enderror" 
+                    id="contactoEmergencia" 
+                    name="contactoEmergencia" 
+                    placeholder="" 
+                    value="{{ old('contactoEmergencia', $participante->getContactoEmergencia()) }}"                
+                    >
+                    @error('contactoEmergencia')
+                        <span class="invalid-feedback" role="alert">
+                            {{ $message }}
+                        </span>
+                    @enderror
+
+            </div>
+
+            <div class="col-6">
+                <label class="form-label" for="telefonoEmergencia">Teléfono <small class="fw-light">(obligatorio)</small></label>
+                <input type="text" 
+                    class="form-control @error('telefonoEmergencia') is-invalid @enderror" 
+                    id="telefonoEmergencia" 
+                    name="telefonoEmergencia" 
+                    placeholder="" 
+                    value="{{ old('telefonoEmergencia', $participante->getTelefonoEmergencia()) }}"                
+                    >
+                    @error('telefonoEmergencia')
+                        <span class="invalid-feedback" role="alert">
+                            {{ $message }}
+                        </span>
+                    @enderror
+
+            </div>
+        </div>
+
+    </div>    
+
+</div>
 
 <div class="block block-rounded">
 
@@ -267,11 +322,21 @@
             </div>       
             
             <div class="col-6">
-                <label class="form-label" for="curso">Curso</label>
+                <label class="form-label @error('curso') is-invalid @enderror" for="curso">Curso</label>
                 <select class="form-select" id="curso" name="curso"></select>
+                @error('curso')
+                    <span class="invalid-feedback" role="alert">
+                        {{ $message }}
+                    </span>
+                @enderror                  
                 <br>                
 
             </div>
+
+            <div class="col-12 mt-4 text-center">
+                <button class="btn btn-large btn-info">{{ $btnText }}</button>        
+                <a href="{{ route('participantes.buscar_participante') }}" class="btn btn-large btn-light"> Cancelar inscripción</a>
+            </div>            
 
         </div>
 

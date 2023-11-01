@@ -105,4 +105,5 @@ Route::patch('/convenios', [ConvenioController::class, 'update'])->name('conveni
 Route::get('/participantes/buscar-participante', [ParticipanteController::class, 'formularioBuscarPorDocumento'])->name('participantes.buscar_participante');
 Route::post('/participantes/buscar-participante', [ParticipanteController::class, 'buscarParticipantePorDocumento'])->name('participantes.buscar_participante_por_documento');
 
+Route::get('/participantes/{tipoDocumento}/{documento}', [ParticipanteController::class, 'create'])->name('participantes.create');
 Route::post('/participantes', [ParticipanteController::class, 'store'])->name('participantes.store');

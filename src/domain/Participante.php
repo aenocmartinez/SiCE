@@ -2,6 +2,7 @@
 
 namespace Src\domain;
 
+use Src\domain\repositories\ParticipanteRepository;
 
 class Participante {
     private int $id;
@@ -19,10 +20,13 @@ class Participante {
     private string $telefono;
     private string $email;
     private string $eps;
+    private string $contactoEmergencia;
+    private string $telefonoEmergencia;
+    private ParticipanteRepository $repository;
 
     public function __construct() {
         $this->id = 0;
-        $this->tipoDocumento = "CC";
+        $this->tipoDocumento = "";
         $this->documento = "";
         $this->primerNombre = "";
         $this->segundoNombre = "";
@@ -36,6 +40,12 @@ class Participante {
         $this->telefono = "";
         $this->email = "";
         $this->eps = "";
+        $this->contactoEmergencia = "";
+        $this->telefonoEmergencia = "";        
+    }
+
+    public function setRepository($repository): void {
+        $this->repository = $repository;
     }
 
     public function setId(int $id): void {
@@ -111,7 +121,7 @@ class Participante {
     }
 
     public function setSexo(string $sexo): void {
-        if ($sexo != "M" && $sexo != "F" && $sexo != "O") {
+        if ($sexo != "M" && $sexo != "F" && $sexo != "Otro") {
             $sexo = "M";
         }        
         $this->sexo = $sexo;
@@ -161,7 +171,31 @@ class Participante {
         return $this->eps;
     } 
     
+    public function setContactoEmergencia(string $contactoEmergencia): void {
+        $this->contactoEmergencia = $contactoEmergencia;
+    }
+
+    public function getContactoEmergencia(): string {
+        return $this->contactoEmergencia;
+    }
+
+    public function setTelefonoEmergencia(string $telefonoEmergencia): void {
+        $this->telefonoEmergencia = $telefonoEmergencia;
+    }
+
+    public function getTelefonoEmergencia(): string {
+        return $this->telefonoEmergencia;
+    }    
+
     public function existe(): bool {
         return $this->id > 0;
+    }
+
+    public function crear(): bool {
+        return $this->repository->crearParticipante($this);
+    }
+
+    public function actualizar(): bool {
+        return $this->repository->actualizarParticipante($this);
     }
 }

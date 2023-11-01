@@ -18,10 +18,7 @@
 
 @section("content")
     <form method="post" action="{{ route('participantes.store') }}">
-        @csrf
-        
-        @include('participantes._form', ['btnText' => 'Guardar'])
-
-        
+        @csrf        
+        @include('participantes._form', ['btnText' => 'Guardar formulario'])        
     </form>
 @endsection

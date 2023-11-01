@@ -23,7 +23,9 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                             'direccion',
                             'telefono',
                             'email',
-                            'eps'
+                            'eps',
+                            'contacto_emergencia',
+                            'telefono_emergencia'
                         ];
 
     public function buscarParticipantePorDocumento(string $tipo, string $documento): Participante {
@@ -40,13 +42,15 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                 $participante->setFechaNacimiento($participanteDao->fecha_nacimiento);
                 $participante->setTipoDocumento($participanteDao->tipo_documento);
                 $participante->setDocumento($participanteDao->documento);
-                $participante->setFechaExpedicion($participanteDao->fecha_expedicion);
+                // $participante->setFechaExpedicion($participanteDao->fecha_expedicion);
                 $participante->setSexo($participanteDao->sexo);
                 $participante->setEstadoCivil($participanteDao->estado_civil);
                 $participante->setDireccion($participanteDao->direccion);
                 $participante->setTelefono($participanteDao->telefono);
                 $participante->setEmail($participanteDao->email);
                 $participante->setEps($participanteDao->eps);
+                $participante->setContactoEmergencia($participanteDao->contacto_emergencia);
+                $participante->setTelefonoEmergencia($participanteDao->telefono_emergencia);
             }
 
         } catch (Exception $e) {
@@ -54,6 +58,71 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         }
 
         return $participante;        
+    }
+
+    public function crearParticipante(Participante $participante): bool {
+        $exito = false;
+        try {
+
+            ParticipanteDao::create([
+                'primer_nombre' => $participante->getPrimerNombre(),
+                'segundo_nombre' => $participante->getSegundoNombre(),
+                'primer_apellido' => $participante->getPrimerApellido(),
+                'segundo_apellido' => $participante->getSegundoApellido(),
+                'fecha_nacimiento' => $participante->getFechaNacimiento(),
+                'tipo_documento' => $participante->getTipoDocumento(),
+                'documento' => $participante->getDocumento(),
+                'sexo' => $participante->getSexo(),
+                'estado_civil' => $participante->getEstadoCivil(),
+                'direccion' => $participante->getDireccion(),
+                'telefono' => $participante->getTelefono(),
+                'email' => $participante->getEmail(),
+                'eps' => $participante->getEps(),
+                'contacto_emergencia' => $participante->getContactoEmergencia(),
+                'telefono_emergencia' => $participante->getTelefonoEmergencia()
+            ]);
+
+            $exito = true;
+
+
+        } catch (Exception $e) {
+            dd($e->getMessage());
+        }
+
+        return $exito;
+    }
+
+    public function actualizarParticipante(Participante $participante): bool {
+        $exito = false;
+        try {
+
+            ParticipanteDao::whereId($participante->getId())
+                ->update([
+                    'primer_nombre' => $participante->getPrimerNombre(),
+                    'segundo_nombre' => $participante->getSegundoNombre(),
+                    'primer_apellido' => $participante->getPrimerApellido(),
+                    'segundo_apellido' => $participante->getSegundoApellido(),
+                    'fecha_nacimiento' => $participante->getFechaNacimiento(),
+                    'tipo_documento' => $participante->getTipoDocumento(),
+                    'documento' => $participante->getDocumento(),
+                    'sexo' => $participante->getSexo(),
+                    'estado_civil' => $participante->getEstadoCivil(),
+                    'direccion' => $participante->getDireccion(),
+                    'telefono' => $participante->getTelefono(),
+                    'email' => $participante->getEmail(),
+                    'eps' => $participante->getEps(),
+                    'contacto_emergencia' => $participante->getContactoEmergencia(),
+                    'telefono_emergencia' => $participante->getTelefonoEmergencia()
+                ]);
+
+            $exito = true;
+
+
+        } catch (Exception $e) {
+            dd($e->getMessage());
+        }
+
+        return $exito;
     }
 
 }
