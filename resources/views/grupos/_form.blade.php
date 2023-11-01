@@ -8,9 +8,9 @@
 
             <div class="col-6">
 
-            <label class="form-label" for="calendario">Calendario</label>
+            <label class="form-label" for="calendario">Periodo</label>
                 <select class="form-select @error('calendario') is-invalid @enderror" id="calendario" name="calendario">
-                    <option value="">Selecciona un calendario</option>
+                    <option value="">Selecciona periodo</option>
                     @foreach ($calendarios as $calendario)
                         @if ($calendario->esVigente())                            
                             <option 

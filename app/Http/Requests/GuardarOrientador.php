@@ -29,7 +29,7 @@ class GuardarOrientador extends FormRequest
             'tipoDocumento' => 'required',
             'documento' => 'required|numeric',
             'emailInstitucional' => 'regex:/^.+@unicolmayor\.edu\.co$/i|nullable',
-            'emailPersonal' => 'required|email',
+            'emailPersonal' => 'nullable|email',
             'direccion' => 'nullable',
             'eps' => 'nullable',
             'area' => 'nullable',
@@ -42,7 +42,6 @@ class GuardarOrientador extends FormRequest
     public function messages() {
         return [
             'emailInstitucional.regex' => 'Sólo se permiten email terminados en @unicolmayor.edu.co',
-            'emailPersonal.required' => 'El campo correo personal es obligatorio.',
             'fecNacimiento.date' => 'Formato no válido para el campo fecha de nacimiento.',
         ];
     }

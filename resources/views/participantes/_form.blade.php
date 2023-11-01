@@ -8,21 +8,6 @@
 
             <div class="col-6">
 
-                <label class="form-label" for="primerNombre">Primer nombre <small class="fw-light">(obligatorio)</small></label>
-                <input type="text" 
-                    class="form-control @error('primerNombre') is-invalid @enderror" 
-                    id="primerNombre" 
-                    name="primerNombre" 
-                    placeholder="" 
-                    value="{{ old('primerNombre', $participante->getPrimerNombre()) }}"                
-                    >
-                    @error('primerNombre')
-                        <span class="invalid-feedback" role="alert">
-                            {{ $message }}
-                        </span>
-                    @enderror
-                    <br>
-                    
                 <label class="form-label" for="primerApellido">Primer apellido <small class="fw-light">(obligatorio)</small></label>
                 <input type="text" 
                     class="form-control @error('primerApellido') is-invalid @enderror" 
@@ -36,7 +21,22 @@
                             {{ $message }}
                         </span>
                     @enderror
-                    <br>     
+                    <br>   
+
+                <label class="form-label" for="primerNombre">Primer nombre <small class="fw-light">(obligatorio)</small></label>
+                <input type="text" 
+                    class="form-control @error('primerNombre') is-invalid @enderror" 
+                    id="primerNombre" 
+                    name="primerNombre" 
+                    placeholder="" 
+                    value="{{ old('primerNombre', $participante->getPrimerNombre()) }}"                
+                    >
+                    @error('primerNombre')
+                        <span class="invalid-feedback" role="alert">
+                            {{ $message }}
+                        </span>
+                    @enderror
+                    <br>              
                     
                     <label class="form-label" for="tipoDocumento">Tipo de documento <small class="fw-light">(obligatorio)</small></label>
                     <select class="form-select @error('tipoDocumento') is-invalid @enderror" id="tipoDocumento" name="tipoDocumento">            
@@ -53,37 +53,22 @@
                     @enderror          
 
                     <br>
-
-                    <label class="form-label" for="fecExpedicion">Fecha de expedición <small class="fw-light">(obligatorio)</small></label>
-                    <input type="text" 
-                       class="js-flatpickr form-control @error('fecExpedicion') is-invalid @enderror" 
-                       id="fecExpedicion" 
-                       name="fecExpedicion" 
-                       placeholder=""
-                       value="{{ old('fecExpedicion', $participante->getFechaExpedicion()) }}"
-                       >
-                    @error('fecExpedicion')
-                        <span class="invalid-feedback" role="alert">
-                            {{ $message }}
-                        </span>
-                    @enderror
-
-                    <br>
                     
-                    <label class="form-label" for="sexo">Sexo <small class="fw-light">(obligatorio)</small></label>
-                    <select class="form-select @error('sexo') is-invalid @enderror" id="sexo" name="sexo">            
-                        <option value=""> - </option>
-                        @foreach ($sexo as $s)                            
-                            <option value="{{ $s['value'] }}" {{ $participante->getSexo() == $s['value'] ? 'selected' : '' }}>{{ $s['nombre'] }}</option>
-                        @endforeach
-                    </select>
-                    @error('sexo')
+                    <label class="form-label" for="fecNacimiento">Fecha de nacimiento <small class="fw-light">(obligatorio)</small></label>
+                    <input type="text" 
+                       class="js-flatpickr form-control @error('fecNacimiento') is-invalid @enderror" 
+                       id="fecNacimiento" 
+                       name="fecNacimiento" 
+                       placeholder=""
+                       value="{{ old('fecNacimiento', $participante->getFechaNacimiento()) }}"
+                       >
+                    @error('fecNacimiento')
                         <span class="invalid-feedback" role="alert">
                             {{ $message }}
                         </span>
-                    @enderror 
-
-                    <br>
+                    @enderror   
+                             
+                    <br>  
 
                     <label class="form-label" for="direccion">Dirección <small class="fw-light">(obligatorio)</small></label>
                     <input type="text" 
@@ -113,11 +98,35 @@
                         <span class="invalid-feedback" role="alert">
                             {{ $message }}
                         </span>
-                    @enderror                                      
+                    @enderror  
+                    
+                    <br>
+                        <label class="form-label" for="eps">EPS</label>
+                        <select class="form-select @error('eps') is-invalid @enderror" id="eps" name="eps">
+                        <option value="">Selecciona una eps</option>
+                            @foreach ($listaEps as $eps)            
+                                <option value="{{ $eps }}" {{ $participante->getEps() == $eps ? 'selected' : '' }}>{{ $eps }}</option>
+                            @endforeach
+                        </select>                       
 
             </div>
 
             <div class="col-6">
+
+                <label class="form-label" for="segundoApellido">Segundo apellido</label>
+                <input type="text" 
+                    class="form-control @error('segundoApellido') is-invalid @enderror" 
+                    id="segundoApellido" 
+                    name="segundoApellido" 
+                    placeholder="" 
+                    value="{{ old('segundoApellido', $participante->getSegundoApellido()) }}"                
+                    >
+                @error('segundoApellido')
+                    <span class="invalid-feedback" role="alert">
+                        {{ $message }}
+                    </span>
+                @enderror
+                <br>  
 
                 <label class="form-label" for="segundoNombre">Segundo nombre</label>
                 <input type="text" 
@@ -132,22 +141,7 @@
                             {{ $message }}
                         </span>
                     @enderror
-                    <br>    
-                    
-                    <label class="form-label" for="segundoApellido">Segundo apellido</label>
-                    <input type="text" 
-                        class="form-control @error('segundoApellido') is-invalid @enderror" 
-                        id="segundoApellido" 
-                        name="segundoApellido" 
-                        placeholder="" 
-                        value="{{ old('segundoApellido', $participante->getSegundoApellido()) }}"                
-                        >
-                    @error('segundoApellido')
-                        <span class="invalid-feedback" role="alert">
-                            {{ $message }}
-                        </span>
-                    @enderror
-                    <br>      
+                    <br>                        
                     
                     <label class="form-label" for="documento">No. documento <small class="fw-light">(obligatorio)</small></label>
                     <input type="text" 
@@ -166,21 +160,20 @@
 
                     <br>        
 
-                    <label class="form-label" for="fecNacimiento">Fecha de nacimiento <small class="fw-light">(obligatorio)</small></label>
-                    <input type="text" 
-                       class="js-flatpickr form-control @error('fecNacimiento') is-invalid @enderror" 
-                       id="fecNacimiento" 
-                       name="fecNacimiento" 
-                       placeholder=""
-                       value="{{ old('fecNacimiento', $participante->getFechaNacimiento()) }}"
-                       >
-                    @error('fecNacimiento')
+                    <label class="form-label" for="sexo">Género <small class="fw-light">(obligatorio)</small></label>
+                    <select class="form-select @error('sexo') is-invalid @enderror" id="sexo" name="sexo">            
+                        <option value=""> - </option>
+                        @foreach ($sexo as $s)                            
+                            <option value="{{ $s['value'] }}" {{ $participante->getSexo() == $s['value'] ? 'selected' : '' }}>{{ $s['nombre'] }}</option>
+                        @endforeach
+                    </select>
+                    @error('sexo')
                         <span class="invalid-feedback" role="alert">
                             {{ $message }}
                         </span>
-                    @enderror   
-                             
-                    <br>    
+                    @enderror 
+
+                    <br>                      
                     
                     <label class="form-label" for="estadoCivil">Estado civil <small class="fw-light">(obligatorio)</small></label>
                     <select class="form-select @error('estadoCivil') is-invalid @enderror" id="estadoCivil" name="estadoCivil">            
@@ -208,15 +201,7 @@
                             <span class="invalid-feedback" role="alert">
                                 {{ $message }}
                             </span>
-                        @enderror 
-                        <br>
-                        <label class="form-label" for="eps">EPS</label>
-                        <select class="form-select @error('eps') is-invalid @enderror" id="eps" name="eps">
-                        <option value="">Selecciona una eps</option>
-                            @foreach ($listaEps as $eps)            
-                                <option value="{{ $eps }}" {{ $participante->getEps() == $eps ? 'selected' : '' }}>{{ $eps }}</option>
-                            @endforeach
-                        </select>                  
+                        @enderror               
 
             </div>            
 
@@ -236,9 +221,9 @@
 
             <div class="col-6">
 
-                <label class="form-label" for="calendario">Calendario</label>
+                <label class="form-label" for="calendario">Periodo</label>
                 <select class="form-select @error('calendario') is-invalid @enderror" id="calendario" name="calendario">
-                    <option value="">Selecciona un calendario</option>
+                    <option value="">Selecciona un periodo</option>
                     @foreach ($calendarios as $calendario)
                         @if ($calendario->esVigente())                            
                             <option 

@@ -1,7 +1,7 @@
 @extends("plantillas.principal")
 
 @php
-    $titulo = "Crear calendario";
+    $titulo = "Crear periodo";
 @endphp
 
 @section("title", $titulo)
@@ -10,7 +10,7 @@
 
 @section("seccion")
     <a class="link-fx" href="{{ route('calendario.index') }}">
-        Calendario académico
+        Periodo académico
     </a>
 @endsection
 

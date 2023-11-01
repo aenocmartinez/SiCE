@@ -87,7 +87,7 @@
               <li class="nav-main-heading">Periodo académico</li>
               <li class="nav-main-item">
                 <a class="nav-main-link {{ setActive(['calendario.index', 'calendario.*']) }}" href="{{ route('calendario.index') }}">
-                  <span class="nav-main-link-name">Calendario</span>
+                  <span class="nav-main-link-name">Periodo</span>
                 </a>            
                 <a class="nav-main-link {{ setActive(['grupos.index', 'grupos.*']) }}" href="{{ route('grupos.index') }}">
                   <span class="nav-main-link-name">Grupos</span>

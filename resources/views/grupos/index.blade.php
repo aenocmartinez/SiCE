@@ -24,7 +24,7 @@
                         <h4 class="fw-normal mb-0">G: {{ $grupo->getId() }}</h4>
                         <small class="fw-light">
                             Curso: {{ $grupo->getNombreCurso() }} <br>
-                            Calendario: {{ $grupo->getNombreCalendario() }} <br>
+                            Periodo: {{ $grupo->getNombreCalendario() }} <br>
                             Horario: {{ $grupo->getDia() }} / {{ $grupo->getJornada() }} <br>
                             Salón: {{ $grupo->getSalon()->getNombre() }} <br>
                             Orientador: {{ $grupo->getOrientador()->getNombre() }}

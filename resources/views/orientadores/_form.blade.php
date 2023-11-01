@@ -70,7 +70,7 @@
                     <br>
 
                     <label class="form-label" for="eps">EPS</label>
-                    <select class="form-select @error('eps') is-invalid @enderror" id="eps" name="eps">
+                    <select class="form-select" id="eps" name="eps">
                     <option value="">Selecciona una eps</option>
                         @foreach ($listaEps as $eps)            
                             <option value="{{ $eps }}" {{ $orientador->getEps() == $eps ? 'selected' : '' }}>{{ $eps }}</option>
@@ -82,7 +82,7 @@
             <div class="col-sm-6">
 
                 <label class="form-label" for="nivelEstudio">Nivel de estudio</label>
-                <select class="form-select @error('nivelEstudio') is-invalid @enderror" id="nivelEstudio" name="nivelEstudio">
+                <select class="form-select" id="nivelEstudio" name="nivelEstudio">
                 <option value="">Selecciona una opción</option>
                     @foreach ($nivelesEstudio as $nivel)            
                         <option value="{{ $nivel }}" {{ $orientador->getNivelEducativo() == $nivel ? 'selected' : '' }}>{{ $nivel }}</option>
@@ -91,7 +91,7 @@
                 <br>
 
                 <label class="form-label" for="rangoSalarial">Rango salarial</label>
-                <select class="form-select @error('rangoSalarial') is-invalid @enderror" id="rangoSalarial" name="rangoSalarial">
+                <select class="form-select" id="rangoSalarial" name="rangoSalarial">
                 <option value="">Selecciona una opción</option>
                     @foreach ($listaRangoSalarial as $rango)            
                         <option value="{{ $rango }}" {{ $orientador->getRangoSalarial() == $rango ? 'selected' : '' }}>{{ $rango }}</option>
@@ -114,7 +114,7 @@
                     @enderror 
                     <br>
                         
-                <label class="form-label" for="emailPersonal">Correo personal <small class="fw-light">(obligatorio)</small></label>
+                <label class="form-label" for="emailPersonal">Correo personal</label>
                 <input type="email" 
                     class="form-control @error('emailPersonal') is-invalid @enderror"
                     id="emailPersonal" 

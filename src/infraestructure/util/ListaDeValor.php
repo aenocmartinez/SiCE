@@ -29,7 +29,6 @@ class ListaDeValor {
             [ 'value' => 'Casado/a', 'nombre' => 'Casado/a'],
             [ 'value' => 'Unión libre o unión de hecho', 'nombre' => 'Unión libre o unión de hecho'],
             [ 'value' => 'Separado/a', 'nombre' => 'Separado/a'],
-            [ 'value' => 'Divorciado/a', 'nombre' => 'Divorciado/a'],
             [ 'value' => 'Viudo/a', 'nombre' => 'Viudo/a'],                                                
         ];        
     }
@@ -43,7 +42,11 @@ class ListaDeValor {
             [
                 'value' => 'F',
                 'nombre' => 'Femenino',
-            ]            
+            ],
+            [
+                'value' => 'O',
+                'nombre' => 'Otro',
+            ]         
         ];
     }
 

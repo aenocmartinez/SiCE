@@ -1,6 +1,6 @@
 @extends("plantillas.principal")
 
-@section("title", "Calendario académico")
+@section("title", "Periodo académico")
 <!-- @section("description", "Listado y administración de las áreas para la gestión de inscripción a cursos de extensión.") -->
 
 @section("content")
@@ -8,7 +8,7 @@
 <div class="row mb-3">
     <div class="d-flex justify-content-end">
         <a href="{{ route('calendario.create') }}" class="btn btn-lg btn-info">
-            <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear calendario
+            <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear periodo
         </a>
     </div>
 </div>        
@@ -31,10 +31,10 @@
                         <div class="btn-group">
 
                         @if ($calendario->esVigente())                        
-                            <a href="{{ route('calendario.edit', $calendario->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar calendario">
+                            <a href="{{ route('calendario.edit', $calendario->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar periodo">
                                 <i class="fa fa-fw fa-pencil-alt"></i>
                             </a>
-                            <a href="{{ route('calendario.cursos', $calendario->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Gestionar cursos del calendario">
+                            <a href="{{ route('calendario.cursos', $calendario->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Gestionar cursos del periodo">
                                 <i class="fa fa-fw fa-arrow-up-right-dots"></i>
                             </a>                            
                             <form method="POST" action="{{ route('calendario.delete', $calendario->getId()) }}" id="form-del-calendario-{{$calendario->getId()}}">
@@ -42,7 +42,7 @@
                                 @method('delete')
                                 <button class="btn btn-sm btn-alt-secondary" 
                                         data-bs-toggle="tooltip" 
-                                        title="eliminar calendario" 
+                                        title="eliminar periodo" 
                                         type="button"
                                         data-id="{{ $calendario->getId() }}"
                                         onclick="confirmDelete(this)">

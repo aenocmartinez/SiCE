@@ -31,7 +31,7 @@ class Participante {
         $this->fechaNacimiento = "";
         $this->fechaExpedicion = "";
         $this->estadoCivil = "";
-        $this->sexo = "M";
+        $this->sexo = "";
         $this->direccion = "";
         $this->telefono = "";
         $this->email = "";
@@ -111,7 +111,7 @@ class Participante {
     }
 
     public function setSexo(string $sexo): void {
-        if ($sexo != "M" && $sexo != "F") {
+        if ($sexo != "M" && $sexo != "F" && $sexo != "O") {
             $sexo = "M";
         }        
         $this->sexo = $sexo;

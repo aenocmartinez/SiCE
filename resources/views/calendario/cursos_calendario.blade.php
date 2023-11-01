@@ -1,7 +1,7 @@
 @extends("plantillas.principal")
 
 @php
-    $titulo = "Cursos del calendario";
+    $titulo = "Cursos del periodo";
 @endphp
 
 @section("title", $titulo)
@@ -10,7 +10,7 @@
 
 @section("seccion")
     <a class="link-fx" href="{{ route('calendario.index') }}">
-        Calendario académico
+        Periodo académico
     </a>
 @endsection
 
@@ -49,7 +49,7 @@
             </div> 
             
             <div class="col-6">
-                <h5 class="fw-light text-end mt-5">Listado de cursos abiertos calendario {{ $calendario->getNombre() }}</h5>
+                <h5 class="fw-light text-end mt-5">Listado de cursos abiertos periodo {{ $calendario->getNombre() }}</h5>
             </div>
 
         </div>
