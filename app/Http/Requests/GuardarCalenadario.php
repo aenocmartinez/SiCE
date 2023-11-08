@@ -24,7 +24,7 @@ class GuardarCalenadario extends FormRequest
     public function rules()
     {
         return [
-            'nombre'  => 'required|max:80',
+            'nombre'  => 'required|max:8',
             'fec_ini' => 'required|ae_date_format',
             'fec_fin' => 'required|ae_date_format|after_or_equal:fec_ini',
         ];
@@ -33,6 +33,7 @@ class GuardarCalenadario extends FormRequest
     public function messages()
     {
         return [
+            'nombre.max' => 'Se permiten máximo 8 caracteres.',
             'fec_ini.required' => 'El campo fecha inicial es obligatorio',
             'fec_fin.required' => 'El campo fecha final es obligatorio',
             'fec_ini.ae_date_format' => 'La fecha inicial debe estar en formato Y-m-d.',
