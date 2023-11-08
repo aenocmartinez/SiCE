@@ -16,7 +16,7 @@ class Orientador {
     private string $eps = "";
     private string $fechaNacimiento = "";
     private string $nivelEducativo = "";
-    private string $rangoSalarial = "";
+    private $rangoSalarial = "";
     private $areas;
     private $grupos;
     private $repository;
@@ -160,11 +160,14 @@ class Orientador {
         $this->grupos = $grupos;
     }
 
-    public function setRangoSalarial(string $rangoSalarial): void {
+    public function setRangoSalarial($rangoSalarial): void {
         $this->rangoSalarial = $rangoSalarial;
     }
 
-    public function getRangoSalarial(): string {
+    public function getRangoSalarial() {
+        if (is_null($this->rangoSalarial)) 
+            return "";
+        
         return $this->rangoSalarial;
     }
 

@@ -143,7 +143,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
             }
 
         } catch(\Exception $e) {
-            dd($e->getMessage());
+            $e->getMessage();
         }
         return $resultado;
     }

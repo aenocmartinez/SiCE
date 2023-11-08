@@ -1,5 +1,7 @@
 <?php
 
+namespace Src\usecase\convenios;
+
 use Src\dao\mysql\ConvenioDao;
 use Src\view\dto\Response;
 

@@ -224,11 +224,11 @@
 
         <div class="row push">
 
-            <h5 class="fw-light link-fx mb-4 text-primary-darker">INFORMACIÓN DE CONTACTO EN CASO DE EMERGENCIA</h5> 
+            <h5 class="fw-light link-fx mb-4 text-primary-darker">CONTACTO DE EMERGENCIA</h5> 
 
             <div class="col-6">
 
-                <label class="form-label" for="contactoEmergencia">Contacto <small class="fw-light">(obligatorio)</small></label>
+                <label class="form-label" for="contactoEmergencia">Nombre del contacto de emergencia <small class="fw-light">(obligatorio)</small></label>
                 <input type="text" 
                     class="form-control @error('contactoEmergencia') is-invalid @enderror" 
                     id="contactoEmergencia" 
@@ -245,7 +245,7 @@
             </div>
 
             <div class="col-6">
-                <label class="form-label" for="telefonoEmergencia">Teléfono <small class="fw-light">(obligatorio)</small></label>
+                <label class="form-label" for="telefonoEmergencia">Número de teléfono del contacto de emergencia <small class="fw-light">(obligatorio)</small></label>
                 <input type="text" 
                     class="form-control @error('telefonoEmergencia') is-invalid @enderror" 
                     id="telefonoEmergencia" 
@@ -346,9 +346,7 @@
 
 
 <script src="{{asset('assets/js/oneui.app.min.js')}}"></script>
-<script src="{{asset('assets/js/plugins/ckeditor/ckeditor.js')}}"></script>
-<script src="{{asset('assets/js/plugins/simplemde/simplemde.min.js')}}"></script>
-<script>One.helpersOnLoad(['js-ckeditor', 'js-simplemde']);</script>
+
 
 <script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
 <script src="{{asset('assets/js/plugins/flatpickr/flatpickr.min.js')}}"></script>

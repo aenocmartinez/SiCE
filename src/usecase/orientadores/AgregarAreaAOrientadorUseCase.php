@@ -28,7 +28,7 @@ class AgregarAreaAOrientadorUseCase {
         $exito = $orientador->agregarArea($area);
 
         if (!$exito) {
-            return new Response('500', 'Ha ocurrido un error en el sistema');
+            return new Response('500', 'El orientador ya tiene esta área asignada');
         }
 
         return new Response('200', 'Se ha agregado con éxito el área');

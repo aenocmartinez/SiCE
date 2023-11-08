@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GuardarArea;
 use Src\domain\Area;
 use Src\infraestructure\util\Validador;
 use Src\view\dto\AreaDto;
@@ -48,13 +49,10 @@ class AreaController extends Controller
         return view('areas.create', compact('area'));
     }
 
-    public function store() {
-        request()->validate([
-            'nombre' => 'required'
-        ]);
-
+    public function store(GuardarArea $req) {
+        $datos = $req->validated();
         $casoUso = new CrearAreaUseCase();
-        $response = $casoUso->ejecutar(request('nombre'));
+        $response = $casoUso->ejecutar($datos['nombre']);
                 
         return redirect()->route('areas.index')->with('code', $response->code)->with('status', $response->message);
     }
@@ -72,7 +70,7 @@ class AreaController extends Controller
         return redirect()->route('areas.index')->with('code', $response->code)->with('status', $response->message);
     }
     
-    public function update() {
+    public function update(GuardarArea $req) {
 
         request()->validate([
             'id' => 'required',

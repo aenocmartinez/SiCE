@@ -32,7 +32,7 @@
                             <a href="{{ route('convenios.edit', $convenio->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar convenio">
                                 <i class="fa fa-fw fa-pencil-alt"></i>
                             </a>
-                            <form method="POST" action="{{ route('convenios.delete', $convenio->getId()) }}" id="form-del-area-{{$convenio->getId()}}">
+                            <form method="POST" action="{{ route('convenios.delete', $convenio->getId()) }}" id="form-del-convenio-{{$convenio->getId()}}">
                                 @csrf @method('delete')
                                 <button class="btn btn-sm btn-alt-secondary" 
                                         data-bs-toggle="tooltip" 

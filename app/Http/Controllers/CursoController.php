@@ -89,7 +89,7 @@ class CursoController extends Controller
         $cursoDto = new CursoDto();                    
         $cursoDto->nombre = request('nombre');
         $cursoDto->areaId = request('area');
-        $cursoDto->tipoCurso = request('tipo_curso');
+        $cursoDto->tipoCurso = request('tipoCurso');
         $cursoDto->id = request('id');
 
         return $cursoDto;

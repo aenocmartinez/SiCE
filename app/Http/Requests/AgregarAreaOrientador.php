@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class GuardarCurso extends FormRequest
+class AgregarAreaOrientador extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,18 +24,16 @@ class GuardarCurso extends FormRequest
     public function rules()
     {
         return [
-            'nombre' => 'required|max:80',
-            'area' => 'required',
-            'tipoCurso' => 'required',
-            'id' => 'numeric|nullable',
+            'idOrientador' => 'required|integer',
+            'area' => 'required|integer'
         ];
     }
 
     public function messages()
     {
         return [
-            'nombre.max' => 'El campo nombre permite máximo 80 caracteres',
-            'area.required' => 'El campo área es obligatorio.',
+            'idOrientador.required' => 'El orientador es obligatorio.',
+            'area.required' => 'El campo área es obligatorio.'
         ];
     }
 }

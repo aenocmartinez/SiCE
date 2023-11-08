@@ -30,7 +30,7 @@ class ActualizarOrientadorUseCase {
         $orientador->setObservacion($orientadorDto->observacion);
         $orientador->setFechaNacimiento($orientadorDto->fechaNacimiento);
         $orientador->setNivelEducativo($orientadorDto->nivelEducativo);
-        $orientador->setRangoSalarial($orientadorDto->rangoSalarial);
+        $orientador->setRangoSalarial($orientadorDto->rangoSalarial);        
 
         $exito = $orientador->actualizar();
         if (!$exito) {

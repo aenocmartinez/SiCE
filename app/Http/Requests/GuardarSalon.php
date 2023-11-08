@@ -24,9 +24,9 @@ class GuardarSalon extends FormRequest
     public function rules()
     {
         return [
-            'nombre' => 'required',
-            'capacidad' => 'required|numeric',
-            'tipo_salon_id' => 'nullable|numeric',
+            'nombre' => 'required|max:10|gt:0',
+            'capacidad' => 'required|integer|gt:0|max:2',
+            'tipo_salon_id' => 'nullable|integer',
             'disponible' => 'nullable',
             'hoja_vida' => 'nullable'
         ];
@@ -35,6 +35,9 @@ class GuardarSalon extends FormRequest
     public function messages() {
         return [
             'nombre.required' => 'El campo número es obligatorio',
+            'capacidad.integer' => 'El campo capacidad permite únicamente valores positivos.',
+            'nombre.max' => 'El campo nombre permite máximo 5 caracteres.',
+            'capacidad.max' => 'El campo capacidad permite máximo 2 caracteres.'
         ];
     }
 }

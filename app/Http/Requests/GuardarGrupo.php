@@ -25,12 +25,21 @@ class GuardarGrupo extends FormRequest
     {
         return [
             'curso' => 'required|numeric',
-            'salon' => 'required|numeric',
+            'salon' => 'required|integer',
             'jornada' => 'required',
-            'calendario' => 'required|numeric',
+            'calendario' => 'required|integer',
             'dia' => 'required',
-            'orientador' => 'required|numeric',
+            'orientador' => 'required|integer',
             'id' => 'numeric|nullable',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'dia.required' => 'El campo día es obligatorio',
+            'salon.required' => 'El campo salón es obligatorio',
+
         ];
     }
 }

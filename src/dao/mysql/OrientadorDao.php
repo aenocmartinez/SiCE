@@ -273,10 +273,12 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $rs->observacion = $orientador->getObservacion();
                 $rs->rango_salarial = $orientador->getRangoSalarial();
                 
+                $rs->fec_nacimiento = NULL;
                 if ($orientador->getFechaNacimiento() != "") {
                     $rs->fec_nacimiento = $orientador->getFechaNacimiento();
                 }
 
+                $rs->nivel_estudio = NULL;
                 if ($orientador->getNivelEducativo() != "") {
                     $rs->nivel_estudio = $orientador->getNivelEducativo();
                 }
@@ -290,16 +292,18 @@ class OrientadorDao extends Model implements OrientadorRepository {
         return $exito; 
     }
 
-    public function agregarArea(Orientador $orientador, Area $area): bool {      
+    public function agregarArea(Orientador $orientador, Area $area): bool {   
+        $exito = true;   
         try {
             $o = OrientadorDao::find($orientador->getId());
             if ($o) {
                 $o->areas()->attach([$area->getId()]);
             }
         } catch (\Exception $e) {
+            $exito = false;   
             $e->getMessage();
         }               
-        return true;
+        return $exito;
     }
 
     public function quitarArea(Orientador $orientador, Area $area): bool {

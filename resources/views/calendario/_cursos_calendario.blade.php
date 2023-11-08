@@ -27,7 +27,7 @@
                                     <button type="button" 
                                             class="btn btn-sm btn-alt-secondary" 
                                             data-bs-toggle="tooltip" 
-                                            title="Agregar a cursos abiertos"
+                                            title="Retirar curso"
                                             data-id="{{ $cursoCalendario->getId() }}"
                                             onclick="confirmDelete(this)"
                                             >

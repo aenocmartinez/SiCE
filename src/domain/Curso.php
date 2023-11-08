@@ -53,6 +53,10 @@ class Curso {
         return $this->area;
     }
 
+    public function getAreaId(): int {
+        return $this->area->getId();
+    }
+
     public function getNombreArea(): string {
         return $this->area->getNombre();
     }

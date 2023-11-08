@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AgregarAreaOrientador;
 use App\Http\Requests\GuardarOrientador;
 
 use Src\domain\Orientador;
@@ -80,14 +81,12 @@ class OrientadorController extends Controller
         return redirect()->route('orientadores.editAreas', [$idOrientador])->with('code', $response->code)->with('status', $response->message);
     }
 
-    public function addArea() {
-        request()->validate([
-            'idOrientador' => 'required|numeric',
-            'area' => 'required|numeric'
-        ]);
+    public function addArea(AgregarAreaOrientador $req) {
+
+        $datos = $req->validated();
         
-        $idOrientador = request('idOrientador');
-        $idArea = request('area');
+        $idOrientador = $datos['idOrientador'];
+        $idArea = $datos['area'];
 
         $casoUso = new AgregarAreaAOrientadorUseCase();
         $response = $casoUso->ejecutar($idOrientador, $idArea);

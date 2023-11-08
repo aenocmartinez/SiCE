@@ -98,7 +98,7 @@ Route::get('/convenios', [ConvenioController::class, 'index'])->name('convenios.
 Route::get('/convenios/crear', [ConvenioController::class, 'create'])->name('convenios.create');
 Route::get('/convenios/{id}/editar', [ConvenioController::class, 'edit'])->name('convenios.edit');
 Route::post('convenios', [ConvenioController::class, 'store'])->name('convenios.store');
-Route::delete('/convenios/{id}', [ConvenioController::class, 'delete'])->name('convenios.delete');
+Route::delete('/convenios/{id}', [ConvenioController::class, 'destroy'])->name('convenios.delete');
 Route::patch('/convenios', [ConvenioController::class, 'update'])->name('convenios.update');
 
 

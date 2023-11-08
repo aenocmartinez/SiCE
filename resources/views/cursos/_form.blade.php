@@ -24,7 +24,7 @@
                 <select class="form-select @error('area') is-invalid @enderror" id="area" name="area">
                     <option value="">Selecciona un área</option>
                     @foreach ($areas as $area)
-                        <option value="{{ $area->getId() }}" {{ $curso->getArea()->getId() == $area->getId() ? 'selected' : '' }} >{{ $area->getNombre() }}</option>
+                        <option value="{{ $area->getId() }}" {{ old('area', $curso->getAreaId()) == $area->getId() ? 'selected' : '' }} >{{ $area->getNombre() }}</option>
                     @endforeach
                 </select>
                 @error('area')
@@ -35,14 +35,14 @@
 
                 <br>
                 
-                <label class="form-label" for="tipo_curso">Tipo curso</label>
-                <select class="form-select @error('tipo_curso') is-invalid @enderror" id="tipo_curso" name="tipo_curso">
+                <label class="form-label" for="tipoCurso">Tipo curso</label>
+                <select class="form-select @error('tipo_curso') is-invalid @enderror" id="tipoCurso" name="tipoCurso">
                     <option value="">Selecciona un tipo</option>
                     @foreach ($tipoCursos as $tipoCurso)
-                        <option value="{{ $tipoCurso }}" {{ $tipoCurso == $curso->getTipoCurso() ? 'selected' : '' }} >{{ $tipoCurso }}</option>
+                        <option value="{{ $tipoCurso }}" {{ old('tipoCurso', $curso->getTipoCurso()) == $tipoCurso ? 'selected' : '' }} >{{ $tipoCurso }}</option>
                     @endforeach
                 </select>
-                @error('tipo_curso')
+                @error('tipoCurso')
                     <span class="invalid-feedback" role="alert">
                         {{ $message }}
                     </span>

@@ -74,7 +74,7 @@
                     <br>
                     
                     <label class="form-label" for="descuento">Descuento</label>
-                    <input type="number" 
+                    <input type="number" min="0" step="1"
                         class="form-control @error('descuento') is-invalid @enderror" 
                         id="descuento" 
                         name="descuento" 

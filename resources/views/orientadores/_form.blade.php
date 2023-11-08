@@ -26,10 +26,10 @@
                 <label class="form-label" for="tipoDocumento">Tipo de documento <small class="fw-light">(obligatorio)</small></label>
                 <select class="form-select @error('tipoDocumento') is-invalid @enderror" id="tipoDocumento" name="tipoDocumento">            
                     <option value=""> - </option>
-                    <option value="CC" {{ $selectedTD == "CC" ? 'selected' : '' }}>Cédula</option>
-                    <option value="TI" {{ $selectedTD == "TI" ? 'selected' : '' }}>Tarjeta de identidad</option>
-                    <option value="CE" {{ $selectedTD == "CE" ? 'selected' : '' }}>Cédula de extranjería</option>
-                    <option value="PP" {{ $selectedTD == "PP" ? 'selected' : '' }}>Pasaporte</option>
+                    <option value="CC" {{ old('tipoDocumento', $selectedTD) == "CC" ? 'selected' : '' }}>Cédula</option>
+                    <option value="TI" {{ old('tipoDocumento', $selectedTD) == "TI" ? 'selected' : '' }}>Tarjeta de identidad</option>
+                    <option value="CE" {{ old('tipoDocumento', $selectedTD) == "CE" ? 'selected' : '' }}>Cédula de extranjería</option>
+                    <option value="PP" {{ old('tipoDocumento', $selectedTD) == "PP" ? 'selected' : '' }}>Pasaporte</option>
                 </select>
                 @error('tipoDocumento')
                     <span class="invalid-feedback" role="alert">

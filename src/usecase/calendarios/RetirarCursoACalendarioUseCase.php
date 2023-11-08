@@ -23,7 +23,7 @@ class RetirarCursoACalendarioUseCase {
         $exito = $calendarioRepository->retirarCurso($cursoCalendario);
 
         if (!$exito) {
-            return new Response('500', 'Ha ocurrido un error en el sistema.');
+            return new Response('500', 'No se puede eliminar el regitro porque tiene registros relacionados.');
         }
 
         return new Response('200', 'El curso se ha retirado con éxito');        

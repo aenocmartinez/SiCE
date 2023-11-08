@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GuardarConvenio;
+use EliminarConvenioUseCase;
 use Illuminate\Http\Request;
 use Src\domain\Convenio;
 use Src\infraestructure\util\Validador;
@@ -10,6 +11,7 @@ use Src\usecase\calendarios\ListarCalendariosUseCase;
 use Src\usecase\convenios\ActualizarConvenioUseCase;
 use Src\usecase\convenios\BuscarConvenioPorIdUseCase;
 use Src\usecase\convenios\CrearConvenioUseCase;
+use Src\usecase\convenios\EliminarConvenioUseCase as ConveniosEliminarConvenioUseCase;
 use Src\usecase\convenios\ListarConveniosUseCase;
 use Src\view\dto\ConvenioDto;
 
@@ -68,7 +70,13 @@ class ConvenioController extends Controller
 
     public function destroy($id)
     {
-        //
+        if (!Validador::parametroId($id)) {
+            return redirect()->route('convenios.index')->with('status','parámetro no válido');
+        }
+        
+        $response = (new ConveniosEliminarConvenioUseCase)->ejecutar($id);
+        
+        return redirect()->route('convenios.index')->with('code', $response->code)->with('status', $response->message);
     }
 
     public function hydrateDto($req): ConvenioDto {

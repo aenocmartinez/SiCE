@@ -18,7 +18,7 @@
                 <div class="mb-4">
 
                     <label class="form-label" for="nombre">Número</label>
-                    <input type="text" 
+                    <input type="number" min="1" step="1" 
                         class="form-control @error('nombre') is-invalid @enderror" 
                         id="nombre" 
                         name="nombre" 
@@ -34,7 +34,7 @@
                     <br>
 
                     <label class="form-label" for="capacidad">Capacidad</label>
-                    <input type="number" 
+                    <input type="number" min="1" step="1"
                         class="form-control @error('capacidad') is-invalid @enderror" 
                         id="capacidad" 
                         name="capacidad" 
