@@ -96,11 +96,11 @@ class OrientadorController extends Controller
     }    
 
     public function buscador() {        
-        request()->validate([
-            'criterio' => 'required',
-        ]);
         
-        $criterio = request('criterio');
+        $criterio = '';
+        if (!is_null(request('criterio'))) {
+            $criterio = request('criterio');
+        }
 
         $casoUso = new BuscadorOrientadorUseCase();
         $orientadores = $casoUso->ejecutar($criterio);

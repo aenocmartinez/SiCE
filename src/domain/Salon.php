@@ -7,7 +7,7 @@ class Salon {
     private $capacidad;
     private $repository;
     private string $nombre;
-    private string $hojaVida;
+    private $hojaVida;
     private bool $disponible;
     private TipoSalon $tipoSalon;
 
@@ -59,7 +59,7 @@ class Salon {
         $this->disponible = $disponible;
     }
 
-    public function setHojaVida(string $hojaVida): void {
+    public function setHojaVida($hojaVida): void {
         $this->hojaVida = $hojaVida;
     }
 
@@ -88,7 +88,7 @@ class Salon {
         return $this->disponible;
     }
 
-    public function getHojaVida(): string {
+    public function getHojaVida() {
         return $this->hojaVida;
     }    
 

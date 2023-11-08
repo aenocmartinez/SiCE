@@ -36,11 +36,11 @@ class SalonController extends Controller
     }
 
     public function buscador() {
-        request()->validate([
-            'criterio' => 'required',
-        ]);        
-
-        $criterio = request('criterio');
+        $criterio = '';
+        if (!is_null(request('criterio'))) {
+            $criterio = request('criterio');
+        }
+        
         $casoUso = new BuscadorSalonesUseCase();
         $salones = $casoUso->ejecutar($criterio);
 

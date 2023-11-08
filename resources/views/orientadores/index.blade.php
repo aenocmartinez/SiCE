@@ -18,7 +18,7 @@ $criterio = isset($criterio) ? $criterio : '';
                 @csrf
                 <div class="pt-0">
                     <div class="input-group">                
-                        <button class="btn btn-alt-primary">
+                        <button class="btn btn-alt-primary" type="submit">
                             <i class="fa fa-search me-1 opacity-50"></i> 
                         </button>
                         <input type="text" class="form-control" 
