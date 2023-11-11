@@ -10,7 +10,7 @@
 
 @section("seccion")
     <a class="link-fx" href="{{ route('participantes.buscar_participante_por_documento') }}">
-        Nuevo formulario
+        Nueva inscripción
     </a>
 @endsection
 
@@ -19,6 +19,6 @@
 @section("content")
     <form method="post" action="{{ route('participantes.store') }}">
         @csrf        
-        @include('participantes._form', ['btnText' => 'Guardar formulario'])        
+        @include('participantes._form', ['btnText' => 'Guardar y continuar'])        
     </form>
 @endsection

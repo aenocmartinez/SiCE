@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GuardarGrupo;
+
 use Src\domain\Grupo;
 use Src\infraestructure\util\ListaDeValor;
 use Src\infraestructure\util\Validador;
@@ -10,13 +11,14 @@ use Src\usecase\areas\ListarOrientadoresPorCursoCalendarioUseCase;
 use Src\usecase\calendarios\ListarCalendariosUseCase;
 use Src\usecase\cursos\ListarCursosUseCase;
 use Src\usecase\grupos\ActualizarGrupoUseCase;
+use Src\usecase\grupos\BuscadorGruposUseCase;
 use Src\usecase\grupos\BuscarGrupoPorIdUseCase;
 use Src\usecase\grupos\CrearGrupoUseCase;
 use Src\usecase\grupos\EliminarGrupoUseCase;
 use Src\usecase\grupos\ListarCursosPorCalendarioUseCase;
 use Src\usecase\grupos\ListarGruposUseCase;
 use Src\usecase\orientadores\ListarOrientadoresUseCase;
-use Src\usecase\salones\ListarSalonesUseCase;
+use Src\usecase\salones\ListarSalonesPorEstadoUseCase;
 use Src\view\dto\GrupoDto;
 
 class GrupoController extends Controller
@@ -32,7 +34,7 @@ class GrupoController extends Controller
         return view('grupos.create', [
             'cursos' => array(),
             'calendarios' => (new ListarCalendariosUseCase())->ejecutar(),
-            'salones' => (new ListarSalonesUseCase)->ejecutar(),
+            'salones' => (new ListarSalonesPorEstadoUseCase)->ejecutar(),
             'orientadores' => array(),
             'dias' => ListaDeValor::diasSemana(),
             'jornadas' => ListaDeValor::jornadas(),
@@ -67,7 +69,7 @@ class GrupoController extends Controller
         return view('grupos.edit', [
             'cursos' => (new ListarCursosUseCase())->ejecutar(),
             'calendarios' => (new ListarCalendariosUseCase())->ejecutar(),
-            'salones' => (new ListarSalonesUseCase())->ejecutar(),
+            'salones' => (new ListarSalonesPorEstadoUseCase())->ejecutar(),
             'orientadores' => (new ListarOrientadoresUseCase())->ejecutar(),
             'dias' => ListaDeValor::diasSemana(),
             'jornadas' => ListaDeValor::jornadas(),
@@ -114,6 +116,20 @@ class GrupoController extends Controller
         ]);        
     }
 
+    public function buscadorGrupos(){
+        $criterio = '';
+        if (!is_null(request('criterio'))) {
+            $criterio = request('criterio');
+        }
+
+        $grupos = (new BuscadorGruposUseCase)->ejecutar($criterio);
+
+        return view("grupos.index", [
+            "grupos" => $grupos,
+            "criterio" => $criterio,
+        ]);         
+    }
+
     private function hydrateDto($data): GrupoDto {        
         $grupoDto = new GrupoDto();
         $grupoDto->dia = $data['dia'];
@@ -122,6 +138,7 @@ class GrupoController extends Controller
         $grupoDto->jornada = $data['jornada'];
         $grupoDto->calendarioId = $data['calendario'];
         $grupoDto->orientadorId = $data['orientador'];
+        $grupoDto->cupo = $data['cupo'];
 
         if (isset(request()->id)) {
             $grupoDto->id = request()->id;

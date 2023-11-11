@@ -16,6 +16,7 @@ class CrearGrupoUseCase {
 
     public function ejecutar(GrupoDto $grupoDto): Response {
         $grupoRepository = new GrupoDao();
+
         $grupo = new Grupo();
 
         $cursoCalendario = new CursoCalendario(new Calendario(), new Curso());
@@ -27,6 +28,7 @@ class CrearGrupoUseCase {
         $orientador = new Orientador;
         $orientador->setId($grupoDto->orientadorId);
 
+
         $salon = new Salon; 
         $salon->setId($grupoDto->salonId);
 
@@ -34,7 +36,10 @@ class CrearGrupoUseCase {
         $grupo->setSalon($salon);
         $grupo->setDia($grupoDto->dia);
         $grupo->setJornada($grupoDto->jornada);
+        $grupo->setCupo($grupoDto->cupo);
         $grupo->setRepository($grupoRepository);
+
+
 
         $existe = Grupo::validarExistencia($grupo, $grupoRepository);
         if ($existe) {

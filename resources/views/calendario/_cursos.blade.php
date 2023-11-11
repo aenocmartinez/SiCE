@@ -50,24 +50,12 @@
                                                 });                                     
                                             </script>                                               
                                     </div>
-
-
-                                    <div class="input-group">
-                                        <span class="input-group-text"  style="width: 30%; font-size: 13px;"><small>Cupos</small></span>
-                                        <input type="number" 
-                                                class="form-control text-center" 
-                                                style="font-size: 13px;"
-                                                id="cupos_{{ $idForm }}" 
-                                                name="cupos_{{ $idForm }}"
-                                                >                        
-                                    </div>
     
                                     <div class="input-group">
                                         <span class="input-group-text"  style="width: 30%; font-size: 13px;"><small>Modalidad</small></span>
                                         <select class="form-control text-center" style="font-size: 13px;" 
                                                 name="modalidad_{{ $idForm }}" 
                                                 id="modalidad_{{ $idForm }}">
-
                                                 <option value="Presencial">Presencial</option>
                                                 <option value="Virtual">Virtual</option>
                                         </select>

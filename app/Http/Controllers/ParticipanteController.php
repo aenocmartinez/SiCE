@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BuscarGruposDisponiblesMartricula;
 use App\Http\Requests\BuscarParticipantePorDocumento;
 use App\Http\Requests\GuardarFormularioInscripcion;
 use Illuminate\Http\Request;
 use Src\infraestructure\util\ListaDeValor;
+use Src\usecase\areas\ListarAreasUseCase;
 use Src\usecase\calendarios\ListarCalendariosUseCase;
 use Src\usecase\convenios\ListarConveniosUseCase;
+use Src\usecase\grupos\ListarGruposDisponiblesParaMatriculaUseCase;
 use Src\usecase\participantes\BuscarParticipantePorDocumentoUseCase;
+use Src\usecase\participantes\BuscarParticipantePorIdUseCase;
 use Src\usecase\participantes\GuardarParticipanteUseCase;
 use Src\view\dto\ParticipanteDto;
 
@@ -26,21 +30,28 @@ class ParticipanteController extends Controller
             'participante' => $participante,
             'sexo' => ListaDeValor::sexo(),
             'estadoCivil' => ListaDeValor::estadoCivil(),
-            'listaEps' => ListaDeValor::eps(),
-            'calendarios' => (new ListarCalendariosUseCase())->ejecutar(),
-            'convenios' => (new ListarConveniosUseCase)->ejecutar(),
+            'listaEps' => ListaDeValor::eps()
         ]);
     }
 
     public function store(GuardarFormularioInscripcion $req) {
         $participanteDto = $this->hydrateParticipanteDto($req->validated());
         $response = (new GuardarParticipanteUseCase)->ejecutar($participanteDto);
-        return redirect()->route('participantes.buscar_participante')->with('code', $response->code)->with('status', $response->message);
+
+        if ($response->code != "201" && $response->code != "200") {
+            return redirect()->route('participantes.buscar_participante')->with('code', $response->code)->with('status', $response->message);
+        }
+
+        return redirect()->route('participantes.form_matricula', [
+            'tipoDocumento' => $participanteDto->tipoDocumento,
+            'documento' => $participanteDto->documento,
+        ]);
+
     }
 
     public function show($id) {
-        //
-    }
+
+    }    
 
     public function edit($id) {
         //
@@ -65,13 +76,65 @@ class ParticipanteController extends Controller
             'documento' => $datos['documento']
         ]);
     } 
+
+    public function formularioMatricula($tipoDocumento, $documento) {   
+        
+        $participante = (new BuscarParticipantePorDocumentoUseCase)->ejecutar($tipoDocumento, $documento);  
+
+        return view('participantes.create_matricula', [
+            'participante' => $participante,
+            'calendarios' => (new ListarCalendariosUseCase)->ejecutar(),
+            'areas' => (new ListarAreasUseCase)->ejecutar(),
+            'calendarioId' => '',
+            'areaId' => '',
+            'grupos' => array(),
+        ]);
+    }
+
+    public function buscarGruposDisponiblesParaMatricula(BuscarGruposDisponiblesMartricula $req) {
+        $datos = $req->validated();
+        $areaId = $datos['area'];
+        $calendarioId = $datos['calendario'];
+        $participanteId = $datos['participante'];
+
+        return redirect()->route('participantes.buscar-grupos-2', [
+            'participante' => (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId),
+            'calendarios' => (new ListarCalendariosUseCase)->ejecutar(),
+            'areas' => (new ListarAreasUseCase)->ejecutar(),
+            'grupos' => (new ListarGruposDisponiblesParaMatriculaUseCase)->ejecutar($calendarioId, $areaId),
+            'calendarioId' => $calendarioId,
+            'participanteId' => $participanteId,
+            'areaId' => $areaId            
+        ]);
+    }
+
+    public function formularioBuscarGruposDisponibles($participanteId, $calendarioId, $areaId) {
+        return view('participantes.create_matricula', [
+            'participante' => (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId),
+            'calendarios' => (new ListarCalendariosUseCase)->ejecutar(),
+            'areas' => (new ListarAreasUseCase)->ejecutar(),
+            'grupos' => (new ListarGruposDisponiblesParaMatriculaUseCase)->ejecutar($calendarioId, $areaId),
+            'calendarioId' => $calendarioId,
+            'participanteId' => $participanteId,
+            'areaId' => $areaId            
+        ]);
+    }
     
     private function hydrateParticipanteDto($dato): ParticipanteDto {
         $participanteDto = new ParticipanteDto;
         $participanteDto->primerNombre = $dato['primerNombre'];
-        $participanteDto->segundoNombre = $dato['segundoNombre'];
+        
+        $participanteDto->segundoNombre = '';
+        if (!is_null($dato['segundoNombre'])) {
+            $participanteDto->segundoNombre = $dato['segundoNombre'];
+        }
         $participanteDto->primerApellido = $dato['primerApellido'];
-        $participanteDto->segundoApellido = $dato['segundoApellido'];
+
+        $participanteDto->segundoApellido = '';
+        if (!is_null($dato['segundoApellido'])) {
+            $participanteDto->segundoApellido = $dato['segundoApellido'];
+        }
+
         $participanteDto->fechaNacimiento = $dato['fecNacimiento'];
         $participanteDto->tipoDocumento = $dato['tipoDocumento'];
         $participanteDto->documento = $dato['documento'];

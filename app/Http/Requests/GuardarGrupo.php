@@ -30,6 +30,7 @@ class GuardarGrupo extends FormRequest
             'calendario' => 'required|integer',
             'dia' => 'required',
             'orientador' => 'required|integer',
+            'cupo' => 'required|integer|gt:0|digits_between:1,2',
             'id' => 'numeric|nullable',
         ];
     }
@@ -39,7 +40,9 @@ class GuardarGrupo extends FormRequest
         return [
             'dia.required' => 'El campo día es obligatorio',
             'salon.required' => 'El campo salón es obligatorio',
-
+            'cupo.required' => 'El campo cupos es obligatorio',
+            'cupo.integer' => 'El campo cupos permite únicamente valores positivos.',
+            'cupo.digits_between' => 'El campo cupo permite máximo 2 caracteres.'
         ];
     }
 }

@@ -13,4 +13,6 @@ interface GrupoRepository {
     public function actualizarGrupo(Grupo $grupo): bool;
     public function existeGrupo(Grupo $grupo): bool;
     public function salonDisponible(Grupo $grupo): bool;
+    public function listarGruposDisponiblesParaMatricula(int $calendarioId, int $areaId): array;
+    public function buscadorGrupos(string $criterio): array;
 }

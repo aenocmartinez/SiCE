@@ -10,4 +10,5 @@ class GrupoDto {
     public $salonId;
     public $dia;
     public $jornada;
+    public $cupo;
 }

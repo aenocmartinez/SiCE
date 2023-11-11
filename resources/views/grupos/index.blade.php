@@ -5,11 +5,38 @@
 
 @section("content")
 
+@php
+    $criterio = isset($criterio) ? $criterio : '';
+@endphp
+
 <div class="row mb-3">
-    <div class="d-flex justify-content-end">
-        <a href="{{ route('grupos.create') }}" class="btn btn-lg btn-info">
-            <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear grupo
-        </a>
+
+    <div class="row">
+        
+        <div class="col-lg-8 col-sm-12">
+            <form method="post" action="{{ route('grupos.buscador') }}">
+                @csrf
+                <div class="pt-0">
+                    <div class="input-group">                
+                        <button class="btn btn-alt-primary" type="submit">
+                            <i class="fa fa-search me-1 opacity-50"></i> 
+                        </button>
+                        <input type="text" class="form-control" 
+                        id="criterio" 
+                        name="criterio" 
+                        value="{{ $criterio }}"
+                        placeholder="Buscar en el tablero">  
+                    </div>
+                </div>
+            </form>
+        </div>  
+
+        <div class="col-lg-4 col-sm-12 col-xs-12 text-end">
+            <a href="{{ route('grupos.create') }}" class="btn btn-lg btn-info">
+                <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear grupo
+            </a>
+        </div>        
+
     </div>
 </div>        
 
@@ -27,7 +54,21 @@
                             Periodo: {{ $grupo->getNombreCalendario() }} <br>
                             Horario: {{ $grupo->getDia() }} / {{ $grupo->getJornada() }} <br>
                             Salón: {{ $grupo->getSalon()->getNombre() }} <br>
-                            Orientador: {{ $grupo->getOrientador()->getNombre() }}
+                            Orientador: {{ $grupo->getOrientador()->getNombre() }} <br>
+                            <span class="fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-info-light text-info">
+                            Total de cupos: {{ $grupo->getCupo() }}
+                            </span>                            
+
+                            @php
+                                $class = "fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-success-light text-success"; 
+                                if ($grupo->getTotalCuposDisponibles() == 0) {
+                                    $class = "fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-danger-light text-danger"; 
+                                }
+                            @endphp
+                            <span class="{!! $class !!}">
+                            Cupos disponibles: {{ $grupo->getTotalCuposDisponibles() }}
+                            </span>
+
                         </small> 
                     </td>
                     <td class="text-center">

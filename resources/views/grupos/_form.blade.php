@@ -36,7 +36,8 @@
                         <option 
                             value="{{ $salon->getId() }}"
                             {{ old('salon', $grupo->getSalon()->getId()) == $salon->getId() ? 'selected' : '' }}
-                            >{{ $salon->getNombre() }}</option>
+                            >{{ $salon->getNombre() }} (capacidad: {{ $salon->getCapacidad() }} personas)                            
+                        </option>
                     @endforeach
                 </select>
                 @error('salon')
@@ -61,7 +62,23 @@
                     <span class="invalid-feedback" role="alert">
                         {{ $message }}
                     </span>
-                @enderror                                 
+                @enderror   
+                
+                <br>
+
+                <label class="form-label" for="cupo">Cupos</label>
+                    <input type="number" min="0" step="1"
+                        class="form-control @error('capacidad') is-invalid @enderror" 
+                        id="cupo" 
+                        name="cupo" 
+                        placeholder="cupo" 
+                        value="{{ old('cupo', $grupo->getCupo()) }}"                
+                        >
+                        @error('cupo')
+                            <span class="invalid-feedback" role="alert">
+                                {{ $message }}
+                            </span>
+                        @enderror                
 
             </div>
 

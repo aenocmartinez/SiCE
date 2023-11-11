@@ -11,5 +11,6 @@ interface SalonRepository {
     public function buscarSalonPorId(int $id = 0): Salon;
     public function crearSalon(Salon $salon): bool;
     public function eliminarSalon(Salon $salon): bool;
-    public function actualizarSalon(Salon $salon): bool;    
+    public function actualizarSalon(Salon $salon): bool;
+    public function listarSalonesPorEstado(bool $estado): array;
 }

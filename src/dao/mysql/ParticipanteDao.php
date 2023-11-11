@@ -125,4 +125,36 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         return $exito;
     }
 
+    public function buscarParticipantePorId(int $participanteId): Participante {
+        $participante = new Participante;
+        try {
+
+            $participanteDao = ParticipanteDao::find($participanteId);
+            if ($participanteDao) {
+                $participante->setId($participanteDao->id);
+                $participante->setPrimerNombre($participanteDao->primer_nombre);
+                $participante->setSegundoNombre($participanteDao->segundo_nombre);
+                $participante->setPrimerApellido($participanteDao->primer_apellido);
+                $participante->setSegundoApellido($participanteDao->segundo_apellido);
+                $participante->setFechaNacimiento($participanteDao->fecha_nacimiento);
+                $participante->setTipoDocumento($participanteDao->tipo_documento);
+                $participante->setDocumento($participanteDao->documento);
+                // $participante->setFechaExpedicion($participanteDao->fecha_expedicion);
+                $participante->setSexo($participanteDao->sexo);
+                $participante->setEstadoCivil($participanteDao->estado_civil);
+                $participante->setDireccion($participanteDao->direccion);
+                $participante->setTelefono($participanteDao->telefono);
+                $participante->setEmail($participanteDao->email);
+                $participante->setEps($participanteDao->eps);
+                $participante->setContactoEmergencia($participanteDao->contacto_emergencia);
+                $participante->setTelefonoEmergencia($participanteDao->telefono_emergencia);
+            }
+
+        } catch (Exception $e) {
+            dd($e->getMessage());
+        }
+
+        return $participante;          
+    }
+
 }

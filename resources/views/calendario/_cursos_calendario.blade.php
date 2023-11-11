@@ -10,9 +10,7 @@
                                 <span style="width: 100%;" class="p-1" data-bs-toggle="tooltip" title="Costo">
                                     <i class="fa fa-fw fa-sack-dollar"></i> {{  number_format($cursoCalendario->getCosto(), 0, ',', '.') }} COP
                                 </span>
-                                <span style="width: 100%;" class="p-1" data-bs-toggle="tooltip" title="Cupos">
-                                    <i class="fa fa-fw fa-users"></i> {{  $cursoCalendario->getCupo() }}
-                                </span>
+
                                 <span style="width: 100%;" class="p-1" data-bs-toggle="tooltip" title="Modalidad">
                                     <i class="fa fa-fw si si-paper-plane"></i> {{ $cursoCalendario->getModalidad() }}
                                 </span>

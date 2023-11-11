@@ -260,138 +260,20 @@
                     @enderror
 
             </div>
+
+            <div class="col-12 mt-4 text-end">
+                <button class="btn btn-large btn-info">{{ $btnText }}</button>
+            </div>
+
         </div>
 
     </div>    
 
 </div>
 
-<div class="block block-rounded">
-
-    <div class="block-content">
-
-        <div class="row push">
-
-        <h5 class="fw-light link-fx mb-4 text-primary-darker">INFORMACIÓN DE MATRÍCULA</h5> 
-
-            <div class="col-6">
-
-                <label class="form-label" for="calendario">Periodo</label>
-                <select class="form-select @error('calendario') is-invalid @enderror" id="calendario" name="calendario">
-                    <option value="">Selecciona un periodo</option>
-                    @foreach ($calendarios as $calendario)
-                        @if ($calendario->esVigente())                            
-                            <option 
-                                value="{{ $calendario->getId() }}"
-                                {{ old('calendario') }}
-                                >{{ $calendario->getNombre() }}
-                            </option>
-                        @endif
-                    @endforeach
-                </select>
-                @error('calendario')
-                    <span class="invalid-feedback" role="alert">
-                        {{ $message }}
-                    </span>
-                @enderror                  
-
-                <br>        
-                
-                <label class="form-label" for="convenio">Convenio</label>
-                <select class="form-select @error('convenio') is-invalid @enderror" id="convenio" name="convenio">
-                    <option value=""> - </option>
-                    @foreach ($convenios as $convenio)
-                        @if ($convenio->esVigente())                            
-                            <option 
-                                value="{{ $convenio->getId() }}"
-                                {{ old('convenio') }}
-                                >{{ $convenio->getNombre() }} 
-                                @if ($convenio->getDescuento() > 0)                                    
-                                    ({{ $convenio->getDescuento() }}% de descuento)
-                                @endif
-                            </option>
-                        @endif
-                    @endforeach
-                </select>
-                @error('convenio')
-                    <span class="invalid-feedback" role="alert">
-                        {{ $message }}
-                    </span>
-                @enderror                   
-
-            </div>       
-            
-            <div class="col-6">
-                <label class="form-label @error('curso') is-invalid @enderror" for="curso">Curso</label>
-                <select class="form-select" id="curso" name="curso"></select>
-                @error('curso')
-                    <span class="invalid-feedback" role="alert">
-                        {{ $message }}
-                    </span>
-                @enderror                  
-                <br>                
-
-            </div>
-
-            <div class="col-12 mt-4 text-center">
-                <button class="btn btn-large btn-info">{{ $btnText }}</button>        
-                <a href="{{ route('participantes.buscar_participante') }}" class="btn btn-large btn-light"> Cancelar inscripción</a>
-            </div>            
-
-        </div>
-
-    </div>
-
-</div>         
-
-
+     
 <script src="{{asset('assets/js/oneui.app.min.js')}}"></script>
-
 
 <script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
 <script src="{{asset('assets/js/plugins/flatpickr/flatpickr.min.js')}}"></script>
 <script>One.helpersOnLoad(['js-flatpickr']);</script>
-
-<script>
-
-$(document).ready(function(){
-        
-        $("#calendario").change(function() {
-            
-            if ($("#calendario").val().length === 0) { 
-                $("#curso").html("<select class=\"form-select\" id=\"curso\" name=\"curso\"></select>");   
-                $("#orientador").html("<select class=\"form-select\" id=\"orientador\" name=\"orientador\"></select>");            
-                return ;
-            }            
-            const calendarioId = $('#calendario').val();
-            listarCursos(calendarioId);
-        });
-
-        $("#curso").change(function() {
-            $("#salon").val("");
-            if ($("#curso").val().length === 0) {       
-                $("#orientador").html("<select class=\"form-select\" id=\"orientador\" name=\"orientador\"></select>");                   
-                return ;
-            }            
-            const cursoCalendarioId = $('#curso').val();
-            
-            listarOrientadores(cursoCalendarioId, "0");
-        });        
-    });
-
-    function listarCursos(calendarioId, cursoCalendarioIdActual) {        
-        $("#curso").html("<select class=\"form-select\" id=\"curso\" name=\"curso\"></select>");
-        
-        var url = "{{ route('grupos.cursos_calendario', ['calendarioId' => ':calendarioId', 'cursoCalendarioIdActual' => ':cursoCalendarioIdActual']) }}";
-        url = url.replace(':calendarioId', calendarioId);
-        url = url.replace(':cursoCalendarioIdActual', cursoCalendarioIdActual);
-
-        $.ajax({
-            url: url,
-            type: 'GET',
-            success: function(resp) {
-                $("#curso").html(resp);
-            }            
-        });        
-    }    
-</script>

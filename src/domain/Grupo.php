@@ -6,6 +6,8 @@ class Grupo {
     private int $id;
     private string $dia;
     private string $jornada;
+    private int $totalInscritos;
+    private int $cupo;
     private Salon $salon;
     private Orientador $orientador;
     private CursoCalendario $cursoCalendario;
@@ -15,6 +17,8 @@ class Grupo {
         $this->id = 0;
         $this->dia = "";
         $this->jornada = "";
+        $this->totalInscritos = 0;
+        $this->cupo = 0;
 
         $this->orientador = new Orientador;
         $this->orientador->setId($orientadorId);
@@ -137,5 +141,38 @@ class Grupo {
 
     public static function validarSalonDisponible(Grupo $grupo, $repository): bool {
         return $repository->salonDisponible($grupo);
+    }
+
+    public function setCupo(int $cupo): void {
+        $this->cupo = $cupo;
+    }
+
+    public function getCupo(): int {
+        return $this->cupo;
+    }
+
+    public function setTotalInscritos(int $totalInscritos): void {
+        $this->totalInscritos = $totalInscritos;
+    }
+
+    public function getTotalInscritos(): int {
+        return $this->totalInscritos;
+    }
+
+    public function getTotalCuposDisponibles(): int {
+        return $this->getCupo() - $this->getTotalInscritos();
+    }
+
+    public function getCosto() {
+        return $this->cursoCalendario->getCosto();
+    }
+
+    public function getCostoFormateado() {
+        $montoFormateado = number_format($this->getCosto(), 0, ',', '.');
+        return '$' . $montoFormateado . ' COP';
+    }
+
+    public function getCodigoGrupo(): string {
+        return "G" . $this->getId();
     }
 }

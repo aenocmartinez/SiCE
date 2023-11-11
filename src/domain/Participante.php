@@ -198,4 +198,24 @@ class Participante {
     public function actualizar(): bool {
         return $this->repository->actualizarParticipante($this);
     }
+
+    public function getNombreCompleto(): string {
+        $nombreCompleto = "";
+
+        $nombreCompleto .= $this->getPrimerNombre() . " ";
+        if ($this->getSegundoNombre() != "") {
+            $nombreCompleto .= $this->getSegundoNombre() . " ";   
+        }
+
+        $nombreCompleto .= $this->getPrimerApellido() . " ";
+        if ($this->getSegundoApellido() != "") {
+            $nombreCompleto .= $this->getSegundoApellido() . " ";   
+        }
+
+        return $nombreCompleto;
+    }
+
+    public function getDocumentoCompleto(): string {
+        return $this->getTipoDocumento(). " - " . $this->getDocumento();
+    }
 }

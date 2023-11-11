@@ -156,4 +156,25 @@ class SalonDao extends Model implements SalonRepository {
         return $exito; 
     }
 
+    public function listarSalonesPorEstado(bool $estado): array {
+        $salones = [];
+        try {
+            $rs = SalonDao::where('esta_disponible', $estado)->orderBy('nombre')->get();
+            foreach($rs as $r) {
+                $salon = new Salon($r->nombre);
+                $salon->setId($r->id);
+                $salon->setCapacidad($r->capacidad);
+                $salon->setDisponible($r->esta_disponible);
+
+                $tipoSalanDao = new TipoSalonDao();
+                $tipoSalon = $tipoSalanDao->buscarTipoSalonPorId((int)$r->tipo_salon_id);
+                $salon->setTipoSalon($tipoSalon);
+                array_push($salones, $salon);
+            }            
+
+        } catch (\Exception $e) {
+            $e->getMessage();
+        }
+        return $salones;       
+    }
 }

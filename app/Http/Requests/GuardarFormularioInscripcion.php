@@ -40,8 +40,7 @@ class GuardarFormularioInscripcion extends FormRequest
             'email' => 'required|email',
             'contactoEmergencia' => 'required',
             'telefonoEmergencia' => 'required',
-            'calendario' => 'required|numeric',
-            'convenio' => 'nullable|numeric',
+            'convenio' => 'nullable|integer',
             'id' => 'nullable'
         ];
     }
@@ -58,7 +57,6 @@ class GuardarFormularioInscripcion extends FormRequest
             'tipoDocumento.required' => 'Tipo de documento es obligatorio',
             'primerNombre.required' => 'Primer nombre es obligatorio',
             'primerApellido.required' => 'Primer apellido es obligatorio',
-            'calendario.required' => 'Periodo es obligatorio'
         ];
     }    
 }

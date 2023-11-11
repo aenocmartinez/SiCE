@@ -82,6 +82,7 @@ Route::get('/grupos/crear', [GrupoController::class, 'create'])->name('grupos.cr
 Route::post('/grupos', [GrupoController::class, 'store'])->name('grupos.store');
 Route::delete('/grupos/{id}', [GrupoController::class, 'destroy'])->name('grupos.delete');
 Route::patch('/grupos/{id}/actualizar', [GrupoController::class, 'update'])->name('grupos.update');
+Route::post('/grupos/buscador', [GrupoController::class, 'buscadorGrupos'])->name('grupos.buscador');
 
 Route::get('/grupos/calendario/{calendarioId}/cursos/{cursoCalendarioIdActual}',[GrupoController::class, 'listarCursosPorCalendario'])->name('grupos.cursos_calendario');
 Route::get('/grupos/lista-orientadores/{cursoCalendarioId}/{orientadorIdActual}',[GrupoController::class, 'listarOrientadoresPorCursoCalendario'])->name('grupos.orientadores_por_curso_calendario');
@@ -106,4 +107,9 @@ Route::get('/participantes/buscar-participante', [ParticipanteController::class,
 Route::post('/participantes/buscar-participante', [ParticipanteController::class, 'buscarParticipantePorDocumento'])->name('participantes.buscar_participante_por_documento');
 
 Route::get('/participantes/{tipoDocumento}/{documento}', [ParticipanteController::class, 'create'])->name('participantes.create');
+Route::get('/participantes/{tipoDocumento}/{documento}/matricula', [ParticipanteController::class, 'formularioMatricula'])->name('participantes.form_matricula');
+
 Route::post('/participantes', [ParticipanteController::class, 'store'])->name('participantes.store');
+Route::post('/participantes/buscar-grupos', [ParticipanteController::class, 'buscarGruposDisponiblesParaMatricula'])->name('participantes.buscar-grupos');
+
+Route::get('/participantes/buscar-grupos/{participanteId}/{calendarioId}/{areaId}', [ParticipanteController::class, 'formularioBuscarGruposDisponibles'])->name('participantes.buscar-grupos-2');
