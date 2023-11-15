@@ -19,7 +19,11 @@ class CrearGrupoUseCase {
 
         $grupo = new Grupo();
 
-        $cursoCalendario = new CursoCalendario(new Calendario(), new Curso());
+
+        $calendario = new Calendario();
+        $calendario->setId($grupoDto->calendarioId);
+
+        $cursoCalendario = new CursoCalendario($calendario, new Curso());
         $cursoCalendario->setId($grupoDto->cursoCalendarioId);
 
         $grupo->setCursoCalendario($cursoCalendario);
@@ -38,8 +42,6 @@ class CrearGrupoUseCase {
         $grupo->setJornada($grupoDto->jornada);
         $grupo->setCupo($grupoDto->cupo);
         $grupo->setRepository($grupoRepository);
-
-
 
         $existe = Grupo::validarExistencia($grupo, $grupoRepository);
         if ($existe) {

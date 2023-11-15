@@ -1,11 +1,11 @@
 @extends("plantillas.principal")
 
 @php
-    $titulo = "Formulario de Inscripción";
+    $titulo = "Paso 1: verificar existencia del participante";
 @endphp
 
 @section("title", $titulo)
-@section("description", "Consulte si el participante ya existe.")
+@section("description", "")
 
 @section("content")
 

@@ -96,7 +96,7 @@
                   <span class="nav-main-link-name">Convenios</span>
                 </a>
                 <a class="nav-main-link {{ setActive(['participantes.buscar_participante', 'participantes.*']) }}" href="{{ route('participantes.buscar_participante') }}">
-                  <span class="nav-main-link-name">Inscripción</span>
+                  <span class="nav-main-link-name">Formulario de inscripción</span>
                 </a>
                 <a class="nav-main-link" href="{{ route('home') }}">
                   <span class="nav-main-link-name">Validar pago matrícula</span>

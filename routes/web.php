@@ -113,3 +113,6 @@ Route::post('/participantes', [ParticipanteController::class, 'store'])->name('p
 Route::post('/participantes/buscar-grupos', [ParticipanteController::class, 'buscarGruposDisponiblesParaMatricula'])->name('participantes.buscar-grupos');
 
 Route::get('/participantes/buscar-grupos/{participanteId}/{calendarioId}/{areaId}', [ParticipanteController::class, 'formularioBuscarGruposDisponibles'])->name('participantes.buscar-grupos-2');
+
+Route::get('/participante/{participanteId}/grupo/{grupoId}/inscripcion', [ParticipanteController::class, 'formulariMatricula'])->name('participantes.matricular');
+Route::post('/participante/confirmar-inscripcion', [ParticipanteController::class, 'confirmarInscripcion'])->name('participantes.confirmar-inscripcion');

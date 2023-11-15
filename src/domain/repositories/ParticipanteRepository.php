@@ -3,6 +3,7 @@
 namespace Src\domain\repositories;
 
 use Src\domain\Participante;
+use Src\view\dto\ConfirmarInscripcionDto;
 
 interface ParticipanteRepository {
 
@@ -10,4 +11,5 @@ interface ParticipanteRepository {
     public function crearParticipante(Participante $participante): bool;
     public function actualizarParticipante(Participante $participante): bool;
     public function buscarParticipantePorId(int $participanteId): Participante;
+    public function crearInscripcion(ConfirmarInscripcionDto $dto): bool;
 }

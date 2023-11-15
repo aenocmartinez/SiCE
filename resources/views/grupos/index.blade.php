@@ -50,45 +50,58 @@
                     <td class="fs-sm" style="width: 95%;">                        
                         <h4 class="fw-normal mb-0">G: {{ $grupo->getId() }}</h4>
                         <small class="fw-light">
-                            Curso: {{ $grupo->getNombreCurso() }} <br>
-                            Periodo: {{ $grupo->getNombreCalendario() }} <br>
+                            Curso: {{ $grupo->getNombreCurso() }} ({{ $grupo->getModalidad() }}) <br>
+                            Periodo: {{ $grupo->getNombreCalendario() }}<br>
                             Horario: {{ $grupo->getDia() }} / {{ $grupo->getJornada() }} <br>
                             Salón: {{ $grupo->getSalon()->getNombre() }} <br>
-                            Orientador: {{ $grupo->getOrientador()->getNombre() }} <br>
-                            <span class="fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-info-light text-info">
-                            Total de cupos: {{ $grupo->getCupo() }}
-                            </span>                            
+                            Orientador: {{ $grupo->getOrientador()->getNombre() }} 
 
-                            @php
-                                $class = "fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-success-light text-success"; 
-                                if ($grupo->getTotalCuposDisponibles() == 0) {
-                                    $class = "fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-danger-light text-danger"; 
-                                }
-                            @endphp
-                            <span class="{!! $class !!}">
-                            Cupos disponibles: {{ $grupo->getTotalCuposDisponibles() }}
-                            </span>
+                            @if ($grupo->esCalendarioVigente())
+                                <br>
+                                <span class="fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-info-light text-info">
+                                Total de cupos: {{ $grupo->getCupo() }}
+                                </span>                            
+                                @php
+                                    $class = "fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-success-light text-success"; 
+                                    if ($grupo->getTotalCuposDisponibles() == 0) {
+                                        $class = "fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-danger-light text-danger"; 
+                                    }
+                                @endphp
+                                <span class="{!! $class !!}">
+                                Cupos disponibles: {{ $grupo->getTotalCuposDisponibles() }}
+                                </span>
+                            @endif
 
                         </small> 
                     </td>
                     <td class="text-center">
+
                         <div class="btn-group">
-                            <a href="{{ route('grupos.edit', $grupo->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar grupo">
-                                <i class="fa fa-fw fa-pencil-alt"></i>
-                            </a>
-                            <form method="POST" action="{{ route('grupos.delete', $grupo->getId()) }}" id="form-del-grupo-{{$grupo->getId()}}">
-                                @csrf
-                                @method('delete')
-                                <button class="btn btn-sm btn-alt-secondary" 
-                                        data-bs-toggle="tooltip" 
-                                        title="eliminar grupo" 
-                                        type="button"
-                                        data-id="{{ $grupo->getId() }}"
-                                        onclick="confirmDelete(this)">
-                                    <i class="fa fa-fw fa-trash-can"></i>
-                                </button>
-                            </form>
+
+                            @if ($grupo->esCalendarioVigente())
+                                <a href="{{ route('grupos.edit', $grupo->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar grupo">
+                                    <i class="fa fa-fw fa-pencil-alt"></i>
+                                </a>
+                                <form method="POST" action="{{ route('grupos.delete', $grupo->getId()) }}" id="form-del-grupo-{{$grupo->getId()}}">
+                                    @csrf
+                                    @method('delete')
+                                    <button class="btn btn-sm btn-alt-secondary" 
+                                            data-bs-toggle="tooltip" 
+                                            title="eliminar grupo" 
+                                            type="button"
+                                            data-id="{{ $grupo->getId() }}"
+                                            onclick="confirmDelete(this)">
+                                        <i class="fa fa-fw fa-trash-can"></i>
+                                    </button>
+                                </form>
+                            @endif
+
+                            <a href="{{ route('grupos.edit', $grupo->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="reporte estadístico">
+                                <i class="fa fa-fw fa-chart-simple"></i>
+                            </a>                            
+
                         </div>
+
                     </td>                    
                 </tr>
                 @empty

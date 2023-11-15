@@ -209,7 +209,7 @@ class Participante {
 
         $nombreCompleto .= $this->getPrimerApellido() . " ";
         if ($this->getSegundoApellido() != "") {
-            $nombreCompleto .= $this->getSegundoApellido() . " ";   
+            $nombreCompleto .= $this->getSegundoApellido();   
         }
 
         return $nombreCompleto;

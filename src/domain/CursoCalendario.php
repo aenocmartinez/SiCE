@@ -88,4 +88,8 @@ class CursoCalendario {
         return $this->id > 0;
     }
 
+    public function esCalendarioVigente(): bool {
+        return $this->calendario->esVigente();
+    }
+
 }

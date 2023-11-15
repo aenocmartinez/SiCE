@@ -1,103 +1,219 @@
-<div class="block block-rounded">
+<!-- <div class="block block-rounded">
 
-    <div class="block-content">
+    <div class="block-content"> -->
 
         <div class="row push">
 
-            <h5 class="fw-light link-fx text-primary-darker">INFORMACIÓN DE MATRÍCULA</h5>
-
-            <div class="col-5">
-
-                <!-- Listado de calendarios -->
-                <label class="form-label" for="calendario">Periodo</label>
-                <select class="form-select @error('calendario') is-invalid @enderror" id="calendario" name="calendario">
-                <option value="">Selecciona un periodo</option>
-                    @foreach ($calendarios as $calendario)   
-                        @if ($calendario->esVigente())          
-                            <option value="{{ $calendario->getId() }}"
-                            {{ old('calendario', $calendarioId) == $calendario->getId() ? 'selected' : '' }}
-                            >{{ $calendario->getNombre() }}</option>
-                        @endif
-                    @endforeach
-                </select>
-                @error('calendario')
-                    <span class="invalid-feedback" role="alert">
-                        {{ $message }}
-                    </span>
-                @enderror 
-
-            </div>
-
-            <div class="col-5">
-                
-                <!-- Listado de areas -->
-                <label class="form-label" for="area">Área</label>
-                <select class="form-select @error('area') is-invalid @enderror" id="area" name="area">
-                <option value="">Selecciona una área</option>
-                    @foreach ($areas as $area)         
-                        <option value="{{ $area->getId() }}" {{ old('area', $areaId) == $area->getId() ? 'selected' : '' }}>{{ $area->getNombre() }}</option>
-                    @endforeach
-                </select>
-                @error('area')
-                    <span class="invalid-feedback" role="alert">
-                        {{ $message }}
-                    </span>
-                @enderror 
-                
-
-            </div>   
+            <!-- <h5 class="fw-light link-fx mb-4 text-primary-darker">DATOS DE INSCRIPCIÓN</h5> -->
             
-            <div class="col-2">
-                <label class="form-label">&nbsp;</label>
-                <button class="btn btn-large btn-info">Buscar cursos</button>
+            <!-- Listado de convenios -->
+
+
+            <div class="col-xl-7">
+        
+                <div class="block block-rounded">
+                    <div class="block-header">
+                        <h3 class="block-title">
+                        Convenios
+                        </h3>
+                    </div>
+                    
+                    <div class="block-content block-content-full space-y-3">
+                        <div class="form-check form-block">
+                            <input type="radio" class="form-check-input" id="convenio-0" value="0@0@No aplica" name="convenio" checked>
+                            <label class="form-check-label" for="convenio-0">
+                                <span class="d-block fw-normal p-1">
+                                    <span class="d-block fw-semibold mb-1">No aplica</span>
+                                </span>
+                            </label>
+                        </div>                        
+                        @foreach ($convenios as $convenio)     
+                            @if ($convenio->esVigente())                                
+                                <div class="form-check form-block">
+                                    <input type="radio" class="form-check-input" id="convenio-{{ $convenio->getId() }}" value="{{ $convenio->getId().'@'.$convenio->getDescuento().'@'.$convenio->getNombre() }}" name="convenio">
+                                    <label class="form-check-label" for="convenio-{{ $convenio->getId() }}">
+                                        <span class="d-block fw-normal p-1">
+                                        <span class="d-block fw-semibold mb-1">{{ $convenio->getNombre() }}</span>
+                                        <span class="d-block fs-sm fw-medium text-muted"><span class="fw-semibold">{{ $convenio->getDescuento() }}%</span> de descuento</span>
+                                        </span>
+                                    </label>
+                                </div>
+                            @endif                       
+                        @endforeach
+
+                    </div>
+
+
+                    <div class="block-header">
+                        <h3 class="block-title">
+                          Medios de pago
+                        </h3>                        
+                    </div>       
+                    <div class="block-content block-content-full pt-0">
+                      
+                      <div class="row g-3">
+                          <div class="col-6 col-sm-4">
+                            <div class="form-check form-block">
+                              <input type="radio" class="form-check-input" id="medioPago-1" name="medioPago" value="pagoBanco" checked>
+                              <label class="form-check-label bg-body-light text-center" for="medioPago-1">
+                                  Pago en Banco
+                              </label>
+                            </div>
+                          </div>
+                          <div class="col-6 col-sm-4">
+                            <div class="form-check form-block">
+                              <input type="radio" class="form-check-input" id="medioPago-2" name="medioPago" value="pagoDatafono">
+                              <label class="form-check-label bg-body-light text-center" for="medioPago-2">
+                                  Pago Datáfono
+                              </label>
+                            </div>
+                          </div>
+                          
+                          <div class="col-6 col-sm-4">
+                            <div class="form-check form-block">
+                              <input type="radio" class="form-check-input" id="medioPago-3" name="medioPago" value="pagoPSE">
+                              <label class="form-check-label bg-body-light text-center" for="medioPago-3">
+                                  PSE
+                              </label>
+                            </div>
+                          </div> 
+                                                    
+
+                      </div>
+
+                    </div>             
+                    
+
+                </div>
+                
+            <!-- Fin listado de convenios -->
             </div>
 
+            <!-- Resumen de los costos de matrícula -->
+            <div class="col-xl-5 order-xl-last">
+
+              <div class="block block-rounded">
+                  <div class="block-header">
+                    <h3 class="block-title">
+                      Resumen costo inscripción
+                    </h3>
+                  </div>
+                  <div class="block-content block-content-full">
+                    <span class="fw-100 text-muted">
+                      {{ $participante->getNombreCompleto() }} <br>
+                      {{ $participante->getDocumentoCompleto() }}
+                    </span>
+                    <table class="table table-vcenter">
+                      <tbody>
+                        <tr>
+                          <td class="ps-0">
+                            <a class="fw-semibold" href="javascript:void(0)">{{ $grupo->getNombreCurso() }}</a>
+                            <div class="fs-sm text-muted">
+                                G: {{ $grupo->getId() }} <br> 
+                                {{ $grupo->getDia() }} / {{ $grupo->getJornada() }} <br>
+                                {{ $grupo->getModalidad() }} <br>
+                                Periodo: {{ $grupo->getNombreCalendario() }}
+                            </div>
+                          </td>
+                          <td class="pe-0 fw-medium text-end" id="idCosto">{{ $grupo->getCostoFormateado() }}</td>
+                        </tr>
+                        <tr>
+                          <td class="ps-0">
+                            <a class="fw-semibold" href="javascript:void(0)">Descuento convenio</a>
+                            <div class="fs-sm text-muted" id="idNombreDescuento">No aplica</div>
+                          </td>
+                          <td class="pe-0 fw-medium text-end" id="idValorDescuento">$0 COP</td>
+                        </tr>
+                      </tbody>
+                      <tbody>
+                        <tr>
+                          <td class="ps-0 fw-medium">Total</td>
+                          <td class="pe-0 fw-bold text-end" id="idValorTotalAPagar">{{ $grupo->getCostoFormateado() }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <button class="btn btn-primary w-100 py-3 push">
+                  <i class="fa fa-check opacity-50 me-1"></i>
+                  {{ $btnText }}
+                </button>
+              </div>
+
+
+            <!-- Fin resumen costos de matrícula -->
+            </div>
+
+
         </div>
 
-        <div class="row push">
-            <table class="table table-vcenter mt-2">
-                @forelse ($grupos as $grupo)
-                <tr>
-                    <td class="fs-sm" style="width: 40%;">
-                        <p class="fw-normal mb-0">{{ $grupo->getCodigoGrupo() . " - " . $grupo->getNombreCurso() }} ({{ $grupo->getModalidad() }})</p>
-                    </td>
-                    <td class="fs-xs" style="width: 20%;">
-                        <p class="fw-normal mb-0">{{ $grupo->getDia() }} / {{ $grupo->getJornada() }}</p>
-                    </td>
-                    <td class="fs-xs" style="width: 15%;">
-                        <p class="fw-normal mb-0">{{ $grupo->getCostoFormateado() }}</p>
-                    </td>
-                    <td class="fs-xs" style="width: 20%;">
-                        @php
-                            $class = "fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-success-light text-success"; 
-                            if ($grupo->getTotalCuposDisponibles() == 0) {
-                                $class = "fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-danger-light text-danger"; 
-                            }
-                        @endphp
-                        <span class="{!! $class !!}">
-                        Cupos disponibles: {{ $grupo->getTotalCuposDisponibles() }}
-                        </span>
-                    </td>                    
-                    <td class="text-end" style="width: 5%;">
-                        <div class="btn-group">
-                            @if ($grupo->getTotalCuposDisponibles() > 0)                                
-                                <a href="{{ route('areas.edit', $grupo->getId()) }}" 
-                                    class="fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-info-light text-info">
-                                    Inscribirse
-                                </a>
-                            @endif
-                        </div>
-                    </td>                    
-                </tr>
-                @empty
-                <tr>
-                    <td class="text-center">No hay grupos para mostrar</td>
-                </tr>
-                @endforelse 
-            </table> 
-        </div>
-    
-    </div>
+          
 
-</div>
 
+
+
+
+    <!-- </div>
+
+</div> -->
+
+<script src="{{asset('assets/js/oneui.app.min.js')}}"></script>
+<script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
+
+<script>
+    $(document).ready(function(){
+        
+        $('input[name="convenio"]').change(function(){
+
+            const valor = $('input[name="convenio"]:checked').val();            
+            var datosConvenio = valor.split('@');
+            
+            $("#convenioId").val(datosConvenio[0]); 
+
+            var porcentajeDescuento = datosConvenio[1];
+            var nombreDescuento = datosConvenio[2];            
+            var valorCosto = $('#idCosto').text();
+
+            valores = calcularTotalAPagar(valorCosto, porcentajeDescuento);
+
+            $('#idNombreDescuento').text(nombreDescuento);
+            
+            $('#idValorDescuento').text(formatoMoneda( valores[1] ));
+            $("#valor_descuento").val(valores[1]); 
+
+            $('#idValorTotalAPagar').text(formatoMoneda( valores[0] ));
+            $("#total_a_pagar").val(valores[0]); 
+        });
+    });
+
+    function calcularTotalAPagar(valorCosto, porcentajeDescuento) {
+
+        valorCosto = convertirFormatoCostoAEntero(valorCosto);
+        var valorDescuento = calcularDescuento(valorCosto, porcentajeDescuento);
+        var valorTotalAPagar = valorCosto - valorDescuento;
+
+        var valores = new Array(valorTotalAPagar, valorDescuento);
+
+        return valores;
+    }
+
+    function calcularDescuento(valorCosto, porcentajeDescuento) {
+        if (porcentajeDescuento == 0) {
+            return 0;
+        }
+        return valorCosto * ( porcentajeDescuento / 100 );
+    }
+
+    function convertirFormatoCostoAEntero(valorCosto) {
+        var numeros = valorCosto.replace(/[^0-9]/g, '');
+        return parseInt(numeros, 10);
+    }
+
+    function formatoMoneda(numero) {
+        var numeroFormateado = '$' + numero.toLocaleString('es-CO', {
+            minimumFractionDigits: 0
+        }) + ' COP';
+        
+        return numeroFormateado;
+    }
+</script>

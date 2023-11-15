@@ -1,18 +1,13 @@
 @extends("plantillas.principal")
 
 @php
-    $titulo = "Formulario de inscripción";
-    
-    $datosParticipante = $participante->getNombreCompleto() . "<br>";
-    $datosParticipante .= $participante->getDocumentoCompleto() . "<br>";
-    $datosParticipante .= $participante->getEmail() . "<br>";
-    $datosParticipante .= $participante->getTelefono();
+    $titulo = "Paso 4: confirmación inscripción";
 @endphp
 
 @section("title", $titulo)
 
 @section("description")
-    {!! $datosParticipante !!}
+    
 @endsection
 
 @section("seccion")
@@ -25,9 +20,14 @@
 
 @section("content")
 
-    <form method="post" action="{{ route('participantes.buscar-grupos') }}">
+    <form method="post" action="{{ route('participantes.confirmar-inscripcion') }}">
         @csrf        
-        <input type="hidden" name="participante" value="{{ $participante->getId() }}">
-        @include('participantes._form_matricula', ['btnText' => 'Guardar y continuar'])        
+        <input type="hidden" name="participanteId" value="{{ $participante->getId() }}">
+        <input type="hidden" name="grupoId" value="{{ $grupo->getId() }}">
+        <input type="hidden" name="convenioId" id="convenioId" value="0">
+        <input type="hidden" name="costo_curso" id="costo_curso" value="{{ $grupo->getCosto() }}">
+        <input type="hidden" name="valor_descuento" id="valor_descuento" value="0">
+        <input type="hidden" name="total_a_pagar" id="total_a_pagar" value="{{ $grupo->getCosto() }}">        
+        @include('participantes._form_matricula', ['btnText' => 'Confirmar inscripcion'])        
     </form>
 @endsection

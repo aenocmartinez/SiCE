@@ -175,4 +175,8 @@ class Grupo {
     public function getCodigoGrupo(): string {
         return "G" . $this->getId();
     }
+
+    public function esCalendarioVigente(): bool {
+        return $this->cursoCalendario->esCalendarioVigente();
+    }
 }

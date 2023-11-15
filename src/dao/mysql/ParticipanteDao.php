@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Src\domain\Participante;
 use Src\domain\repositories\ParticipanteRepository;
+use Src\view\dto\ConfirmarInscripcionDto;
 
 class ParticipanteDao extends Model implements ParticipanteRepository {
 
@@ -27,6 +28,10 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                             'contacto_emergencia',
                             'telefono_emergencia'
                         ];
+    
+    public function formulariosInscripcion() {
+        return $this->hasMany(FormularioInscripcionDao::class, 'participante_id');
+    }
 
     public function buscarParticipantePorDocumento(string $tipo, string $documento): Participante {
         $participante = new Participante;
@@ -54,7 +59,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
             }
 
         } catch (Exception $e) {
-            dd($e->getMessage());
+            $e->getMessage();
         }
 
         return $participante;        
@@ -86,7 +91,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
 
 
         } catch (Exception $e) {
-            dd($e->getMessage());
+            $e->getMessage();
         }
 
         return $exito;
@@ -119,7 +124,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
 
 
         } catch (Exception $e) {
-            dd($e->getMessage());
+            $e->getMessage();
         }
 
         return $exito;
@@ -151,10 +156,36 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
             }
 
         } catch (Exception $e) {
-            dd($e->getMessage());
+            $e->getMessage();
         }
 
         return $participante;          
+    }
+
+    public function crearInscripcion(ConfirmarInscripcionDto $dto): bool {
+        $exito = true;
+
+        try {
+            $participante = ParticipanteDao::find($dto->participanteId);
+            if ($participante) {
+                $nuevoFormulario = new FormularioInscripcionDao();
+                $nuevoFormulario->grupo_id = $dto->grupoId;                
+                if ($dto->convenioId > 0) {
+                    $nuevoFormulario->convenio_id = $dto->convenioId;
+                }
+                $nuevoFormulario->costo_curso = $dto->costoCurso;
+                $nuevoFormulario->valor_descuento = $dto->valorDescuento;
+                $nuevoFormulario->total_a_pagar = $dto->totalAPagar;
+                $nuevoFormulario->medio_pago = $dto->medioPago;
+                
+                $participante->formulariosInscripcion()->save($nuevoFormulario);
+            }
+        } catch(Exception $e) {
+            $exito = false;
+            $e->getMessage();
+        }
+
+        return $exito;
     }
 
 }

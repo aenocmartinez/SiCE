@@ -15,11 +15,12 @@ class AddCursoCalendarioIdToGrupos extends Migration
     {
         Schema::table('grupos', function (Blueprint $table) {
             $table->unsignedBigInteger('curso_calendario_id');
+            $table->unsignedBigInteger('calendario_id');
 
             $table->foreign('curso_calendario_id')->references('id')->on('curso_calendario');
 
-            $table->unique(['curso_calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada'], 'grupos_index_unique');
-            $table->unique(['orientador_id', 'dia', 'jornada'], 'orientador_ocupado_index_unique');            
+            $table->unique(['curso_calendario_id', 'calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada'], 'grupos_index_unique');
+            $table->unique(['calendario_id', 'orientador_id', 'dia', 'jornada'], 'orientador_ocupado_index_unique');            
         });
     }
 

@@ -12,7 +12,7 @@ use Src\domain\repositories\GrupoRepository;
 
 class GrupoDao extends Model implements GrupoRepository {
     protected $table = 'grupos';
-    protected $fillable = ['curso_calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada', 'cupos'];
+    protected $fillable = ['curso_calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada', 'cupos', 'calendario_id'];
 
     public function listarGrupos(): array {
         $listaGrupos = array();
@@ -74,7 +74,7 @@ class GrupoDao extends Model implements GrupoRepository {
         try {
             $g = DB::table('grupos as g')
                     ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos',
-                            'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id'                            
+                            'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id', 'cc.costo', 'cc.modalidad'                          
                             )
                     ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
                     ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
@@ -98,6 +98,8 @@ class GrupoDao extends Model implements GrupoRepository {
 
                 $cursoCalendario = new CursoCalendario($caledario, $curso);
                 $cursoCalendario->setId($g->curso_calendario_id);
+                $cursoCalendario->setCosto($g->costo);
+                $cursoCalendario->setModalidad($g->modalidad);
 
                 $grupo->setCursoCalendario($cursoCalendario);
                 $grupo->setOrientador($orientador);
@@ -124,7 +126,8 @@ class GrupoDao extends Model implements GrupoRepository {
                 'orientador_id' => $grupo->getOrientador()->getId(), 
                 'dia' => $grupo->getDia(), 
                 'jornada' => $grupo->getJornada(),
-                'cupos' => $grupo->getCupo()
+                'cupos' => $grupo->getCupo(),
+                'calendario_id' => $grupo->getCalendarioId()
             ]);
 
         } catch (\Exception $e) {
@@ -158,7 +161,8 @@ class GrupoDao extends Model implements GrupoRepository {
                     'orientador_id' => $grupo->getOrientador()->getId(), 
                     'dia' => $grupo->getDia(), 
                     'jornada' => $grupo->getJornada(),
-                    'cupos' => $grupo->getCupo()
+                    'cupos' => $grupo->getCupo(),
+                    'calendario_id' => $grupo->getCalendarioId()
                 ]);                
                 $exito = true;
             }
@@ -294,7 +298,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 ->leftJoin('cursos as c', 'c.id', '=', 'cc.curso_id')
                 ->leftJoin('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
                 ->where(function ($query) use ($criterio) {
-                    $campos = ['o.nombre', 's.nombre', 'ca.nombre', 'cc.modalidad', 'g.cupos', 'g.dia', 'g.jornada', 'c.nombre'];
+                    $campos = ['o.nombre', 's.nombre', 'ca.nombre', 'cc.modalidad', 'g.cupos', 'g.dia', 'g.jornada', 'c.nombre', 'g.id'];
             
                     foreach ($campos as $campo) {
                         $query->orWhere($campo, 'like', '%' . $criterio . '%');

@@ -1,7 +1,7 @@
 @extends("plantillas.principal")
 
 @php
-    $titulo = "Formulario de inscripción";    
+    $titulo = "Paso 2: datos del participante";
 @endphp
 
 @section("title", $titulo)
