@@ -24,7 +24,7 @@ class BuscarParticipantePorDocumento extends FormRequest
     public function rules()
     {
         return [
-            'documento' => 'required|numeric',
+            'documento' => 'required',
             'tipoDocumento' => 'required'
         ];
     }

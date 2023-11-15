@@ -29,7 +29,9 @@ class ParticipanteController extends Controller
 
     public function create($tipoDocumento, $documento) {
 
-        $participante = (new BuscarParticipantePorDocumentoUseCase)->ejecutar($tipoDocumento, $documento);  
+        $participante = (new BuscarParticipantePorDocumentoUseCase)->ejecutar($tipoDocumento, $documento); 
+        $participante->setTipoDocumento($tipoDocumento);
+        $participante->setDocumento($documento);
 
         return view('participantes.create', [
             'participante' => $participante,
