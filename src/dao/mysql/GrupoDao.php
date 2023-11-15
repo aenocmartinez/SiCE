@@ -14,6 +14,11 @@ class GrupoDao extends Model implements GrupoRepository {
     protected $table = 'grupos';
     protected $fillable = ['curso_calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada', 'cupos', 'calendario_id'];
 
+
+    public function formulariosInscripcion() {
+        return $this->hasMany(FormularioInscripcionDao::class, 'grupo_id');
+    }
+
     public function listarGrupos(): array {
         $listaGrupos = array();
         $cursoDao = new CursoDao();

@@ -84,4 +84,12 @@ class ListaDeValor {
             "NO ESTÁ AFILIADO"
        ];       
     }
+
+    public static function estadosFormularioInscripcion(): array {
+        return [
+            [ 'value' => 'Pendiente de pago', 'nombre' => 'Pendiente de pago'],
+            [ 'value' => 'Pagado', 'nombre' => 'Pagado'],
+            [ 'value' => 'Vencido', 'nombre' => 'Vencido'],
+        ];        
+    }
 }

@@ -6,12 +6,12 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\ConvenioController;
 use App\Http\Controllers\CursoController;
+use App\Http\Controllers\FormularioInscripcionController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\OrientadorController;
 use App\Http\Controllers\ParticipanteController;
 use App\Http\Controllers\SalonController;
 use App\Http\Controllers\TipoSalonController;
-use Src\domain\Calendario;
 
 /*
 |--------------------------------------------------------------------------
@@ -105,14 +105,14 @@ Route::patch('/convenios', [ConvenioController::class, 'update'])->name('conveni
 
 Route::get('/participantes/buscar-participante', [ParticipanteController::class, 'formularioBuscarPorDocumento'])->name('participantes.buscar_participante');
 Route::post('/participantes/buscar-participante', [ParticipanteController::class, 'buscarParticipantePorDocumento'])->name('participantes.buscar_participante_por_documento');
-
 Route::get('/participantes/{tipoDocumento}/{documento}', [ParticipanteController::class, 'create'])->name('participantes.create');
 Route::get('/participantes/{tipoDocumento}/{documento}/matricula', [ParticipanteController::class, 'formularioMatricula'])->name('participantes.form_matricula');
-
 Route::post('/participantes', [ParticipanteController::class, 'store'])->name('participantes.store');
 Route::post('/participantes/buscar-grupos', [ParticipanteController::class, 'buscarGruposDisponiblesParaMatricula'])->name('participantes.buscar-grupos');
-
 Route::get('/participantes/buscar-grupos/{participanteId}/{calendarioId}/{areaId}', [ParticipanteController::class, 'formularioBuscarGruposDisponibles'])->name('participantes.buscar-grupos-2');
-
 Route::get('/participante/{participanteId}/grupo/{grupoId}/inscripcion', [ParticipanteController::class, 'formulariMatricula'])->name('participantes.matricular');
 Route::post('/participante/confirmar-inscripcion', [ParticipanteController::class, 'confirmarInscripcion'])->name('participantes.confirmar-inscripcion');
+
+
+Route::get('/formularios', [FormularioInscripcionController::class, 'index'])->name('formularios.index');
+Route::post('/formularios/filtro', [FormularioInscripcionController::class, 'filtrarInscripciones'])->name('formularios.buscar-inscritos');

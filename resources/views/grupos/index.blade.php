@@ -1,7 +1,7 @@
 @extends("plantillas.principal")
 
 @section("title", "Grupos")
-<!-- @section("description", "Listado y administración de las áreas para la gestión de inscripción a cursos de extensión.") -->
+@section("description", "Listado de grupos.")
 
 @section("content")
 

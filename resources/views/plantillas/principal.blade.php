@@ -98,8 +98,8 @@
                 <a class="nav-main-link {{ setActive(['participantes.buscar_participante', 'participantes.*']) }}" href="{{ route('participantes.buscar_participante') }}">
                   <span class="nav-main-link-name">Formulario de inscripción</span>
                 </a>
-                <a class="nav-main-link" href="{{ route('home') }}">
-                  <span class="nav-main-link-name">Validar pago matrícula</span>
+                <a class="nav-main-link {{ setActive(['formularios.index', 'formularios.*']) }}" href="{{ route('formularios.index') }}">
+                  <span class="nav-main-link-name">Listado de inscritos</span>
                 </a>
                 <a class="nav-main-link" href="{{ route('home') }}">
                   <span class="nav-main-link-name">Cambios y traslados</span>

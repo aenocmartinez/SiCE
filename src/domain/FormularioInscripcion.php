@@ -7,13 +7,17 @@ class FormularioInscripcion {
     private Participante $participante;
     private Convenio $convenio;
     private Grupo $grupo;
-    private string $fecha;
     private string $codigo;
     private string $codigoBanco;
+    private string $estado;
+    private string $medioPago;
+    private $fechaCreacion;
+    private $totalAPagar;
 
     public function __construct() {
         $this->id = 0;
         $this->codigoBanco = "";
+        $this->totalAPagar = 0;
     }
 
     public function setId(int $id=0): void {
@@ -51,7 +55,7 @@ class FormularioInscripcion {
     public function getParticipanteNombreCompleto(): string {
         $nombres = $this->getParticipantePrimerNombre() . " " . $this->getParticipanteSegundoNombre();
         $apellidos = $this->getParticipantePrimerApellido() . " " . $this->getParticipanteSegundoApellido();        
-        return strtoupper($nombres . " " . $apellidos);
+        return mb_strtoupper($nombres . " " . $apellidos, 'UTF-8');;
     }
 
     public function getParticipanteFechaNacimiento(): string {
@@ -174,24 +178,17 @@ class FormularioInscripcion {
         return $this->grupo->getNombreSalon();
     }
 
-    public function setFecha(string $fecha): void {
-        $this->fecha = $fecha;
-    }
-
-    public function getFecha(): string {
-        return $this->fecha;
-    }
-
     public function setCodigo(string $codigo): void {
         $this->codigo = $codigo;
     }
 
     public function getCodigo(): string {
-        return $this->codigo;
+        // return $this->codigo;
+        return strtotime($this->fechaCreacion) . $this->getId();
     }
 
     public function getEstado(): string {
-        return ($this->codigoBanco != "") ? "Legalizado" : "No legalizado";
+        return $this->estado;
     }
 
     public function setCodigoBanco(string $codigoBanco): void {
@@ -206,4 +203,31 @@ class FormularioInscripcion {
         return $this->convenio->getId() > 0;
     }
 
+    public function setEstado(string $estado): void {
+        $this->estado = $estado;
+    }
+
+    public function setFechaCreacion($fechaCreacion): void {
+        $this->fechaCreacion = $fechaCreacion;
+    }
+
+    public function getFechaCreacion() {
+        return $this->fechaCreacion;
+    }
+    
+    public function setTotalAPagar($totalAPagar): void {
+        $this->totalAPagar = $totalAPagar;
+    }
+
+    public function getTotalAPagar() {
+        return $this->totalAPagar;
+    }    
+
+    public function setMedioPago(string $medioPago): void {
+        $this->medioPago = $medioPago;
+    }
+
+    public function getMedioPago(): string {
+        return $this->medioPago;
+    }    
 }
