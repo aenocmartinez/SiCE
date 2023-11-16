@@ -14,8 +14,8 @@ class AddCamposContactoEmergenciaToParticipantes extends Migration
     public function up()
     {
         Schema::table('participantes', function (Blueprint $table) {
-            $table->string('contacto_emergencia')->nullable();
-            $table->string('telefono_emergencia')->nullable();
+            $table->string('contacto_emergencia')->after('eps')->nullable();
+            $table->string('telefono_emergencia')->after('contacto_emergencia')->nullable();
         });
     }
 

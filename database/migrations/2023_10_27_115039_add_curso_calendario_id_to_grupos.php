@@ -14,8 +14,8 @@ class AddCursoCalendarioIdToGrupos extends Migration
     public function up()
     {
         Schema::table('grupos', function (Blueprint $table) {
-            $table->unsignedBigInteger('curso_calendario_id');
-            $table->unsignedBigInteger('calendario_id');
+            $table->unsignedBigInteger('curso_calendario_id')->after('jornada');
+            $table->unsignedBigInteger('calendario_id')->after('curso_calendario_id');
 
             $table->foreign('curso_calendario_id')->references('id')->on('curso_calendario');
 

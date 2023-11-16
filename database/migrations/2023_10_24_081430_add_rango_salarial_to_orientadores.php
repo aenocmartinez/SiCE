@@ -14,7 +14,7 @@ class AddRangoSalarialToOrientadores extends Migration
     public function up()
     {
         Schema::table('orientadores', function (Blueprint $table) {
-            $table->string('rango_salarial', 40)->default("");
+            $table->string('rango_salarial', 40)->after('nivel_estudio')->default("");
         });
     }
 

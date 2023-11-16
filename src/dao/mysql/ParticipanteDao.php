@@ -162,30 +162,30 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         return $participante;          
     }
 
-    public function crearInscripcion(ConfirmarInscripcionDto $dto): bool {
-        $exito = true;
+    // public function crearInscripcion(ConfirmarInscripcionDto $dto): bool {
+    //     $exito = true;
 
-        try {
-            $participante = ParticipanteDao::find($dto->participanteId);
-            if ($participante) {
-                $nuevoFormulario = new FormularioInscripcionDao();
-                $nuevoFormulario->grupo_id = $dto->grupoId;                
-                if ($dto->convenioId > 0) {
-                    $nuevoFormulario->convenio_id = $dto->convenioId;
-                }
-                $nuevoFormulario->costo_curso = $dto->costoCurso;
-                $nuevoFormulario->valor_descuento = $dto->valorDescuento;
-                $nuevoFormulario->total_a_pagar = $dto->totalAPagar;
-                $nuevoFormulario->medio_pago = $dto->medioPago;
+    //     try {
+    //         $participante = ParticipanteDao::find($dto->participanteId);
+    //         if ($participante) {
+    //             $nuevoFormulario = new FormularioInscripcionDao();
+    //             $nuevoFormulario->grupo_id = $dto->grupoId;                
+    //             if ($dto->convenioId > 0) {
+    //                 $nuevoFormulario->convenio_id = $dto->convenioId;
+    //             }
+    //             $nuevoFormulario->costo_curso = $dto->costoCurso;
+    //             $nuevoFormulario->valor_descuento = $dto->valorDescuento;
+    //             $nuevoFormulario->total_a_pagar = $dto->totalAPagar;
+    //             $nuevoFormulario->medio_pago = $dto->medioPago;
                 
-                $participante->formulariosInscripcion()->save($nuevoFormulario);
-            }
-        } catch(Exception $e) {
-            $exito = false;
-            $e->getMessage();
-        }
+    //             $participante->formulariosInscripcion()->save($nuevoFormulario);
+    //         }
+    //     } catch(Exception $e) {
+    //         $exito = false;
+    //         $e->getMessage();
+    //     }
 
-        return $exito;
-    }
+    //     return $exito;
+    // }
 
 }

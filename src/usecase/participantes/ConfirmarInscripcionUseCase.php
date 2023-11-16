@@ -2,8 +2,8 @@
 
 namespace Src\usecase\participantes;
 
-use Src\dao\mysql\GrupoDao;
-use Src\dao\mysql\ParticipanteDao;
+use Src\dao\mysql\FormularioInscripcionDao;
+
 use Src\infraestructure\medioPago\IMedioPago;
 use Src\infraestructure\medioPago\MedioDePagoFactory;
 use Src\view\dto\ConfirmarInscripcionDto;
@@ -15,7 +15,7 @@ class ConfirmarInscripcionUseCase {
 
         $response = new Response();
 
-        $participanteRepository = new ParticipanteDao();
+        $participanteRepository = new FormularioInscripcionDao();
 
         $exito = $participanteRepository->crearInscripcion($confirmarInscripcionDto);
 

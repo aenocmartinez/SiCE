@@ -14,7 +14,7 @@ class AddTipoCursoToCursos extends Migration
     public function up()
     {
         Schema::table('cursos', function (Blueprint $table) {
-            $table->string('tipo_curso',40)->nullable();
+            $table->string('tipo_curso',40)->after('area_id')->nullable();
         });
     }
 

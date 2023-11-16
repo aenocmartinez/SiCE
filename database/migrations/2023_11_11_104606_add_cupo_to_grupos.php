@@ -14,7 +14,7 @@ class AddCupoToGrupos extends Migration
     public function up()
     {
         Schema::table('grupos', function (Blueprint $table) {
-            $table->integer('cupos')->default(0);
+            $table->integer('cupos')->after('calendario_id')->default(0);
         });
     }
 

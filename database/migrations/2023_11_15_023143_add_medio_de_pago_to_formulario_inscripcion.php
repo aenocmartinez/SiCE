@@ -14,7 +14,7 @@ class AddMedioDePagoToFormularioInscripcion extends Migration
     public function up()
     {
         Schema::table('formulario_inscripcion', function (Blueprint $table) {
-            $table->string('medio_pago', 20)->default('pagoBanco');
+            $table->string('medio_pago', 20)->after('total_a_pagar')->default('pagoBanco');
         });
     }
 

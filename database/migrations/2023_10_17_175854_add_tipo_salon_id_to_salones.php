@@ -14,7 +14,7 @@ class AddTipoSalonIdToSalones extends Migration
     public function up()
     {
         Schema::table('salones', function (Blueprint $table) {
-            $table->unsignedBigInteger('tipo_salon_id')->nullable();
+            $table->unsignedBigInteger('tipo_salon_id')->after('hoja_vida')->nullable();
             $table->foreign('tipo_salon_id')->references('id')->on('tipo_salones');
         });
     }

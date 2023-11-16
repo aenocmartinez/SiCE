@@ -19,7 +19,7 @@ class CreateFormularioInscripcionTable extends Migration
             $table->unsignedBigInteger('participante_id');
             $table->unsignedBigInteger('convenio_id')->nullable();
             $table->string('codigo_banco', 50)->nullable();
-            $table->string('codigo_formulario')->nullable();
+            $table->string('numero_formulario')->nullable();
 
 
             $table->foreign('grupo_id')->references('id')->on('grupos');
@@ -28,7 +28,7 @@ class CreateFormularioInscripcionTable extends Migration
 
             $table->unique(['grupo_id', 'participante_id'], 'participante_grupo');
             $table->unique(['codigo_banco']);
-            $table->unique(['codigo_formulario']);
+            $table->unique(['numero_formulario']);
 
             $table->timestamps();
         });
