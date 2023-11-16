@@ -7,7 +7,7 @@ class FormularioInscripcion {
     private Participante $participante;
     private Convenio $convenio;
     private Grupo $grupo;
-    private string $codigo;
+    private string $numero;
     private string $codigoBanco;
     private string $estado;
     private string $medioPago;
@@ -178,13 +178,12 @@ class FormularioInscripcion {
         return $this->grupo->getNombreSalon();
     }
 
-    public function setCodigo(string $codigo): void {
-        $this->codigo = $codigo;
+    public function setNumero(string $numero): void {
+        $this->numero = $numero;
     }
 
-    public function getCodigo(): string {
-        // return $this->codigo;
-        return strtotime($this->fechaCreacion) . $this->getId();
+    public function getNumero(): string {
+        return $this->numero;
     }
 
     public function getEstado(): string {

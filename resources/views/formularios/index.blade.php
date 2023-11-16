@@ -70,7 +70,7 @@
                 </tr>
                 @forelse ($formularios as $f)
                 <tr class="fs-xs">
-                    <td>{{ $f->getCodigo() }}</td>
+                    <td>{{ $f->getNumero() }}</td>
                     <td>{{ $f->getParticipanteNombreCompleto() }}</td>
                     <td>{{ $f->getParticipanteTipoYDocumento() }}</td>
                     <td>

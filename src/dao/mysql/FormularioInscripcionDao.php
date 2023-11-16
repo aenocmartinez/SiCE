@@ -2,6 +2,7 @@
 
 namespace Src\dao\mysql;
 
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Src\domain\Convenio;
@@ -16,6 +17,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                             'participante_id', 
                             'convenio_id', 
                             'costo_curso', 
+                            'numero_formulario',
                             'valor_descuento', 
                             'total_a_pagar',
                             'medio_pago'];
@@ -41,7 +43,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                     ->orderByDesc('participante_id')
                     ->orderByDesc('id');
 
-            $resultados = $query->get(['id', 'grupo_id', 'participante_id', 'convenio_id', 'created_at', 'estado', 'costo_curso', 'valor_descuento', 'total_a_pagar', 'medio_pago']);
+            $resultados = $query->get(['id', 'grupo_id', 'participante_id', 'convenio_id', 'created_at', 'estado', 'costo_curso', 'valor_descuento', 'total_a_pagar', 'medio_pago', 'numero_formulario']);
 
             foreach($resultados as $resultado) {
                 $formulario = new FormularioInscripcion();
@@ -50,6 +52,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formulario->setFechaCreacion($resultado->created_at);
                 $formulario->setTotalAPagar($resultado->total_a_pagar);
                 $formulario->setMedioPago($resultado->medio_pago);
+                $formulario->setNumero($resultado->numero_formulario);
 
                 $grupo = $grupoDao->buscarGrupoPorId($resultado->grupo_id);
                 $participante = $participanteDao->buscarParticipantePorId($resultado->participante_id);
@@ -87,13 +90,14 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $nuevoFormulario->costo_curso = $dto->costoCurso;
                 $nuevoFormulario->valor_descuento = $dto->valorDescuento;
                 $nuevoFormulario->total_a_pagar = $dto->totalAPagar;
-                $nuevoFormulario->medio_pago = $dto->medioPago;
+                $nuevoFormulario->medio_pago = $dto->medioPago;                
+                $nuevoFormulario->numero_formulario = strtotime(Carbon::now()) . $dto->participanteId;
                 
                 $participante->formulariosInscripcion()->save($nuevoFormulario);
             }
         } catch(Exception $e) {
             $exito = false;
-            $e->getMessage();
+            dd($e->getMessage());
         }
 
         return $exito;
