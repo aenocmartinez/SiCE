@@ -40,7 +40,7 @@ class FormularioInscripcionController extends Controller
     }
 
     public function index() {
-        return view('participantes.buscar_por_documento');
+        return view('formularios.buscar_por_documento');
     }
 
     public function filtrarInscripciones(BuscarInscripciones $req) {
@@ -63,7 +63,7 @@ class FormularioInscripcionController extends Controller
         $participante->setTipoDocumento($tipoDocumento);
         $participante->setDocumento($documento);
 
-        return view('participantes.create', [
+        return view('formularios.create', [
             'participante' => $participante,
             'sexo' => ListaDeValor::sexo(),
             'estadoCivil' => ListaDeValor::estadoCivil(),
@@ -93,7 +93,7 @@ class FormularioInscripcionController extends Controller
         
         $participante = (new BuscarParticipantePorDocumentoUseCase)->ejecutar($tipoDocumento, $documento);  
         
-        return view('participantes.select_grupo_inscripcion', [
+        return view('formularios.select_grupo_inscripcion', [
             'participante' => $participante,
             'calendarios' => (new ListarCalendariosUseCase)->ejecutar(),
             'areas' => (new ListarAreasUseCase)->ejecutar(),
@@ -137,7 +137,7 @@ class FormularioInscripcionController extends Controller
     }    
 
     public function buscarGruposDisponiblesParaInscripcion2($participanteId, $calendarioId, $areaId) {
-        return view('participantes.select_grupo_inscripcion', [
+        return view('formularios.select_grupo_inscripcion', [
             'participante' => (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId),
             'calendarios' => (new ListarCalendariosUseCase)->ejecutar(),
             'areas' => (new ListarAreasUseCase)->ejecutar(),
@@ -149,7 +149,7 @@ class FormularioInscripcionController extends Controller
     }    
 
     public function vistaConfirmarInscripcion($participanteId, $grupoId) {
-        return view('participantes.create_matricula',[
+        return view('formularios.create_matricula',[
             'participante' => (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId),
             'grupo' => (new BuscarGrupoPorIdUseCase)->ejecutar($grupoId),
             'convenios' => (new ListarConveniosUseCase)->ejecutar(),

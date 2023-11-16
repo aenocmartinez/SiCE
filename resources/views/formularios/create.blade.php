@@ -6,7 +6,7 @@
 
 @section("title", $titulo)
 
-@section("description", "Ingrese todos los datos")
+@section("description", "")
 
 @section("seccion")
     <a class="link-fx" href="{{ route('formulario-inscripcion.paso-1') }}">
@@ -19,6 +19,6 @@
 @section("content")
     <form method="post" action="{{ route('formulario-inscripcion.store') }}">
         @csrf        
-        @include('participantes._form', ['btnText' => 'Guardar y continuar'])        
+        @include('formularios._form', ['btnText' => 'Guardar y continuar'])        
     </form>
 @endsection

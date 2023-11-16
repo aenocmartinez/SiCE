@@ -11,9 +11,7 @@
 
 @section("title", $titulo)
 
-@section("description")
-    {!! $datosParticipante !!}
-@endsection
+@section("description", "")
 
 @section("seccion")
     <a class="link-fx" href="{{ route('formulario-inscripcion.paso-1') }}">
@@ -28,6 +26,6 @@
     <form method="post" action="{{ route('formulario-inscripcion.paso-3.buscar-grupos') }}">
         @csrf        
         <input type="hidden" name="participante" value="{{ $participante->getId() }}">
-        @include('participantes._form_select_grupo_inscripcion', ['btnText' => 'Guardar y continuar'])        
+        @include('formularios._form_select_grupo_inscripcion', ['btnText' => 'Guardar y continuar'])        
     </form>
 @endsection

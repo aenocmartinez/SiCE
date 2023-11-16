@@ -91,9 +91,11 @@
                     </td>                    
                 </tr>
                 @empty
-                <tr>
-                    <td class="text-center">No hay grupos para mostrar</td>
-                </tr>
+                    @if (!$calendario->existe())                    
+                        <tr>
+                            <td class="text-center">No hay grupos para mostrar</td>
+                        </tr>
+                    @endif
                 @endforelse 
             </table> 
         </div>
