@@ -15,9 +15,7 @@
 
         <div class="row push">
 
-            <!-- <h5 class="fw-light link-fx text-primary-darker">BUSCAR PARTICIPANTE</h5>  -->
-
-            <form class="row row-cols-lg-auto g-3 align-items-center" action="{{ route('participantes.buscar_participante_por_documento')}}" method="POST">
+            <form class="row row-cols-lg-auto g-3 align-items-center" action="{{ route('formulario-inscripcion.buscar_participante_por_documento')}}" method="POST">
             @csrf
                 <div class="col-12">
                     <label class="visually-hidden" for="tipoDocumento">Tipo documento</label>

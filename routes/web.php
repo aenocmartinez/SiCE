@@ -103,16 +103,25 @@ Route::delete('/convenios/{id}', [ConvenioController::class, 'destroy'])->name('
 Route::patch('/convenios', [ConvenioController::class, 'update'])->name('convenios.update');
 
 
-Route::get('/participantes/buscar-participante', [ParticipanteController::class, 'formularioBuscarPorDocumento'])->name('participantes.buscar_participante');
-Route::post('/participantes/buscar-participante', [ParticipanteController::class, 'buscarParticipantePorDocumento'])->name('participantes.buscar_participante_por_documento');
-Route::get('/participantes/{tipoDocumento}/{documento}', [ParticipanteController::class, 'create'])->name('participantes.create');
-Route::get('/participantes/{tipoDocumento}/{documento}/matricula', [ParticipanteController::class, 'formularioMatricula'])->name('participantes.form_matricula');
-Route::post('/participantes', [ParticipanteController::class, 'store'])->name('participantes.store');
-Route::post('/participantes/buscar-grupos', [ParticipanteController::class, 'buscarGruposDisponiblesParaMatricula'])->name('participantes.buscar-grupos');
-Route::get('/participantes/buscar-grupos/{participanteId}/{calendarioId}/{areaId}', [ParticipanteController::class, 'formularioBuscarGruposDisponibles'])->name('participantes.buscar-grupos-2');
-Route::get('/participante/{participanteId}/grupo/{grupoId}/inscripcion', [ParticipanteController::class, 'formulariMatricula'])->name('participantes.matricular');
-Route::post('/participante/confirmar-inscripcion', [ParticipanteController::class, 'confirmarInscripcion'])->name('participantes.confirmar-inscripcion');
+Route::get('/nueva-inscripcion/paso-1/existencia-participante', [FormularioInscripcionController::class, 'index'])->name('formulario-inscripcion.paso-1');
+Route::get('/nueva-inscripcion/paso-2/datos-participante/tipo-documento/{tipoDocumento}/documento/{documento}', [FormularioInscripcionController::class, 'create'])->name('formulario-inscripcion.paso-2');
+Route::get('/nueva-inscripcion/paso-3/seleccion-curso/tipo-documento/{tipoDocumento}/documento/{documento}', [FormularioInscripcionController::class, 'edit'])->name('formulario-inscripcion.paso-3');
+Route::post('/nueva-inscripcion/paso-3/buscar-grupos', [FormularioInscripcionController::class, 'buscarGruposDisponiblesParaInscripcion'])->name('formulario-inscripcion.paso-3.buscar-grupos');
+Route::get('/nueva-inscripcion/paso-3/seleccion-curso/{participanteId}/participante/{calendarioId}/periodo/{areaId}/area', [FormularioInscripcionController::class, 'buscarGruposDisponiblesParaInscripcion2'])->name('formulario-inscripcion.paso-3-1.buscar-grupos');
+Route::get('/nueva-inscripcion/paso-4/confirmar-inscripion/participante/{participanteId}/grupo/{grupoId}', [FormularioInscripcionController::class, 'vistaConfirmarInscripcion'])->name('formulario-inscripcion.paso-4');
+Route::post('/nueva-inscripcion/paso-5/confirmar-inscripcion', [FormularioInscripcionController::class, 'confirmarInscripcion'])->name('formulario-inscripcion.paso-5');
 
 
-Route::get('/formularios', [FormularioInscripcionController::class, 'index'])->name('formularios.index');
+Route::post('/nueva-inscripcion', [FormularioInscripcionController::class, 'store'])->name('formulario-inscripcion.store');
+Route::post('/nueva-inscripcion/buscar-participante', [FormularioInscripcionController::class, 'buscarParticipantePorDocumento'])->name('formulario-inscripcion.buscar_participante_por_documento');
+
+
+
+
+
+
+
+Route::get('/formularios', [FormularioInscripcionController::class, 'listarParticipantes'])->name('formularios.index');
 Route::post('/formularios/filtro', [FormularioInscripcionController::class, 'filtrarInscripciones'])->name('formularios.buscar-inscritos');
+
+

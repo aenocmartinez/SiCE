@@ -4,8 +4,6 @@
 
         <div class="row push">
 
-            <!-- <h5 class="fw-light link-fx text-primary-darker mb-5">SELECCIONA EL CURSO AL QUE QUIERES INSCRIBIRTE</h5> -->
-
             <div class="col-5">
 
                 <!-- Listado de calendarios -->
@@ -82,7 +80,7 @@
                         <!-- Formulario -->
                         @if ($grupo->getTotalCuposDisponibles() > 0)
 
-                        <a href="{{ route('participantes.matricular', [$participante->getId(), $grupo->getId()]) }}" 
+                        <a href="{{ route('formulario-inscripcion.paso-4', [$participante->getId(), $grupo->getId()]) }}" 
                                 class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-info-light text-info"
                                 data-bs-toggle="tooltip" 
                                 title="inscribirse">

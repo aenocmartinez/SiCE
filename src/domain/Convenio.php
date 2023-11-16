@@ -105,9 +105,9 @@ class Convenio {
 
         $diasRestantes = $hoy->diffInDays($fechaCaducidad, false);
         if (($diasRestantes + 1 == 1))
-            return false;
+            return true;
         
-        return true;
+        return false;
     }
 
     public function getVigenciaEnTexto(): string {

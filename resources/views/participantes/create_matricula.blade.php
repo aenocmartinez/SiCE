@@ -11,7 +11,7 @@
 @endsection
 
 @section("seccion")
-    <a class="link-fx" href="{{ route('participantes.buscar_participante_por_documento') }}">
+    <a class="link-fx" href="{{ route('formulario-inscripcion.paso-1') }}">
         Nueva inscripción
     </a>
 @endsection
@@ -20,7 +20,7 @@
 
 @section("content")
 
-    <form method="post" action="{{ route('participantes.confirmar-inscripcion') }}">
+    <form method="post" action="{{ route('formulario-inscripcion.paso-5') }}">
         @csrf        
         <input type="hidden" name="participanteId" value="{{ $participante->getId() }}">
         <input type="hidden" name="grupoId" value="{{ $grupo->getId() }}">

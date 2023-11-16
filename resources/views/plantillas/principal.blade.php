@@ -95,8 +95,8 @@
                 <a class="nav-main-link {{ setActive(['convenios.index', 'convenios.*']) }}" href="{{ route('convenios.index') }}">
                   <span class="nav-main-link-name">Convenios</span>
                 </a>
-                <a class="nav-main-link {{ setActive(['participantes.buscar_participante', 'participantes.*']) }}" href="{{ route('participantes.buscar_participante') }}">
-                  <span class="nav-main-link-name">Formulario de inscripción</span>
+                <a class="nav-main-link {{ setActive(['formulario-inscripcion.paso-1', 'formulario-inscripcion.*']) }}" href="{{ route('formulario-inscripcion.paso-1') }}">
+                  <span class="nav-main-link-name">Nueva inscripción</span>
                 </a>
                 <a class="nav-main-link {{ setActive(['formularios.index', 'formularios.*']) }}" href="{{ route('formularios.index') }}">
                   <span class="nav-main-link-name">Listado de inscritos</span>
