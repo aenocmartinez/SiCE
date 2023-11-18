@@ -77,7 +77,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         return $formularios;
     }
 
-    public function crearInscripcion(ConfirmarInscripcionDto $dto): bool {
+    public function crearInscripcion(ConfirmarInscripcionDto $dto): bool {        
         $exito = true;
 
         try {
@@ -91,9 +91,14 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $nuevoFormulario->costo_curso = $dto->costoCurso;
                 $nuevoFormulario->valor_descuento = $dto->valorDescuento;
                 $nuevoFormulario->total_a_pagar = $dto->totalAPagar;
-                $nuevoFormulario->medio_pago = $dto->medioPago;                
-                $nuevoFormulario->numero_formulario = strtotime(Carbon::now()) . $dto->participanteId;
+                $nuevoFormulario->medio_pago = $dto->medioPago;
                 
+                if ($dto->voucher != "") {
+                    $nuevoFormulario->voucher = $dto->voucher;
+                    $nuevoFormulario->estado = 'Pagado';
+                }
+
+                $nuevoFormulario->numero_formulario = strtotime(Carbon::now()) . $dto->participanteId;                
                 $participante->formulariosInscripcion()->save($nuevoFormulario);
             }
         } catch(Exception $e) {

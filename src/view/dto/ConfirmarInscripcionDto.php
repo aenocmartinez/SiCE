@@ -11,4 +11,5 @@ class ConfirmarInscripcionDto {
     public $costoCurso;
     public $valorDescuento;
     public $totalAPagar;
+    public $voucher;
 }

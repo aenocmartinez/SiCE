@@ -28,6 +28,6 @@
         <input type="hidden" name="costo_curso" id="costo_curso" value="{{ $grupo->getCosto() }}">
         <input type="hidden" name="valor_descuento" id="valor_descuento" value="0">
         <input type="hidden" name="total_a_pagar" id="total_a_pagar" value="{{ $grupo->getCosto() }}">        
-        @include('formularios._form_matricula', ['btnText' => 'Confirmar inscripcion'])        
+        @include('formularios._form_confirmar_inscripcion', ['btnText' => 'Confirmar inscripcion'])        
     </form>
 @endsection

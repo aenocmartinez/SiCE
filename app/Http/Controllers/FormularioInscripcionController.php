@@ -152,7 +152,7 @@ class FormularioInscripcionController extends Controller
     }    
 
     public function vistaConfirmarInscripcion($participanteId, $grupoId) {
-        return view('formularios.create_matricula',[
+        return view('formularios.confirmar_inscripcion',[
             'participante' => (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId),
             'grupo' => (new BuscarGrupoPorIdUseCase)->ejecutar($grupoId),
             'convenios' => (new ListarConveniosUseCase)->ejecutar(),
@@ -199,6 +199,7 @@ class FormularioInscripcionController extends Controller
         $formularioDto->costoCurso = $datos['costo_curso'];
         $formularioDto->valorDescuento = $datos['valor_descuento'];
         $formularioDto->totalAPagar = $datos['total_a_pagar'];
+        $formularioDto->voucher = $datos['voucher'];
 
         return $formularioDto;
     }

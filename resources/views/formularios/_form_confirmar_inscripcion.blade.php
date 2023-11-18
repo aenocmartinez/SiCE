@@ -53,7 +53,7 @@
                   </div>
                   <div class="col-6 col-sm-4">
                     <div class="form-check form-block">
-                      <input type="radio" class="form-check-input" id="medioPago-2" name="medioPago" value="pagoDatafono">
+                      <input type="radio" class="form-check-input" id="medioPago-2" name="medioPago" value="pagoDatafono" {{ old('medioPago') == 'pagoDatafono' ? 'checked' : '' }}>
                       <label class="form-check-label bg-body-light text-center" for="medioPago-2">
                           Pago Datáfono
                       </label>
@@ -62,13 +62,28 @@
                   
                   <div class="col-6 col-sm-4">
                     <div class="form-check form-block">
-                      <input type="radio" class="form-check-input" id="medioPago-3" name="medioPago" value="pagoPSE">
+                      <input type="radio" class="form-check-input" id="medioPago-3" name="medioPago" value="pagoPSE" {{ old('medioPago') == 'pagoPSE' ? 'checked' : '' }}>
                       <label class="form-check-label bg-body-light text-center" for="medioPago-3">
                           PSE
                       </label>
                     </div>
                   </div> 
                                             
+                  <div class="mb-4" id="s-voucher" style="display: none;">
+                    <div class="form-floating">
+                        <input type="text" 
+                                class="form-control @error('voucher') is-invalid @enderror" 
+                                id="voucher" 
+                                name="voucher" 
+                                placeholder="Ingresar el número de voucher">                                   
+                        <label class="form-label" for="voucher">Voucher</label>
+                        @error('voucher')
+                            <span class="invalid-feedback" role="alert">
+                                {{ $message }}
+                            </span>
+                        @enderror                            
+                    </div>
+                  </div>
 
               </div>
 
@@ -143,6 +158,10 @@
 
 <script>
     $(document).ready(function(){
+
+        if($('input[name="medioPago"]:checked').val() == "pagoDatafono") {
+            $("#s-voucher").show();
+        }
         
         $('input[name="convenio"]').change(function(){
 
@@ -164,6 +183,17 @@
 
             $('#idValorTotalAPagar').text(formatoMoneda( valores[0] ));
             $("#total_a_pagar").val(valores[0]); 
+        });
+
+        $('input[name="medioPago"]').change(function(){
+          const medioPago = $('input[name="medioPago"]:checked').val();
+          $("#s-voucher").hide();
+          if (medioPago=="pagoDatafono") {
+            $("#s-voucher").show();
+          } else {
+            $("#voucher").val("");
+          } 
+
         });
     });
 
