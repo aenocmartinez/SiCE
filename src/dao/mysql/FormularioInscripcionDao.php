@@ -17,6 +17,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                             'participante_id', 
                             'convenio_id', 
                             'costo_curso', 
+                            'voucher',
                             'numero_formulario',
                             'valor_descuento', 
                             'total_a_pagar',
@@ -97,7 +98,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             }
         } catch(Exception $e) {
             $exito = false;
-            dd($e->getMessage());
+            $e->getMessage();
         }
 
         return $exito;
@@ -114,8 +115,68 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
         } catch(Exception $e) {
             $exito = false;
+            $e->getMessage();
+        }
+        return $exito;
+    }
+
+    public function buscarFormularioPorNumero($numeroFormulario): FormularioInscripcion {
+        $formulario = new FormularioInscripcion;
+        $grupoDao = new GrupoDao();
+        $participanteDao = new ParticipanteDao();
+        $convenioDao = new ConvenioDao();
+
+        try {
+            $resultado = FormularioInscripcionDao::select('id','numero_formulario','estado','total_a_pagar','created_at',
+                'valor_descuento','participante_id','grupo_id','convenio_id')    
+                ->where('formulario_inscripcion.numero_formulario', $numeroFormulario)
+                ->first();
+
+            if ($resultado) {
+                $formulario = new FormularioInscripcion();
+                $formulario->setId($resultado->id);
+                $formulario->setEstado($resultado->estado);
+                $formulario->setFechaCreacion($resultado->created_at);
+                $formulario->setValorDescuento($resultado->valor_descuento);
+                $formulario->setTotalAPagar($resultado->total_a_pagar);                
+                $formulario->setNumero($resultado->numero_formulario);
+                
+
+                $grupo = $grupoDao->buscarGrupoPorId($resultado->grupo_id);
+                $participante = $participanteDao->buscarParticipantePorId($resultado->participante_id);
+                $convenio = new Convenio();
+
+                if (!is_null($resultado->convenio_id)) {
+                    $convenio = $convenioDao->buscarConvenioPorId($resultado->convenio_id);
+                }
+                
+                $formulario->setGrupo($grupo);
+                $formulario->setParticipante($participante);
+                $formulario->setConvenio($convenio);                
+            }
+        } catch (Exception $e) {
             dd($e->getMessage());
         }
+
+        return $formulario;
+    }
+
+    public function legalizarFormulario(int $formularioId, string $voucher): bool {
+        $exito = true;
+        try {
+
+            $formulario = FormularioInscripcionDao::find($formularioId);
+            if ($formulario) {
+                $formulario->estado = 'Pagado';
+                $formulario->voucher = $voucher;
+                $formulario->save();
+            }
+
+        } catch(Exception $e) {
+            $exito = false;
+            $e->getMessage();
+        }
+
         return $exito;
     }
 }

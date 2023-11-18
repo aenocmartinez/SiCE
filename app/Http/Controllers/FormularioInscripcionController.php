@@ -7,13 +7,16 @@ use App\Http\Requests\BuscarInscripciones;
 use App\Http\Requests\BuscarParticipantePorDocumento;
 use App\Http\Requests\ConfirmarInscription;
 use App\Http\Requests\GuardarParticipante;
+use App\Http\Requests\LegalizarFormularioInscripcion;
 use Illuminate\Http\Request;
 use Src\infraestructure\util\ListaDeValor;
 use Src\usecase\areas\ListarAreasUseCase;
 use Src\usecase\calendarios\ListarCalendariosUseCase;
 use Src\usecase\convenios\ListarConveniosUseCase;
+use Src\usecase\formularios\BuscarFormularioPorNumeroUseCase;
 use Src\usecase\formularios\BuscarFormulariosUseCase;
 use Src\usecase\formularios\ConfirmarInscripcionUseCase;
+use Src\usecase\formularios\LegalizarInscripcionUseCase;
 use Src\usecase\grupos\BuscarGrupoPorIdUseCase;
 use Src\usecase\grupos\ListarGruposDisponiblesParaMatriculaUseCase;
 use Src\usecase\participantes\BuscarParticipantePorDocumentoUseCase;
@@ -168,6 +171,24 @@ class FormularioInscripcionController extends Controller
                             ->with('code', $response->code)
                             ->with('status', $response->message);
     }
+
+    public function editLegalizarInscripcion($numeroFormulario) {
+        
+        $formulario = (new BuscarFormularioPorNumeroUseCase)->ejecutar($numeroFormulario);
+        if (!$formulario->existe()) {
+            return redirect()->route('formularios.index')->with('code', "404")->with('status', "El formulario no fue encontrado.");
+        }
+
+        return view('formularios.legalizar_inscripcion',[
+            'formulario' => $formulario,
+        ]);
+    }
+
+    public function legalizarInscripcion(LegalizarFormularioInscripcion $req) {
+        $parametro = $req->validated();
+        $response = (new LegalizarInscripcionUseCase)->ejecutar($parametro['formularioId'], $parametro['voucher']);
+        return redirect()->route('formularios.index')->with('code', $response->code)->with('status', $response->message);        
+    }    
 
     private function hydrateConfirmarInscripcionDto($datos): ConfirmarInscripcionDto{
         $formularioDto = new ConfirmarInscripcionDto;

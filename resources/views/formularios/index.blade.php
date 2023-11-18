@@ -66,6 +66,7 @@
                         <th>Curso</th>
                         <th>Estado</th>
                         <th>Fecha inscripción</th>
+                        <th></th>
                     </thead>
                 </tr>
                 @forelse ($formularios as $f)
@@ -78,7 +79,16 @@
                     </td>
                     <td>{{ $f->getEstado() }}</td>
                     <td>{{ $f->getFechaCreacion() }}</td>
-                    <td class="text-center"></td>                    
+                    <td class="text-center">
+                    @if ($f->getEstado() == 'Pendiente de pago')                        
+                        <a href="{{ route('formularios.edit-legalizar-inscripcion', [$f->getNumero()]) }}" 
+                                class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-info-light text-info"
+                                data-bs-toggle="tooltip" 
+                                title="Legalizar inscripción">
+                                Legalizar
+                        </a>                        
+                    @endif
+                    </td>                    
                 </tr>
                 @empty
                 <tr>

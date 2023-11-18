@@ -105,12 +105,18 @@ Route::get('/nueva-inscripcion/paso-3/seleccion-curso/{participanteId}/participa
 Route::get('/nueva-inscripcion/paso-4/confirmar-inscripion/participante/{participanteId}/grupo/{grupoId}', [FormularioInscripcionController::class, 'vistaConfirmarInscripcion'])->name('formulario-inscripcion.paso-4');
 Route::post('/nueva-inscripcion/paso-5/confirmar-inscripcion', [FormularioInscripcionController::class, 'confirmarInscripcion'])->name('formulario-inscripcion.paso-5');
 
+
+
 Route::post('/nueva-inscripcion', [FormularioInscripcionController::class, 'store'])->name('formulario-inscripcion.store');
 Route::post('/nueva-inscripcion/buscar-participante', [FormularioInscripcionController::class, 'buscarParticipantePorDocumento'])->name('formulario-inscripcion.buscar_participante_por_documento');
 
 
 Route::get('/formularios', [FormularioInscripcionController::class, 'listarParticipantes'])->name('formularios.index');
 Route::post('/formularios/filtro', [FormularioInscripcionController::class, 'filtrarInscripciones'])->name('formularios.buscar-inscritos');
+
+Route::get('/formularios/legalizar-inscripcion/{numeroFormulario}/formulario', [FormularioInscripcionController::class, 'editLegalizarInscripcion'])->name('formularios.edit-legalizar-inscripcion');
+Route::patch('/formularios/legalizar-inscripcion', [FormularioInscripcionController::class, 'legalizarInscripcion'])->name('formularios.legalizar-inscripcion');
+
 
 Route::get('/participantes', [ParticipanteController::class, 'index'])->name('participantes.index');
 Route::get('/participantes/{id}/editar', [ParticipanteController::class, 'edit'])->name('participantes.edit');
@@ -121,3 +127,5 @@ Route::get('/participantes/{participanteId}/formularios-inscritos', [Participant
 Route::post('/participantes/buscador', [ParticipanteController::class, 'buscadorParticipantes'])->name('participantes.buscador');
 Route::delete('/participantes/{participanteId}', [ParticipanteController::class, 'destroy'])->name('participantes.delete');
 Route::patch('/participantes/{numeroFormulario}/{participanteId}', [ParticipanteController::class, 'anularInscripcion'])->name('participantes.anular-inscripcion');
+Route::get('/participantes/legalizar-inscripcion/{numeroFormulario}/formulario', [ParticipanteController::class, 'editLegalizarInscripcion'])->name('participantes.edit-legalizar-inscripcion');
+Route::patch('/participantes/legalizar-inscripcion', [ParticipanteController::class, 'legalizarInscripcion'])->name('participantes.legalizar-inscripcion');

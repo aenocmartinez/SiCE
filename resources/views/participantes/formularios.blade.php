@@ -63,7 +63,7 @@
                     <td class="text-center">
                         <div class="btn-group">
                             @if ($f->getEstado() == "Pendiente de pago")                            
-                                <a href="#" 
+                                <a href="{{ route('participantes.edit-legalizar-inscripcion', [$f->getNumero()]) }}" 
                                         class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-info-light text-info"
                                         data-bs-toggle="tooltip" 
                                         title="Legalizar inscripción">

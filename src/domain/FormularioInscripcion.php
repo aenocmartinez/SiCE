@@ -10,16 +10,20 @@ class FormularioInscripcion {
     private Convenio $convenio;
     private Grupo $grupo;
     private string $numero;
-    private string $codigoBanco;
+    private string $voucher;
     private string $estado;
     private string $medioPago;
     private $fechaCreacion;
     private $totalAPagar;
+    private $valorDescuento;
+    private $costoCurso;
 
     public function __construct() {
         $this->id = 0;
-        $this->codigoBanco = "";
+        $this->voucher = "";
         $this->totalAPagar = 0;
+        $this->valorDescuento = 0;
+        $this->costoCurso = 0;
     }
 
     public function setId(int $id=0): void {
@@ -156,6 +160,10 @@ class FormularioInscripcion {
         return $this->grupo->getNombreCalendario();
     }
 
+    public function getGrupoCursoCosto() {
+        return $this->grupo->getCostoFormateado();
+    }
+
     public function getGrupoCalendarioId(): int {
         return $this->grupo->getCalendarioId();
     }
@@ -196,12 +204,12 @@ class FormularioInscripcion {
         return $this->estado;
     }
 
-    public function setCodigoBanco(string $codigoBanco): void {
-        $this->codigoBanco = $codigoBanco;
+    public function setVoucher(string $voucher): void {
+        $this->voucher = $voucher;
     }
 
-    public function getCodigoBanco(): string {
-        return $this->codigoBanco;
+    public function getVoucher(): string {
+        return $this->voucher;
     }
 
     public function tieneConvenio(): bool {
@@ -238,5 +246,21 @@ class FormularioInscripcion {
 
     public function getMedioPago(): string {
         return $this->medioPago;
-    }    
+    }
+    
+    public function setValorDescuento($valorDescuento): void {
+        $this->valorDescuento = $valorDescuento;
+    }
+
+    public function getValorDescuento() {
+        return $this->valorDescuento;
+    }
+
+    public function getValorDescuentoFormateado() {
+        return FormatoMoneda::PesosColombianos($this->valorDescuento);
+    }
+
+    public function existe(): bool {
+        return $this->id > 0;
+    }
 }

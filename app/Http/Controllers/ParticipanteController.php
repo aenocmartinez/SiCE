@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GuardarParticipante;
+use App\Http\Requests\LegalizarFormularioInscripcion;
 use Src\domain\Participante;
 use Src\infraestructure\util\ListaDeValor;
 use Src\infraestructure\util\Validador;
 use Src\usecase\formularios\AnularFormularioUseCase;
+use Src\usecase\formularios\BuscarFormularioPorNumeroUseCase;
+use Src\usecase\formularios\LegalizarInscripcionUseCase;
 use Src\usecase\participantes\BuscadorParticipantesUseCase;
 use Src\usecase\participantes\BuscarParticipantePorIdUseCase;
 use Src\usecase\participantes\EliminarParticipanteUseCase;
@@ -89,6 +92,26 @@ class ParticipanteController extends Controller
         return redirect()->route('participantes.formularios', [$participanteId])->with('code', $response->code)->with('status', $response->message);
     }
 
+    public function editLegalizarInscripcion($numeroFormulario) {
+        
+        $formulario = (new BuscarFormularioPorNumeroUseCase)->ejecutar($numeroFormulario);
+        if (!$formulario->existe()) {
+            return redirect()->route('participantes.index')->with('code', "404")->with('status', "El formulario no fue encontrado.");
+        }
+
+        return view('participantes.legalizar_inscripcion',[
+            'formulario' => $formulario,
+        ]);
+    }
+
+    public function legalizarInscripcion(LegalizarFormularioInscripcion $req) {
+        $parametro = $req->validated();
+        $response = (new LegalizarInscripcionUseCase)->ejecutar($parametro['formularioId'], $parametro['voucher']);
+        return redirect()->route('participantes.formularios', [$parametro['participanteId']])
+                        ->with('code', $response->code)
+                        ->with('status', $response->message);        
+    }
+
     public function listarFormularios($participanteId) {
         $esValido = Validador::parametroId($participanteId);
         if (!$esValido) {
@@ -138,7 +161,6 @@ class ParticipanteController extends Controller
         $participanteDto->fechaNacimiento = $dato['fecNacimiento'];
         $participanteDto->tipoDocumento = $dato['tipoDocumento'];
         $participanteDto->documento = $dato['documento'];
-        // $participanteDto->fechaExpedicion = $dato['fechaExpedicion'];
         $participanteDto->sexo = $dato['sexo'];
         $participanteDto->estadoCivil = $dato['estadoCivil'];
         $participanteDto->direccion = $dato['direccion'];
