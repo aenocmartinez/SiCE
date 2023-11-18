@@ -89,7 +89,7 @@ class ListaDeValor {
         return [
             [ 'value' => 'Pendiente de pago', 'nombre' => 'Pendiente de pago'],
             [ 'value' => 'Pagado', 'nombre' => 'Pagado'],
-            [ 'value' => 'Vencido', 'nombre' => 'Vencido'],
+            [ 'value' => 'Anulado', 'nombre' => 'Anulado'],
         ];        
     }
 }

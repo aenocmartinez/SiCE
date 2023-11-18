@@ -26,7 +26,7 @@ class CreateFormularioInscripcionTable extends Migration
             $table->foreign('participante_id')->references('id')->on('participantes');
             $table->foreign('convenio_id')->references('id')->on('convenios');
 
-            $table->unique(['grupo_id', 'participante_id'], 'participante_grupo');
+            // $table->unique(['grupo_id', 'participante_id'], 'participante_grupo');
             $table->unique(['codigo_banco']);
             $table->unique(['numero_formulario']);
 

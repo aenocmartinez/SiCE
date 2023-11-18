@@ -2,6 +2,8 @@
 
 namespace Src\domain;
 
+use Src\infraestructure\util\FormatoMoneda;
+
 class FormularioInscripcion {
     private int $id;
     private Participante $participante;
@@ -55,7 +57,7 @@ class FormularioInscripcion {
     public function getParticipanteNombreCompleto(): string {
         $nombres = $this->getParticipantePrimerNombre() . " " . $this->getParticipanteSegundoNombre();
         $apellidos = $this->getParticipantePrimerApellido() . " " . $this->getParticipanteSegundoApellido();        
-        return mb_strtoupper($nombres . " " . $apellidos, 'UTF-8');;
+        return mb_strtoupper($nombres . " " . $apellidos, 'UTF-8');
     }
 
     public function getParticipanteFechaNacimiento(): string {
@@ -158,6 +160,10 @@ class FormularioInscripcion {
         return $this->grupo->getCalendarioId();
     }
 
+    public function getGrupoModalidad(): string {
+        return $this->grupo->getModalidad();
+    }
+
     public function getGrupoNombreOrientador(): string {
         return $this->grupo->getNombreOrientador();
     }
@@ -221,6 +227,10 @@ class FormularioInscripcion {
     public function getTotalAPagar() {
         return $this->totalAPagar;
     }    
+
+    public function getTotalAPagarFormateado() {
+        return FormatoMoneda::PesosColombianos($this->totalAPagar);
+    }
 
     public function setMedioPago(string $medioPago): void {
         $this->medioPago = $medioPago;

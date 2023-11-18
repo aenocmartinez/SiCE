@@ -11,4 +11,8 @@ interface ParticipanteRepository {
     public function crearParticipante(Participante $participante): bool;
     public function actualizarParticipante(Participante $participante): bool;
     public function buscarParticipantePorId(int $participanteId): Participante;
+    public function listarParticipantes(): array;
+    public function buscadorParticipantes(string $criterio): array;
+    public function listarFormulariosDeInscripcionParticipante(int $participanteId): array;
+    public function eliminarParticipante(int $participanteId): bool;
 }

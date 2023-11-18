@@ -79,13 +79,12 @@
                     <td class="text-end" style="width: 5%;">
                         <!-- Formulario -->
                         @if ($grupo->getTotalCuposDisponibles() > 0)
-
                         <a href="{{ route('formulario-inscripcion.paso-4', [$participante->getId(), $grupo->getId()]) }}" 
                                 class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-info-light text-info"
                                 data-bs-toggle="tooltip" 
                                 title="inscribirse">
-                                Inscribirse
-                            </a>                        
+                                Seleccionar
+                        </a>                        
                         @endif
                         <!-- Fin formulario -->
                     </td>                    

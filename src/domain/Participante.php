@@ -212,7 +212,7 @@ class Participante {
             $nombreCompleto .= $this->getSegundoApellido();   
         }
 
-        return $nombreCompleto;
+        return mb_strtoupper($nombreCompleto, 'UTF-8');
     }
 
     public function getDocumentoCompleto(): string {

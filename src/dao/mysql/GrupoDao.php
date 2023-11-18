@@ -30,7 +30,7 @@ class GrupoDao extends Model implements GrupoRepository {
             $grupos = DB::table('grupos as g')
                         ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos',
                                 'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id',
-                                DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id) as totalInscritos')
+                                DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
                                 )
                         ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
                         ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
@@ -228,7 +228,7 @@ class GrupoDao extends Model implements GrupoRepository {
                             'g.cupos',
                             'cc.costo',
                             'cc.modalidad',
-                            DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id) as totalInscritos')
+                            DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
                         )
                         ->join('curso_calendario as cc', function ($join) use ($calendarioId) {
                             $join->on('cc.id', '=', 'g.curso_calendario_id')
@@ -295,7 +295,7 @@ class GrupoDao extends Model implements GrupoRepository {
                     'c.id as curso_id',
                     's.id as salon_id',
                     'ca.id as calendario_id',
-                    DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id) as totalInscritos')
+                    DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
                 )
                 ->leftJoin('salones as s', 's.id', '=', 'g.salon_id')
                 ->leftJoin('orientadores as o', 'o.id', '=', 'g.orientador_id')

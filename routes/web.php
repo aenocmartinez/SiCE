@@ -48,7 +48,6 @@ Route::delete('/salones/{id}', [SalonController::class, 'delete'])->name('salone
 Route::patch('/salones/actualizar', [SalonController::class, 'update'])->name('salones.update');
 Route::post('/salones/buscador', [SalonController::class, 'buscador'])->name('salones.buscador');
 
-
 Route::get('/orientadores', [OrientadorController::class, 'index'])->name('orientadores.index');
 Route::get('/orientadores/{id}/editar', [OrientadorController::class, 'edit'])->name('orientadores.edit');
 Route::get('/orientadores/crear', [OrientadorController::class, 'create'])->name('orientadores.create');
@@ -60,7 +59,6 @@ Route::get('/orientadores/{id}/areas', [OrientadorController::class, 'editAreas'
 Route::delete('/orientadores/{idOrientador}/areas/{idArea}', [OrientadorController::class, 'removeArea'])->name('orientadores.removeArea');
 Route::post('/orientadores/areas/agregar', [OrientadorController::class, 'addArea'])->name('orientadores.addArea');
 Route::get('/orientadores/{id}/mas-informacion', [OrientadorController::class, 'show'])->name('orientadores.moreInfo');
-
 
 Route::get('/calendario',[CalendarioController::class, 'index'])->name('calendario.index');
 Route::get('/calendario/{id}/editar', [CalendarioController::class, 'edit'])->name('calendario.edit');
@@ -75,7 +73,6 @@ Route::get('/calendario/{calendarioId}/area/{areaId}/cursos', [CalendarioControl
 Route::get('/calendario/{calendarioId}/area/{areaId}/cursos-periodo', [CalendarioController::class, 'listarCursosDelCalendario'])->name('calendario.cursos_por_calendario');
 Route::delete('/calendario/{calendarioId}/curso/{cursoCalendarioId}/area/{areaId}', [CalendarioController::class, 'retirarCursoACalendario'])->name('calendario.retirar_curso');
 
-
 Route::get('/grupos',[GrupoController::class, 'index'])->name('grupos.index');
 Route::get('/grupos/{id}/editar', [GrupoController::class, 'edit'])->name('grupos.edit');
 Route::get('/grupos/crear', [GrupoController::class, 'create'])->name('grupos.create');
@@ -83,7 +80,6 @@ Route::post('/grupos', [GrupoController::class, 'store'])->name('grupos.store');
 Route::delete('/grupos/{id}', [GrupoController::class, 'destroy'])->name('grupos.delete');
 Route::patch('/grupos/{id}/actualizar', [GrupoController::class, 'update'])->name('grupos.update');
 Route::post('/grupos/buscador', [GrupoController::class, 'buscadorGrupos'])->name('grupos.buscador');
-
 Route::get('/grupos/calendario/{calendarioId}/cursos/{cursoCalendarioIdActual}',[GrupoController::class, 'listarCursosPorCalendario'])->name('grupos.cursos_calendario');
 Route::get('/grupos/lista-orientadores/{cursoCalendarioId}/{orientadorIdActual}',[GrupoController::class, 'listarOrientadoresPorCursoCalendario'])->name('grupos.orientadores_por_curso_calendario');
 
@@ -94,14 +90,12 @@ Route::post('/tipo-salones', [TipoSalonController::class, 'store'])->name('tipo-
 Route::delete('/tipo-salones/{id}', [TipoSalonController::class, 'destroy'])->name('tipo-salones.delete');
 Route::patch('/tipo-salones/actualizar', [TipoSalonController::class, 'update'])->name('tipo-salones.update');
 
-
 Route::get('/convenios', [ConvenioController::class, 'index'])->name('convenios.index');
 Route::get('/convenios/crear', [ConvenioController::class, 'create'])->name('convenios.create');
 Route::get('/convenios/{id}/editar', [ConvenioController::class, 'edit'])->name('convenios.edit');
 Route::post('convenios', [ConvenioController::class, 'store'])->name('convenios.store');
 Route::delete('/convenios/{id}', [ConvenioController::class, 'destroy'])->name('convenios.delete');
 Route::patch('/convenios', [ConvenioController::class, 'update'])->name('convenios.update');
-
 
 Route::get('/nueva-inscripcion/paso-1/existencia-participante', [FormularioInscripcionController::class, 'index'])->name('formulario-inscripcion.paso-1');
 Route::get('/nueva-inscripcion/paso-2/datos-participante/tipo-documento/{tipoDocumento}/documento/{documento}', [FormularioInscripcionController::class, 'create'])->name('formulario-inscripcion.paso-2');
@@ -111,17 +105,19 @@ Route::get('/nueva-inscripcion/paso-3/seleccion-curso/{participanteId}/participa
 Route::get('/nueva-inscripcion/paso-4/confirmar-inscripion/participante/{participanteId}/grupo/{grupoId}', [FormularioInscripcionController::class, 'vistaConfirmarInscripcion'])->name('formulario-inscripcion.paso-4');
 Route::post('/nueva-inscripcion/paso-5/confirmar-inscripcion', [FormularioInscripcionController::class, 'confirmarInscripcion'])->name('formulario-inscripcion.paso-5');
 
-
 Route::post('/nueva-inscripcion', [FormularioInscripcionController::class, 'store'])->name('formulario-inscripcion.store');
 Route::post('/nueva-inscripcion/buscar-participante', [FormularioInscripcionController::class, 'buscarParticipantePorDocumento'])->name('formulario-inscripcion.buscar_participante_por_documento');
-
-
-
-
-
 
 
 Route::get('/formularios', [FormularioInscripcionController::class, 'listarParticipantes'])->name('formularios.index');
 Route::post('/formularios/filtro', [FormularioInscripcionController::class, 'filtrarInscripciones'])->name('formularios.buscar-inscritos');
 
-
+Route::get('/participantes', [ParticipanteController::class, 'index'])->name('participantes.index');
+Route::get('/participantes/{id}/editar', [ParticipanteController::class, 'edit'])->name('participantes.edit');
+Route::get('/participantes/crear', [ParticipanteController::class, 'create'])->name('participantes.create');
+Route::patch('/participantes', [ParticipanteController::class, 'update'])->name('participantes.update');
+Route::post('/participantes', [ParticipanteController::class, 'store'])->name('participantes.store');
+Route::get('/participantes/{participanteId}/formularios-inscritos', [ParticipanteController::class, 'listarFormularios'])->name('participantes.formularios');
+Route::post('/participantes/buscador', [ParticipanteController::class, 'buscadorParticipantes'])->name('participantes.buscador');
+Route::delete('/participantes/{participanteId}', [ParticipanteController::class, 'destroy'])->name('participantes.delete');
+Route::patch('/participantes/{numeroFormulario}/{participanteId}', [ParticipanteController::class, 'anularInscripcion'])->name('participantes.anular-inscripcion');

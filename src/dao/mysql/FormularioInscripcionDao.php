@@ -101,5 +101,21 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         }
 
         return $exito;
-    }    
+    } 
+    
+    public function anularInscripcion($numeroFormulario): bool {
+        $exito = true;
+        try {
+            $formulario = FormularioInscripcionDao::where('numero_formulario', $numeroFormulario)->first();
+            if ($formulario) {
+                $formulario->estado = 'Anulado';
+                $formulario->save();
+            }
+
+        } catch(Exception $e) {
+            $exito = false;
+            dd($e->getMessage());
+        }
+        return $exito;
+    }
 }

@@ -141,7 +141,7 @@ class OrientadorController extends Controller
         return redirect()->route('orientadores.index')->with('code', $response->code)->with('status', $response->message);
     }
     
-    public function update(GuardarOrientador $request) {        
+    public function update(GuardarOrientador $request) {
         $request->validated();
         $orientadorDto = $this->hydrateDto();
        

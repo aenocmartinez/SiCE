@@ -4,6 +4,12 @@ namespace Src\dao\mysql;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Src\domain\Calendario;
+use Src\domain\Convenio;
+use Src\domain\Curso;
+use Src\domain\CursoCalendario;
+use Src\domain\FormularioInscripcion;
+use Src\domain\Grupo;
 use Src\domain\Participante;
 use Src\domain\repositories\ParticipanteRepository;
 use Src\view\dto\ConfirmarInscripcionDto;
@@ -47,7 +53,6 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                 $participante->setFechaNacimiento($participanteDao->fecha_nacimiento);
                 $participante->setTipoDocumento($participanteDao->tipo_documento);
                 $participante->setDocumento($participanteDao->documento);
-                // $participante->setFechaExpedicion($participanteDao->fecha_expedicion);
                 $participante->setSexo($participanteDao->sexo);
                 $participante->setEstadoCivil($participanteDao->estado_civil);
                 $participante->setDireccion($participanteDao->direccion);
@@ -62,7 +67,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
             $e->getMessage();
         }
 
-        return $participante;        
+        return $participante;
     }
 
     public function crearParticipante(Participante $participante): bool {
@@ -144,7 +149,6 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                 $participante->setFechaNacimiento($participanteDao->fecha_nacimiento);
                 $participante->setTipoDocumento($participanteDao->tipo_documento);
                 $participante->setDocumento($participanteDao->documento);
-                // $participante->setFechaExpedicion($participanteDao->fecha_expedicion);
                 $participante->setSexo($participanteDao->sexo);
                 $participante->setEstadoCivil($participanteDao->estado_civil);
                 $participante->setDireccion($participanteDao->direccion);
@@ -162,30 +166,167 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         return $participante;          
     }
 
-    // public function crearInscripcion(ConfirmarInscripcionDto $dto): bool {
-    //     $exito = true;
+    public function listarParticipantes(): array {
+        $participantes = array();
+        try {
 
-    //     try {
-    //         $participante = ParticipanteDao::find($dto->participanteId);
-    //         if ($participante) {
-    //             $nuevoFormulario = new FormularioInscripcionDao();
-    //             $nuevoFormulario->grupo_id = $dto->grupoId;                
-    //             if ($dto->convenioId > 0) {
-    //                 $nuevoFormulario->convenio_id = $dto->convenioId;
-    //             }
-    //             $nuevoFormulario->costo_curso = $dto->costoCurso;
-    //             $nuevoFormulario->valor_descuento = $dto->valorDescuento;
-    //             $nuevoFormulario->total_a_pagar = $dto->totalAPagar;
-    //             $nuevoFormulario->medio_pago = $dto->medioPago;
-                
-    //             $participante->formulariosInscripcion()->save($nuevoFormulario);
-    //         }
-    //     } catch(Exception $e) {
-    //         $exito = false;
-    //         $e->getMessage();
-    //     }
+            $resultados = ParticipanteDao::select('id', 'primer_nombre', 'segundo_nombre', 'primer_apellido', 'segundo_apellido', 'tipo_documento', 'documento', 'sexo', 'telefono', 'email')
+                            ->orderBy('primer_nombre')
+                            ->get();
+            
+            foreach($resultados as $resultado) {           
+                $participante = new Participante();
+                $participante->setId($resultado->id);
+                $participante->setPrimerNombre($resultado->primer_nombre);
+                $participante->setSegundoNombre($resultado->segundo_nombre);
+                $participante->setPrimerApellido($resultado->primer_apellido);
+                $participante->setSegundoApellido($resultado->segundo_apellido);
+                // $participante->setFechaNacimiento($resultado->fecha_nacimiento);
+                $participante->setTipoDocumento($resultado->tipo_documento);
+                $participante->setDocumento($resultado->documento);
+                $participante->setSexo($resultado->sexo);
+                // $participante->setEstadoCivil($resultado->estado_civil);
+                // $participante->setDireccion($resultado->direccion);
+                $participante->setTelefono($resultado->telefono);
+                $participante->setEmail($resultado->email);
+                // $participante->setEps($resultado->eps);
+                // $participante->setContactoEmergencia($resultado->contacto_emergencia);
+                // $participante->setTelefonoEmergencia($resultado->telefono_emergencia);
 
-    //     return $exito;
-    // }
+                array_push($participantes, $participante);
+            }
 
+        } catch (Exception $e) {
+            $e->getMessage();
+        }        
+
+        return $participantes;
+    }
+
+    public function buscadorParticipantes(string $criterio): array {
+        $participantes = array();
+        try {
+            $resultados = ParticipanteDao::select('id','primer_nombre','segundo_nombre','primer_apellido',
+                'segundo_apellido','tipo_documento','documento','sexo','telefono','email'
+                )
+                ->where(function ($query) use ($criterio) {
+                $query->where('primer_nombre', 'like', '%' . $criterio . '%')
+                    ->orWhere('segundo_nombre', 'like', '%' . $criterio . '%')
+                    ->orWhere('primer_apellido', 'like', '%' . $criterio . '%')
+                    ->orWhere('segundo_apellido', 'like', '%' . $criterio . '%')
+                    ->orWhere('documento', 'like', '%' . $criterio . '%')
+                    ->orWhere('telefono', 'like', '%' . $criterio . '%')
+                    ->orWhere('email', 'like', '%' . $criterio . '%');
+            })->get();     
+
+            foreach($resultados as $resultado) {           
+                $participante = new Participante();
+                $participante->setId($resultado->id);
+                $participante->setPrimerNombre($resultado->primer_nombre);
+                $participante->setSegundoNombre($resultado->segundo_nombre);
+                $participante->setPrimerApellido($resultado->primer_apellido);
+                $participante->setSegundoApellido($resultado->segundo_apellido);
+                $participante->setTipoDocumento($resultado->tipo_documento);
+                $participante->setDocumento($resultado->documento);
+                $participante->setSexo($resultado->sexo);
+                $participante->setTelefono($resultado->telefono);
+                $participante->setEmail($resultado->email);
+
+                array_push($participantes, $participante);
+            }
+
+        } catch (Exception $e) {
+            $e->getMessage();
+        }
+        return $participantes;
+    }
+
+    public function listarFormulariosDeInscripcionParticipante(int $participanteId): array {
+        $formularios = array();
+
+        try {
+            
+            $resultados = FormularioInscripcionDao::select(
+                    'formulario_inscripcion.id',
+                    'formulario_inscripcion.numero_formulario',
+                    'formulario_inscripcion.estado',
+                    'formulario_inscripcion.total_a_pagar',
+                    'formulario_inscripcion.created_at',
+                    'grupos.id as grupo_id',
+                    'grupos.dia',
+                    'grupos.jornada',
+                    'curso_calendario.modalidad',
+                    'calendarios.nombre as nombre_calendario',
+                    'cursos.nombre as nombre_curso',
+                    'convenios.nombre as nombre_convenio'
+                )
+                ->join('participantes as p', 'p.id', '=', 'formulario_inscripcion.participante_id')
+                ->join('grupos', 'grupos.id', '=', 'formulario_inscripcion.grupo_id')
+                ->join('calendarios', 'calendarios.id', '=', 'grupos.calendario_id')
+                ->join('curso_calendario', 'curso_calendario.id', '=', 'grupos.curso_calendario_id')
+                ->join('cursos', 'cursos.id', '=', 'curso_calendario.curso_id')
+                ->leftJoin('convenios', 'convenios.id', '=', 'formulario_inscripcion.convenio_id')
+                ->where('p.id', $participanteId)
+                ->orderByDesc('formulario_inscripcion.id')
+                ->get();
+
+                foreach($resultados as $resultado) {
+                    $formulario = new FormularioInscripcion();
+
+                    $formulario->setId($resultado->id);
+                    $formulario->setNumero($resultado->numero_formulario);
+                    $formulario->setEstado($resultado->estado);
+                    $formulario->setTotalAPagar($resultado->total_a_pagar);
+                    $formulario->setFechaCreacion($resultado->created_at);
+
+                    $nombreConvenio = "";
+                    if (!is_null($resultado->nombre_convenio)) {
+                        $nombreConvenio = $resultado->nombre_convenio;
+                    }
+                    $formulario->setConvenio(new Convenio($nombreConvenio));
+
+                    $grupo = new Grupo();
+                    $grupo->setDia($resultado->dia);
+                    $grupo->setJornada($resultado->jornada);
+                    $grupo->setId($resultado->grupo_id);
+
+                        $calendario = new Calendario();
+                        $calendario->setNombre($resultado->nombre_calendario);
+
+                        $curso = new Curso();
+                        $curso->setNombre($resultado->nombre_curso);
+
+                        $cursoCalendario = new CursoCalendario($calendario, $curso);
+                        $cursoCalendario->setModalidad($resultado->modalidad);
+
+                    $grupo->setCursoCalendario($cursoCalendario);
+
+                    $formulario->setGrupo($grupo);
+
+                    array_push($formularios, $formulario);
+
+                }
+            
+        } catch(Exception $e) {
+            $e->getMessage();
+        }
+
+        return $formularios;
+    }
+
+    public function eliminarParticipante(int $participanteId): bool {
+        $exito = true;
+        try {
+
+            $participante = ParticipanteDao::find($participanteId);
+            if ($participante) {
+                $participante->delete();
+            }
+
+        } catch (Exception $e) {
+            $exito = false;
+            $e->getMessage();
+        }
+        return $exito;
+    }
 }

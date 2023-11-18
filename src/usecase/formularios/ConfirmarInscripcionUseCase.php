@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\usecase\participantes;
+namespace Src\usecase\formularios;
 
 use Src\dao\mysql\FormularioInscripcionDao;
 
