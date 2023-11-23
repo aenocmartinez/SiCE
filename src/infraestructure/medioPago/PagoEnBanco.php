@@ -3,8 +3,10 @@
 namespace Src\infraestructure\medioPago;
 
 use Carbon\Carbon;
+use Src\dao\mysql\FormularioInscripcionDao;
 use Src\infraestructure\pdf\DataPDF;
 use Src\infraestructure\pdf\SicePDF;
+use Src\infraestructure\util\FormatoFecha;
 use Src\view\dto\ConfirmarInscripcionDto;
 use Src\view\dto\Response;
 
@@ -12,11 +14,20 @@ class PagoEnBanco implements IMedioPago{
 
     public function Pagar(ConfirmarInscripcionDto $confirmarInscripcionDto): Response {
 
-        
+        // Plantillas
+        $path_css1      = __DIR__ . "/template/style.css";
+        $html = $this->contenidoHtml($confirmarInscripcionDto->formularioId);
 
         $nombreArchivo = "RECIBO_PAGO_" . strtotime(Carbon::now()) . $confirmarInscripcionDto->formularioId . ".pdf";
 
-        $exito = SicePDF::generar(new DataPDF($nombreArchivo));
+        $dataPdf = new DataPDF($nombreArchivo);
+        $dataPdf->setData([
+            'path_css1' => $path_css1,
+            'html' => $html,
+        ]);
+        
+
+        $exito = SicePDF::generarFormatoPago($dataPdf);
         
         if (!$exito) {
             return new Response("500", "Ha ocurrido un error al generar el pdf");
@@ -26,5 +37,43 @@ class PagoEnBanco implements IMedioPago{
         $response->data['nombre_archivo'] = $nombreArchivo;
         
         return $response;
+    }
+
+    private function contenidoHtml($formularioId) {
+
+        $formularioRepository = new FormularioInscripcionDao();
+        $formulario = $formularioRepository->buscarFormularioPorId($formularioId);
+
+        $path_template  = __DIR__ . "/template/pago_en_banco.html";
+        $plantilla = file_get_contents($path_template);
+
+        $plantilla = str_replace('{{NOMBRE_COMPLETO}}', $formulario->getParticipanteNombreCompleto(), $plantilla);
+        $plantilla = str_replace('{{DOCUMENTO}}', $formulario->getParticipanteTipoYDocumento(), $plantilla);
+        $plantilla = str_replace('{{NOMBRE_CURSO}}', $formulario->getGrupoNombreCurso(), $plantilla);
+        // $plantilla = str_replace('{{GRUPO_ID}}', $formulario->getGrupoId(), $plantilla);
+        // $plantilla = str_replace('{{DIA}}', $formulario->getGrupoDia(), $plantilla);
+        // $plantilla = str_replace('{{JORNADA}}', $formulario->getGrupoJornada(), $plantilla);
+        // $plantilla = str_replace('{{MODALIDAD}}', $formulario->getGrupoModalidad(), $plantilla);
+        // $plantilla = str_replace('{{CALENDARIO}}', $formulario->getGrupoCalendarioNombre(), $plantilla);
+        $plantilla = str_replace('{{COSTO_DEL_CURSO}}', $formulario->getGrupoCursoCosto(), $plantilla);
+        $plantilla = str_replace('{{NUMERO_FORMULARIO}}', $formulario->getNumero(), $plantilla);
+        
+
+        if ($formulario->getConvenioNombre() == "") {
+            $plantilla = str_replace('{{NOMBRE_CONVENIO}}', "", $plantilla);    
+            $plantilla = str_replace('{{VALOR_DESCUENTO}}', "", $plantilla);
+        } else {
+            $plantilla = str_replace('{{NOMBRE_CONVENIO}}', $formulario->getConvenioNombre(), $plantilla);
+            $plantilla = str_replace('{{VALOR_DESCUENTO}}', $formulario->getValorDescuentoFormateado(), $plantilla);
+        }
+        $plantilla = str_replace('{{TOTAL_A_PAGAR}}', $formulario->getTotalAPagarFormateado(), $plantilla);
+        $plantilla = str_replace('{{TELEFONO}}', $formulario->getParticipanteTelefono(), $plantilla);        
+        $plantilla = str_replace('{{DIRECCION}}', $formulario->getParticipanteDireccion(), $plantilla);        
+        $plantilla = str_replace('{{CORREO_ELECTRONICO}}', $formulario->getParticipanteEmail(), $plantilla);    
+        $plantilla = str_replace('{{FECHA_IMPRESION}}', FormatoFecha::fechaActual01enero1970(), $plantilla);    
+        $plantilla = str_replace('{{HORA_IMPRESION}}', FormatoFecha::horaActual1030AM(), $plantilla);    
+        
+        return $plantilla;
+
     }
 }

@@ -11,39 +11,31 @@ use Mpdf\Mpdf;
 
 class SicePDF {
 
-    public static function generar(DataPDF $data): bool {
+    public static function generarFormatoPago(DataPDF $dataPDF): bool {
 
         $exito = true;
         try {
 
-            $html = '<h1>Ejemplo de PDF con mPDF en Laravel 8</h1>';
+            $data = $dataPDF->getData();
+
+            // $html = file_get_contents($data['path_template']);
+            $html = $data['html'];
 
             $mpdf = new Mpdf();
 
-            $mpdf->WriteHTML($html);
+            $stylesheet1 = file_get_contents($data['path_css1']);
+            // $stylesheet2 = file_get_contents($data['path_css2']);
+            
+            $mpdf->WriteHTML($stylesheet1, \Mpdf\HTMLParserMode::HEADER_CSS);
+            // $mpdf->WriteHTML($stylesheet2, \Mpdf\HTMLParserMode::HEADER_CSS);
 
-            $nombreArchivoPDF = $data->getFileName();
+            $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
+
+            $nombreArchivoPDF = $dataPDF->getFileName();
 
             $pdfPath = storage_path() . '/' . $nombreArchivoPDF;
 
-            $mpdf->Output($pdfPath, 'F');
-
-            // return Response::download($pdfPath)->deleteFileAfterSend(true);
-
-            // $pdf_content = $mpdf->Output('', 'S');
-
-            // header('Content-Type: application/pdf');
-            // header('Content-Disposition: attachment; filename="' . $nombre_archivo . '"');
-
-            // $pdfContent = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
-
-            // ob_clean();
-            // flush();
-
-            // echo $pdfContent;
-
-            // ignore_user_abort(true);
-            
+            $mpdf->Output($pdfPath, 'F');            
 
         } catch (Exception $e) {
             $exito = false;

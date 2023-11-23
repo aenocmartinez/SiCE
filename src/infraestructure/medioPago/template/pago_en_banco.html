@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+
+  <div class="container">
+    <header class="company-info">
+      <div class="section1">
+        <!-- <div class="logo">
+          <img src="ruta_del_logo.png" alt="Logo de la Empresa">
+        </div> -->
+        <div class="details">
+          <h2>Universidad Colegio Mayor de Cundinamarca</h2>
+          <p>Sede Principal: Calle 28 No. 5B-02 Bogotá D.C. Colombia - Sur America</p>
+          <p>Teléfono PBX: 57 601 2418800</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="form-number">
+      Número de formulario: {{NUMERO_FORMULARIO}} 
+    </div>
+
+    <div class="contact-info">
+        <p><strong>Nombre:</strong> {{NOMBRE_COMPLETO}}</p>
+        <p><strong>Documento:</strong> {{DOCUMENTO}}</p>
+        <p><strong>Teléfono:</strong> {{TELEFONO}}</p>
+        <p><strong>Dirección:</strong> {{DIRECCION}}</p>
+        <p><strong>Correo electrónico:</strong> {{CORREO_ELECTRONICO}}</p>
+      </div>    
+
+    <main>
+        <table>
+          <thead>
+            <tr>
+              <th>Concepto</th>
+              <th>Valor</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{NOMBRE_CURSO}}</td>
+              <td>{{COSTO_DEL_CURSO}}</td>
+              <td>{{COSTO_DEL_CURSO}}</td>
+            </tr>
+            <tr>
+              <td>{{NOMBRE_CONVENIO}}</td>
+              <td>-{{VALOR_DESCUENTO}}</td>
+              <td class="negative-value">-{{VALOR_DESCUENTO}}</td>
+            </tr>
+            <tr class="total-row">
+              <td colspan="2">Total a pagar</td>
+              <td>{{TOTAL_A_PAGAR}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </main>
+
+      <div class="section2">
+        <div class="invoice-details">
+          <p><span class="title">Fecha de Impresión:</span> {{FECHA_IMPRESION}}</p>
+          <p><span class="title">Hora de Impresión:</span> {{HORA_IMPRESION}}</p>          
+        </div>
+      </div>      
+
+    <footer class="footer">
+      <p>Código de Barras:</p>
+      <img src="codigo_barras.jpg" alt="Código de Barras">
+    </footer>
+  </div>
+
+</body>
+</html>

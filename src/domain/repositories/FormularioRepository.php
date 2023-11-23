@@ -11,6 +11,7 @@ interface FormularioRepository {
     public function crearInscripcion(ConfirmarInscripcionDto &$dto): bool;
     public function anularInscripcion($numeroFormulario): bool;
     public function buscarFormularioPorNumero($numeroFormulario): FormularioInscripcion;
+    public function buscarFormularioPorId(int $id): FormularioInscripcion;
     public function legalizarFormulario(int $formularioId, string $voucher): bool;
     public function pagarInscripcion($formularioId, $voucher): bool;
 }

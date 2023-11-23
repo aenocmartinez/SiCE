@@ -1,0 +1,123 @@
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    width: 800px; 
+    margin: 20px auto; 
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .company-info {
+    display: flex;
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .info-left {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    margin-right: 20px;
+    width: 60%;
+  }
+
+  .logo {
+    margin-right: 20px;
+  }
+
+  .info-right {
+    width: 40%;
+    text-align: left;
+    padding: 20px;
+  }
+
+  .title {
+    font-weight: bold;
+    color: #333;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 12px;
+  }
+
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+
+  td:last-child,
+  td:nth-child(2) { 
+    text-align: right;
+  }
+  
+  td.negative-value {
+    color: black;
+  }
+
+  .footer {
+    margin-top: 20px;
+    text-align: center;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+  }
+
+  .contact-info {
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+    font-size: 12px;
+  }
+
+  .contact-info p {
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .contact-info strong {
+    width: 150px; 
+    display: inline-block;
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start; 
+    margin-bottom: 20px;
+  }
+
+  .section1 {
+    width: 50%; 
+    font-size: 12px; 
+  }
+
+  .section2 {
+    width: 100%; 
+    text-align: right;
+    font-size: 12px; 
+    margin-top: 70px; 
+  }
+
+  .form-number {
+    text-align: right;
+    font-weight: bold;
+    font-size: 16px; /* Tamaño más grande para resaltar */
+    color: black; /* Color rojo para resaltar */
+    margin-bottom: 10px; /* Espacio hacia abajo */
+  }

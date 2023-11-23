@@ -185,6 +185,51 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         return $formulario;
     }
 
+    public function buscarFormularioPorId(int $id): FormularioInscripcion {
+        $formulario = new FormularioInscripcion;
+        $grupoDao = new GrupoDao();
+        $participanteDao = new ParticipanteDao();
+        $convenioDao = new ConvenioDao();
+
+        try {
+            $resultado = FormularioInscripcionDao::select('id','numero_formulario','estado','total_a_pagar','created_at',
+                'valor_descuento','participante_id','grupo_id','convenio_id', 'voucher')    
+                ->where('formulario_inscripcion.id', $id)
+                ->first();
+
+            if ($resultado) {
+                $formulario = new FormularioInscripcion();
+                $formulario->setId($resultado->id);
+                $formulario->setEstado($resultado->estado);
+                $formulario->setFechaCreacion($resultado->created_at);
+                $formulario->setValorDescuento($resultado->valor_descuento);
+                $formulario->setTotalAPagar($resultado->total_a_pagar);                
+                $formulario->setNumero($resultado->numero_formulario);
+
+                if (!is_null($resultado->voucher)) {
+                    $formulario->setVoucher($resultado->voucher);
+                }
+                
+
+                $grupo = $grupoDao->buscarGrupoPorId($resultado->grupo_id);
+                $participante = $participanteDao->buscarParticipantePorId($resultado->participante_id);
+                $convenio = new Convenio();
+
+                if (!is_null($resultado->convenio_id)) {
+                    $convenio = $convenioDao->buscarConvenioPorId($resultado->convenio_id);
+                }
+                
+                $formulario->setGrupo($grupo);
+                $formulario->setParticipante($participante);
+                $formulario->setConvenio($convenio);                
+            }
+        } catch (Exception $e) {
+            $e->getMessage();
+        }
+
+        return $formulario;        
+    }
+
     public function legalizarFormulario(int $formularioId, string $voucher): bool {
         $exito = true;
         try {
