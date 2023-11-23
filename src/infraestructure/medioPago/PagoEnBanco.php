@@ -3,6 +3,7 @@
 namespace Src\infraestructure\medioPago;
 
 use Carbon\Carbon;
+use Picqer\Barcode\BarcodeGeneratorPNG;
 use Src\dao\mysql\FormularioInscripcionDao;
 use Src\infraestructure\pdf\DataPDF;
 use Src\infraestructure\pdf\SicePDF;
@@ -45,6 +46,10 @@ class PagoEnBanco implements IMedioPago{
         $formulario = $formularioRepository->buscarFormularioPorId($formularioId);
 
         $path_template  = __DIR__ . "/template/pago_en_banco.html";
+        if ($formulario->getConvenioNombre() == "") {
+            $path_template  = __DIR__ . "/template/pago_en_banco_sin_descuento.html";
+        }
+
         $plantilla = file_get_contents($path_template);
 
         $plantilla = str_replace('{{NOMBRE_COMPLETO}}', $formulario->getParticipanteNombreCompleto(), $plantilla);
@@ -59,10 +64,7 @@ class PagoEnBanco implements IMedioPago{
         $plantilla = str_replace('{{NUMERO_FORMULARIO}}', $formulario->getNumero(), $plantilla);
         
 
-        if ($formulario->getConvenioNombre() == "") {
-            $plantilla = str_replace('{{NOMBRE_CONVENIO}}', "", $plantilla);    
-            $plantilla = str_replace('{{VALOR_DESCUENTO}}', "", $plantilla);
-        } else {
+        if ($formulario->getConvenioNombre() != "") {
             $plantilla = str_replace('{{NOMBRE_CONVENIO}}', $formulario->getConvenioNombre(), $plantilla);
             $plantilla = str_replace('{{VALOR_DESCUENTO}}', $formulario->getValorDescuentoFormateado(), $plantilla);
         }
@@ -71,9 +73,19 @@ class PagoEnBanco implements IMedioPago{
         $plantilla = str_replace('{{DIRECCION}}', $formulario->getParticipanteDireccion(), $plantilla);        
         $plantilla = str_replace('{{CORREO_ELECTRONICO}}', $formulario->getParticipanteEmail(), $plantilla);    
         $plantilla = str_replace('{{FECHA_IMPRESION}}', FormatoFecha::fechaActual01enero1970(), $plantilla);    
-        $plantilla = str_replace('{{HORA_IMPRESION}}', FormatoFecha::horaActual1030AM(), $plantilla);    
-        
+        $plantilla = str_replace('{{HORA_IMPRESION}}', FormatoFecha::horaActual1030AM(), $plantilla); 
+
+
+        $codigo = $formulario->getNumero() . $formulario->getParticipanteDocumento() . $formulario->getParticipanteId();
+        $plantilla = str_replace('{{CODIGO_BARRA}}', $this->generarCodigoDeBarra($codigo), $plantilla); 
+
         return $plantilla;
 
+    }
+
+    private function generarCodigoDeBarra($codigo) {
+        $generator = new BarcodeGeneratorPNG();
+        $barcode = $generator->getBarcode($codigo, $generator::TYPE_CODE_128);
+        return '<img src="data:image/png;base64,' . base64_encode($barcode) . '" width="350" height="90">';
     }
 }

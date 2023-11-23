@@ -13,6 +13,7 @@
         "laravel/tinker": "^2.5",
         "mpdf/mpdf": "^8.2",
         "nesbot/carbon": "^2.71",
+        "picqer/php-barcode-generator": "^2.4",
         "sentry/sentry-laravel": "^3.8"
     },
     "require-dev": {
