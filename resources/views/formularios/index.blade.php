@@ -74,8 +74,10 @@
                     <td>{{ $f->getNumero() }}</td>
                     <td>{{ $f->getParticipanteNombreCompleto() }}</td>
                     <td>{{ $f->getParticipanteTipoYDocumento() }}</td>
-                    <td>
-                        {{ $f->getGrupoNombreCurso() }}. <br>Grupo: {{ $f->getGrupoDia() . " / ".$f->getGrupoJornada() }}
+                    <td class="text-center">
+                        {{ $f->getGrupoNombreCurso() }}. <br>
+                        G{{ $f->getGrupoId() }} - {{ $f->getGrupoDia() . " / ".$f->getGrupoJornada() }} <br>
+                        Salón {{ $f->getGrupoSalon() }}
                     </td>
                     <td>{{ $f->getEstado() }}</td>
                     <td>{{ $f->getFechaCreacion() }}</td>

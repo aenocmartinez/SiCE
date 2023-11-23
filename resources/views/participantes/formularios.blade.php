@@ -56,7 +56,10 @@
                     <td>
                         <a href="#" class="fs-sm">{{ $f->getGrupoNombreCurso() }}</a>
                         <br>
-                        <small>{{ $f->getGrupoDia()  }} / {{ $f->getGrupoJornada() }}<br>{{ $f->getGrupoModalidad() }}</small>                        
+                        <small>
+                            G{{ $f->getGrupoId()  }}: 
+                            {{ $f->getGrupoDia()  }} / {{ $f->getGrupoJornada() }}<br>{{ $f->getGrupoModalidad() }}
+                        </small>
                     </td>
                     <td class="text-center">{{ $f->getTotalAPagarFormateado() }}</td>
                     <td class="text-center">{{ $f->getEstado() }}</td>
@@ -80,6 +83,8 @@
                                         Anular
                                     </button>
                                 </form>
+                            @else
+                            Número pago: {{ $f->getVoucher() }}
                             @endif
                         </div>
                     </td>                    

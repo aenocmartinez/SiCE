@@ -2,16 +2,29 @@
 
 namespace Src\infraestructure\medioPago;
 
-use Src\domain\Grupo;
-use Src\domain\Participante;
+use Carbon\Carbon;
+use Src\infraestructure\pdf\DataPDF;
+use Src\infraestructure\pdf\SicePDF;
+use Src\view\dto\ConfirmarInscripcionDto;
+use Src\view\dto\Response;
 
 class PagoEnBanco implements IMedioPago{
 
-    public function realizarPago(Participante $participante, Grupo $grupo, $totalAPagar): bool {
+    public function Pagar(ConfirmarInscripcionDto $confirmarInscripcionDto): Response {
+
         
 
-        dd("Participante: " . $participante->getNombreCompleto() . " - " . $grupo->getJornada());
+        $nombreArchivo = "RECIBO_PAGO_" . strtotime(Carbon::now()) . $confirmarInscripcionDto->formularioId . ".pdf";
 
-        return false;
+        $exito = SicePDF::generar(new DataPDF($nombreArchivo));
+        
+        if (!$exito) {
+            return new Response("500", "Ha ocurrido un error al generar el pdf");
+        }
+
+        $response = new Response("201", "Se ha registrado con éxito.");
+        $response->data['nombre_archivo'] = $nombreArchivo;
+        
+        return $response;
     }
 }

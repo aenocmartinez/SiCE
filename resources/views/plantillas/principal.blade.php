@@ -351,7 +351,7 @@
 
 
     <script src="{{asset('assets/js/plugins/bootstrap-notify/bootstrap-notify.min.js')}}"></script>
-    @if (session('status'))
+      @if (session('status'))
         @php
           $icon = 'fa fa-info-circle me-1';
           $type = 'success';
@@ -363,6 +363,12 @@
         <script>
           One.helpers('jq-notify', {type: '{{ $type }}', icon: '{{ $icon }}', message: "{{ session('status') }}"});
         </script>            
+      @endif
+
+      @if (session('nombre_archivo'))
+      <script>
+          window.location.href = "{{ route('formulario-inscripcion.descargar-formato-pago', [session('nombre_archivo')]) }}";
+      </script>
       @endif
   </body>
 </html>

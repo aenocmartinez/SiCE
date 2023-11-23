@@ -2,9 +2,9 @@
 
 namespace Src\infraestructure\medioPago;
 
-class MedioDePagoFactory {
+class PagoFactory {
 
-    public static function Obtener(string $tipoMedio): IMedioPago {
+    public static function Medio(string $tipoMedio): IMedioPago {
         $mediosMap = self::cargarMedios();
 
         if (!isset($mediosMap[$tipoMedio])) {

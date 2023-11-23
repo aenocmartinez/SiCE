@@ -104,7 +104,7 @@ Route::post('/nueva-inscripcion/paso-3/buscar-grupos', [FormularioInscripcionCon
 Route::get('/nueva-inscripcion/paso-3/seleccion-curso/{participanteId}/participante/{calendarioId}/periodo/{areaId}/area', [FormularioInscripcionController::class, 'buscarGruposDisponiblesParaInscripcion2'])->name('formulario-inscripcion.paso-3-1.buscar-grupos');
 Route::get('/nueva-inscripcion/paso-4/confirmar-inscripion/participante/{participanteId}/grupo/{grupoId}', [FormularioInscripcionController::class, 'vistaConfirmarInscripcion'])->name('formulario-inscripcion.paso-4');
 Route::post('/nueva-inscripcion/paso-5/confirmar-inscripcion', [FormularioInscripcionController::class, 'confirmarInscripcion'])->name('formulario-inscripcion.paso-5');
-
+Route::get('/descargar-formato-pago/{nombre_archivo}', [FormularioInscripcionController::class, 'descargarFormatoPagoInscripcion'])->name('formulario-inscripcion.descargar-formato-pago');
 
 
 Route::post('/nueva-inscripcion', [FormularioInscripcionController::class, 'store'])->name('formulario-inscripcion.store');

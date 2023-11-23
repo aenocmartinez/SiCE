@@ -2,12 +2,12 @@
 
 namespace Src\infraestructure\medioPago;
 
-use Src\domain\Grupo;
-use Src\domain\Participante;
+use Src\view\dto\ConfirmarInscripcionDto;
+use Src\view\dto\Response;
 
 class PagoPSE implements IMedioPago {
 
-    public function realizarPago(Participante $participante, Grupo $grupo, $totalAPagar): bool {
-        return false;
+    public function Pagar(ConfirmarInscripcionDto $confirmarInscripcionDto): Response {
+        return new Response();
     }
 }

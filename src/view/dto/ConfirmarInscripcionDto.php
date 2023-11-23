@@ -8,6 +8,7 @@ class ConfirmarInscripcionDto {
     public int $grupoId;
     public string $medioPago;
     public int $convenioId;
+    public int $formularioId;
     public $costoCurso;
     public $valorDescuento;
     public $totalAPagar;

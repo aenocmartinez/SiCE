@@ -77,7 +77,8 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         return $formularios;
     }
 
-    public function crearInscripcion(ConfirmarInscripcionDto $dto): bool {        
+    public function crearInscripcion(ConfirmarInscripcionDto &$dto): bool {        
+    
         $exito = true;
 
         try {
@@ -91,15 +92,13 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $nuevoFormulario->costo_curso = $dto->costoCurso;
                 $nuevoFormulario->valor_descuento = $dto->valorDescuento;
                 $nuevoFormulario->total_a_pagar = $dto->totalAPagar;
-                $nuevoFormulario->medio_pago = $dto->medioPago;
-                
-                if ($dto->voucher != "") {
-                    $nuevoFormulario->voucher = $dto->voucher;
-                    $nuevoFormulario->estado = 'Pagado';
-                }
+                $nuevoFormulario->medio_pago = $dto->medioPago;        
 
-                $nuevoFormulario->numero_formulario = strtotime(Carbon::now()) . $dto->participanteId;                
+                $nuevoFormulario->numero_formulario = strtotime(Carbon::now()) . $dto->participanteId;
+
                 $participante->formulariosInscripcion()->save($nuevoFormulario);
+
+                $dto->formularioId = $nuevoFormulario->id;
             }
         } catch(Exception $e) {
             $exito = false;
@@ -125,6 +124,22 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         return $exito;
     }
 
+    public function pagarInscripcion($formularioId, $voucher): bool {
+        $exito = true;
+        try {
+            $formulario = FormularioInscripcionDao::find($formularioId);
+            if ($formulario) {
+                $formulario->voucher = $voucher;
+                $formulario->estado = 'Pagado';
+                $formulario->save();
+            }
+        } catch (Exception $e) {
+            $exito = false;
+            $e->getMessage();
+        }
+        return $exito;
+    }
+
     public function buscarFormularioPorNumero($numeroFormulario): FormularioInscripcion {
         $formulario = new FormularioInscripcion;
         $grupoDao = new GrupoDao();
@@ -133,7 +148,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
         try {
             $resultado = FormularioInscripcionDao::select('id','numero_formulario','estado','total_a_pagar','created_at',
-                'valor_descuento','participante_id','grupo_id','convenio_id')    
+                'valor_descuento','participante_id','grupo_id','convenio_id', 'voucher')    
                 ->where('formulario_inscripcion.numero_formulario', $numeroFormulario)
                 ->first();
 
@@ -145,6 +160,10 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formulario->setValorDescuento($resultado->valor_descuento);
                 $formulario->setTotalAPagar($resultado->total_a_pagar);                
                 $formulario->setNumero($resultado->numero_formulario);
+
+                if (!is_null($resultado->voucher)) {
+                    $formulario->setVoucher($resultado->voucher);
+                }
                 
 
                 $grupo = $grupoDao->buscarGrupoPorId($resultado->grupo_id);
@@ -160,7 +179,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formulario->setConvenio($convenio);                
             }
         } catch (Exception $e) {
-            dd($e->getMessage());
+            $e->getMessage();
         }
 
         return $formulario;

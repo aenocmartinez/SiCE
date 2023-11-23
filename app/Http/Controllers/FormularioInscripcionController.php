@@ -24,6 +24,8 @@ use Src\usecase\participantes\BuscarParticipantePorIdUseCase;
 use Src\usecase\participantes\GuardarParticipanteUseCase;
 use Src\view\dto\ConfirmarInscripcionDto;
 use Src\view\dto\ParticipanteDto;
+use Illuminate\Support\Facades\Response;
+
 
 class FormularioInscripcionController extends Controller
 {
@@ -43,6 +45,17 @@ class FormularioInscripcionController extends Controller
     }
 
     public function index() {
+        // $ruta_archivo = session('ruta_archivo');
+        // $nombre_archivo = session('nombre_archivo');
+        // $headers = ['Content-Type: application/pdf'];
+        
+        // if (session('ruta_archivo')) {
+        //     return response()->download($ruta_archivo, $nombre_archivo, $headers)->deleteFileAfterSend(true)->then(function () {
+        //         // Esto se ejecutará después de que se complete la descarga
+        //         return view('formularios.buscar_por_documento');
+        //     });         
+        // }
+
         return view('formularios.buscar_por_documento');
     }
 
@@ -162,15 +175,32 @@ class FormularioInscripcionController extends Controller
     public function confirmarInscripcion(ConfirmarInscription $req) {
         
         $datos = $req->validated();
-        
+
         $formularioDto = $this->hydrateConfirmarInscripcionDto($datos);
 
-        $response = (new ConfirmarInscripcionUseCase)->ejecutar($formularioDto);        
+        $response = (new ConfirmarInscripcionUseCase)->ejecutar($formularioDto);  
+
+        $nombre_archivo = "";
+        if (isset($response->data['nombre_archivo'])) {
+            $nombre_archivo = $response->data['nombre_archivo'];
+        }
 
         return redirect()->route('formulario-inscripcion.paso-1')
                             ->with('code', $response->code)
-                            ->with('status', $response->message);
+                            ->with('status', $response->message)
+                            ->with('nombre_archivo', $nombre_archivo);
     }
+
+    function descargarFormatoPagoInscripcion($nombre_archivo) {
+        $ruta_archivo = $pdfPath = storage_path() . '/' . $nombre_archivo;
+        $headers = [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $nombre_archivo . '"',
+        ];
+    
+        return response()->download($ruta_archivo, $nombre_archivo, $headers)->deleteFileAfterSend(true);
+    }    
+
 
     public function editLegalizarInscripcion($numeroFormulario) {
         
