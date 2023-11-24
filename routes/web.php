@@ -55,9 +55,7 @@ Route::post('/orientadores', [OrientadorController::class, 'store'])->name('orie
 Route::delete('/orientadores/eliminar/{id}', [OrientadorController::class, 'delete'])->name('orientadores.delete');
 Route::patch('/orientadores/actualizar', [OrientadorController::class, 'update'])->name('orientadores.update');
 Route::post('/orientadores/buscador', [OrientadorController::class, 'buscador'])->name('orientadores.buscador');
-Route::get('/orientadores/{id}/areas', [OrientadorController::class, 'editAreas'])->name('orientadores.editAreas');
-Route::delete('/orientadores/{idOrientador}/areas/{idArea}', [OrientadorController::class, 'removeArea'])->name('orientadores.removeArea');
-Route::post('/orientadores/areas/agregar', [OrientadorController::class, 'addArea'])->name('orientadores.addArea');
+
 Route::get('/orientadores/{id}/mas-informacion', [OrientadorController::class, 'show'])->name('orientadores.moreInfo');
 
 Route::get('/calendario',[CalendarioController::class, 'index'])->name('calendario.index');

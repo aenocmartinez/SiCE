@@ -10,27 +10,19 @@ use Src\view\dto\Response;
 
 class AgregarAreaAOrientadorUseCase {
 
-    public function ejecutar(int $idOrientador=0, int $idArea=0): Response {
+    public function ejecutar(int $orientadorId=0, $idAreas=[]) {
         $orientadorRepository = new OrientadorDao();
-        $areaRepository = new AreaDao();
-
-        $orientador = Orientador::buscarPorId($idOrientador, $orientadorRepository);
-        if (!$orientador->existe()) {
-            return new Response('200', 'Orientador no encontrado');
-        }
-
-        $area = Area::buscarPorId($idArea, $areaRepository);
-        if (!$area->existe()) {
-            return new Response('200', 'Área no encontrada');
-        }
-
+        
+        $orientador = new Orientador();
+        $orientador->setId($orientadorId);
         $orientador->setRepository($orientadorRepository);
-        $exito = $orientador->agregarArea($area);
 
-        if (!$exito) {
-            return new Response('500', 'El orientador ya tiene esta área asignada');
+        $orientador->quitarAreas();
+        foreach ($idAreas as $areaId) {
+            $area = new Area();
+            $area->setId($areaId);
+
+            $orientador->agregarArea($area);
         }
-
-        return new Response('200', 'Se ha agregado con éxito el área');
     }
 }

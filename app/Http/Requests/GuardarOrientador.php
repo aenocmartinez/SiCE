@@ -24,10 +24,10 @@ class GuardarOrientador extends FormRequest
     public function rules()
     {
         return [
-            'id' => 'numeric|nullable',
+            'id' => 'nullable',
             'nombre' => 'required',
             'tipoDocumento' => 'required',
-            'documento' => 'required|numeric',
+            'documento' => 'required',
             'emailInstitucional' => 'regex:/^.+@unicolmayor\.edu\.co$/i|nullable',
             'emailPersonal' => 'nullable|email',
             'direccion' => 'nullable',
@@ -35,7 +35,9 @@ class GuardarOrientador extends FormRequest
             'area' => 'nullable',
             'observacion' => 'nullable',
             'fecNacimiento' => 'nullable|date',
-            'nivelEstudio' => 'nullable'
+            'nivelEstudio' => 'nullable',
+            'areas' => 'required|array',
+            'rangoSalarial' => 'nullable'
         ];
     }
 
@@ -43,6 +45,7 @@ class GuardarOrientador extends FormRequest
         return [
             'emailInstitucional.regex' => 'Sólo se permiten email terminados en @unicolmayor.edu.co',
             'fecNacimiento.date' => 'Formato no válido para el campo fecha de nacimiento.',
+            'areas.required' => 'El campo áreas a las que pertenece es obligatorio.'
         ];
     }
 }

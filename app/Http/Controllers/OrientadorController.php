@@ -10,13 +10,11 @@ use Src\infraestructure\util\ListaDeValor;
 use Src\infraestructure\util\Validador;
 use Src\usecase\areas\ListarAreasUseCase;
 use Src\usecase\orientadores\ActualizarOrientadorUseCase;
-use Src\usecase\orientadores\AgregarAreaAOrientadorUseCase;
 use Src\usecase\orientadores\BuscadorOrientadorUseCase;
 use Src\usecase\orientadores\BuscarOrientadorPorIdUseCase;
 use Src\usecase\orientadores\CrearOrientadorUseCase;
 use Src\usecase\orientadores\EliminarOrientadorUseCase;
 use Src\usecase\orientadores\ListarOrientadoresUseCase;
-use Src\usecase\orientadores\QuitarAreaAOrientadorUseCase;
 use Src\view\dto\OrientadorDto;
 
 class OrientadorController extends Controller 
@@ -37,8 +35,7 @@ class OrientadorController extends Controller
 
         $this->validarParametroId($id);
 
-        $casoUso = new BuscarOrientadorPorIdUseCase();
-        $orientador = $casoUso->ejecutar($id);
+        $orientador = (new BuscarOrientadorPorIdUseCase())->ejecutar($id);
 
         if (!$orientador->existe()) {
             return redirect()->route('cursos.index')->with('code', "404")->with('status', "Orientador no encontrado");
@@ -52,47 +49,20 @@ class OrientadorController extends Controller
             'listaEps' => ListaDeValor::eps(),
             'nivelesEstudio' => $nivelesEstudio,
             'listaRangoSalarial' => $listaRangoSalarial,
+            'areas' => (new ListarAreasUseCase)->ejecutar(),
         ]);
     }
 
     public function editAreas($idOrientador) {
-        $this->validarParametroId($idOrientador);
 
-        $casoUsoListarAreas = new ListarAreasUseCase();
-
-        $casoUso = new BuscarOrientadorPorIdUseCase();
-        $orientador = $casoUso->ejecutar($idOrientador);
-
-        return view('orientadores.addAreas', [
-            'orientador' => $orientador,
-            'eps' =>  ListaDeValor::eps(),
-            'areas' => $casoUsoListarAreas->ejecutar(), 
-        ]);
     }
 
     public function removeArea($idOrientador, $idArea) {    
         
-        $this->validarParametroId($idOrientador);
-        $this->validarParametroId($idArea);
-        
-        $casoUso = new QuitarAreaAOrientadorUseCase();
-        $response = $casoUso->ejecutar($idOrientador, $idArea);
-
-        return redirect()->route('orientadores.editAreas', [$idOrientador])->with('code', $response->code)->with('status', $response->message);
     }
 
     public function addArea(AgregarAreaOrientador $req) {
 
-        $datos = $req->validated();
-        
-        $idOrientador = $datos['idOrientador'];
-        $idArea = $datos['area'];
-
-        $casoUso = new AgregarAreaAOrientadorUseCase();
-        $response = $casoUso->ejecutar($idOrientador, $idArea);
-
-        return redirect()->route('orientadores.editAreas', [request('idOrientador')])
-                         ->with('code', $response->code)->with('status', $response->message);
     }    
 
     public function buscador() {        
@@ -119,12 +89,13 @@ class OrientadorController extends Controller
             'listaEps' => ListaDeValor::eps(),
             'nivelesEstudio' => $nivelesEstudio,
             'listaRangoSalarial' => $listaRangoSalarial,
+            'areas' => (new ListarAreasUseCase)->ejecutar(),
         ]);
     }
 
     public function store(GuardarOrientador $request) {
-        $request->validated();
-        $orientadorDto = $this->hydrateDto();   
+        $data = $request->validated();        
+        $orientadorDto = $this->hydrateDto($data);
         
         $casoUso = new CrearOrientadorUseCase();
         $response = $casoUso->ejecutar($orientadorDto);
@@ -142,8 +113,8 @@ class OrientadorController extends Controller
     }
     
     public function update(GuardarOrientador $request) {
-        $request->validated();
-        $orientadorDto = $this->hydrateDto();
+        $data = $request->validated();
+        $orientadorDto = $this->hydrateDto($data);
        
         $casoUso = new ActualizarOrientadorUseCase();
         $response = $casoUso->ejecutar($orientadorDto);
@@ -151,43 +122,48 @@ class OrientadorController extends Controller
         return redirect()->route('orientadores.index')->with('code', $response->code)->with('status', $response->message);
     }     
 
-    private function hydrateDto(): OrientadorDto {
+    private function hydrateDto($data): OrientadorDto {
 
         $orientadorDto = new OrientadorDto();
 
-        $orientadorDto->id = request('id');
-        $orientadorDto->nombre = request('nombre');
-        $orientadorDto->tipoDocumento = request('tipoDocumento');
-        $orientadorDto->documento = request('documento');
-        $orientadorDto->fechaNacimiento = request('fecNacimiento');
-        $orientadorDto->nivelEducativo = request('nivelEstudio');
-        $orientadorDto->rangoSalarial = request('rangoSalarial');
+        if (isset($data['id'])) {
+            $orientadorDto->id = $data['id'];
+        }
+
+        $orientadorDto->nombre = $data['nombre'];
+        $orientadorDto->tipoDocumento = $data['tipoDocumento'];
+        $orientadorDto->documento = $data['documento'];
+        $orientadorDto->fechaNacimiento = $data['fecNacimiento'];
+        $orientadorDto->nivelEducativo = $data['nivelEstudio'];
+        $orientadorDto->rangoSalarial = $data['rangoSalarial'];
+        $orientadorDto->areas = $data['areas'];
+        
         
         $orientadorDto->estado = true;
         
         $orientadorDto->emailPersonal = "";
-        if (!is_null(request('emailPersonal'))) {
-            $orientadorDto->emailPersonal = request('emailPersonal');
+        if (!is_null($data['emailPersonal'])) {
+            $orientadorDto->emailPersonal = $data['emailPersonal'];
         }
 
         $orientadorDto->emailInstitucional = "";
-        if (!is_null(request('emailInstitucional'))) {
-            $orientadorDto->emailInstitucional = request('emailInstitucional');
+        if (!is_null($data['emailInstitucional'])) {
+            $orientadorDto->emailInstitucional = $data['emailInstitucional'];
         }
 
         $orientadorDto->direccion = "";
-        if (!is_null(request('direccion'))) {
-            $orientadorDto->direccion = request('direccion');
+        if (!is_null($data['direccion'])) {
+            $orientadorDto->direccion = $data['direccion'];
         }
 
         $orientadorDto->eps = "";
-        if (!is_null(request('eps'))) {
-            $orientadorDto->eps = request('eps');
+        if (!is_null($data['eps'])) {
+            $orientadorDto->eps = $data['eps'];
         }        
 
         $orientadorDto->observacion = "";
-        if (!is_null(request('observacion'))) {
-            $orientadorDto->observacion = request('observacion');
+        if (!is_null($data['observacion'])) {
+            $orientadorDto->observacion = $data['observacion'];
         }
         
         return $orientadorDto;

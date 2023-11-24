@@ -16,4 +16,5 @@ class OrientadorDto {
     public $fechaNacimiento;
     public $nivelEducativo;
     public $rangoSalarial;
+    public $areas;
 }

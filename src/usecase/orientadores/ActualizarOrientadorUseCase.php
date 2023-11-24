@@ -37,6 +37,8 @@ class ActualizarOrientadorUseCase {
             return new Response('500', 'Ha ocurrido un error en el sistema');
         }
 
+        (new AgregarAreaAOrientadorUseCase)->ejecutar($orientador->getId(), $orientadorDto->areas);
+
         return new Response('200', 'Registro actualizado con éxito.');
     }
 }

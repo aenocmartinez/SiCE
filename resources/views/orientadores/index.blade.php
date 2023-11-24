@@ -63,10 +63,6 @@ $criterio = isset($criterio) ? $criterio : '';
                                 <i class="fa fa-fw fa-pencil-alt"></i>
                             </a>
 
-                            <a href="{{ route('orientadores.editAreas', $orientador->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="áreas a las que pertenece">
-                                <i class="fa fa-fw fa-network-wired"></i>
-                            </a>
-
                             <a href="{{ route('orientadores.moreInfo', $orientador->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="más información">
                             <i class="fa fa-fw fa-circle-info"></i>
                             </a>

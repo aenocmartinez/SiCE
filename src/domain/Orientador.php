@@ -171,12 +171,12 @@ class Orientador {
         return $this->rangoSalarial;
     }
 
-    public function agregarArea(Area $area): bool {
-        return $this->repository->agregarArea($this, $area);
+    public function agregarArea(Area $area) {        
+        $this->repository->agregarArea($this, $area);
     }
 
-    public function quitarArea(Area $area): bool {
-        return $this->repository->quitarArea($this, $area);
+    public function quitarAreas() {
+        $this->repository->quitarArea($this);
     }
 
     public function misAreas(): array {

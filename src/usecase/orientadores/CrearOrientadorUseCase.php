@@ -2,6 +2,7 @@
 
 namespace Src\usecase\orientadores;
 
+use App\Http\Requests\AgregarAreaOrientador;
 use Src\dao\mysql\OrientadorDao;
 use Src\domain\Orientador;
 use Src\view\dto\OrientadorDto;
@@ -36,6 +37,8 @@ class CrearOrientadorUseCase {
         if (!$exito) {
             return new Response('500', 'Ha ocurrido un error en el sistema');
         }
+
+        (new AgregarAreaAOrientadorUseCase)->ejecutar($orientador->getId(), $orientadorDto->areas);
 
         return new Response('200', 'Registro creado con éxito');
     }

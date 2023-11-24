@@ -73,9 +73,30 @@
                     <select class="form-select" id="eps" name="eps">
                     <option value="">Selecciona una eps</option>
                         @foreach ($listaEps as $eps)            
-                            <option value="{{ $eps }}" {{ $orientador->getEps() == $eps ? 'selected' : '' }}>{{ $eps }}</option>
+                            <option value="{{ $eps }}" {{ old('eps', $orientador->getEps()) == $eps ? 'selected' : '' }}>{{ $eps }}</option>
                         @endforeach
-                    </select>                      
+                    </select>  
+                    
+                    <br>
+                    <label class="form-label" for="areas">Áreas a las que pertenece</label>
+                    <select class="js-select2 form-select @error('areas') is-invalid @enderror" 
+                            id="areas" 
+                            name="areas[]" 
+                            style="width: 100%;" 
+                            data-placeholder="Selecciones las áreas a las que pertenece" multiple>
+                        <option></option>
+                        @foreach ($areas as $area)
+                            @php
+                                $selected = in_array($area, $orientador->misAreas()) ? 'selected' : '';
+                            @endphp
+                            <option value="{{ $area->getId() }}" {{ $selected }}>{{ $area->getNombre() }}</option>    
+                        @endforeach                        
+                    </select>
+                    @error('areas')
+                        <span class="invalid-feedback" role="alert">
+                            {{ $message }}
+                        </span>
+                    @enderror                    
 
             </div>
 
@@ -94,7 +115,7 @@
                 <select class="form-select" id="rangoSalarial" name="rangoSalarial">
                 <option value="">Selecciona una opción</option>
                     @foreach ($listaRangoSalarial as $rango)            
-                        <option value="{{ $rango }}" {{ $orientador->getRangoSalarial() == $rango ? 'selected' : '' }}>{{ $rango }}</option>
+                        <option value="{{ $rango }}" {{ old('rangoSalarial', $orientador->getRangoSalarial()) == $rango ? 'selected' : '' }}>{{ $rango }}</option>
                     @endforeach
                 </select>  
                 <br>                
@@ -166,10 +187,16 @@
 
 
 <script src="{{asset('assets/js/oneui.app.min.js')}}"></script>
+<script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
+
+
+<!-- <script src="{{asset('assets/js/plugins/select2/js/select2.full.min.js')}}"></script> -->
+
+
 <script src="{{asset('assets/js/plugins/ckeditor/ckeditor.js')}}"></script>
 <script src="{{asset('assets/js/plugins/simplemde/simplemde.min.js')}}"></script>
-<script>One.helpersOnLoad(['js-ckeditor', 'js-simplemde']);</script>
+<!-- <script>One.helpersOnLoad(['js-ckeditor', 'js-simplemde']);</script> -->
 
-<script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
+
 <script src="{{asset('assets/js/plugins/flatpickr/flatpickr.min.js')}}"></script>
-<script>One.helpersOnLoad(['js-flatpickr']);</script>
+<script>One.helpersOnLoad(['js-flatpickr', 'jq-select2', 'js-ckeditor', 'js-simplemde']);</script>

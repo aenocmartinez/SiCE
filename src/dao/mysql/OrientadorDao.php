@@ -214,7 +214,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
         return $orientador;
     }
 
-    public function crearOrientador(Orientador $orientador): bool {
+    public function crearOrientador(Orientador &$orientador): bool {
         try {
             $data = [
                 'nombre' => $orientador->getNombre(), 
@@ -238,10 +238,13 @@ class OrientadorDao extends Model implements OrientadorRepository {
             }            
 
             $result = OrientadorDao::create($data);
+
+            $orientador->setId($result['id']);
+
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            $e->getMessage();
         }   
-        return $result['id'] > 0;
+        return $orientador->getId() > 0;
     }
 
     public function eliminarOrientador(Orientador $orientador): bool {
@@ -306,11 +309,11 @@ class OrientadorDao extends Model implements OrientadorRepository {
         return $exito;
     }
 
-    public function quitarArea(Orientador $orientador, Area $area): bool {
+    public function quitarArea(Orientador $orientador): bool {
         try {
             $o = OrientadorDao::find($orientador->getId());
             if ($o) {
-                $o->areas()->detach([$area->getId()]);
+                $o->areas()->detach();
             }
         } catch (\Exception $e) {
             $e->getMessage();

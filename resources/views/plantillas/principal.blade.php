@@ -24,15 +24,16 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{asset('assets/media/favicons/apple-touch-icon-180x180.png')}}">
 
     <link rel="stylesheet" href="{{asset('assets/js/plugins/sweetalert2/sweetalert2.min.css')}}">
-    <link rel="stylesheet" id="css-main" href="{{asset('assets/css/oneui.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/js/plugins/simplemde/simplemde.min.css')}}">
-
+    
     <link rel="stylesheet" href="{{asset('assets/js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/js/plugins/select2/css/select2.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/js/plugins/ion-rangeslider/css/ion.rangeSlider.css')}}">
     <link rel="stylesheet" href="{{asset('assets/js/plugins/dropzone/min/dropzone.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/js/plugins/flatpickr/flatpickr.min.css')}}">
-
+    
+    
+    <link rel="stylesheet" id="css-main" href="{{asset('assets/css/oneui.min.css')}}">
   </head>
 
   <body>
@@ -344,6 +345,9 @@
     
   
     <script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
+
+    <script src="{{asset('assets/js/plugins/select2/js/select2.full.min.js')}}"></script>
+
     <script src="{{asset('assets/js/plugins/easy-pie-chart/jquery.easypiechart.min.js')}}"></script>
     <script src="{{asset('assets/js/plugins/jquery-sparkline/jquery.sparkline.min.js')}}"></script>    
     <script>One.helpersOnLoad(['jq-easy-pie-chart', 'jq-sparkline']);</script>    
