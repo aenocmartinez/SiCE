@@ -2,6 +2,8 @@
 
 namespace Src\domain;
 
+use Src\infraestructure\util\FormatoFecha;
+
 class Orientador {
 
     private int $id;
@@ -239,5 +241,12 @@ class Orientador {
         }
 
         return substr($nombreAreas, 0, -2);
+    }
+
+    public function getFechaNacimientoFormateada(): string {
+        if (is_null($this->fechaNacimiento))
+            return "";
+        
+        return FormatoFecha::fecha01enero1970($this->fechaNacimiento);
     }
 }

@@ -25,7 +25,7 @@ use Src\usecase\participantes\GuardarParticipanteUseCase;
 use Src\view\dto\ConfirmarInscripcionDto;
 use Src\view\dto\ParticipanteDto;
 use Illuminate\Support\Facades\Response;
-
+use Src\usecase\formularios\AnularFormularioUseCase;
 
 class FormularioInscripcionController extends Controller
 {
@@ -217,7 +217,12 @@ class FormularioInscripcionController extends Controller
     public function legalizarInscripcion(LegalizarFormularioInscripcion $req) {
         $parametro = $req->validated();
         $response = (new LegalizarInscripcionUseCase)->ejecutar($parametro['formularioId'], $parametro['voucher']);
-        return redirect()->route('formularios.index')->with('code', $response->code)->with('status', $response->message);        
+        return redirect()->route('formularios.index')->with('code', $response->code)->with('status', $response->message);
+    }
+
+    public function anularInscripcion($numeroFormulario, $participanteId) {        
+        $response = (new AnularFormularioUseCase)->ejecutar($numeroFormulario);
+        return redirect()->route('formularios.index')->with('code', $response->code)->with('status', $response->message);
     }    
 
     private function hydrateConfirmarInscripcionDto($datos): ConfirmarInscripcionDto{

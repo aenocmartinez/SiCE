@@ -88,7 +88,18 @@
                                 data-bs-toggle="tooltip" 
                                 title="Legalizar inscripción">
                                 Legalizar
-                        </a>                        
+                        </a>
+                        <form method="POST" action="{{ route('formularios.anular-inscripcion', [$f->getNumero(), $f->getParticipanteId()]) }}" id="form-del-anular-{{$f->getNumero()}}">
+                            @csrf @method('patch')
+                            <button class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-warning-light text-warning"
+                                    data-bs-toggle="tooltip" 
+                                    title="Anular" 
+                                    type="button"
+                                    data-id="{{ $f->getNumero() }}"
+                                    onclick="confirmAnular(this)">
+                                Anular
+                            </button>
+                        </form>                                             
                     @endif
                     </td>                    
                 </tr>
@@ -104,5 +115,26 @@
 
 </div>
 
+
+<script>
+function confirmAnular(button) {
+    const numeroFormulario = button.getAttribute('data-id'); 
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Esta acción no se puede deshacer',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, estoy seguro',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.getElementById(`form-del-anular-${numeroFormulario}`);
+            if (form) {                
+                form.submit();
+            }
+        }
+    });
+}
+</script>
 
 @endsection

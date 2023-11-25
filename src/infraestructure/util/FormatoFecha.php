@@ -24,5 +24,11 @@ class FormatoFecha {
         $hora = Carbon::now();
         $horaFormateada = $hora->format('h:i A');    
         return $horaFormateada;
-    }    
+    }
+    
+    public static function fecha01enero1970($fecha) {
+        $fecha = Carbon::createFromFormat('Y-m-d', $fecha, 'UTC');
+        $fechaFormateada = $fecha->isoFormat('DD [de] MMMM, YYYY', 'Do MMMM, YYYY');
+        return $fechaFormateada;
+    }
 }

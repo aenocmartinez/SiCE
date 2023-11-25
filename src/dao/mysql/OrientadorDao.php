@@ -178,7 +178,14 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $orientador->setObservacion($rs->observacion);
                 $orientador->setFechaNacimiento($rs->fec_nacimiento);
                 $orientador->setNivelEducativo($rs->nivel_estudio); 
-                $orientador->setRangoSalarial($rs->rango_salarial);               
+                $orientador->setRangoSalarial($rs->rango_salarial);
+                
+                $areas = array();
+                foreach($rs->areas as $area) 
+                    array_push($areas, new Area($area->id, $area->nombre));
+                
+                $orientador->setAreas($areas);
+                                
                 array_push($orientadores, $orientador);
             }
             

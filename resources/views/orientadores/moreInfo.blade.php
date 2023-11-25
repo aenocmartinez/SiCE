@@ -19,10 +19,13 @@
 <div class="block block-rounded">
     <div class="block-content">
         <div class="row push">
-            <div class="col-12">
+            <div class="col-6">
                 <h4 class="fw-light">
                     {{ $orientador->getNombre() }} <br>
-                    <small>{{ $orientador->getTipoNumeroDocumento() }}</small>
+                    <small>
+                        {{ $orientador->getTipoNumeroDocumento() }} 
+                        <a href="{{ route('orientadores.edit', $orientador->getId()) }}">(editar)</a>
+                    </small>
                 </h4>
                 <h5 class="fw-light">
                     <small>                                                
@@ -32,11 +35,27 @@
                         <br>
                         <i class="fa fa-fw fa-address-book"></i> {{ $orientador->getDireccion() }} <br>
                         <i class="fa fa-fw fa-arrows-spin"></i> {{ $orientador->getEps() }} <br>
+                        <i class="fa fa-fw fa-calendar-check"></i> {{ $orientador->getFechaNacimientoFormateada() }} <br>
                     </small>                    
                 </h5>
 
             </div>
-
+            <div class="col-6">
+                <h5 class="fw-light">
+                        <small>                                                
+                            <i class="fa fa-fw fa-user-graduate"></i> 
+                                {{ $orientador->getNivelEducativo() }} 
+                            <br>
+                            <i class="fa fa-fw fa-money-check-dollar"></i> Rango salarial: {{ $orientador->getRangoSalarial() }} <br><br>
+                            <i class="fa fa-fw fa-chalkboard-user"></i> <br>
+                            <p>
+                            {{ $orientador->getObservacion() }}
+                            </p>
+                        </small>                    
+                    </h5>                
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-6 col-xl-6 mt-4">
                 <div class="block block-rounded h-100 mb-0">
                     <div class="block-content block-content-full d-flex align-items-center justify-content-between bg-info">
