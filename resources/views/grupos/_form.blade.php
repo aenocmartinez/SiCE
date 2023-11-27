@@ -36,7 +36,7 @@
                         <option 
                             value="{{ $salon->getId() }}"
                             {{ old('salon', $grupo->getSalon()->getId()) == $salon->getId() ? 'selected' : '' }}
-                            >{{ $salon->getNombre() }} (capacidad: {{ $salon->getCapacidad() }} personas)                            
+                            >{{ $salon->getNombreYTipoSalon() }} (capacidad: {{ $salon->getCapacidad() }} personas)                            
                         </option>
                     @endforeach
                 </select>
