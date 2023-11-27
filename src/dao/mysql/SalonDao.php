@@ -77,9 +77,9 @@ class SalonDao extends Model implements SalonRepository {
                 $salon->setDisponible($rs['esta_disponible']);
                 // $salon->setHojaVida($rs['hoja_vida']);
 
-                // $tipoSalanDao = new TipoSalonDao();
-                // $tipoSalon = $tipoSalanDao->buscarTipoSalonPorId((int)$rs->tipo_salon_id);
-                // $salon->setTipoSalon($tipoSalon);                
+                $tipoSalanDao = new TipoSalonDao();
+                $tipoSalon = $tipoSalanDao->buscarTipoSalonPorId((int)$rs->tipo_salon_id);
+                $salon->setTipoSalon($tipoSalon);                
             }            
         } catch (\Exception $e) {
             $e->getMessage();
@@ -99,9 +99,9 @@ class SalonDao extends Model implements SalonRepository {
                 $salon->setDisponible($rs['esta_disponible']);
                 // $salon->setHojaVida($rs['hoja_vida']);
 
-                // $tipoSalanDao = new TipoSalonDao();
-                // $tipoSalon = $tipoSalanDao->buscarTipoSalonPorId((int)$rs->tipo_salon_id);
-                // $salon->setTipoSalon($tipoSalon);                
+                $tipoSalanDao = new TipoSalonDao();
+                $tipoSalon = $tipoSalanDao->buscarTipoSalonPorId((int)$rs->tipo_salon_id);
+                $salon->setTipoSalon($tipoSalon);                
             }            
         } catch (\Exception $e) {
             $e->getMessage();
@@ -116,7 +116,7 @@ class SalonDao extends Model implements SalonRepository {
                 'capacidad' => $salon->getCapacidad(),
                 'esta_disponible' => $salon->estaDisponible(),
                 // 'hoja_vida' => $salon->getHojaVida(),
-                // 'tipo_salon_id' => $salon->getIdTipoSalon(),
+                'tipo_salon_id' => $salon->getIdTipoSalon(),
             ]);
         } catch (\Exception $e) {
             $e->getMessage();
@@ -137,7 +137,7 @@ class SalonDao extends Model implements SalonRepository {
         return $exito;
     }
 
-    public function actualizarSalon(Salon $salon): bool {            
+    public function actualizarSalon(Salon $salon): bool {   
         try {
             $exito = false;
             $rs = SalonDao::find($salon->getId());
@@ -145,7 +145,7 @@ class SalonDao extends Model implements SalonRepository {
                 $rs->nombre = $salon->getNombre();
                 $rs->capacidad = $salon->getCapacidad();
                 $rs->esta_disponible = $salon->estaDisponible();
-                // $rs->tipo_salon_id = $salon->getIdTipoSalon();
+                $rs->tipo_salon_id = $salon->getIdTipoSalon();
                 // $rs->hoja_vida = $salon->getHojaVida();
                 $rs->save();
                 $exito = true;

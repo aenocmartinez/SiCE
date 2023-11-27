@@ -47,7 +47,22 @@
                             </span>
                         @enderror
                         
-                    <br>     
+                    <br> 
+                    
+                    <label class="form-label" for="tipo_salon_id">Tipo de salón <small class="fw-light">(obligatorio)</small></label>
+                    <select class="form-select @error('tipo_salon_id') is-invalid @enderror" id="tipo_salon_id" name="tipo_salon_id">            
+                        <option value=""> - </option>
+                        @foreach ($tiposSalon as $ts)                            
+                            <option value="{{ $ts->getId() }}" {{ old('tipo_salon_id', $salon->getIdTipoSalon()) == $ts->getId() ? 'selected' : '' }}>{{ $ts->getNombre() }}</option>
+                        @endforeach
+                    </select>
+                    @error('tipo_salon_id')
+                        <span class="invalid-feedback" role="alert">
+                            {{ $message }}
+                        </span>
+                    @enderror
+                    
+                    <br>
                 
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="disponible" name="disponible" {{ $checked }}>

@@ -47,7 +47,7 @@ $criterio = isset($criterio) ? $criterio : '';
                 @forelse ($salones as $salon)
                 <tr>
                     <td class="fs-sm" style="width: 95%;">
-                    <h4 class="fw-normal mb-0">{{ $salon->getNombre() }}</h4>
+                    <h4 class="fw-normal mb-0">{{ $salon->getNombreYTipoSalon() }}</h4>
                     <small>
                         Capacidad: {{ $salon->getCapacidad() }}<br> 
                         Estado: {{ $salon->getDisponibleTexto() }}

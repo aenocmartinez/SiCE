@@ -26,7 +26,7 @@ class GuardarSalon extends FormRequest
         return [
             'nombre' => 'required|max:10|gt:0',
             'capacidad' => 'required|integer|gt:0|digits_between:1,2',
-            'tipo_salon_id' => 'nullable|integer',
+            'tipo_salon_id' => 'required|integer',
             'disponible' => 'nullable',
             'hoja_vida' => 'nullable'
         ];
@@ -37,7 +37,8 @@ class GuardarSalon extends FormRequest
             'nombre.required' => 'El campo número es obligatorio',
             'capacidad.integer' => 'El campo capacidad permite únicamente valores positivos.',
             'nombre.max' => 'El campo nombre permite máximo 5 caracteres.',
-            'capacidad.digits_between' => 'El campo capacidad permite máximo 2 caracteres.'
+            'capacidad.digits_between' => 'El campo capacidad permite máximo 2 caracteres.',
+            'tipo_salon_id.required' => 'El campo tipo de salón es obligatorio'
         ];
     }
 }
