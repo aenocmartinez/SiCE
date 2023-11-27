@@ -24,7 +24,14 @@ class GuardarTipoSalon extends FormRequest
     public function rules()
     {
         return [
-            'nombre' => 'required',
+            'nombre' => 'required|max:40',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'nombre.max' => 'El campo nombre permite máximo 40 caracteres.',
         ];
     }
 }
