@@ -6,6 +6,7 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\ConvenioController;
 use App\Http\Controllers\CursoController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FormularioInscripcionController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\OrientadorController;
@@ -25,6 +26,8 @@ use App\Http\Controllers\TipoSalonController;
 */
 
 Route::view('/', 'home')->name('home');
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::get('/areas', [AreaController::class, 'index'])->name('areas.index');
 Route::get('/areas/crear', [AreaController::class, 'create'])->name('areas.create');

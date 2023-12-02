@@ -16,6 +16,7 @@ class FormularioInscripcion {
     private $fechaCreacion;
     private $totalAPagar;
     private $valorDescuento;
+    private $fechaMaxLegalizacion;
     private $costoCurso;
 
     public function __construct() {
@@ -262,5 +263,13 @@ class FormularioInscripcion {
 
     public function existe(): bool {
         return $this->id > 0;
+    }
+
+    public function setFechaMaxLegalizacion($fechaMaxLegalizacion): void {
+        $this->fechaMaxLegalizacion = $fechaMaxLegalizacion;
+    }
+
+    public function getFechaMaxLegalizacion() {
+        return $this->fechaMaxLegalizacion;
     }
 }

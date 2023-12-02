@@ -69,7 +69,7 @@
                             <a href="{{ route('participantes.formularios', $p->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="inscripciones">
                                 <i class="fa fa-fw fa-list-check"></i>
                             </a>                            
-                            <form method="POST" action="{{ route('participantes.delete', $p->getId()) }}" id="form-del-participante-{{$p->getId()}}">
+                            <!-- <form method="POST" action="{{ route('participantes.delete', $p->getId()) }}" id="form-del-participante-{{$p->getId()}}">
                                 @csrf @method('delete')
                                 <button class="btn btn-sm btn-alt-secondary" 
                                         data-bs-toggle="tooltip" 
@@ -79,7 +79,7 @@
                                         onclick="confirmDelete(this)">
                                     <i class="fa fa-fw fa-trash-can"></i>
                                 </button>
-                            </form>
+                            </form> -->
                         </div>
                     </td>                    
                 </tr>

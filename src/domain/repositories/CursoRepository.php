@@ -2,7 +2,6 @@
 
 namespace Src\domain\repositories;
 
-use Src\domain\Area;
 use Src\domain\Curso;
 
 interface CursoRepository {

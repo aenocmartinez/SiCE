@@ -65,7 +65,7 @@
                         <th>Documento</th>
                         <th>Curso</th>
                         <th>Estado</th>
-                        <th>Fecha inscripción</th>
+                        <th>Fecha max. legalización</th>
                         <th></th>
                     </thead>
                 </tr>
@@ -80,7 +80,7 @@
                         Salón {{ $f->getGrupoSalon() }}
                     </td>
                     <td>{{ $f->getEstado() }}</td>
-                    <td>{{ $f->getFechaCreacion() }}</td>
+                    <td>{{ $f->getFechaMaxLegalizacion() }}</td>
                     <td class="text-center">
                     @if ($f->getEstado() == 'Pendiente de pago')                        
                         <a href="{{ route('formularios.edit-legalizar-inscripcion', [$f->getNumero()]) }}" 

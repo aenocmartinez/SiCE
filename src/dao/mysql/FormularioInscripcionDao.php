@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Src\domain\Convenio;
 use Src\domain\FormularioInscripcion;
 use Src\domain\repositories\FormularioRepository;
+use Src\infraestructure\diasFestivos\Calendario;
 use Src\view\dto\ConfirmarInscripcionDto;
 
 class FormularioInscripcionDao extends Model implements FormularioRepository {
@@ -21,7 +22,9 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                             'numero_formulario',
                             'valor_descuento', 
                             'total_a_pagar',
-                            'medio_pago'];
+                            'medio_pago',
+                            'fecha_max_legalizacion'
+                        ];
     
     public function grupo() {
         return $this->belongsTo(GrupoDao::class, 'grupo_id');
@@ -44,7 +47,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                     ->orderByDesc('participante_id')
                     ->orderByDesc('id');
 
-            $resultados = $query->get(['id', 'grupo_id', 'participante_id', 'convenio_id', 'created_at', 'estado', 'costo_curso', 'valor_descuento', 'total_a_pagar', 'medio_pago', 'numero_formulario']);
+            $resultados = $query->get(['id', 'grupo_id', 'participante_id', 'convenio_id', 'created_at', 'estado', 'costo_curso', 'valor_descuento', 'total_a_pagar', 'medio_pago', 'numero_formulario', 'fecha_max_legalizacion']);
 
             foreach($resultados as $resultado) {
                 $formulario = new FormularioInscripcion();
@@ -54,6 +57,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formulario->setTotalAPagar($resultado->total_a_pagar);
                 $formulario->setMedioPago($resultado->medio_pago);
                 $formulario->setNumero($resultado->numero_formulario);
+                $formulario->setFechaMaxLegalizacion($resultado->fecha_max_legalizacion);
 
                 $grupo = $grupoDao->buscarGrupoPorId($resultado->grupo_id);
                 $participante = $participanteDao->buscarParticipantePorId($resultado->participante_id);
@@ -92,9 +96,16 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $nuevoFormulario->costo_curso = $dto->costoCurso;
                 $nuevoFormulario->valor_descuento = $dto->valorDescuento;
                 $nuevoFormulario->total_a_pagar = $dto->totalAPagar;
-                $nuevoFormulario->medio_pago = $dto->medioPago;        
+                $nuevoFormulario->medio_pago = $dto->medioPago;
+                
+                date_default_timezone_set('America/Bogota');
 
-                $nuevoFormulario->numero_formulario = strtotime(Carbon::now()) . $dto->participanteId;
+                $fechaActual = Carbon::now();
+                $nuevoFormulario->created_at =  $fechaActual;
+                $nuevoFormulario->updated_at =  $fechaActual;
+                $nuevoFormulario->fecha_max_legalizacion = Calendario::fechaSiguienteDiaHabil($fechaActual, $dto->diasFesctivos);
+
+                $nuevoFormulario->numero_formulario = strtotime($fechaActual) . $dto->participanteId;
 
                 $participante->formulariosInscripcion()->save($nuevoFormulario);
 
