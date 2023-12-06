@@ -75,6 +75,10 @@ class Grupo {
         return $this->salon;
     }
 
+    public function getSalonId(): int {
+        return $this->salon->getId();
+    }
+
     public function getNombreSalon(): string {
         return $this->salon->getNombre();
     }

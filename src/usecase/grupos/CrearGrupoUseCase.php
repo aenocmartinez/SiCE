@@ -28,7 +28,6 @@ class CrearGrupoUseCase {
 
         $grupo->setCursoCalendario($cursoCalendario);
 
-
         $orientador = new Orientador;
         $orientador->setId($grupoDto->orientadorId);
 

@@ -30,6 +30,7 @@ class GuardarGrupo extends FormRequest
             'calendario' => 'required|integer',
             'dia' => 'required',
             'orientador' => 'required|integer',
+            'capacidad_salon' => 'required|integer',
             'cupo' => 'required|integer|gt:0|digits_between:1,2',
             'id' => 'numeric|nullable',
         ];
@@ -42,7 +43,19 @@ class GuardarGrupo extends FormRequest
             'salon.required' => 'El campo salón es obligatorio',
             'cupo.required' => 'El campo cupos es obligatorio',
             'cupo.integer' => 'El campo cupos permite únicamente valores positivos.',
-            'cupo.digits_between' => 'El campo cupo permite máximo 2 caracteres.'
+            'cupo.digits_between' => 'El campo cupo permite máximo 2 caracteres.',
         ];
     }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $cantidad1 = $this->input('capacidad_salon');
+            $cantidad2 = $this->input('cupo');
+
+            if ($cantidad2 > $cantidad1) {
+                $validator->errors()->add('cupo', 'El cupo no puede superar la capacidad del salón.');
+            }
+        });
+    }    
 }

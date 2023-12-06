@@ -1,4 +1,5 @@
 <input type="hidden" id="curso_calendario_id_actual" value="{{ $grupo->getCursoCalendarioId()}}">
+<input type="hidden" id="capacidad_salon" name="capacidad_salon" value="{{ old('capacidad_salon', $grupo->getCupo()) }}">
 
 <div class="block block-rounded">
 
@@ -35,6 +36,7 @@
                     @foreach ($salones as $salon)
                         <option 
                             value="{{ $salon->getId() }}"
+                            data-valor-asignar="{{ $salon->getCapacidad() }}"
                             {{ old('salon', $grupo->getSalon()->getId()) == $salon->getId() ? 'selected' : '' }}
                             >{{ $salon->getNombreYTipoSalon() }} (capacidad: {{ $salon->getCapacidad() }} personas)                            
                         </option>
@@ -68,7 +70,7 @@
 
                 <label class="form-label" for="cupo">Cupos</label>
                     <input type="number" min="0" step="1"
-                        class="form-control @error('capacidad') is-invalid @enderror" 
+                        class="form-control @error('cupo') is-invalid @enderror" 
                         id="cupo" 
                         name="cupo" 
                         placeholder="cupo" 
@@ -85,7 +87,14 @@
             <div class="col-6">
 
                 <label class="form-label" for="curso">Curso</label>
-                <select class="form-select" id="curso" name="curso"></select>
+                <select class="form-select @error('curso') is-invalid @enderror" id="curso" name="curso">
+                    <option value="">Selecciona un curso</option>
+                </select>
+                @error('curso')
+                    <span class="invalid-feedback" role="alert">
+                        {{ $message }}
+                    </span>
+                @enderror                  
                 <br>
 
                 <label class="form-label" for="dia">Día</label>
@@ -140,8 +149,8 @@
 
 <script>    
     
-    const orientadorIdActual = '{{ $grupo->getOrientadorId() }}';
-    const cursoCalendarioIdActual =  '{{ $grupo->getCursoCalendarioId() }}';
+    const orientadorIdActual = "{{ old('orientador', $grupo->getOrientadorId()) }}";
+    const cursoCalendarioIdActual =  "{{ old('curso', $grupo->getCursoCalendarioId()) }}";
 
     $(document).ready(function(){
         
@@ -165,8 +174,16 @@
             const cursoCalendarioId = $('#curso').val();
             
             listarOrientadores(cursoCalendarioId, orientadorIdActual);
-        });        
+        }); 
+        
+        $('#salon').change(function() {
+            var valorSeleccionado = $(this).val();
+            var valorAsignar = $('#salon option:selected').data('valor-asignar');
+            $('#capacidad_salon').val(valorAsignar);
+        });
+
     });
+
 
     function listarCursos(calendarioId, cursoCalendarioIdActual) {        
         $("#curso").html("<select class=\"form-select\" id=\"curso\" name=\"curso\"></select>");
@@ -201,12 +218,20 @@
         });        
     } 
 
-    const cursoCalendarioId = "{{ $grupo->getCursoCalendarioId() }}";
-    const calendarioId = "{{  $grupo->getCalendarioId() }}";
+
+    const cursoCalendarioId = "{{ old('curso', $grupo->getCursoCalendarioId()) }}";
+    const calendarioId = "{{ old('calendario', $grupo->getCalendarioId()) }}";
 
     if (cursoCalendarioId > 0){
         listarCursos(calendarioId, cursoCalendarioIdActual);
         listarOrientadores(cursoCalendarioId, orientadorIdActual);
-    }    
+    }      
+
+    const salonId = "{{ $grupo->getSalonId() }}";
+    if (salonId > 0) {
+        var valorSeleccionado = $('#salon').val();
+            var valorAsignar = $('#salon option:selected').data('valor-asignar');
+            $('#capacidad_salon').val(valorAsignar);        
+    }
     
 </script>
