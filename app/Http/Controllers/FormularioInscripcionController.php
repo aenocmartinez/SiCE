@@ -9,6 +9,7 @@ use App\Http\Requests\ConfirmarInscription;
 use App\Http\Requests\GuardarParticipante;
 use App\Http\Requests\LegalizarFormularioInscripcion;
 use Illuminate\Http\Request;
+use Src\domain\Calendario;
 use Src\infraestructure\util\ListaDeValor;
 use Src\usecase\areas\ListarAreasUseCase;
 use Src\usecase\calendarios\ListarCalendariosUseCase;
@@ -24,7 +25,6 @@ use Src\usecase\participantes\BuscarParticipantePorIdUseCase;
 use Src\usecase\participantes\GuardarParticipanteUseCase;
 use Src\view\dto\ConfirmarInscripcionDto;
 use Src\view\dto\ParticipanteDto;
-use Illuminate\Support\Facades\Response;
 use Src\usecase\formularios\AnularFormularioUseCase;
 
 class FormularioInscripcionController extends Controller
@@ -45,17 +45,6 @@ class FormularioInscripcionController extends Controller
     }
 
     public function index() {
-        // $ruta_archivo = session('ruta_archivo');
-        // $nombre_archivo = session('nombre_archivo');
-        // $headers = ['Content-Type: application/pdf'];
-        
-        // if (session('ruta_archivo')) {
-        //     return response()->download($ruta_archivo, $nombre_archivo, $headers)->deleteFileAfterSend(true)->then(function () {
-        //         // Esto se ejecutará después de que se complete la descarga
-        //         return view('formularios.buscar_por_documento');
-        //     });         
-        // }
-
         return view('formularios.buscar_por_documento');
     }
 
@@ -106,6 +95,10 @@ class FormularioInscripcionController extends Controller
     }
 
     public function edit($tipoDocumento, $documento) {   
+
+        if (!Calendario::existeCalendarioVigente()) {
+            return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "No existe periodo académica vigente.");
+        }        
         
         $participante = (new BuscarParticipantePorDocumentoUseCase)->ejecutar($tipoDocumento, $documento);  
         
@@ -128,6 +121,11 @@ class FormularioInscripcionController extends Controller
     }
 
     public function buscarParticipantePorDocumento(BuscarParticipantePorDocumento $req) {
+        
+        if (!Calendario::existeCalendarioVigente()) {
+            return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "No existe periodo académica vigente.");
+        }
+
         $datos = $req->validated();
         return redirect()->route('formulario-inscripcion.paso-2', [
             'tipoDocumento' => $datos['tipoDocumento'],
@@ -140,6 +138,10 @@ class FormularioInscripcionController extends Controller
         $areaId = $datos['area'];
         $calendarioId = $datos['calendario'];
         $participanteId = $datos['participante'];
+
+        if (!Calendario::existeCalendarioVigente()) {
+            return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "No existe periodo académica vigente.");
+        }
 
         return redirect()->route('formulario-inscripcion.paso-3-1.buscar-grupos', [
             'participante' => (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId),

@@ -5,13 +5,15 @@
 
 @section("content")
 
-<div class="row mb-3">
-    <div class="d-flex justify-content-end">
-        <a href="{{ route('calendario.create') }}" class="btn btn-lg btn-info">
-            <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear periodo
-        </a>
-    </div>
-</div>        
+@if (!\Src\domain\Calendario::existeCalendarioVigente())    
+    <div class="row mb-3">
+        <div class="d-flex justify-content-end">
+            <a href="{{ route('calendario.create') }}" class="btn btn-lg btn-info">
+                <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear periodo
+            </a>
+        </div>
+    </div>        
+@endif
 
 <div class="row">
     <div class="block block-rounded">

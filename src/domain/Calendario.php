@@ -3,6 +3,7 @@
 namespace Src\domain;
 
 use DateTime;
+use Src\dao\mysql\CalendarioDao;
 
 class Calendario {
     private int $id;
@@ -122,5 +123,9 @@ class Calendario {
 
     public function listarCursosDelPeriodo(): array {        
         return $this->repository->listarCursos($this);
+    }
+
+    public static function existeCalendarioVigente(): bool {
+        return CalendarioDao::existeCalendarioVigente();
     }
 }

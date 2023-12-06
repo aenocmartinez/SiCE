@@ -9,6 +9,8 @@ use Src\domain\Curso;
 use Src\domain\CursoCalendario;
 use Src\domain\repositories\CalendarioRepository;
 
+use Carbon\Carbon;
+
 use Sentry\Laravel\Facade as Sentry;
 
 class CalendarioDao extends Model implements CalendarioRepository {
@@ -214,5 +216,17 @@ class CalendarioDao extends Model implements CalendarioRepository {
         }
 
         return $cursosCalendario;
+    }
+
+    public static function existeCalendarioVigente(): bool {
+        $fechaActual = Carbon::now()->toDateString();
+        $resultado = DB::table('calendarios')
+            ->selectRaw("IF('$fechaActual' BETWEEN fec_ini AND fec_fin, 'true', 'false') AS esta_entre_fechas")
+            ->first();
+        
+        if (!$resultado)
+            return false;
+
+        return ($resultado->esta_entre_fechas === 'true');
     }
 }
