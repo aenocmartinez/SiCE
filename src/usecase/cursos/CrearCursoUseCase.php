@@ -14,7 +14,7 @@ class CrearCursoUseCase {
         
         $curso = Curso::buscarPorNombreYArea($cursoDto->nombre, $cursoDto->areaId, $cursoRepository);
         if ($curso->existe()) 
-            return new Response("200", "el curso ya existe");
+            return new Response("500", "el curso ya existe");
 
         $curso = new Curso();
         $curso->setRepository($cursoRepository);

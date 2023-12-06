@@ -8,6 +8,8 @@ use Src\domain\repositories\AreaRepository;
 use Src\domain\Area;
 use Src\domain\Orientador;
 
+use Sentry\Laravel\Facade as Sentry;
+
 class AreaDao extends Model implements AreaRepository {  
       
     protected $table = 'areas';
@@ -23,7 +25,7 @@ class AreaDao extends Model implements AreaRepository {
             }            
 
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $areas;
     }
@@ -37,7 +39,7 @@ class AreaDao extends Model implements AreaRepository {
                 $area->setNombre($result['nombre']);
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $area;
     }
@@ -51,38 +53,41 @@ class AreaDao extends Model implements AreaRepository {
                 $area->setNombre($result['nombre']);
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $area;
     }
 
     public function crearArea(Area $area): bool {
+        $exito = false;
         try {
             $result = AreaDao::create([
                 'nombre' => $area->getNombre()
             ]);
+
+            $exito = $result['id'] > 0;
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
-        return $result['id'] > 0;
+        return $exito;
     }
 
     public function eliminarArea(Area $area): bool {
+        $exito = false;
         try {
-            $exito = false;
             $rs = AreaDao::destroy($area->getId());
             if ($rs) {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
         return $exito;
     }
 
     public function actualizarArea(Area $area): bool {
+        $exito = false;
         try {
-            $exito = false;
             $rs = AreaDao::find($area->getId());
             if ($rs) {
                 $rs->update([
@@ -91,7 +96,7 @@ class AreaDao extends Model implements AreaRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
         return $exito; 
     }
@@ -122,7 +127,7 @@ class AreaDao extends Model implements AreaRepository {
             }
 
         } catch(\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $listOrientadores;

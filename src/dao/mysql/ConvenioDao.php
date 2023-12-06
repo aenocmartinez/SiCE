@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Src\domain\Convenio;
 use Src\domain\repositories\ConvenioRepository;
 
+use Sentry\Laravel\Facade as Sentry;
+
 class ConvenioDao extends Model implements ConvenioRepository {
     
     protected $table = 'convenios';
@@ -34,7 +36,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
             }
 
         } catch (Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $listaConvenios;
@@ -59,7 +61,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
 
             
         } catch (Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $convenio;
@@ -84,14 +86,14 @@ class ConvenioDao extends Model implements ConvenioRepository {
 
             
         } catch (Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $convenio;
     }
 
     public function crearConvenio(Convenio $convenio): bool {
-        $exito = true;
+        $exito = false;
         try {
             ConvenioDao::create([
                 'nombre' => $convenio->getNombre(),
@@ -100,16 +102,19 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 'fec_fin' => $convenio->getFecFin(), 
                 'descuento' => $convenio->getDescuento(),
             ]);
-        } catch(Exception $e) {
-            $exito = false;
-            $e->getMessage();
+            
+            $exito = true;
+
+        } catch(Exception $e) {            
+            Sentry::captureException($e);
         }
 
         return $exito;
     }
 
     public function actualizarConvenio(Convenio $convenio): bool {
-        $exito = true;
+        
+        $exito = false;
         try {
             $convenioEncontrado = ConvenioDao::find($convenio->getId());
             if ($convenioEncontrado) {
@@ -121,25 +126,25 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenioEncontrado->save();
             }
 
-        } catch(Exception $e) {
-            $exito = false;
-            $e->getMessage();
+            $exito = true;
+
+        } catch(Exception $e) {            
+            Sentry::captureException($e);
         }
 
         return $exito;
     }
 
     public function eliminarConvenio(int $convenioId): bool {
-        $exito = true;
+        $exito = false;        
         try {
             $convenioEncontrado = ConvenioDao::find($convenioId);
             if ($convenioEncontrado) {
                 $convenioEncontrado->delete();
             }
-
-        } catch(Exception $e) {
-            $exito = false;
-            $e->getMessage();
+            $exito = true;
+        } catch(Exception $e) {            
+            Sentry::captureException($e);
         }
 
         return $exito;

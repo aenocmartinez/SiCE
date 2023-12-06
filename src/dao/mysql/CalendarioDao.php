@@ -9,6 +9,8 @@ use Src\domain\Curso;
 use Src\domain\CursoCalendario;
 use Src\domain\repositories\CalendarioRepository;
 
+use Sentry\Laravel\Facade as Sentry;
+
 class CalendarioDao extends Model implements CalendarioRepository {
 
     protected $table = 'calendarios';
@@ -30,7 +32,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 array_push($calendarios, $calendario);
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $calendarios;
@@ -47,7 +49,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 $calendario->setFechaFinal($result['fec_fin']);
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $calendario;
     }
@@ -63,40 +65,44 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 $calendario->setFechaFinal($result['fec_fin']);
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $calendario;
     }
 
     public function crearCalendario(Calendario $calendario): bool {
+        $exito = false;
         try {
             $result = CalendarioDao::create([
                 'nombre' => $calendario->getNombre(),
                 'fec_ini' => $calendario->getFechaInicio(),
                 'fec_fin' => $calendario->getFechaFinal()
             ]);
+
+            $exito = $result['id'] > 0;
+
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
-        return $result['id'] > 0;
+        return $exito;
     }
 
     public function eliminarCalendario(Calendario $calendario): bool {
+        $exito = false;
         try {
-            $exito = false;
             $rs = CalendarioDao::destroy($calendario->getId());
             if ($rs) {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
         return $exito;
     }
 
     public function actualizarCalendario(Calendario $calendario): bool {
+        $exito = false;
         try {
-            $exito = false;
             $rs = CalendarioDao::find($calendario->getId());
             if ($rs) {
                 $rs->update([
@@ -107,13 +113,13 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
         return $exito; 
     }
 
     public function agregarCurso(CursoCalendario $cursoCalendario): bool {
-        $exito = true;
+        $exito = false;
 
         try {
 
@@ -127,8 +133,10 @@ class CalendarioDao extends Model implements CalendarioRepository {
 
             }            
 
+            $exito = false;
+
         } catch(\Exception $e) {
-            $exito = false;            
+            Sentry::captureException($e);
         }
 
         return $exito;
@@ -143,14 +151,13 @@ class CalendarioDao extends Model implements CalendarioRepository {
             }
 
         } catch(\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $resultado;
     }
 
     public function listarCursos(int $calendarioId, int $areaId): array {
         $cursos = array();
-        // $calendarioEncontrado = CalendarioDao::find($calendarioId);
        
         $calendario = new Calendario();
         $calendario->setId($calendarioId);

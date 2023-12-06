@@ -11,6 +11,8 @@ use Src\domain\repositories\FormularioRepository;
 use Src\infraestructure\diasFestivos\Calendario;
 use Src\view\dto\ConfirmarInscripcionDto;
 
+use Sentry\Laravel\Facade as Sentry;
+
 class FormularioInscripcionDao extends Model implements FormularioRepository {
 
     protected $table = 'formulario_inscripcion';
@@ -75,7 +77,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             }
 
         } catch (Exception $e) {
-            dd($e->getMessage());   
+            Sentry::captureException($e);
         }
         
         return $formularios;
@@ -113,7 +115,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             }
         } catch(Exception $e) {
             $exito = false;
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $exito;
@@ -130,7 +132,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
         } catch(Exception $e) {
             $exito = false;
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $exito;
     }
@@ -146,7 +148,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             }
         } catch (Exception $e) {
             $exito = false;
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $exito;
     }
@@ -190,7 +192,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formulario->setConvenio($convenio);                
             }
         } catch (Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $formulario;
@@ -235,7 +237,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formulario->setConvenio($convenio);                
             }
         } catch (Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $formulario;        
@@ -254,7 +256,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
         } catch(Exception $e) {
             $exito = false;
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $exito;

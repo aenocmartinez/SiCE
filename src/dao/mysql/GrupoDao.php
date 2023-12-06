@@ -10,6 +10,8 @@ use Src\domain\CursoCalendario;
 use Src\domain\Grupo;
 use Src\domain\repositories\GrupoRepository;
 
+use Sentry\Laravel\Facade as Sentry;
+
 class GrupoDao extends Model implements GrupoRepository {
     protected $table = 'grupos';
     protected $fillable = ['curso_calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada', 'cupos', 'calendario_id'];
@@ -63,7 +65,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 array_push($listaGrupos, $grupo);
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $listaGrupos;
@@ -111,7 +113,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setSalon($salon);
             }            
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $grupo;
@@ -137,7 +139,7 @@ class GrupoDao extends Model implements GrupoRepository {
 
         } catch (\Exception $e) {
             $exito = false;
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
 
         return $exito;
@@ -151,7 +153,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
         return $exito;
     }
@@ -172,7 +174,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
         return $exito; 
     }
@@ -189,7 +191,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $existe = true;
 
         } catch(\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $existe;
@@ -207,7 +209,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $disponible = false;
 
         } catch(\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $disponible;        
@@ -269,7 +271,7 @@ class GrupoDao extends Model implements GrupoRepository {
             }
 
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            Sentry::captureException($e);
         }
 
         return $grupos;
@@ -335,7 +337,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 array_push($listaGrupos, $grupo);
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $listaGrupos;        

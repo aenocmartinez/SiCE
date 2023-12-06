@@ -12,7 +12,8 @@ use Src\domain\FormularioInscripcion;
 use Src\domain\Grupo;
 use Src\domain\Participante;
 use Src\domain\repositories\ParticipanteRepository;
-use Src\view\dto\ConfirmarInscripcionDto;
+
+use Sentry\Laravel\Facade as Sentry;
 
 class ParticipanteDao extends Model implements ParticipanteRepository {
 
@@ -64,7 +65,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
             }
 
         } catch (Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $participante;
@@ -96,7 +97,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
 
 
         } catch (Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $exito;
@@ -129,7 +130,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
 
 
         } catch (Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $exito;
@@ -160,7 +161,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
             }
 
         } catch (Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $participante;          
@@ -197,7 +198,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
             }
 
         } catch (Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }        
 
         return $participantes;
@@ -236,7 +237,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
             }
 
         } catch (Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $participantes;
     }
@@ -313,7 +314,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                 }
             
         } catch(Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $formularios;
@@ -330,7 +331,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
 
         } catch (Exception $e) {
             $exito = false;
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $exito;
     }

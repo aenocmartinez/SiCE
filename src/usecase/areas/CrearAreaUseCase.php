@@ -17,6 +17,7 @@ class CrearAreaUseCase {
             return new Response("404", "El área ya existe");
         }
         
+        $area = new Area();
         $area->setRepository($areaRepository);
         $area->setNombre($nombre);
 

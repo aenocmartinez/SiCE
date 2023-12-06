@@ -7,6 +7,8 @@ use Src\domain\repositories\SalonRepository;
 use Src\domain\Salon;
 use Src\domain\TipoSalon;
 
+use Sentry\Laravel\Facade as Sentry;
+
 class SalonDao extends Model implements SalonRepository {
     
     protected $table = 'salones';
@@ -29,7 +31,7 @@ class SalonDao extends Model implements SalonRepository {
             }            
 
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $salones;
     }
@@ -61,7 +63,7 @@ class SalonDao extends Model implements SalonRepository {
             }  
 
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $salones;
     }
@@ -82,7 +84,7 @@ class SalonDao extends Model implements SalonRepository {
                 $salon->setTipoSalon($tipoSalon);                
             }            
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $salon;
@@ -104,7 +106,7 @@ class SalonDao extends Model implements SalonRepository {
                 $salon->setTipoSalon($tipoSalon);                
             }            
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $salon;        
     }
@@ -119,7 +121,7 @@ class SalonDao extends Model implements SalonRepository {
                 'tipo_salon_id' => $salon->getIdTipoSalon(),
             ]);
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
         return $result['id'] > 0;
     }
@@ -132,7 +134,7 @@ class SalonDao extends Model implements SalonRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
         return $exito;
     }
@@ -151,7 +153,7 @@ class SalonDao extends Model implements SalonRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
         return $exito; 
     }
@@ -173,7 +175,7 @@ class SalonDao extends Model implements SalonRepository {
             }            
 
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $salones;       
     }

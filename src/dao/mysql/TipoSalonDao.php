@@ -4,8 +4,9 @@ namespace Src\dao\mysql;
 
 use Illuminate\Database\Eloquent\Model;
 use Src\domain\repositories\TipoSalonRepository;
-use Src\domain\Salon;
 use Src\domain\TipoSalon;
+
+use Sentry\Laravel\Facade as Sentry;
 
 class TipoSalonDao extends Model implements TipoSalonRepository {
     
@@ -23,7 +24,7 @@ class TipoSalonDao extends Model implements TipoSalonRepository {
             }            
 
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $tipoSalones;
     }
@@ -37,7 +38,7 @@ class TipoSalonDao extends Model implements TipoSalonRepository {
                 $tipoSalon->setNombre($rs['nombre']);
             }            
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $tipoSalon;
     }
@@ -51,7 +52,7 @@ class TipoSalonDao extends Model implements TipoSalonRepository {
                 $tipoSalon->setNombre($rs['nombre']);
             }            
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $tipoSalon;        
     }
@@ -62,7 +63,7 @@ class TipoSalonDao extends Model implements TipoSalonRepository {
                 'nombre' => $tipoSalon->getNombre(),
             ]);
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
         return $result['id'] > 0;
     }
@@ -75,7 +76,7 @@ class TipoSalonDao extends Model implements TipoSalonRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
         return $exito;
     }
@@ -90,7 +91,7 @@ class TipoSalonDao extends Model implements TipoSalonRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
         return $exito; 
     }

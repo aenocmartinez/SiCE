@@ -10,6 +10,8 @@ use Src\domain\Grupo;
 use Src\domain\Orientador;
 use Src\domain\repositories\OrientadorRepository;
 
+use Sentry\Laravel\Facade as Sentry;
+
 class OrientadorDao extends Model implements OrientadorRepository {
 
     protected $table = 'orientadores';
@@ -72,7 +74,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
             }
 
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $orientadores;
     }
@@ -137,7 +139,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $orientador->setGrupos($grupos);                
             }            
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
 
         return $orientador;
@@ -190,7 +192,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
             }
             
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $orientadores;
     }
@@ -216,7 +218,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 
             }            
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $orientador;
     }
@@ -249,7 +251,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
             $orientador->setId($result['id']);
 
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
         return $orientador->getId() > 0;
     }
@@ -262,7 +264,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
         return $exito;
     }
@@ -297,7 +299,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            Sentry::captureException($e);
         }   
         return $exito; 
     }
@@ -311,7 +313,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
             }
         } catch (\Exception $e) {
             $exito = false;   
-            $e->getMessage();
+            Sentry::captureException($e);
         }               
         return $exito;
     }
@@ -323,7 +325,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $o->areas()->detach();
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }               
         return true;
     }

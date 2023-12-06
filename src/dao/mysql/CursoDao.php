@@ -8,6 +8,9 @@ use Src\domain\Area;
 use Src\domain\Curso;
 use Src\domain\repositories\CursoRepository;
 
+use Sentry\Laravel\Facade as Sentry;
+
+
 class CursoDao extends Model implements CursoRepository {  
       
     protected $table = 'cursos';
@@ -42,7 +45,7 @@ class CursoDao extends Model implements CursoRepository {
             }            
 
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $cursos;
     }
@@ -65,7 +68,7 @@ class CursoDao extends Model implements CursoRepository {
                 $curso->setArea($area);
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $curso;
     }
@@ -89,7 +92,7 @@ class CursoDao extends Model implements CursoRepository {
                 $curso->setArea($area);
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }
         return $curso;
     }
@@ -102,8 +105,9 @@ class CursoDao extends Model implements CursoRepository {
                 'tipo_curso' => $curso->getTipoCurso(),
             ]);
 
-        } catch (\Exception $e) {
-            $e->getMessage();
+        } catch (\Exception $e) {                        
+            Sentry::captureException($e);
+            return false;
         }   
 
         return $result['id'] > 0;     
@@ -117,7 +121,7 @@ class CursoDao extends Model implements CursoRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
         return $exito;
     }
@@ -135,7 +139,7 @@ class CursoDao extends Model implements CursoRepository {
                 $exito = true;
             }
         } catch (\Exception $e) {
-            $e->getMessage();
+            Sentry::captureException($e);
         }   
         return $exito; 
     }
@@ -157,7 +161,7 @@ class CursoDao extends Model implements CursoRepository {
                 array_push($cursos, $curso);
             }
         } catch (\Exception $e) {
-            echo $e->getMessage();
+            echo Sentry::captureException($e);
         }
         return $cursos;       
     }
