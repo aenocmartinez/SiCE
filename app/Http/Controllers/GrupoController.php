@@ -25,8 +25,7 @@ class GrupoController extends Controller
 {
     public function index()
     {
-        $grupos = (new ListarGruposUseCase)->ejecutar();
-        return view('grupos.index', compact('grupos'));
+        return view('grupos.index', ['grupos' => (new ListarGruposUseCase)->ejecutar()]);
     }
 
     public function create()

@@ -45,7 +45,8 @@ class GuardarOrientador extends FormRequest
         return [
             'emailInstitucional.regex' => 'Sólo se permiten email terminados en @unicolmayor.edu.co',
             'fecNacimiento.date' => 'Formato no válido para el campo fecha de nacimiento.',
-            'areas.required' => 'El campo áreas a las que pertenece es obligatorio.'
+            'areas.required' => 'El campo áreas a las que pertenece es obligatorio.',
+            'emailInstitucional.email' => 'Correo electrónico no válido.'
         ];
     }
 }

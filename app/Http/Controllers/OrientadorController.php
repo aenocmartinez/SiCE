@@ -53,18 +53,6 @@ class OrientadorController extends Controller
         ]);
     }
 
-    public function editAreas($idOrientador) {
-
-    }
-
-    public function removeArea($idOrientador, $idArea) {    
-        
-    }
-
-    public function addArea(AgregarAreaOrientador $req) {
-
-    }    
-
     public function buscador() {        
         
         $criterio = '';

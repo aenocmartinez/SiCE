@@ -50,6 +50,10 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setCupo($g->cupos);
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
+                if (!$caledario->esVigente()) {
+                    continue;
+                }
+                
                 $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);
                 $curso = $cursoDao->buscarCursoPorId($g->curso_id);
                 $salon = $salonDao->buscarSalonPorId($g->salon_id);

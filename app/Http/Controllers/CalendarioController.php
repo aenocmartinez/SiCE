@@ -113,8 +113,7 @@ class CalendarioController extends Controller
 
     public function agregarCursoACalendario() {  
         $cursoCalendarioDto = $this->hydrateCursoCalendarioDto();        
-        $casoUso = new AgregarCursoACalendarioUseCase();
-        $response = $casoUso->ejecutar($cursoCalendarioDto);
+        $response = (new AgregarCursoACalendarioUseCase())->ejecutar($cursoCalendarioDto);
         
         return redirect()->route('calendario.cursos', [
                         'id' => $cursoCalendarioDto->calendarioId,

@@ -135,7 +135,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
 
             }            
 
-            $exito = false;
+            $exito = true;
 
         } catch(\Exception $e) {
             Sentry::captureException($e);
