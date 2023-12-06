@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\AlarmaController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\ConvenioController;
@@ -120,8 +121,6 @@ Route::patch('/formularios/legalizar-inscripcion', [FormularioInscripcionControl
 Route::patch('/formularios/{numeroFormulario}/participante/{participanteId}/anular', [FormularioInscripcionController::class, 'anularInscripcion'])->name('formularios.anular-inscripcion');
 
 
-
-
 Route::get('/participantes', [ParticipanteController::class, 'index'])->name('participantes.index');
 Route::get('/participantes/{id}/editar', [ParticipanteController::class, 'edit'])->name('participantes.edit');
 Route::get('/participantes/crear', [ParticipanteController::class, 'create'])->name('participantes.create');
@@ -133,3 +132,6 @@ Route::delete('/participantes/{participanteId}', [ParticipanteController::class,
 Route::patch('/participantes/{numeroFormulario}/{participanteId}', [ParticipanteController::class, 'anularInscripcion'])->name('participantes.anular-inscripcion');
 Route::get('/participantes/legalizar-inscripcion/{numeroFormulario}/formulario', [ParticipanteController::class, 'editLegalizarInscripcion'])->name('participantes.edit-legalizar-inscripcion');
 Route::patch('/participantes/legalizar-inscripcion', [ParticipanteController::class, 'legalizarInscripcion'])->name('participantes.legalizar-inscripcion');
+
+
+Route::get('/alarma/ultimas-inscripciones', [AlarmaController::class, 'numeroUltimosInscritos'])->name('alarma.ultimas-inscripciones');

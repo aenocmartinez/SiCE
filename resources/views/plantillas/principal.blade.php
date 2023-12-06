@@ -177,8 +177,9 @@
                 <div class="p-2 bg-body-light border-bottom text-center rounded-top">
                   <h5 class="dropdown-header text-uppercase">Notificaciones</h5>
                 </div>
-                <ul class="nav-items mb-0">
-                  <li>
+                <div id="s-alarmas"></div>
+                <!-- <ul class="nav-items mb-0"> -->
+                  <!-- <li>
                     <a class="text-dark d-flex py-2" href="javascript:void(0)">
                       <div class="flex-shrink-0 me-2 ms-3">
                         <i class="fa fa-fw fa-check-circle text-success"></i>
@@ -188,7 +189,7 @@
                         <span class="fw-medium text-muted">Hace 15 minutos</span>
                       </div>
                     </a>
-                  </li>
+                  </li> -->
                   <!-- <li>
                     <a class="text-dark d-flex py-2" href="javascript:void(0)">
                       <div class="flex-shrink-0 me-2 ms-3">
@@ -221,7 +222,7 @@
                         <span class="fw-medium text-muted">33 min ago</span>
                       </div>
                     </a>
-                  </li> -->
+                  </li> 
                   <li>
                     <a class="text-dark d-flex py-2" href="javascript:void(0)">
                       <div class="flex-shrink-0 me-2 ms-3">
@@ -233,7 +234,7 @@
                       </div>
                     </a>
                   </li>
-                  <!-- <li>
+                  <li>
                     <a class="text-dark d-flex py-2" href="javascript:void(0)">
                       <div class="flex-shrink-0 me-2 ms-3">
                         <i class="fa fa-fw fa-check-circle text-success"></i>
@@ -244,7 +245,7 @@
                       </div>
                     </a>
                   </li> -->
-                </ul>
+                <!-- </ul> -->
                 <!-- <div class="p-2 border-top text-center">
                   <a class="d-inline-block fw-medium" href="javascript:void(0)">
                     <i class="fa fa-fw fa-arrow-down me-1 opacity-50"></i> Load More..
@@ -355,6 +356,14 @@
 
 
     <script src="{{asset('assets/js/plugins/bootstrap-notify/bootstrap-notify.min.js')}}"></script>
+
+      @if (session('nombre_archivo'))
+      <script>
+          window.location.href = "{{ route('formulario-inscripcion.descargar-formato-pago', [session('nombre_archivo')]) }}";
+      </script>
+      @endif
+
+
       @if (session('status'))
         @php
           $icon = 'fa fa-info-circle me-1';
@@ -369,10 +378,28 @@
         </script>            
       @endif
 
-      @if (session('nombre_archivo'))
-      <script>
-          window.location.href = "{{ route('formulario-inscripcion.descargar-formato-pago', [session('nombre_archivo')]) }}";
-      </script>
-      @endif
+      <!-- <script>
+      function leerAlertas() {
+        
+        setInterval(function() {
+          $.ajax({
+            url: "{{ route('alarma.ultimas-inscripciones') }}", 
+            type: 'GET',
+            success: function(data) {
+              $('#s-alarmas').html(data);
+            },
+            error: function(xhr, status, error) {
+              console.error(error);
+            }
+          });
+        }, 60000); // 15 minutos en milisegundos (15 * 60 * 1000)
+      }
+
+      
+      document.addEventListener('DOMContentLoaded', function() {
+        leerAlertas();
+      });      
+    </script>    -->
+
   </body>
 </html>
