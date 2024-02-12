@@ -144,7 +144,8 @@ class GrupoDao extends Model implements GrupoRepository {
                 'calendario_id' => $grupo->getCalendarioId()
             ]);
 
-        } catch (\Exception $e) {            
+        } catch (\Exception $e) {    
+            dd($e->getMessage());        
             $exito = false;
             Sentry::captureException($e);
         }   
