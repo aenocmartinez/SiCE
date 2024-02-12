@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class AddCupoToGrupos extends Migration
@@ -15,6 +16,7 @@ class AddCupoToGrupos extends Migration
     {
         Schema::table('grupos', function (Blueprint $table) {
             $table->integer('cupos')->after('calendario_id')->default(0);
+ 
         });
     }
 
@@ -26,7 +28,7 @@ class AddCupoToGrupos extends Migration
     public function down()
     {
         Schema::table('grupos', function (Blueprint $table) {
-            //
+            $table->dropColumn('cupos');
         });
     }
 }

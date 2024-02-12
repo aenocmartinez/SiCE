@@ -193,6 +193,10 @@ class FormularioInscripcion {
         return $this->grupo->getNombreSalon();
     }
 
+    public function getGrupoHora() {
+        return $this->grupo->getHora();
+    }
+
     public function setNumero(string $numero): void {
         $this->numero = $numero;
     }

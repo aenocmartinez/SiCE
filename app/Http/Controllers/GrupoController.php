@@ -129,7 +129,7 @@ class GrupoController extends Controller
         ]);         
     }
 
-    private function hydrateDto($data): GrupoDto {        
+    private function hydrateDto($data): GrupoDto {            
         $grupoDto = new GrupoDto();
         $grupoDto->dia = $data['dia'];
         $grupoDto->cursoCalendarioId = $data['curso'];
@@ -138,6 +138,7 @@ class GrupoController extends Controller
         $grupoDto->calendarioId = $data['calendario'];
         $grupoDto->orientadorId = $data['orientador'];
         $grupoDto->cupo = $data['cupo'];
+        $grupoDto->hora = $data['hora'].":00";
 
         if (isset(request()->id)) {
             $grupoDto->id = request()->id;

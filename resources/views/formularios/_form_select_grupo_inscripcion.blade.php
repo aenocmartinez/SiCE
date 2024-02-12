@@ -60,7 +60,7 @@
                         <p class="fw-normal mb-0">{{ $grupo->getCodigoGrupo() . " - " . $grupo->getNombreCurso() }} ({{ $grupo->getModalidad() }})</p>
                     </td>
                     <td class="fs-xs" style="width: 20%;">
-                        <p class="fw-normal mb-0">{{ $grupo->getDia() }} / {{ $grupo->getJornada() }}</p>
+                        <p class="fw-normal mb-0">{{ $grupo->getDia() }} / {{ $grupo->getHora(). " " . $grupo->getJornada() }}</p>
                     </td>
                     <td class="fs-xs" style="width: 15%;">
                         <p class="fw-normal mb-0">{{ $grupo->getCostoFormateado() }}</p>

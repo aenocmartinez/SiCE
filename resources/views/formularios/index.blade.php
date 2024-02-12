@@ -59,7 +59,7 @@
             <!-- Tabla -->
             <table class="table table-vcenter mt-4">
                 <tr>
-                    <thead>
+                    <thead class="text-center">
                         <th>Formulario</th>
                         <th>Participante</th>
                         <th>Documento</th>
@@ -76,7 +76,7 @@
                     <td>{{ $f->getParticipanteTipoYDocumento() }}</td>
                     <td class="text-center">
                         {{ $f->getGrupoNombreCurso() }}. <br>
-                        G{{ $f->getGrupoId() }} - {{ $f->getGrupoDia() . " / ".$f->getGrupoJornada() }} <br>
+                        G{{ $f->getGrupoId() }} - {{ $f->getGrupoDia() . " / ". $f->getGrupoHora() . " " . $f->getGrupoJornada() }} <br>
                         Salón {{ $f->getGrupoSalon() }}
                     </td>
                     <td>{{ $f->getEstado() }}</td>

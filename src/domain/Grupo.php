@@ -2,12 +2,15 @@
 
 namespace Src\domain;
 
+use Carbon\Carbon;
+
 class Grupo {
     private int $id;
     private string $dia;
     private string $jornada;
     private int $totalInscritos;
     private int $cupo;
+    private $hora;
     private Salon $salon;
     private Orientador $orientador;
     private CursoCalendario $cursoCalendario;
@@ -17,6 +20,7 @@ class Grupo {
         $this->id = 0;
         $this->dia = "";
         $this->jornada = "";
+        $this->hora = "";
         $this->totalInscritos = 0;
         $this->cupo = 0;
 
@@ -42,6 +46,20 @@ class Grupo {
     public function getId(): int {
         return $this->id;
     }
+
+    public function setHora($hora): void {
+        $this->hora = $hora;
+    }
+
+    public function getHora() {   
+        if (strlen($this->hora) == 0) {
+            return "";
+        }
+
+        return Carbon::createFromFormat('H:i:s', $this->hora)->format('H:i');
+
+        // return Carbon::createFromFormat('H:i:s', $this->hora)->format('H:i');
+    }    
 
     public function setCursoCalendario(CursoCalendario $cursoCalendario): void {
         $this->cursoCalendario = $cursoCalendario;

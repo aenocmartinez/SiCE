@@ -257,6 +257,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                     'grupos.id as grupo_id',
                     'grupos.dia',
                     'grupos.jornada',
+                    'grupos.hora',
                     'curso_calendario.modalidad',
                     'calendarios.nombre as nombre_calendario',
                     'cursos.nombre as nombre_curso',
@@ -294,6 +295,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                     $grupo = new Grupo();
                     $grupo->setDia($resultado->dia);
                     $grupo->setJornada($resultado->jornada);
+                    $grupo->setHora($resultado->hora);
                     $grupo->setId($resultado->grupo_id);
 
                         $calendario = new Calendario();

@@ -32,6 +32,7 @@ class GuardarGrupo extends FormRequest
             'orientador' => 'required|integer',
             'capacidad_salon' => 'required|integer',
             'cupo' => 'required|integer|gt:0|digits_between:1,2',
+            'hora' => 'required',
             'id' => 'numeric|nullable',
         ];
     }
@@ -44,6 +45,7 @@ class GuardarGrupo extends FormRequest
             'cupo.required' => 'El campo cupos es obligatorio',
             'cupo.integer' => 'El campo cupos permite únicamente valores positivos.',
             'cupo.digits_between' => 'El campo cupo permite máximo 2 caracteres.',
+            'hora.required' => 'El campo hora es obligatorio.',
         ];
     }
 

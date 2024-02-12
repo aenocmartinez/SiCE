@@ -112,6 +112,26 @@
                         {{ $message }}
                     </span>
                 @enderror                   
+
+                <br>
+
+                <label class="form-label" for="hora">Hora</label>
+                <input type="text" min="0" 
+                        class="js-flatpickr form-control @error('hora') is-invalid @enderror" 
+                        id="hora" 
+                        name="hora"
+                        data-enable-time="true" 
+                        data-no-calendar="true" 
+                        data-date-format="H:i" 
+                        placeholder="hora" 
+                        value="{{ old('hora', $grupo->getHora()) }}"                
+                        >
+                        @error('hora')
+                            <span class="invalid-feedback" role="alert">
+                                {{ $message }}
+                            </span>
+                        @enderror                  
+                
                 
                 <br>
 
@@ -139,6 +159,7 @@
 </div>    
 
 
+<script src="{{asset('assets/js/plugins/flatpickr/flatpickr.min.js')}}"></script>
 <script src="{{asset('assets/js/oneui.app.min.js')}}"></script>
 
 <script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>

@@ -14,7 +14,7 @@ use Sentry\Laravel\Facade as Sentry;
 
 class GrupoDao extends Model implements GrupoRepository {
     protected $table = 'grupos';
-    protected $fillable = ['curso_calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada', 'cupos', 'calendario_id'];
+    protected $fillable = ['curso_calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada', 'cupos', 'hora', 'calendario_id'];
 
 
     public function formulariosInscripcion() {
@@ -30,7 +30,7 @@ class GrupoDao extends Model implements GrupoRepository {
 
         try {
             $grupos = DB::table('grupos as g')
-                        ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos',
+                        ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.hora', 
                                 'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id',
                                 DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
                                 )
@@ -48,6 +48,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setDia($g->dia);
                 $grupo->setJornada($g->jornada);
                 $grupo->setCupo($g->cupos);
+                $grupo->setHora($g->hora);
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 if (!$caledario->esVigente()) {
@@ -84,7 +85,7 @@ class GrupoDao extends Model implements GrupoRepository {
 
         try {
             $g = DB::table('grupos as g')
-                    ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos',
+                    ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.hora', 
                             'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id', 'cc.costo', 'cc.modalidad'                          
                             )
                     ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
@@ -101,6 +102,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setDia($g->dia);
                 $grupo->setJornada($g->jornada);
                 $grupo->setCupo($g->cupos);
+                $grupo->setHora($g->hora);
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);
@@ -131,17 +133,18 @@ class GrupoDao extends Model implements GrupoRepository {
     public function crearGrupo(Grupo $grupo): bool {
         $exito = true;
         try {
-            $result = GrupoDao::create([
+            GrupoDao::create([
                 'curso_calendario_id' => $grupo->getCursoCalendarioId(), 
                 'salon_id' => $grupo->getSalon()->getId(), 
                 'orientador_id' => $grupo->getOrientador()->getId(), 
                 'dia' => $grupo->getDia(), 
                 'jornada' => $grupo->getJornada(),
                 'cupos' => $grupo->getCupo(),
+                'hora' => $grupo->getHora(),
                 'calendario_id' => $grupo->getCalendarioId()
             ]);
 
-        } catch (\Exception $e) {
+        } catch (\Exception $e) {            
             $exito = false;
             Sentry::captureException($e);
         }   
@@ -163,16 +166,17 @@ class GrupoDao extends Model implements GrupoRepository {
     }
 
     public function actualizarGrupo(Grupo $grupo): bool {
-        try {
+        try {            
             $exito = false;
             $rs = GrupoDao::find($grupo->getId());
-            if ($rs) {
+            if ($rs) {                
                 $rs->update([
                     'salon_id' => $grupo->getSalon()->getId(), 
                     'orientador_id' => $grupo->getOrientador()->getId(), 
                     'dia' => $grupo->getDia(), 
                     'jornada' => $grupo->getJornada(),
                     'cupos' => $grupo->getCupo(),
+                    'hora' => $grupo->getHora(),
                     'calendario_id' => $grupo->getCalendarioId()
                 ]);                
                 $exito = true;
@@ -190,6 +194,7 @@ class GrupoDao extends Model implements GrupoRepository {
                                 ->where('orientador_id', $grupo->getOrientador()->getId())
                                 ->where('jornada', $grupo->getJornada())
                                 ->where('dia', $grupo->getDia())
+                                ->where('hora', $grupo->getHora())
                                 ->first();
             if ($result)
                 $existe = true;
@@ -208,6 +213,7 @@ class GrupoDao extends Model implements GrupoRepository {
                                 ->where('salon_id', $grupo->getSalon()->getId())                                
                                 ->where('jornada', $grupo->getJornada())
                                 ->where('dia', $grupo->getDia())
+                                ->where('hora', $grupo->getHora())
                                 ->first();
             if ($result)
                 $disponible = false;
@@ -232,6 +238,7 @@ class GrupoDao extends Model implements GrupoRepository {
                             'g.dia',
                             'g.jornada',
                             'g.cupos',
+                            'g.hora',
                             'cc.costo',
                             'cc.modalidad',
                             DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
@@ -270,6 +277,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setJornada($r->jornada);
                 $grupo->setTotalInscritos($r->totalInscritos);
                 $grupo->setCupo($r->cupos);
+                $grupo->setHora($r->hora);
 
                 array_push($grupos, $grupo);
             }
@@ -297,6 +305,7 @@ class GrupoDao extends Model implements GrupoRepository {
                     'g.jornada',
                     'g.curso_calendario_id',
                     'g.cupos',
+                    'g.hora',
                     'o.id as orientador_id',
                     'c.id as curso_id',
                     's.id as salon_id',
@@ -324,6 +333,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setDia($g->dia);
                 $grupo->setJornada($g->jornada);
                 $grupo->setCupo($g->cupos);
+                $grupo->setHora($g->hora);
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);
