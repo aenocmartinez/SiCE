@@ -272,4 +272,24 @@ class FormularioInscripcion {
     public function getFechaMaxLegalizacion() {
         return $this->fechaMaxLegalizacion;
     }
+
+    public function setCostoCurso($costoCurso): void {
+        $this->costoCurso = $costoCurso;
+    }
+
+    public function getCostoCurso() {
+        return $this->costoCurso;
+    }
+
+    public function Pagado(): bool {
+        return $this->estado == "Pagado";
+    }
+
+    public function Anulado(): bool {
+        return $this->estado == "Anulado";
+    }
+
+    public function PendienteDePago(): bool {
+        return $this->estado == "Pendiente de pago";
+    }    
 }

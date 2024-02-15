@@ -97,7 +97,6 @@ class Calendario {
         }
 
         return $vigente;
-        // return $fechaActual >= $fechaInicio && $fechaActual <= $fechaFin;
     }
 
     public function estado(): string {
@@ -125,7 +124,15 @@ class Calendario {
         return $this->repository->listarCursos($this);
     }
 
+    public function formulariosInscritos(): array {
+        return $this->repository->listarInscripcionesPorCalendario($this->id);
+    }
+
     public static function existeCalendarioVigente(): bool {
         return CalendarioDao::existeCalendarioVigente();
+    }
+
+    public static function Vigente(): Calendario {
+        return CalendarioDao::obtenerCalendarioActualVigente();
     }
 }

@@ -12,6 +12,10 @@ use Src\domain\repositories\CalendarioRepository;
 use Carbon\Carbon;
 
 use Sentry\Laravel\Facade as Sentry;
+use Src\domain\Convenio;
+use Src\domain\FormularioInscripcion;
+use Src\domain\Grupo;
+use Src\domain\Participante;
 
 class CalendarioDao extends Model implements CalendarioRepository {
 
@@ -228,5 +232,97 @@ class CalendarioDao extends Model implements CalendarioRepository {
             return false;
 
         return ($resultado->esta_entre_fechas === 'true');
+    }
+
+    public static function obtenerCalendarioActualVigente(): Calendario{
+        $calendarioVigente = new Calendario();
+
+        $fechaActual = now()->toDateString();
+
+        $result = DB::table('calendarios')
+            ->select('id', 'nombre', 'fec_ini', 'fec_fin')
+            ->where(function ($query) use ($fechaActual) {
+                $query->where('fec_ini', '<=', $fechaActual)
+                    ->where('fec_fin', '>=', $fechaActual);
+            })
+            ->orWhere(function ($query) use ($fechaActual) {
+                $query->where('fec_ini', '>=', $fechaActual)
+                    ->where('fec_fin', '<=', $fechaActual);
+            })
+            ->orWhere(function ($query) use ($fechaActual) {
+                $query->where('fec_ini', '<=', $fechaActual)
+                    ->where('fec_fin', '>=', $fechaActual);
+            })
+            ->first();
+
+        if ($result) {
+            $calendarioVigente->setId($result->id);
+            $calendarioVigente->setNombre($result->nombre);
+            $calendarioVigente->setFechaInicio($result->fec_ini);
+            $calendarioVigente->setFechaFinal($result->fec_fin);            
+        }
+
+        return $calendarioVigente;
+    }
+
+    public function listarInscripcionesPorCalendario(int $calendarioId): array {
+        $inscripciones = array();
+
+        $result = FormularioInscripcionDao::select(
+            'formulario_inscripcion.id',
+            'formulario_inscripcion.grupo_id',
+            'formulario_inscripcion.participante_id',
+            'formulario_inscripcion.convenio_id',
+            'formulario_inscripcion.voucher',
+            'formulario_inscripcion.numero_formulario',
+            'formulario_inscripcion.estado',
+            'formulario_inscripcion.costo_curso',
+            'formulario_inscripcion.valor_descuento',
+            'formulario_inscripcion.total_a_pagar',
+            'formulario_inscripcion.medio_pago'
+        )
+        ->join('grupos', function($join) use ($calendarioId) {
+            $join->on('grupos.id', '=', 'formulario_inscripcion.grupo_id')
+                 ->where('grupos.calendario_id', '=', $calendarioId);
+        })
+        ->get();
+
+        foreach($result as $r) {
+            $inscripcion = new FormularioInscripcion();              
+
+            $grupo = new Grupo();
+            $grupo->setId($r->grupo_id);
+            
+            $participante = new Participante();
+            $participante->setId($r->participante_id);
+
+            $convenio = new Convenio();
+            $convenioId = 0;
+            if ($r->convenio_id) {
+                $convenioId = $r->convenio_id;
+            }
+            $convenio->setId($convenioId);
+
+            $voucher = "";
+            if ($r->voucher) {
+                $voucher = $r->voucher;
+            }
+
+            $inscripcion->setId($r->id);
+            $inscripcion->setGrupo($grupo);
+            $inscripcion->setParticipante($participante);
+            $inscripcion->setConvenio($convenio);
+            $inscripcion->setVoucher($voucher);
+            $inscripcion->setNumero($r->numero_formulario);
+            $inscripcion->setEstado($r->estado);
+            $inscripcion->setCostoCurso($r->costo_curso);
+            $inscripcion->setValorDescuento($r->valor_descuento);
+            $inscripcion->setTotalAPagar($r->total_a_pagar);
+            $inscripcion->setMedioPago($r->medio_pago);
+
+            array_push($inscripciones, $inscripcion);        
+        }
+    
+        return $inscripciones;
     }
 }

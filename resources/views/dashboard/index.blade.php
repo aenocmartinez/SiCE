@@ -11,11 +11,32 @@
 
 <div class="row items-push">
             <div class="col-sm-6 col-xxl-3">
+              <!-- New Customers -->
+              <div class="block block-rounded d-flex flex-column h-100 mb-0">
+                <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
+                  <dl class="mb-0">
+                    <dt class="fs-3 fw-bold">{{ $datosDashboard['totalInscripciones'] }}</dt>
+                    <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Inscripciones</dd>
+                  </dl>
+                  <div class="item item-rounded-lg bg-body-light">
+                    <i class="far fa-user-circle fs-3 text-primary"></i>
+                  </div>
+                </div>
+                <div class="bg-body-light rounded-bottom">
+                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="javascript:void(0)">
+                    <span>Ver inscripciones</span>
+                    <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
+                  </a>
+                </div>
+              </div>
+              <!-- END New Customers -->
+            </div>
+            <div class="col-sm-6 col-xxl-3">
               <!-- Pending Orders -->
               <div class="block block-rounded d-flex flex-column h-100 mb-0">
                 <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
                   <dl class="mb-0">
-                    <dt class="fs-3 fw-bold">32</dt>
+                    <dt class="fs-3 fw-bold">{{ $datosDashboard['totalMatriculados'] }}</dt>
                     <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Participantes matriculados</dd>
                   </dl>
                   <div class="item item-rounded-lg bg-body-light">
@@ -32,54 +53,12 @@
               <!-- END Pending Orders -->
             </div>
             <div class="col-sm-6 col-xxl-3">
-              <!-- New Customers -->
-              <div class="block block-rounded d-flex flex-column h-100 mb-0">
-                <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
-                  <dl class="mb-0">
-                    <dt class="fs-3 fw-bold">124</dt>
-                    <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Total de inscripciones</dd>
-                  </dl>
-                  <div class="item item-rounded-lg bg-body-light">
-                    <i class="far fa-user-circle fs-3 text-primary"></i>
-                  </div>
-                </div>
-                <div class="bg-body-light rounded-bottom">
-                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="javascript:void(0)">
-                    <span>Ver las inscripciones</span>
-                    <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
-                  </a>
-                </div>
-              </div>
-              <!-- END New Customers -->
-            </div>
-            <div class="col-sm-6 col-xxl-3">
-              <!-- Messages -->
-              <div class="block block-rounded d-flex flex-column h-100 mb-0">
-                <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
-                  <dl class="mb-0">
-                    <dt class="fs-3 fw-bold">45</dt>
-                    <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Participantes por convenio</dd>
-                  </dl>
-                  <div class="item item-rounded-lg bg-body-light">
-                    <i class="far fa-paper-plane fs-3 text-primary"></i>
-                  </div>
-                </div>
-                <div class="bg-body-light rounded-bottom">
-                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="javascript:void(0)">
-                    <span>Ver convenios</span>
-                    <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
-                  </a>
-                </div>
-              </div>
-              <!-- END Messages -->
-            </div>
-            <div class="col-sm-6 col-xxl-3">
               <!-- Conversion Rate -->
               <div class="block block-rounded d-flex flex-column h-100 mb-0">
                 <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
                   <dl class="mb-0">
-                    <dt class="fs-3 fw-bold">4.5%</dt>
-                    <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Crecimiento inscripciones</dd>
+                    <dt class="fs-3 fw-bold">{{ $datosDashboard['totalPendintesDePago'] }}</dt>
+                    <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Pendientes por legalizar</dd>
                   </dl>
                   <div class="item item-rounded-lg bg-body-light">
                     <i class="fa fa-chart-bar fs-3 text-primary"></i>
@@ -87,62 +66,83 @@
                 </div>
                 <div class="bg-body-light rounded-bottom">
                   <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="javascript:void(0)">
-                    <span>Ver más estadísticas</span>
+                    <span>Ver pendientes</span>
                     <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
                   </a>
                 </div>
               </div>
               <!-- END Conversion Rate-->
+            </div>                        
+            <div class="col-sm-6 col-xxl-3">
+              <!-- Messages -->
+              <div class="block block-rounded d-flex flex-column h-100 mb-0">
+                <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
+                  <dl class="mb-0">
+                    <dt class="fs-3 fw-bold">{{ $datosDashboard['totalAnulados'] }}</dt>
+                    <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Anulados</dd>
+                  </dl>
+                  <div class="item item-rounded-lg bg-body-light">
+                    <i class="far fa-paper-plane fs-3 text-primary"></i>
+                  </div>
+                </div>
+                <div class="bg-body-light rounded-bottom">
+                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="javascript:void(0)">
+                    <span>Ver anulados</span>
+                    <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
+                  </a>
+                </div>
+              </div>
+              <!-- END Messages -->
             </div>
           </div>
           
           
           
-          <div class="row ">
+          <div class="row mt-3">
 
-            <!-- <div class="col-md-6 col-xl-3">
+            <div class="col-md-6 col-xl-3">
               <a class="block block-rounded block-link-shadow bg-primary" href="javascript:void(0)">
                 <div class="block-content block-content-full d-flex align-items-center justify-content-between">
                   <div>
                     <i class="fa fa-2x fa-arrow-alt-circle-up text-white-50"></i>
                   </div>
                   <dl class="ms-3 text-end mb-0">
-                    <dt class="text-white h3 fw-extrabold mb-0">
-                      $18,632
+                    <dt class="text-white h3 fw-medium mb-0">
+                      $ {{ $datosDashboard['pagoSinDescuento'] }} <span class="fs-sm fw-light mb-0">COP</span>
                     </dt>
                     <dd class="text-white fs-sm fw-medium text-muted mb-0">
-                      Earnings
+                      Total sin descuento
                     </dd>
                   </dl>
                 </div>
               </a>
-            </div> -->
-            <!-- <div class="col-md-6 col-xl-3">
+            </div>
+            <div class="col-md-6 col-xl-3">
               <a class="block block-rounded block-link-shadow bg-success" href="javascript:void(0)">
                 <div class="block-content block-content-full d-flex align-items-center justify-content-between">
                   <div>
                     <i class="far fa-2x fa-user text-white-50"></i>
                   </div>
                   <dl class="ms-3 text-end mb-0">
-                    <dt class="text-white h3 fw-extrabold mb-0">
-                      4,962
+                    <dt class="text-white h3 fw-medium mb-0">
+                    $ {{ $datosDashboard['pagoPorConvenio'] }} <span class="fs-sm fw-light mb-0">COP</span>
                     </dt>
                     <dd class="text-white fs-sm fw-medium text-muted mb-0">
-                      Earnings
+                      Total por convenio
                     </dd>
                   </dl>
                 </div>
               </a>
-            </div> -->
-            <!-- <div class="col-md-6 col-xl-3">
+            </div>
+            <div class="col-md-6 col-xl-3">
               <a class="block block-rounded block-link-shadow bg-danger" href="javascript:void(0)">
                 <div class="block-content block-content-full d-flex align-items-center justify-content-between">
                   <dl class="me-3 mb-0">
-                    <dt class="text-white h3 fw-extrabold mb-0">
-                      1,258
+                    <dt class="text-white h3 fw-medium mb-0">
+                    $ {{ $datosDashboard['pagoPendientes'] }} <span class="fs-sm fw-light mb-0">COP</span>
                     </dt>
                     <dd class="text-white fs-sm fw-medium text-muted mb-0">
-                      Sales
+                      Pendientes de pago
                     </dd>
                   </dl>
                   <div>
@@ -150,16 +150,16 @@
                   </div>
                 </div>
               </a>
-            </div> -->
-            <!-- <div class="col-md-6 col-xl-3">
+            </div>
+            <div class="col-md-6 col-xl-3">
               <a class="block block-rounded block-link-shadow bg-warning" href="javascript:void(0)">
                 <div class="block-content block-content-full d-flex align-items-center justify-content-between">
                   <dl class="me-3 mb-0">
-                    <dt class="text-white h3 fw-extrabold mb-0">
-                      250
+                    <dt class="text-white h3 fw-medium mb-0">
+                    $ {{ $datosDashboard['pagoTotal'] }} <span class="fs-sm fw-light mb-0">COP</span>
                     </dt>
                     <dd class="text-white fs-sm fw-medium text-muted mb-0">
-                      Projects
+                      Total (convenio + sin descuento)
                     </dd>
                   </dl>
                   <div>
@@ -167,27 +167,27 @@
                   </div>
                 </div>
               </a>
-            </div> -->
-            <div class="col-md-6 mt-6">
+            </div>
+            <div class="col-md-6 mt-4">
               <a class="block block-rounded block-link-shadow" href="javascript:void(0)">
                 <div class="block-content block-content-full">
                   <div class="row text-center">
-                    <div class="col-4 border-end">
+                    <div class="col-6 border-end">
                       <div class="py-3">
                         <div class="item item-circle bg-body-light mx-auto">
                           <i class="fa fa-briefcase text-primary"></i>
                         </div>
                         <dl class="mb-0">
                           <dt class="h3 fw-extrabold mt-3 mb-0">
-                            2
+                          {{ $datosDashboard['totalCursosAbiertos'] }}
                           </dt>
                           <dd class="fs-sm fw-medium text-muted mb-0">
-                            Nuevos cursos
+                            Cursos abiertos
                           </dd>
                         </dl>
                       </div>
                     </div>
-                    <div class="col-4 border-end">
+                    <!-- <div class="col-4 border-end">
                       <div class="py-3">
                         <div class="item item-circle bg-body-light mx-auto">
                           <i class="fa fa-chart-line text-primary"></i>
@@ -201,18 +201,18 @@
                           </dd>
                         </dl>
                       </div>
-                    </div>
-                    <div class="col-4">
+                    </div> -->
+                    <div class="col-6">
                       <div class="py-3">
                         <div class="item item-circle bg-body-light mx-auto">
                           <i class="fa fa-users text-primary"></i>
                         </div>
                         <dl class="mb-0">
                           <dt class="h3 fw-extrabold mt-3 mb-0">
-                            83
+                            {{ $datosDashboard['totalOrientadores'] }}
                           </dt>
                           <dd class="fs-sm fw-medium text-muted mb-0">
-                            Participantes recurrentes
+                            Orientadores
                           </dd>
                         </dl>
                       </div>
@@ -221,7 +221,7 @@
                 </div>
               </a>
             </div>
-            <div class="col-md-6 mt-6">
+            <div class="col-md-6 mt-4">
               <a class="block block-rounded bg-danger" href="javascript:void(0)">
                 <div class="block-content block-content-full">
                   <div class="row text-center">
@@ -232,10 +232,10 @@
                         </div>
                         <dl class="mb-0">
                           <dt class="text-white h3 fw-extrabold mt-3 mb-0">
-                            85
+                            {{ $datosDashboard['totalCursosCreados'] }}
                           </dt>
                           <dd class="text-white fs-sm fw-medium text-muted mb-0">
-                            Cursos
+                            Cursos creados
                           </dd>
                         </dl>
                       </div>

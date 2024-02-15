@@ -43,7 +43,7 @@
         <!-- Side Header -->
         <div class="content-header mt-3">
           <!-- Logo -->
-          <a class="fw-semibold text-dual" href="{{ route('home') }}">
+          <a class="fw-semibold text-dual" href="{{ route('dashboard') }}">
             <span class="smini-visible">
               <i class="fa fa-circle-notch text-primary"></i>
             </span>
