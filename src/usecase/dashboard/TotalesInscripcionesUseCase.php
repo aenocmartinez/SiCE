@@ -25,6 +25,7 @@ class TotalesInscripcionesUseCase {
                 if ($inscripcion->Pagado()) {
                     $pagoPorConvenio += $inscripcion->getTotalAPagar();
                 }
+                continue;
             }
 
             if ($inscripcion->Pagado()) {
