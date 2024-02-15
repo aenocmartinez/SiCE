@@ -45,19 +45,16 @@ class CrearGrupoUseCase {
 
         $existe = Grupo::validarExistencia($grupo, $grupoRepository);
         if ($existe) {
-            dd('Ya existe un grupo con los datos ingresados.');
             return new Response('200', 'Ya existe un grupo con los datos ingresados.');
         }
 
         $salonDisponible = Grupo::validarSalonDisponible($grupo, $grupoRepository);
         if (!$salonDisponible) {
-            dd('El salón indicado está ocupado con otra clase el día '.$grupoDto->dia.' en la jornada '.$grupoDto->jornada);
             return new Response('401', 'El salón indicado está ocupado con otra clase el día '.$grupoDto->dia.' en la jornada '.$grupoDto->jornada);
         }
 
         $exito = $grupo->crear();
         if (!$exito){
-            dd('Ha ocurrido un error en el sistema');
             return new Response('500', 'Ha ocurrido un error en el sistema');
         }
         
