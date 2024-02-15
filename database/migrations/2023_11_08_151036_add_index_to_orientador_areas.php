@@ -14,7 +14,7 @@ class AddIndexToOrientadorAreas extends Migration
     public function up()
     {
         Schema::table('orientador_areas', function (Blueprint $table) {
-            $table->unique(['orientador_id', 'area_id']);
+            $table->unique(['orientador_id', 'area_id'], 'orientador_area');
         });
     }
 
@@ -26,7 +26,7 @@ class AddIndexToOrientadorAreas extends Migration
     public function down()
     {
         Schema::table('orientador_areas', function (Blueprint $table) {
-            //
+            // $table->dropUnique('orientador_area');
         });
     }
 }

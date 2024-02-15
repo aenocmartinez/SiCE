@@ -27,7 +27,8 @@ class AddTipoSalonIdToSalones extends Migration
     public function down()
     {
         Schema::table('salones', function (Blueprint $table) {
-            //
+            $table->dropForeign(['tipo_salon_id']);
+            $table->dropColumn('tipo_salon_id');
         });
     }
 }

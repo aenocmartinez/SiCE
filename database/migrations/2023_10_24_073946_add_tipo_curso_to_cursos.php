@@ -26,7 +26,7 @@ class AddTipoCursoToCursos extends Migration
     public function down()
     {
         Schema::table('cursos', function (Blueprint $table) {
-            //
+            $table->dropColumn('tipo_curso');
         });
     }
 }

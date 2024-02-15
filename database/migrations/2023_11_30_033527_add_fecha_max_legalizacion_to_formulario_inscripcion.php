@@ -26,7 +26,7 @@ class AddFechaMaxLegalizacionToFormularioInscripcion extends Migration
     public function down()
     {
         Schema::table('formulario_inscripcion', function (Blueprint $table) {
-            //
+            $table->dropColumn('fecha_max_legalizacion');
         });
     }
 }

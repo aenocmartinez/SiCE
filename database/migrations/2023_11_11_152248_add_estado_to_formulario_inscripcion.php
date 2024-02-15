@@ -29,7 +29,10 @@ class AddEstadoToFormularioInscripcion extends Migration
     public function down()
     {
         Schema::table('formulario_inscripcion', function (Blueprint $table) {
-            //
+            $table->dropColumn('estado');
+            $table->dropColumn('costo_curso');
+            $table->dropColumn('valor_descuento');
+            $table->dropColumn('total_a_pagar');
         });
     }
 }

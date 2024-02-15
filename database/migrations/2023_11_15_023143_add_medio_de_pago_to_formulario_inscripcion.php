@@ -26,7 +26,7 @@ class AddMedioDePagoToFormularioInscripcion extends Migration
     public function down()
     {
         Schema::table('formulario_inscripcion', function (Blueprint $table) {
-            //
+            $table->dropColumn('medio_pago');
         });
     }
 }

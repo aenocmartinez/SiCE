@@ -26,7 +26,7 @@ class AddRangoSalarialToOrientadores extends Migration
     public function down()
     {
         Schema::table('orientadores', function (Blueprint $table) {
-            //
+            $table->dropColumn('rango_salarial');
         });
     }
 }

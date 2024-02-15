@@ -27,7 +27,8 @@ class AddFecNacNivelEducativoToColaboradores extends Migration
     public function down()
     {
         Schema::table('orientadores', function (Blueprint $table) {
-            //
+            $table->dropColumn('fec_nacimiento');
+            $table->dropColumn('nivel_estudio');
         });
     }
 }

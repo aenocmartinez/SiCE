@@ -27,7 +27,8 @@ class AddCamposContactoEmergenciaToParticipantes extends Migration
     public function down()
     {
         Schema::table('participantes', function (Blueprint $table) {
-            //
+            $table->dropColumn('contacto_emergencia');
+            $table->dropColumn('telefono_emergencia');
         });
     }
 }

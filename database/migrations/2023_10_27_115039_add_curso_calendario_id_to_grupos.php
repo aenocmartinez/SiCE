@@ -33,6 +33,11 @@ class AddCursoCalendarioIdToGrupos extends Migration
     public function down()
     {
         Schema::table('grupos', function (Blueprint $table) {
+
+            $table->dropForeign(['curso_calendario_id']);
+            $table->dropUnique('grupos_index_unique');
+
+            $table->dropUnique('orientador_ocupado_index_unique');
             $table->dropColumn('hora');
             $table->dropColumn('curso_calendario_id');
             $table->dropColumn('calendario_id');      
