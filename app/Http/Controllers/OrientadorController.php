@@ -173,7 +173,5 @@ class OrientadorController extends Controller
         return view('orientadores.moreInfo', [
             'orientador' => $orientador, 
         ]);
-
-        dd($orientador);
     }
 }

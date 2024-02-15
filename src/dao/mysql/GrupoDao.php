@@ -48,7 +48,6 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setDia($g->dia);
                 $grupo->setJornada($g->jornada);
                 $grupo->setCupo($g->cupos);
-                // $grupo->setHora($g->hora);
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 if (!$caledario->esVigente()) {
@@ -102,7 +101,6 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setDia($g->dia);
                 $grupo->setJornada($g->jornada);
                 $grupo->setCupo($g->cupos);
-                // $grupo->setHora($g->hora);
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);
@@ -144,7 +142,6 @@ class GrupoDao extends Model implements GrupoRepository {
             ]);
 
         } catch (\Exception $e) {   
-            dd($e->getMessage());     
             $exito = false;
             Sentry::captureException($e);
         }   
