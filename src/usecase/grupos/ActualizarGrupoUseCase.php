@@ -40,7 +40,7 @@ class ActualizarGrupoUseCase {
         $grupo->setDia($grupoDto->dia);
         $grupo->setJornada($grupoDto->jornada);
         $grupo->setCupo($grupoDto->cupo);
-        $grupo->setHora($grupoDto->hora);
+        // $grupo->setHora($grupoDto->hora);
         $grupo->setRepository($grupoRepository);
         
         // $salonDisponible = Grupo::validarSalonDisponible($grupo, $grupoRepository);

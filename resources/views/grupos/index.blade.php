@@ -52,7 +52,7 @@
                         <small class="fw-light">
                             Curso: {{ $grupo->getNombreCurso() }} ({{ $grupo->getModalidad() }}) <br>
                             Periodo: {{ $grupo->getNombreCalendario() }}<br>
-                            Horario: {{ $grupo->getDia() }} / {{ $grupo->getHora() }} {{ $grupo->getJornada() }}<br>
+                            Horario: {{ $grupo->getDia() }} / {{ $grupo->getJornada() }}<br>
                             Salón: {{ $grupo->getSalon()->getNombre() }} <br>
                             Orientador: {{ $grupo->getOrientador()->getNombre() }} 
 

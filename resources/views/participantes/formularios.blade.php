@@ -58,7 +58,7 @@
                         <br>
                         <small>
                             G{{ $f->getGrupoId()  }}: 
-                            {{ $f->getGrupoDia()  }} / {{ $f->getGrupoHora() . " " . $f->getGrupoJornada() }}<br>{{ $f->getGrupoModalidad() }}
+                            {{ $f->getGrupoDia()  }} / {{ $f->getGrupoJornada() }}<br>{{ $f->getGrupoModalidad() }}
                         </small>
                     </td>
                     <td class="text-center">{{ $f->getTotalAPagarFormateado() }}</td>

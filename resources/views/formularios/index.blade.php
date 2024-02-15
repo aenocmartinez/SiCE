@@ -76,7 +76,7 @@
                     <td>{{ $f->getParticipanteTipoYDocumento() }}</td>
                     <td class="text-center">
                         {{ $f->getGrupoNombreCurso() }}. <br>
-                        G{{ $f->getGrupoId() }} - {{ $f->getGrupoDia() . " / ". $f->getGrupoHora() . " " . $f->getGrupoJornada() }} <br>
+                        G{{ $f->getGrupoId() }} - {{ $f->getGrupoDia() . " / ". $f->getGrupoJornada() }} <br>
                         Salón {{ $f->getGrupoSalon() }}
                     </td>
                     <td>{{ $f->getEstado() }}</td>
