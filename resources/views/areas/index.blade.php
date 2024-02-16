@@ -3,6 +3,10 @@
 @section("title", "Módulo de áreas")
 @section("description", "Listado y administración de las áreas para la gestión de inscripción a cursos de extensión.")
 
+@php
+    $criterio = isset($criterio) ? $criterio : '';
+@endphp
+
 @section("content")
 
 <div class="row mb-3">

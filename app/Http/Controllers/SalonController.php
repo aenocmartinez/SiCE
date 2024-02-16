@@ -10,6 +10,7 @@ use Src\usecase\salones\BuscadorSalonesUseCase;
 use Src\usecase\salones\BuscarSalonPorIdUseCase;
 use Src\usecase\salones\CrearSalonUseCase;
 use Src\usecase\salones\EliminarSalonUseCase;
+use Src\usecase\salones\ListarSalonesPaginadoUseCase;
 use Src\usecase\salones\ListarSalonesUseCase;
 use Src\usecase\tipo_salones\ListarTipoSalonesUseCase;
 use Src\view\dto\SalonDto;
@@ -21,6 +22,12 @@ class SalonController extends Controller
         $salones = $casoUso->ejecutar();
 
         return view("salones.index", compact('salones'));
+    }
+
+    public function paginar($page) {
+        return view("salones.index", [
+            'paginate' => (new ListarSalonesPaginadoUseCase)->ejecutar($page)
+        ]);
     }
 
     public function buscarPorId($id) {
@@ -45,10 +52,17 @@ class SalonController extends Controller
             $criterio = request('criterio');
         }
         
-        $casoUso = new BuscadorSalonesUseCase();
-        $salones = $casoUso->ejecutar($criterio);
+        return view("salones.index", [
+            "paginate" => (new BuscadorSalonesUseCase)->ejecutar($criterio), 
+            "criterio" => $criterio
+        ]);        
+    }
 
-        return view("salones.index", ["salones" => $salones, "criterio" => $criterio]);        
+    public function paginadorBuscador($page, $criterio) {
+        return view("salones.index", [
+            "paginate" => (new BuscadorSalonesUseCase)->ejecutar($criterio, $page), 
+            "criterio" => $criterio
+        ]);         
     }
 
     public function create() {
@@ -67,17 +81,17 @@ class SalonController extends Controller
         $casoUso = new CrearSalonUseCase();
         $response = $casoUso->ejecutar($salonDto);
 
-        return redirect()->route('salones.index')->with('code', $response->code)->with('status', $response->message);        
+        return redirect()->route('salones.index', 1)->with('code', $response->code)->with('status', $response->message);        
     }
 
     public function delete($id) {
         $esValido = Validador::parametroId($id);
         if (!$esValido) 
-            return redirect()->route('salones.index')->with('code', "401")->with('status', "parámetro no válido");
+            return redirect()->route('salones.index', 1)->with('code', "401")->with('status', "parámetro no válido");
         
         $casoUso = new EliminarSalonUseCase();
         $response = $casoUso->ejecutar(request('id'));
-        return redirect()->route('salones.index')->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('salones.index', 1)->with('code', $response->code)->with('status', $response->message);
     }
 
     public function update(GuardarSalon $request) {
@@ -86,7 +100,7 @@ class SalonController extends Controller
 
         $casoUso = new ActualizarSalonUseCase();
         $response = $casoUso->ejecutar($salonDto);
-        return redirect()->route('salones.index')->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('salones.index', 1)->with('code', $response->code)->with('status', $response->message);
     }
 
     private function hydrateDto(): SalonDto {

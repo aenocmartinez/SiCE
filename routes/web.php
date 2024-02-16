@@ -46,13 +46,15 @@ Route::delete('/cursos/{id}', [CursoController::class, 'delete'])->name('cursos.
 Route::patch('/cursos/actualizar', [CursoController::class, 'update'])->name('cursos.update');
 Route::get('/cursos/{page}', [CursoController::class, 'paginar'])->name('cursos.index');
 
-Route::get('/salones', [SalonController::class, 'index'])->name('salones.index');
+// Route::get('/salones', [SalonController::class, 'index'])->name('salones.index');
 Route::get('/salones/{id}/editar', [SalonController::class, 'buscarPorId'])->name('salones.edit');
 Route::get('/salones/crear', [SalonController::class, 'create'])->name('salones.create');
 Route::post('/salones', [SalonController::class, 'store'])->name('salones.store');
 Route::delete('/salones/{id}', [SalonController::class, 'delete'])->name('salones.delete');
 Route::patch('/salones/actualizar', [SalonController::class, 'update'])->name('salones.update');
 Route::post('/salones/buscador', [SalonController::class, 'buscador'])->name('salones.buscador');
+Route::get('/salones/{page}', [SalonController::class, 'paginar'])->name('salones.index');
+Route::get('/salones/{page}/q/{criteria}', [SalonController::class, 'paginadorBuscador'])->name('salones.buscador-paginador');
 
 Route::get('/orientadores', [OrientadorController::class, 'index'])->name('orientadores.index');
 Route::get('/orientadores/{id}/editar', [OrientadorController::class, 'edit'])->name('orientadores.edit');

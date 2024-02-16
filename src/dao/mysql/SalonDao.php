@@ -5,9 +5,9 @@ namespace Src\dao\mysql;
 use Illuminate\Database\Eloquent\Model;
 use Src\domain\repositories\SalonRepository;
 use Src\domain\Salon;
-use Src\domain\TipoSalon;
 
 use Sentry\Laravel\Facade as Sentry;
+use Src\infraestructure\util\Paginate;
 
 class SalonDao extends Model implements SalonRepository {
     
@@ -36,28 +36,40 @@ class SalonDao extends Model implements SalonRepository {
         return $salones;
     }
 
-    public function buscadorSalones(string $criterio): array {
+    public static function buscadorSalones(string $criterio, $page): Paginate {
+        $paginate = new Paginate($page);
         $salones = [];
         try {
             $filtro = [
-                "nombre" => $criterio,
-                "capacidad" => $criterio,
+                "salones.nombre" => $criterio,
+                "salones.capacidad" => $criterio,
+                "tipo_salones.nombre" => $criterio,
             ];
 
             $query = SalonDao::query();
+            $query->join('tipo_salones', 'salones.tipo_salon_id', '=', 'tipo_salones.id')
+                    ->select(
+                        'salones.nombre',
+                        'salones.id',
+                        'salones.capacidad',
+                        'salones.esta_disponible',
+                        'salones.tipo_salon_id'
+                    );
             foreach ($filtro as $campo => $valor) {
                 $query->orWhere($campo, 'like', '%' . $valor . '%');
-            }            
-            $rs = $query->get();
+            }        
+                
+            $totalRecords = $query->count();
 
-            foreach($rs as $r) {
-                $salon = new Salon($r->nombre);
-                $salon->setId($r->id);
-                $salon->setCapacidad($r->capacidad);
-                $salon->setDisponible($r->esta_disponible);
-                $salon->setHojaVida($r->hoja_vida);
+            $items = $query->skip($paginate->Offset())->take($paginate->Limit())->get();
+            
+            foreach($items as $item) {
+                $salon = new Salon($item->nombre);
+                $salon->setId($item->id);
+                $salon->setCapacidad($item->capacidad);
+                $salon->setDisponible($item->esta_disponible);
                 $tipoSalanDao = new TipoSalonDao();
-                $tipoSalon = $tipoSalanDao->buscarTipoSalonPorId((int)$r->tipo_salon_id);
+                $tipoSalon = $tipoSalanDao->buscarTipoSalonPorId((int)$item->tipo_salon_id);
                 $salon->setTipoSalon($tipoSalon);                
                 array_push($salones, $salon);
             }  
@@ -65,7 +77,11 @@ class SalonDao extends Model implements SalonRepository {
         } catch (\Exception $e) {
             Sentry::captureException($e);
         }
-        return $salones;
+       
+        $paginate->setRecords($salones);
+        $paginate->setTotalRecords($totalRecords);
+        
+        return $paginate;
     }
 
     public function buscarSalonPorId(int $id = 0): Salon {
@@ -178,5 +194,34 @@ class SalonDao extends Model implements SalonRepository {
             Sentry::captureException($e);
         }
         return $salones;       
+    }
+
+    public static function listarSalonesPaginado($page): Paginate {
+        $paginate = new Paginate($page);
+        try {
+            $salones = [];
+            
+            $items = SalonDao::skip($paginate->Offset())->take($paginate->Limit())->orderBy('nombre')->get();
+
+            foreach($items as $item) {
+                $salon = new Salon($item->nombre);
+                $salon->setId($item->id);
+                $salon->setCapacidad($item->capacidad);
+                $salon->setDisponible($item->esta_disponible);
+
+                $tipoSalanDao = new TipoSalonDao();
+                $tipoSalon = $tipoSalanDao->buscarTipoSalonPorId((int)$item->tipo_salon_id);
+                $salon->setTipoSalon($tipoSalon);
+                array_push($salones, $salon);
+            }            
+
+        } catch (\Exception $e) {
+            Sentry::captureException($e);
+        }
+        
+        $paginate->setRecords($salones);
+        $paginate->setTotalRecords(SalonDao::count());
+
+        return $paginate;
     }
 }

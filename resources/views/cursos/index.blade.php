@@ -3,6 +3,10 @@
 @section("title", "Cursos")
 @section("description", "Listado de cursos")
 
+@php
+    $criterio = isset($criterio) ? $criterio : '';
+@endphp
+
 @section("content")
 
 <div class="row mb-3">

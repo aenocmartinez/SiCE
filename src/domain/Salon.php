@@ -2,6 +2,9 @@
 
 namespace Src\domain;
 
+use Src\dao\mysql\SalonDao;
+use Src\infraestructure\util\Paginate;
+
 class Salon {
     private int $id;
     private $capacidad;
@@ -96,8 +99,8 @@ class Salon {
         return $repository->listarSalones();
     }
 
-    public static function buscadorSalones($criterio, $repository): array {
-        return $repository->buscadorSalones($criterio);
+    public static function buscadorSalones($criterio, $page=1): Paginate {
+        return SalonDao::buscadorSalones($criterio, $page);
     }
 
     public static function buscarPorId(int $id=0, $repository): Salon {
@@ -122,5 +125,9 @@ class Salon {
 
     public function existe(): bool {
         return $this->id > 0;
+    }
+
+    public static function paginar($page=1): Paginate {
+        return SalonDao::listarSalonesPaginado($page);
     }
 }

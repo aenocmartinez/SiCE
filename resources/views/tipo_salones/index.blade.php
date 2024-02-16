@@ -3,6 +3,10 @@
 @section("title", "Tipo de salones")
 @section("description", "Listado de los diferentes tipos de salones para cursos de extensión")
 
+@php
+    $criterio = isset($criterio) ? $criterio : '';
+@endphp
+
 @section("content")
 
 <div class="row mb-3">
@@ -50,7 +54,7 @@
                 @endforelse 
             </table>
 
-            @include('paginator',['route' => 'tipo-salones.index'])
+            @include('paginator',['route' => 'tipo-salones.index', 'criterio' => $criterio])
         </div>
     </div>
 </div>

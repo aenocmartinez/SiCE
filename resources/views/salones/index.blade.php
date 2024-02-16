@@ -7,6 +7,11 @@
 
 @php
 $criterio = isset($criterio) ? $criterio : '';
+$route = "salones.index";
+$page = 1;
+if (strlen($criterio)>0) {
+    $route = "salones.buscador-paginador";
+}
 @endphp
 
 <div class="row mb-3">
@@ -44,7 +49,7 @@ $criterio = isset($criterio) ? $criterio : '';
     <div class="block block-rounded">
         <div class="block-content">
             <table class="table table-vcenter">
-                @forelse ($salones as $salon)
+                @forelse ($paginate->Records() as $salon)
                 <tr>
                     <td class="fs-sm" style="width: 95%;">
                     <h4 class="fw-normal mb-0">{{ $salon->getNombreYTipoSalon() }}</h4>
@@ -79,6 +84,9 @@ $criterio = isset($criterio) ? $criterio : '';
                 </tr>
                 @endforelse 
             </table>
+
+            @include('paginator', ['route'=>$route, 'criterio' => $criterio, 'page' => $page])
+            
         </div>
     </div>
 </div>
