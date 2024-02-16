@@ -2,6 +2,9 @@
 
 namespace Src\domain;
 
+use Src\dao\mysql\CursoDao;
+use Src\infraestructure\util\Paginate;
+
 class Curso {
     private int $id;
     private $repository;
@@ -63,6 +66,10 @@ class Curso {
 
     public static function listar($repository): array {
         return $repository->listarCursos();
+    }
+
+    public static function Paginar($page=1): Paginate {
+        return CursoDao::listaCursosPaginados($page);
     }
 
     public static function buscarPorId(int $id, $repository): Curso {

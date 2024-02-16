@@ -37,12 +37,13 @@ Route::post('areas', [AreaController::class, 'store'])->name('areas.store');
 Route::delete('/areas/{id}', [AreaController::class, 'delete'])->name('areas.delete');
 Route::patch('/areas', [AreaController::class, 'update'])->name('areas.update');
 
-Route::get('/cursos', [CursoController::class, 'index'])->name('cursos.index');
+// Route::get('/cursos', [CursoController::class, 'index'])->name('cursos.index');
 Route::get('/cursos/{id}/editar', [CursoController::class, 'buscarPorId'])->name('cursos.edit');
 Route::get('/cursos/crear', [CursoController::class, 'create'])->name('cursos.create');
 Route::post('/cursos', [CursoController::class, 'store'])->name('cursos.store');
 Route::delete('/cursos/{id}', [CursoController::class, 'delete'])->name('cursos.delete');
 Route::patch('/cursos/actualizar', [CursoController::class, 'update'])->name('cursos.update');
+Route::get('/cursos/{page}', [CursoController::class, 'paginar'])->name('cursos.index');
 
 Route::get('/salones', [SalonController::class, 'index'])->name('salones.index');
 Route::get('/salones/{id}/editar', [SalonController::class, 'buscarPorId'])->name('salones.edit');

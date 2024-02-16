@@ -3,6 +3,7 @@
 namespace Src\domain\repositories;
 
 use Src\domain\Curso;
+use Src\infraestructure\util\Paginate;
 
 interface CursoRepository {
     public function listarCursos(): array;
@@ -12,4 +13,5 @@ interface CursoRepository {
     public function eliminarCurso(Curso $curso): bool;
     public function actualizarCurso(Curso $curso): bool;    
     public function listarCursosPorArea(int $areaId): array;
+    public static function listaCursosPaginados($page=1): Paginate;
 }

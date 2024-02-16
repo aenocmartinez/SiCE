@@ -9,7 +9,7 @@ use Src\domain\Curso;
 use Src\domain\repositories\CursoRepository;
 
 use Sentry\Laravel\Facade as Sentry;
-
+use Src\infraestructure\util\Paginate;
 
 class CursoDao extends Model implements CursoRepository {  
       
@@ -164,5 +164,35 @@ class CursoDao extends Model implements CursoRepository {
             echo Sentry::captureException($e);
         }
         return $cursos;       
+    }
+
+    public static function listaCursosPaginados($page=1): Paginate {
+        $paginate = new Paginate($page);
+        
+        try {
+            
+            $cursos = [];
+
+            $items = CursoDao::skip($paginate->Offset())->take($paginate->Limit())->get();
+        
+            foreach($items as $item) {
+                $curso = new Curso($item->nombre);
+                $curso->setId($item->id);
+                if (!is_null($item->tipo_curso)) {
+                    $curso->setTipoCurso($item->tipo_curso);
+                }
+                $curso->setArea(new Area($item->area->id, $item->area->nombre));
+                array_push($cursos, $curso);
+            }            
+
+        } catch (\Exception $e) {
+            Sentry::captureException($e);
+        }
+
+        $paginate->setTotalRecords(CursoDao::count());
+        $paginate->setRecords($cursos);
+
+        
+        return $paginate;        
     }
 }

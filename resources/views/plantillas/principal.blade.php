@@ -71,7 +71,7 @@
                 <a class="nav-main-link {{ setActive(['areas.index', 'areas.*']) }}" href="{{ route('areas.index') }}">
                   <span class="nav-main-link-name">Áreas</span>
                 </a>
-                <a class="nav-main-link {{ setActive(['cursos.index', 'cursos.*']) }}" href="{{ route('cursos.index') }}">
+                <a class="nav-main-link {{ setActive(['cursos.index', 'cursos.*']) }}" href="{{ route('cursos.index','1') }}">
                   <span class="nav-main-link-name">Cursos</span>
                 </a>   
                 <a class="nav-main-link {{ setActive(['tipo-salones.index', 'tipo-salones.*']) }}" href="{{ route('tipo-salones.index') }}">
