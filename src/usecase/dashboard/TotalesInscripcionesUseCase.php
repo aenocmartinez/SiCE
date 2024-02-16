@@ -16,22 +16,23 @@ class TotalesInscripcionesUseCase {
         $pagoSinDescuento = 0;
         $pagoPorConvenio = 0;
         $pagoPendientes = 0;
+        $recaudoTotal = 0;
 
         foreach($inscripciones as $inscripcion) {
             
-            if ($inscripcion->tieneConvenio()) {
-                $totalPorConvenio++;
-                
-                if ($inscripcion->Pagado()) {
-                    $pagoPorConvenio += $inscripcion->getTotalAPagar();
-                }
-                continue;
-            }
-
             if ($inscripcion->Pagado()) {
                 $totalMatriculados++;
-                $pagoSinDescuento += $inscripcion->getTotalAPagar();
+                $recaudoTotal += $inscripcion->getTotalAPagar();
             }
+
+            if ($inscripcion->tieneConvenio()) {
+                $totalPorConvenio++;         
+                if ($inscripcion->Pagado()) {
+                    $pagoPorConvenio += $inscripcion->getTotalAPagar();
+                }   
+            } else if ($inscripcion->Pagado()) {
+                $pagoSinDescuento += $inscripcion->getTotalAPagar();
+            }           
 
             if ($inscripcion->PendienteDePago()) {
                 $totalPendintesDePago++;
@@ -52,7 +53,7 @@ class TotalesInscripcionesUseCase {
         $totales['pagoSinDescuento'] = number_format($pagoSinDescuento, 0, '.', ',');
         $totales['pagoPorConvenio'] = number_format($pagoPorConvenio, 0, '.', ',');
         $totales['pagoPendientes'] = number_format($pagoPendientes, 0, '.', ',');
-        $totales['pagoTotal'] = number_format(($pagoSinDescuento + $pagoPorConvenio), 0, '.', ',');
+        $totales['pagoTotal'] = number_format(($recaudoTotal), 0, '.', ',');
 
         return $totales;
     }

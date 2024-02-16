@@ -25,7 +25,8 @@ use App\Http\Controllers\TipoSalonController;
 |
 */
 
-Route::view('/', 'home')->name('home');
+// Route::view('/', 'home')->name('home');
+Route::get('/', [DashboardController::class, 'index'])->name('home');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 

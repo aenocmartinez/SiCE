@@ -155,16 +155,16 @@
               <a class="block block-rounded block-link-shadow bg-warning" href="javascript:void(0)">
                 <div class="block-content block-content-full d-flex align-items-center justify-content-between">
                   <dl class="me-3 mb-0">
-                    <dt class="text-white h3 fw-medium mb-0">
+                    <dt class="text-white h3 fw-extrabold mb-0">
                     $ {{ $datosDashboard['pagoTotal'] }} <span class="fs-sm fw-light mb-0">COP</span>
                     </dt>
                     <dd class="text-white fs-sm fw-medium text-muted mb-0">
-                      Total (convenio + sin descuento)
+                      Total recaudado <span class="fs-sm fw-light mb-0">(sin descuento + convenio)</span>
                     </dd>
                   </dl>
-                  <div>
+                  <!-- <div>
                     <i class="fa fa-2x fa-boxes text-white-50"></i>
-                  </div>
+                  </div> -->
                 </div>
               </a>
             </div>
