@@ -18,7 +18,7 @@
         <div class="block-content">
 
             <table class="table table-vcenter">
-                @forelse ($areas as $area)
+                @forelse ($paginate->Records() as $area)
                 <tr>
                     <td class="fs-sm" style="width: 95%;">
                     <h4 class="fw-normal mb-0">{{ $area->getNombre() }}</h4>
@@ -49,6 +49,7 @@
                 @endforelse 
             </table>     
 
+            @include('paginator', ['route' => 'areas.index'])
         </div>
     </div>
 </div>

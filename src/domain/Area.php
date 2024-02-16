@@ -2,6 +2,9 @@
 
 namespace Src\domain;
 
+use Src\dao\mysql\AreaDao;
+use Src\infraestructure\util\Paginate;
+
 class Area {
 
     private int $id;
@@ -64,4 +67,8 @@ class Area {
     public function existe(): bool {
         return $this->id > 0;
     }
+
+    public static function Paginar($page=1): Paginate {
+        return AreaDao::listaAreasPaginados($page);
+    }    
 }

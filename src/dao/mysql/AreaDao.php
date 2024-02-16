@@ -9,6 +9,7 @@ use Src\domain\Area;
 use Src\domain\Orientador;
 
 use Sentry\Laravel\Facade as Sentry;
+use Src\infraestructure\util\Paginate;
 
 class AreaDao extends Model implements AreaRepository {  
       
@@ -131,5 +132,25 @@ class AreaDao extends Model implements AreaRepository {
         }
 
         return $listOrientadores;
+    }
+
+    public static function listaAreasPaginados($page=1): Paginate {
+        $paginate = new Paginate($page);
+
+        try {
+            $areas = [];
+            $items = AreaDao::skip($paginate->Offset())->take($paginate->Limit())->orderBy('nombre')->get();
+            
+            foreach($items as $item) {
+                array_push($areas, new Area($item->id, $item->nombre));
+            }            
+
+        } catch (\Exception $e) {
+            Sentry::captureException($e);
+        }
+        $paginate->setTotalRecords(AreaDao::count());
+        $paginate->setRecords($areas);
+
+        return $paginate;
     }
 }

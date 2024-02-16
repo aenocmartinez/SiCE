@@ -30,12 +30,13 @@ Route::get('/', [DashboardController::class, 'index'])->name('home');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::get('/areas', [AreaController::class, 'index'])->name('areas.index');
+// Route::get('/areas', [AreaController::class, 'index'])->name('areas.index');
 Route::get('/areas/crear', [AreaController::class, 'create'])->name('areas.create');
 Route::get('/areas/{id}/editar', [AreaController::class, 'buscarPorId'])->name('areas.edit');
 Route::post('areas', [AreaController::class, 'store'])->name('areas.store');
 Route::delete('/areas/{id}', [AreaController::class, 'delete'])->name('areas.delete');
 Route::patch('/areas', [AreaController::class, 'update'])->name('areas.update');
+Route::get('/areas/{page}', [AreaController::class, 'paginar'])->name('areas.index');
 
 // Route::get('/cursos', [CursoController::class, 'index'])->name('cursos.index');
 Route::get('/cursos/{id}/editar', [CursoController::class, 'buscarPorId'])->name('cursos.edit');
