@@ -18,7 +18,7 @@
     <div class="block block-rounded">
         <div class="block-content">
             <table class="table table-vcenter">
-                @forelse ($tipo_salones as $tipo)
+                @forelse ($paginate->Records() as $tipo)
                 <tr>
                     <td class="fs-sm" style="width: 95%;">
                     <h4 class="fw-normal mb-0">{{ $tipo->getNombre() }}</h4>
@@ -49,6 +49,8 @@
                 </tr>
                 @endforelse 
             </table>
+
+            @include('paginator',['route' => 'tipo-salones.index'])
         </div>
     </div>
 </div>

@@ -2,6 +2,9 @@
 
 namespace Src\domain;
 
+use Src\dao\mysql\TipoSalonDao;
+use Src\infraestructure\util\Paginate;
+
 class TipoSalon {
     private int $id;
     private string $nombre;
@@ -62,5 +65,9 @@ class TipoSalon {
 
     public function existe(): bool {
         return $this->id > 0;
+    }
+
+    public static function Paginar($page=1): Paginate {
+        return TipoSalonDao::listarTipoSalonesPaginado($page);
     }
 }

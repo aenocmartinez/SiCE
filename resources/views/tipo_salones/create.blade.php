@@ -8,7 +8,7 @@
 @section("description", "Ingrese todos los datos")
 
 @section("seccion")
-    <a class="link-fx" href="{{ route('tipo-salones.index') }}">
+    <a class="link-fx" href="{{ route('tipo-salones.index',1) }}">
         Tipo de salón
     </a>
 @endsection

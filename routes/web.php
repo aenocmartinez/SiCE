@@ -87,12 +87,13 @@ Route::post('/grupos/buscador', [GrupoController::class, 'buscadorGrupos'])->nam
 Route::get('/grupos/calendario/{calendarioId}/cursos/{cursoCalendarioIdActual}',[GrupoController::class, 'listarCursosPorCalendario'])->name('grupos.cursos_calendario');
 Route::get('/grupos/lista-orientadores/{cursoCalendarioId}/{orientadorIdActual}',[GrupoController::class, 'listarOrientadoresPorCursoCalendario'])->name('grupos.orientadores_por_curso_calendario');
 
-Route::get('/tipo-salones', [TipoSalonController::class, 'index'])->name('tipo-salones.index');
+// Route::get('/tipo-salones', [TipoSalonController::class, 'index'])->name('tipo-salones.index');
 Route::get('/tipo-salones/{id}/editar', [TipoSalonController::class, 'edit'])->name('tipo-salones.edit');
 Route::get('/tipo-salones/crear', [TipoSalonController::class, 'create'])->name('tipo-salones.create');
 Route::post('/tipo-salones', [TipoSalonController::class, 'store'])->name('tipo-salones.store');
 Route::delete('/tipo-salones/{id}', [TipoSalonController::class, 'destroy'])->name('tipo-salones.delete');
 Route::patch('/tipo-salones/actualizar', [TipoSalonController::class, 'update'])->name('tipo-salones.update');
+Route::get('/tipo-salones/{page}', [TipoSalonController::class, 'paginar'])->name('tipo-salones.index');
 
 Route::get('/convenios', [ConvenioController::class, 'index'])->name('convenios.index');
 Route::get('/convenios/crear', [ConvenioController::class, 'create'])->name('convenios.create');

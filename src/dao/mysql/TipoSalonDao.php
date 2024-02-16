@@ -7,6 +7,7 @@ use Src\domain\repositories\TipoSalonRepository;
 use Src\domain\TipoSalon;
 
 use Sentry\Laravel\Facade as Sentry;
+use Src\infraestructure\util\Paginate;
 
 class TipoSalonDao extends Model implements TipoSalonRepository {
     
@@ -94,6 +95,28 @@ class TipoSalonDao extends Model implements TipoSalonRepository {
             Sentry::captureException($e);
         }   
         return $exito; 
+    }
+
+    public static function listarTipoSalonesPaginado($page): Paginate {
+        $paginate = new Paginate($page);
+        try {
+            $tipoSalones = [];
+            
+            $items = TipoSalonDao::skip($paginate->Offset())->take($paginate->Limit())->get();
+            foreach($items as $item) {
+                $tipoSalon = new TipoSalon($item->nombre);
+                $tipoSalon->setId($item->id);
+                array_push($tipoSalones, $tipoSalon);
+            }            
+
+        } catch (\Exception $e) {
+            Sentry::captureException($e);
+        }
+        
+        $paginate->setRecords($tipoSalones);
+        $paginate->setTotalRecords(TipoSalonDao::count());
+        
+        return $paginate;
     }
 
 }

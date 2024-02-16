@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GuardarTipoSalon;
-use Illuminate\Http\Request;
 use Src\domain\TipoSalon;
 use Src\infraestructure\util\Validador;
 use Src\usecase\tipo_salones\ActualizarTipoSalonUseCase;
 use Src\usecase\tipo_salones\BuscarTipoSalonPorIdUseCase;
 use Src\usecase\tipo_salones\CrearTipoSalonUseCase;
 use Src\usecase\tipo_salones\EliminarTipoSalonUseCase;
+use Src\usecase\tipo_salones\ListarTipoSalonesPaginadoUseCase;
 use Src\usecase\tipo_salones\ListarTipoSalonesUseCase;
 use Src\view\dto\TipoSalonDto;
 
@@ -20,6 +20,12 @@ class TipoSalonController extends Controller
         $tipo_salones = $casoUso->ejecutar();
 
         return view("tipo_salones.index", compact('tipo_salones'));
+    }
+
+    public function paginar($page) {        
+        return view("tipo_salones.index", [
+            'paginate' => (new ListarTipoSalonesPaginadoUseCase)->ejecutar($page),
+        ]);
     }
 
     public function create() {
@@ -35,7 +41,7 @@ class TipoSalonController extends Controller
         $casoUso = new CrearTipoSalonUseCase();
         $response = $casoUso->ejecutar($tipoSalonDto);
 
-        return redirect()->route('tipo-salones.index')->with('code', $response->code)->with('status', $response->message);        
+        return redirect()->route('tipo-salones.index',1)->with('code', $response->code)->with('status', $response->message);        
     }
 
     public function show($id)
@@ -69,18 +75,18 @@ class TipoSalonController extends Controller
 
         $casoUso = new ActualizarTipoSalonUseCase();
         $response = $casoUso->ejecutar($tipoSalonDto);
-        return redirect()->route('tipo-salones.index')->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('tipo-salones.index',1)->with('code', $response->code)->with('status', $response->message);
     }
 
     public function destroy($id)
     {
         $esValido = Validador::parametroId($id);
         if (!$esValido) 
-            return redirect()->route('tipo-salones.index')->with('code', "401")->with('status', "parámetro no válido");
+            return redirect()->route('tipo-salones.index',1)->with('code', "401")->with('status', "parámetro no válido");
         
         $casoUso = new EliminarTipoSalonUseCase();
         $response = $casoUso->ejecutar(request('id'));
-        return redirect()->route('tipo-salones.index')->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('tipo-salones.index',1)->with('code', $response->code)->with('status', $response->message);
     }
 
     private function hydrateDto(): TipoSalonDto {
