@@ -173,7 +173,7 @@ class CursoDao extends Model implements CursoRepository {
             
             $cursos = [];
 
-            $items = CursoDao::skip($paginate->Offset())->take($paginate->Limit())->get();
+            $items = CursoDao::skip($paginate->Offset())->take($paginate->Limit())->orderBy('nombre')->get();
         
             foreach($items as $item) {
                 $curso = new Curso($item->nombre);
