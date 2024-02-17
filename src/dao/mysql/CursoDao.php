@@ -30,7 +30,7 @@ class CursoDao extends Model implements CursoRepository {
         return $this->calendarios()->where('calendario_id', $calendarioId)->count();
     }
 
-    public function listarCursos(): array {
+    public function listarCursos(): array {        
         $cursos = [];
         try {
             $rs = CursoDao::all();
@@ -44,9 +44,11 @@ class CursoDao extends Model implements CursoRepository {
                 array_push($cursos, $curso);
             }            
 
-        } catch (\Exception $e) {
+        } catch (\Exception $e) {            
             Sentry::captureException($e);
         }
+        
+
         return $cursos;
     }
 

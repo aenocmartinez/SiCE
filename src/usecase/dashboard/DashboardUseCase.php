@@ -26,6 +26,13 @@ class DashboardUseCase {
             'totalOrientadores' => 0,
             'totalCursosCreados' => 0,
         ];
+
+        $listaOrientadores = (new ListarOrientadoresUseCase)->ejecutar();
+        $datosDashboard['totalOrientadores'] = sizeof($listaOrientadores);
+
+        $listaCursos = $listarCursos = (new ListarCursosUseCase)->ejecutar();
+        $datosDashboard['totalCursosCreados'] = sizeof($listaCursos);
+                
         
         $calendarioVigente = Calendario::Vigente();
 
@@ -41,15 +48,7 @@ class DashboardUseCase {
 
         
         $listaCursosAbiertos = (new ListarCursosPorCalendarioUseCase)->ejecutar($calendarioVigente->getId());
-        $datosDashboard['totalCursosAbiertos'] = sizeof($listaCursosAbiertos);
-
-
-        $listaOrientadores = (new ListarOrientadoresUseCase)->ejecutar();
-        $datosDashboard['totalOrientadores'] = sizeof($listaOrientadores);
-
-        $listaCursos = $listarCursos = (new ListarCursosUseCase)->ejecutar();
-        $datosDashboard['totalCursosCreados'] = sizeof($listaCursos);
-        
+        $datosDashboard['totalCursosAbiertos'] = sizeof($listaCursosAbiertos);        
 
         return $datosDashboard;
     }

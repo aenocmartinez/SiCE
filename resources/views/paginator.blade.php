@@ -51,6 +51,7 @@
         </div> 
         
       </nav>  
+      <div class="pagination pagination-sm justify-content-center text-muted fs-sm mb-2 mt-1 p-1">{{ $paginate->TotalRecords() }} registros en total</div>
   </div>
 
   <script>
