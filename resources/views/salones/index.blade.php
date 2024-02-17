@@ -6,12 +6,12 @@
 @section("content")
 
 @php
-$criterio = isset($criterio) ? $criterio : '';
-$route = "salones.index";
-$page = 1;
-if (strlen($criterio)>0) {
-    $route = "salones.buscador-paginador";
-}
+    $criterio = isset($criterio) ? $criterio : '';
+    $route = "salones.index";
+    $page = 1;
+    if (strlen($criterio)>0) {
+        $route = "salones.buscador-paginador";
+    }
 @endphp
 
 <div class="row mb-3">

@@ -24,7 +24,7 @@ class GuardarCurso extends FormRequest
     public function rules()
     {
         return [
-            'nombre' => 'required|max:80',
+            'nombre' => 'required|max:150',
             'area' => 'required',
             'tipoCurso' => 'required',
             'id' => 'numeric|nullable',
@@ -36,6 +36,7 @@ class GuardarCurso extends FormRequest
         return [
             'nombre.max' => 'El campo nombre permite máximo 80 caracteres',
             'area.required' => 'El campo área es obligatorio.',
+            'tipoCurso.required' => 'El campo tipo curso es obligatorio.',
         ];
     }
 }

@@ -14,4 +14,5 @@ interface CursoRepository {
     public function actualizarCurso(Curso $curso): bool;    
     public function listarCursosPorArea(int $areaId): array;
     public static function listaCursosPaginados($page=1): Paginate;
+    public static function buscadorCursos(string $criterio, $page): Paginate;
 }

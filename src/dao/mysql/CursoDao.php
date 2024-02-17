@@ -195,4 +195,56 @@ class CursoDao extends Model implements CursoRepository {
         
         return $paginate;        
     }
+
+    public static function buscadorCursos(string $criterio, $page): Paginate {
+        $paginate = new Paginate($page);
+        
+        try {
+            $cursos = [];
+
+            $filtro = [
+                "cursos.nombre" => $criterio,
+                "areas.nombre" => $criterio,
+                "cursos.tipo_curso" => $criterio,
+            ];
+            
+            $query = CursoDao::query();
+            $query->join('areas', 'cursos.area_id', '=', 'areas.id')
+                ->select(
+                    'cursos.id',
+                    'cursos.nombre',
+                    'cursos.area_id',
+                    'cursos.tipo_curso',
+                );
+            
+            foreach ($filtro as $campo => $valor) {
+                $query->orWhere($campo, 'like', '%' . $valor . '%');
+            }
+            
+            $totalRecords = $query->count();
+
+            $items = $query->skip($paginate->Offset())->take($paginate->Limit())->get();
+
+            $areaDao = new AreaDao();
+            foreach($items as $item) {
+                $curso = new Curso();
+
+                $curso->setId((int)$item->id);
+                $curso->setNombre($item->nombre);
+                $curso->setTipoCurso($item->tipo_curso);
+            
+                $curso->setArea($areaDao->buscarAreaPorId((int)$item->area_id));
+                array_push($cursos, $curso);
+            }              
+
+        } catch (\Exception $e) {
+            // Sentry::captureException($e);
+            dd($e->getMessage());
+        }
+
+        $paginate->setRecords($cursos);
+        $paginate->setTotalRecords($totalRecords);
+
+        return $paginate;
+    }
 }

@@ -45,6 +45,8 @@ Route::post('/cursos', [CursoController::class, 'store'])->name('cursos.store');
 Route::delete('/cursos/{id}', [CursoController::class, 'delete'])->name('cursos.delete');
 Route::patch('/cursos/actualizar', [CursoController::class, 'update'])->name('cursos.update');
 Route::get('/cursos/{page}', [CursoController::class, 'paginar'])->name('cursos.index');
+Route::post('/cursos/buscador', [CursoController::class, 'buscador'])->name('cursos.buscador');
+Route::get('/cursos/{page}/q/{criteria}', [CursoController::class, 'paginadorBuscador'])->name('cursos.buscador-paginador');
 
 // Route::get('/salones', [SalonController::class, 'index'])->name('salones.index');
 Route::get('/salones/{id}/editar', [SalonController::class, 'buscarPorId'])->name('salones.edit');

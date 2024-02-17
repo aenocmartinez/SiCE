@@ -9,6 +9,7 @@ use Src\view\dto\CursoDto;
 use Src\infraestructure\util\Validador;
 use Src\usecase\areas\ListarAreasUseCase;
 use Src\usecase\cursos\ActualizarCursoUseCase;
+use Src\usecase\cursos\BuscadorCursosUseCase;
 use Src\usecase\cursos\BuscarCursoPorIdUseCase;
 use Src\usecase\cursos\CrearCursoUseCase;
 use Src\usecase\cursos\EliminarCursoUseCase;
@@ -30,6 +31,25 @@ class CursoController extends Controller
             'paginate' => (new ListarCursosPaginadosUseCase)->ejecutar($page)
         ]);
     }
+
+    public function buscador() {
+        $criterio = '';
+        if (!is_null(request('criterio'))) {
+            $criterio = request('criterio');
+        }
+        
+        return view("cursos.index", [
+            "paginate" => (new BuscadorCursosUseCase)->ejecutar($criterio), 
+            "criterio" => $criterio
+        ]);        
+    }
+    
+    public function paginadorBuscador($page, $criterio) {        
+        return view("cursos.index", [
+            "paginate" => (new BuscadorCursosUseCase)->ejecutar($criterio, $page), 
+            "criterio" => $criterio
+        ]);         
+    }    
 
     public function buscarPorId($id) {
         $esValido = Validador::parametroId($id);

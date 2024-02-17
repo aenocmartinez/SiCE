@@ -5,12 +5,35 @@
 
 @php
     $criterio = isset($criterio) ? $criterio : '';
+    $route = "cursos.index";
+    $page = 1;
+    if (strlen($criterio)>0) {
+        $route = "cursos.buscador-paginador";
+    }
 @endphp
 
 @section("content")
 
 <div class="row mb-3">
-    <div class="d-flex justify-content-end">
+    <div class="col-lg-8 col-sm-12">
+        <form method="post" action="{{ route('cursos.buscador') }}">
+            @csrf
+            <div class="pt-0">
+                <div class="input-group">                
+                    <button class="btn btn-alt-primary" type="submit">
+                        <i class="fa fa-search me-1 opacity-50"></i> 
+                    </button>
+                    <input type="text" class="form-control" 
+                    id="criterio" 
+                    name="criterio" 
+                    value="{{ $criterio }}"
+                    placeholder="Buscar en el tablero">  
+                </div>
+            </div>
+        </form>
+    </div>        
+
+    <div class="col-lg-4 col-sm-12 col-xs-12 justify-content-end" style="text-align: right;">    
         <a href="{{ route('cursos.create') }}" class="btn btn-lg btn-info">
             <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear curso
         </a>
@@ -56,7 +79,7 @@
                 @endforelse 
             </table>
 
-            @include('paginator', ['route' => 'cursos.index'])
+            @include('paginator', ['route'=>$route, 'criterio' => $criterio, 'page' => $page])
         </div>
     </div>
 </div>

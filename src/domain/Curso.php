@@ -104,4 +104,7 @@ class Curso {
         return $this->numeroEnCalendario;
     }    
     
+    public static function buscador($criterio, $page=1): Paginate {
+        return CursoDao::buscadorCursos($criterio, $page);
+    }
 }
