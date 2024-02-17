@@ -6,7 +6,12 @@
 @section("content")
 
 @php
-$criterio = isset($criterio) ? $criterio : '';
+    $criterio = isset($criterio) ? $criterio : '';
+    $route = "orientadores.index";
+    $page = 1;
+    if (strlen($criterio)>0) {
+        $route = "orientadores.buscador-paginador";
+    }
 @endphp
 
 <div class="row mb-3">
@@ -47,7 +52,7 @@ $criterio = isset($criterio) ? $criterio : '';
 
 
             <table class="table table-vcenter">
-                @forelse ($orientadores as $orientador)
+                @forelse ($paginate->Records() as $orientador)
                 <tr>
                     <td class="fs-sm" style="width: 95%;">
                     <h4 class="fw-normal mb-0">{{ $orientador->getNombre() }}</h4>
@@ -76,6 +81,9 @@ $criterio = isset($criterio) ? $criterio : '';
                 </tr>
                 @endforelse 
             </table>
+
+            @include('paginator', ['route'=>$route, 'criterio' => $criterio, 'page' => $page])
+            
         </div>
     </div>
 </div>

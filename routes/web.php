@@ -58,13 +58,15 @@ Route::post('/salones/buscador', [SalonController::class, 'buscador'])->name('sa
 Route::get('/salones/{page}', [SalonController::class, 'paginar'])->name('salones.index');
 Route::get('/salones/{page}/q/{criteria}', [SalonController::class, 'paginadorBuscador'])->name('salones.buscador-paginador');
 
-Route::get('/orientadores', [OrientadorController::class, 'index'])->name('orientadores.index');
+// Route::get('/orientadores', [OrientadorController::class, 'index'])->name('orientadores.index');
 Route::get('/orientadores/{id}/editar', [OrientadorController::class, 'edit'])->name('orientadores.edit');
 Route::get('/orientadores/crear', [OrientadorController::class, 'create'])->name('orientadores.create');
 Route::post('/orientadores', [OrientadorController::class, 'store'])->name('orientadores.store');
 Route::delete('/orientadores/eliminar/{id}', [OrientadorController::class, 'delete'])->name('orientadores.delete');
 Route::patch('/orientadores/actualizar', [OrientadorController::class, 'update'])->name('orientadores.update');
 Route::post('/orientadores/buscador', [OrientadorController::class, 'buscador'])->name('orientadores.buscador');
+Route::get('/orientadores/{page}', [OrientadorController::class, 'listarPaginado'])->name('orientadores.index');
+Route::get('/orientadores/{page}/q/{criteria}', [OrientadorController::class, 'paginadorBuscador'])->name('orientadores.buscador-paginador');
 
 Route::get('/orientadores/{id}/mas-informacion', [OrientadorController::class, 'show'])->name('orientadores.moreInfo');
 

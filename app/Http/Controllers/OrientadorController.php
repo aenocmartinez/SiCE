@@ -14,6 +14,7 @@ use Src\usecase\orientadores\BuscadorOrientadorUseCase;
 use Src\usecase\orientadores\BuscarOrientadorPorIdUseCase;
 use Src\usecase\orientadores\CrearOrientadorUseCase;
 use Src\usecase\orientadores\EliminarOrientadorUseCase;
+use Src\usecase\orientadores\ListarOrientadoresPaginadoUseCase;
 use Src\usecase\orientadores\ListarOrientadoresUseCase;
 use Src\view\dto\OrientadorDto;
 
@@ -53,22 +54,6 @@ class OrientadorController extends Controller
         ]);
     }
 
-    public function buscador() {        
-        
-        $criterio = '';
-        if (!is_null(request('criterio'))) {
-            $criterio = request('criterio');
-        }
-
-        $casoUso = new BuscadorOrientadorUseCase();
-        $orientadores = $casoUso->ejecutar($criterio);
-
-        return view("orientadores.index", [
-            "orientadores" => $orientadores,
-            "criterio" => $criterio,
-        ]); 
-    }
-
     public function create() {
         $nivelesEstudio = explode(',', env('APP_NIVEL_ESTUDIO'));
         $listaRangoSalarial = explode(',', env('APP_RANGO_SALARIAL'));
@@ -88,7 +73,7 @@ class OrientadorController extends Controller
         $casoUso = new CrearOrientadorUseCase();
         $response = $casoUso->ejecutar($orientadorDto);
 
-        return redirect()->route('orientadores.index')->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('orientadores.index', 1)->with('code', $response->code)->with('status', $response->message);
     }
 
     public function delete($id) {
@@ -97,7 +82,7 @@ class OrientadorController extends Controller
         $casoUso = new EliminarOrientadorUseCase();
         $response = $casoUso->ejecutar($id);
 
-        return redirect()->route('orientadores.index')->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('orientadores.index', 1)->with('code', $response->code)->with('status', $response->message);
     }
     
     public function update(GuardarOrientador $request) {
@@ -107,7 +92,7 @@ class OrientadorController extends Controller
         $casoUso = new ActualizarOrientadorUseCase();
         $response = $casoUso->ejecutar($orientadorDto);
 
-        return redirect()->route('orientadores.index')->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('orientadores.index', 1)->with('code', $response->code)->with('status', $response->message);
     }     
 
     private function hydrateDto($data): OrientadorDto {
@@ -160,18 +145,46 @@ class OrientadorController extends Controller
     private function validarParametroId($id) {
         $esValido = Validador::parametroId($id);
         if (!$esValido) {
-            return redirect()->route('orientadores.index')->with('code', "401")->with('status', "parámetro no válido");
+            return redirect()->route('orientadores.index', 1)->with('code', "401")->with('status', "parámetro no válido");
         }        
     }
 
     public function show($id) {
         $orientador = (new BuscarOrientadorPorIdUseCase)->ejecutar($id);
         if (!$orientador->existe()) {
-            return redirect()->route('cursos.index')->with('code', "404")->with('status', "Orientador no encontrado");
+            return redirect()->route('cursos.index', 1)->with('code', "404")->with('status', "Orientador no encontrado");
         }
 
         return view('orientadores.moreInfo', [
             'orientador' => $orientador, 
         ]);
     }
+
+    public function listarPaginado($page) {              
+        return view("orientadores.index", [
+            'paginate' => (new ListarOrientadoresPaginadoUseCase)->ejecutar($page),
+        ]);        
+    }
+
+    public function paginadorBuscador($page, $criterio) {
+        return view("orientadores.index", [
+            "paginate" => (new BuscadorOrientadorUseCase)->ejecutar($criterio, $page), 
+            "criterio" => $criterio
+        ]);         
+    }
+
+    public function buscador() { 
+             
+        $criterio = '';
+        if (!is_null(request('criterio'))) {
+            $criterio = request('criterio');
+        } else {
+            return redirect()->route('orientadores.index', 1);
+        }
+
+        return view("orientadores.index", [
+            "paginate" => (new BuscadorOrientadorUseCase)->ejecutar($criterio),
+            "criterio" => $criterio,
+        ]); 
+    }    
 }

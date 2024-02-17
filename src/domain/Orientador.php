@@ -2,7 +2,9 @@
 
 namespace Src\domain;
 
+use Src\dao\mysql\OrientadorDao;
 use Src\infraestructure\util\FormatoFecha;
+use Src\infraestructure\util\Paginate;
 
 class Orientador {
 
@@ -197,8 +199,8 @@ class Orientador {
         return $repository->buscarOrientadorPorId($id);
     }
 
-    public static function buscador($criterio, $repository): array {
-        return $repository->buscadorOrientador($criterio);
+    public static function buscador($criterio, $page=1): Paginate {
+        return OrientadorDao::buscadorOrientador($criterio, $page);
     }
 
     public static function buscarPorDocumento(string $tipo, string $documento, $repository): Orientador {
@@ -248,5 +250,9 @@ class Orientador {
             return "";
         
         return FormatoFecha::fecha01enero1970($this->fechaNacimiento);
+    }
+
+    public static function Paginar($page=1) {
+        return OrientadorDao::listarOrientadoresPaginado($page);
     }
 }

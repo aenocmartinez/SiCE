@@ -11,6 +11,7 @@ use Src\domain\Orientador;
 use Src\domain\repositories\OrientadorRepository;
 
 use Sentry\Laravel\Facade as Sentry;
+use Src\infraestructure\util\Paginate;
 
 class OrientadorDao extends Model implements OrientadorRepository {
 
@@ -145,45 +146,63 @@ class OrientadorDao extends Model implements OrientadorRepository {
         return $orientador;
     }
 
-    public function buscadorOrientador(string $criterio): array {
+    public static function buscadorOrientador(string $criterio, $page=1): Paginate {
+        $paginate = new Paginate($page);
         $orientadores = [];
         try {
+
+            $criterio = str_replace(" ","%", $criterio);
+            
             $filtro = [
-                "nombre" => $criterio,
-                "documento" => $criterio,
-                "email_institucional" => $criterio,
-                "email_personal" => $criterio,
-                "eps" => $criterio,
-                "direccion" => $criterio,
-                "nivel_estudio" => $criterio,
-                "rango_salarial" => $criterio,
+                "orientadores.nombre" => $criterio,
+                "orientadores.documento" => $criterio,
+                "orientadores.email_institucional" => $criterio,
+                "orientadores.email_personal" => $criterio,
+                "orientadores.eps" => $criterio,
+                "orientadores.direccion" => $criterio,
+                "orientadores.nivel_estudio" => $criterio,
+                "orientadores.rango_salarial" => $criterio,
+                "areas.nombre" => $criterio,
             ];
 
             $query = OrientadorDao::query();
+            $query->join('orientador_areas', 'orientador_areas.orientador_id', '=', 'orientadores.id')
+                  ->join('areas', 'orientador_areas.area_id', '=', 'areas.id')
+                  ->select(
+                    'orientadores.id', 'orientadores.nombre',
+                    'orientadores.documento', 'orientadores.email_institucional',
+                    'orientadores.email_personal', 'orientadores.direccion', 'orientadores.tipo_documento',
+                    'orientadores.eps', 'orientadores.estado',
+                    'orientadores.observacion', 'orientadores.fec_nacimiento',
+                    'orientadores.nivel_estudio', 'orientadores.rango_salarial'
+                 );            
             foreach ($filtro as $campo => $valor) {
                 $query->orWhere($campo, 'like', '%' . $valor . '%');
             }
 
-            $result = $query->get();
+            $totalRecords = $query->count();
+
+            $query->distinct();
+            $items = $query->skip($paginate->Offset())->take($paginate->Limit())->get();
             
-            foreach($result as $rs) {
+            foreach($items as $item) {
                 $orientador = new Orientador();
-                $orientador->setId($rs->id);
-                $orientador->setNombre($rs->nombre);
-                $orientador->setTipoDocumento($rs->tipo_documento);
-                $orientador->setDocumento($rs->documento);
-                $orientador->setEmailInstitucional($rs->email_institucional);
-                $orientador->setEmailPersonal($rs->email_personal);
-                $orientador->setDireccion($rs->direccion);
-                $orientador->setEps($rs->eps);
-                $orientador->setEstado($rs->estado);
-                $orientador->setObservacion($rs->observacion);
-                $orientador->setFechaNacimiento($rs->fec_nacimiento);
-                $orientador->setNivelEducativo($rs->nivel_estudio); 
-                $orientador->setRangoSalarial($rs->rango_salarial);
+                $orientador->setId($item->id);
+                $orientador->setNombre($item->nombre);
+                $orientador->setTipoDocumento($item->tipo_documento);
+                $orientador->setDocumento($item->documento);
+                $orientador->setEmailInstitucional($item->email_institucional);
+                $orientador->setEmailPersonal($item->email_personal);
+                $orientador->setDireccion($item->direccion);
+                $orientador->setEps($item->eps);
+                $orientador->setEstado($item->estado);
+                $orientador->setObservacion($item->observacion);
+                $orientador->setFechaNacimiento($item->fec_nacimiento);
+                $orientador->setNivelEducativo($item->nivel_estudio); 
+                $orientador->setRangoSalarial($item->rango_salarial);
                 
                 $areas = array();
-                foreach($rs->areas as $area) 
+                foreach($item->areas as $area) 
                     array_push($areas, new Area($area->id, $area->nombre));
                 
                 $orientador->setAreas($areas);
@@ -194,7 +213,11 @@ class OrientadorDao extends Model implements OrientadorRepository {
         } catch (\Exception $e) {
             Sentry::captureException($e);
         }
-        return $orientadores;
+
+        $paginate->setRecords($orientadores);
+        $paginate->setTotalRecords($totalRecords);
+
+        return $paginate;
     }
 
     public function buscarOrientadorPorDocumento(string $tipo, string $documento): Orientador {
@@ -332,5 +355,47 @@ class OrientadorDao extends Model implements OrientadorRepository {
 
     public function listarAreasDeUnOrientador(Orientador $orientador): array {
         return [];
+    }
+
+    public static function listarOrientadoresPaginado($page=1): Paginate {            
+        $paginate = new Paginate($page);
+        $orientadores = [];
+        try {
+            
+            $items = OrientadorDao::skip($paginate->Offset())->take($paginate->Limit())->orderBy('nombre')->get();
+
+            foreach($items as $item) {
+                $orientador = new Orientador();
+                $orientador->setId($item->id);
+                $orientador->setNombre($item->nombre);
+                $orientador->setTipoDocumento($item->tipo_documento);
+                $orientador->setDocumento($item->documento);
+                $orientador->setEmailInstitucional($item->email_institucional);
+                $orientador->setEmailPersonal($item->email_personal);
+                $orientador->setDireccion($item->direccion);
+                $orientador->setEps($item->eps);
+                $orientador->setEstado($item->estado);
+                $orientador->setObservacion($item->observacion);
+                $orientador->setFechaNacimiento($item->fec_nacimiento);
+                $orientador->setNivelEducativo($item->nivel_estudio);
+                $orientador->setRangoSalarial($item->rango_salarial);
+                
+                $areas = array();
+                foreach($item->areas as $area) 
+                    array_push($areas, new Area($area->id, $area->nombre));
+                
+                $orientador->setAreas($areas);      
+                
+                array_push($orientadores, $orientador);
+            }
+
+        } catch (\Exception $e) {
+            Sentry::captureException($e);
+        }
+
+        $paginate->setTotalRecords(OrientadorDao::count());
+        $paginate->setRecords($orientadores);
+
+        return $paginate;
     }
 }

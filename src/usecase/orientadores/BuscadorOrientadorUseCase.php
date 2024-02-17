@@ -7,8 +7,8 @@ use Src\domain\Orientador;
 
 class BuscadorOrientadorUseCase {
 
-    public function ejecutar(string $criterio): array {
-        $orientadorRepository = new OrientadorDao();
-        return Orientador::buscador($criterio, $orientadorRepository);
+    public function ejecutar(string $criterio, $page=1) {          
+        
+        return Orientador::buscador($criterio, $page);
     }
 }
