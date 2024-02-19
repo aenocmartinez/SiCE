@@ -14,6 +14,7 @@ use Src\domain\Participante;
 use Src\domain\repositories\ParticipanteRepository;
 
 use Sentry\Laravel\Facade as Sentry;
+use Src\infraestructure\util\Paginate;
 
 class ParticipanteDao extends Model implements ParticipanteRepository {
 
@@ -167,58 +168,17 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         return $participante;          
     }
 
-    public function listarParticipantes(): array {
-        $participantes = array();
+    public function listarParticipantes($page=1): Paginate {
+        $paginate = new Paginate($page);
+        $participantes = [];
         try {
 
-            $resultados = ParticipanteDao::select('id', 'primer_nombre', 'segundo_nombre', 'primer_apellido', 'segundo_apellido', 'tipo_documento', 'documento', 'sexo', 'telefono', 'email')
+            $resultados = ParticipanteDao::select(
+                            'id', 'primer_nombre', 'segundo_nombre', 'primer_apellido', 'segundo_apellido', 
+                            'tipo_documento', 'documento', 'sexo', 'telefono', 'email')
+                            ->skip($paginate->Offset())->take($paginate->Limit())
                             ->orderBy('primer_nombre')
                             ->get();
-            
-            foreach($resultados as $resultado) {           
-                $participante = new Participante();
-                $participante->setId($resultado->id);
-                $participante->setPrimerNombre($resultado->primer_nombre);
-                $participante->setSegundoNombre($resultado->segundo_nombre);
-                $participante->setPrimerApellido($resultado->primer_apellido);
-                $participante->setSegundoApellido($resultado->segundo_apellido);
-                // $participante->setFechaNacimiento($resultado->fecha_nacimiento);
-                $participante->setTipoDocumento($resultado->tipo_documento);
-                $participante->setDocumento($resultado->documento);
-                $participante->setSexo($resultado->sexo);
-                // $participante->setEstadoCivil($resultado->estado_civil);
-                // $participante->setDireccion($resultado->direccion);
-                $participante->setTelefono($resultado->telefono);
-                $participante->setEmail($resultado->email);
-                // $participante->setEps($resultado->eps);
-                // $participante->setContactoEmergencia($resultado->contacto_emergencia);
-                // $participante->setTelefonoEmergencia($resultado->telefono_emergencia);
-
-                array_push($participantes, $participante);
-            }
-
-        } catch (Exception $e) {
-            Sentry::captureException($e);
-        }        
-
-        return $participantes;
-    }
-
-    public function buscadorParticipantes(string $criterio): array {
-        $participantes = array();
-        try {
-            $resultados = ParticipanteDao::select('id','primer_nombre','segundo_nombre','primer_apellido',
-                'segundo_apellido','tipo_documento','documento','sexo','telefono','email'
-                )
-                ->where(function ($query) use ($criterio) {
-                $query->where('primer_nombre', 'like', '%' . $criterio . '%')
-                    ->orWhere('segundo_nombre', 'like', '%' . $criterio . '%')
-                    ->orWhere('primer_apellido', 'like', '%' . $criterio . '%')
-                    ->orWhere('segundo_apellido', 'like', '%' . $criterio . '%')
-                    ->orWhere('documento', 'like', '%' . $criterio . '%')
-                    ->orWhere('telefono', 'like', '%' . $criterio . '%')
-                    ->orWhere('email', 'like', '%' . $criterio . '%');
-            })->get();     
 
             foreach($resultados as $resultado) {           
                 $participante = new Participante();
@@ -237,9 +197,65 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
             }
 
         } catch (Exception $e) {
+            dd($e);
             Sentry::captureException($e);
         }
-        return $participantes;
+
+        $paginate->setRecords($participantes);
+        $paginate->setTotalRecords(ParticipanteDao::count());
+        
+        return $paginate;
+    }
+
+    public function buscadorParticipantes(string $criterio, $page=1): Paginate {
+        $paginate = new Paginate($page);
+        $participantes = [];
+        try {
+
+            $criterio = str_replace(" ","%", $criterio);
+ 
+            $query = ParticipanteDao::select('id','primer_nombre','segundo_nombre','primer_apellido',
+                            'segundo_apellido','tipo_documento','documento','sexo','telefono','email'
+                        )
+                        ->where(function ($query) use ($criterio) {
+                            $query->where('primer_nombre', 'like', '%' . $criterio . '%')
+                                ->orWhere('segundo_nombre', 'like', '%' . $criterio . '%')
+                                ->orWhere('primer_apellido', 'like', '%' . $criterio . '%')
+                                ->orWhere('segundo_apellido', 'like', '%' . $criterio . '%')
+                                ->orWhere('documento', 'like', '%' . $criterio . '%')
+                                ->orWhere('telefono', 'like', '%' . $criterio . '%')
+                                ->orWhere('email', 'like', '%' . $criterio . '%');
+                        });
+
+            $totalRecords = $query->count();
+
+            $items = $query->skip($paginate->Offset())->take($paginate->Limit())->get();
+
+            foreach($items as $item) {           
+                $participante = new Participante();
+                $participante->setId($item->id);
+                $participante->setPrimerNombre($item->primer_nombre);
+                $participante->setSegundoNombre($item->segundo_nombre);
+                $participante->setPrimerApellido($item->primer_apellido);
+                $participante->setSegundoApellido($item->segundo_apellido);
+                $participante->setTipoDocumento($item->tipo_documento);
+                $participante->setDocumento($item->documento);
+                $participante->setSexo($item->sexo);
+                $participante->setTelefono($item->telefono);
+                $participante->setEmail($item->email);
+
+                $participantes[] = $participante;
+            }
+
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            Sentry::captureException($e);
+        }
+
+        $paginate->setRecords($participantes);
+        $paginate->setTotalRecords($totalRecords);
+
+        return $paginate;
     }
 
     public function listarFormulariosDeInscripcionParticipante(int $participanteId): array {

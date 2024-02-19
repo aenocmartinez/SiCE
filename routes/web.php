@@ -132,7 +132,6 @@ Route::patch('/formularios/{numeroFormulario}/participante/{participanteId}/anul
 
 
 
-Route::get('/participantes', [ParticipanteController::class, 'index'])->name('participantes.index');
 Route::get('/participantes/{id}/editar', [ParticipanteController::class, 'edit'])->name('participantes.edit');
 Route::get('/participantes/crear', [ParticipanteController::class, 'create'])->name('participantes.create');
 Route::patch('/participantes', [ParticipanteController::class, 'update'])->name('participantes.update');
@@ -143,3 +142,5 @@ Route::delete('/participantes/{participanteId}', [ParticipanteController::class,
 Route::patch('/participantes/{numeroFormulario}/{participanteId}', [ParticipanteController::class, 'anularInscripcion'])->name('participantes.anular-inscripcion');
 Route::get('/participantes/legalizar-inscripcion/{numeroFormulario}/formulario', [ParticipanteController::class, 'editLegalizarInscripcion'])->name('participantes.edit-legalizar-inscripcion');
 Route::patch('/participantes/legalizar-inscripcion', [ParticipanteController::class, 'legalizarInscripcion'])->name('participantes.legalizar-inscripcion');
+Route::get('/participantes/{page?}', [ParticipanteController::class, 'index'])->name('participantes.index');
+Route::get('/salones/{page}/q/{criteria}', [ParticipanteController::class, 'buscadorParticipantesPaginados'])->name('participantes.buscador-paginador');

@@ -8,6 +8,11 @@
 
 @php
     $criterio = isset($criterio) ? $criterio : '';
+    $route = "participantes.index";
+    $page = 1;
+    if (strlen($criterio)>0) {
+        $route = "participantes.buscador-paginador";
+    }
 @endphp
 
 <div class="row mb-3">
@@ -55,7 +60,7 @@
                         <th></th>
                     </thead>
                 </tr>                
-                @forelse ($participantes as $p)
+                @forelse ($paginate->Records() as $p)
                 <tr class="fs-xs">
                     <td>{{ $p->getNombreCompleto() }}</td>
                     <td>{{ $p->getDocumentoCompleto() }}</td>
@@ -89,7 +94,7 @@
                 </tr>
                 @endforelse 
             </table>     
-
+            @include('paginator', ['route'=>$route, 'criterio' => $criterio, 'page' => $page])
         </div>
     </div>
 </div>

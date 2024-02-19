@@ -20,10 +20,10 @@ use Src\view\dto\ParticipanteDto;
 
 class ParticipanteController extends Controller
 {
-    public function index() {
+    public function index($page=1) {
         
         return view('participantes.index',[
-            'participantes' => (new ListarParticipantesUseCase)->ejecutar(),
+            'paginate' => (new ListarParticipantesUseCase)->ejecutar($page),
         ]);
     }
 
@@ -135,12 +135,17 @@ class ParticipanteController extends Controller
             $criterio = request('criterio');
         }
 
-        $participantes = (new BuscadorParticipantesUseCase)->ejecutar($criterio);
-
         return view("participantes.index", [
-            "participantes" => $participantes,
+            "paginate" => (new BuscadorParticipantesUseCase)->ejecutar($criterio),
             "criterio" => $criterio,
         ]);         
+    }
+
+    public function buscadorParticipantesPaginados($page, $criterio) {
+        return view("participantes.index", [
+            "paginate" => (new BuscadorParticipantesUseCase)->ejecutar($criterio, $page),
+            "criterio" => $criterio,
+        ]);          
     }
     
     private function hydrateParticipanteDto($dato): ParticipanteDto {

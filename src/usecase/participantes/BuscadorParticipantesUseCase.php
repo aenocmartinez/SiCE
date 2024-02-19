@@ -6,8 +6,8 @@ use Src\dao\mysql\ParticipanteDao;
 
 class BuscadorParticipantesUseCase {
 
-    public function ejecutar(string $criterio): array {
+    public function ejecutar(string $criterio, $page=1) {
         $participanteRepository = new ParticipanteDao();
-        return $participanteRepository->buscadorParticipantes($criterio);
+        return $participanteRepository->buscadorParticipantes($criterio, $page);
     }
 }

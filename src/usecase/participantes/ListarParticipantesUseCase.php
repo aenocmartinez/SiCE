@@ -6,10 +6,8 @@ use Src\dao\mysql\ParticipanteDao;
 
 class ListarParticipantesUseCase {
 
-    public function ejecutar(): array {
-
-        $participanteRepository = new ParticipanteDao();
+    public function ejecutar($page=1) {
         
-        return $participanteRepository->listarParticipantes();
+        return (new ParticipanteDao())->listarParticipantes($page);
     }
 }
