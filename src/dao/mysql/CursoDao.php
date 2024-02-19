@@ -204,6 +204,8 @@ class CursoDao extends Model implements CursoRepository {
         try {
             $cursos = [];
 
+            $criterio = str_replace(" ","%", $criterio);
+
             $filtro = [
                 "cursos.nombre" => $criterio,
                 "areas.nombre" => $criterio,

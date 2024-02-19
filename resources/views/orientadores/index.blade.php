@@ -57,9 +57,10 @@
                     <td class="fs-sm" style="width: 95%;">
                     <h4 class="fw-normal mb-0">{{ $orientador->getNombre() }}</h4>
                     <small>
-                        {{ $orientador->getTipoNumeroDocumento() }} <br>
-                        Nivel educativo: {{ $orientador->getNivelEducativo() }} <br>
-                        Áreas: {{ $orientador->nombreAreasPertenezco() }}
+                    {{ $orientador->getEmailPersonal() }} <br>
+                        {{ $orientador->getTipoNumeroDocumento() }}
+                        <!-- Nivel educativo: {{ $orientador->getNivelEducativo() }} <br> -->                        
+                        <!-- Áreas: {{ $orientador->nombreAreasPertenezco() }} -->
                     </small>
                     </td>
                     <td class="text-center">
