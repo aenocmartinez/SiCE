@@ -135,6 +135,10 @@ class ParticipanteController extends Controller
             $criterio = request('criterio');
         }
 
+        if (strlen($criterio)==0) {
+            return redirect()->route('participantes.index');
+        }
+
         return view("participantes.index", [
             "paginate" => (new BuscadorParticipantesUseCase)->ejecutar($criterio),
             "criterio" => $criterio,
@@ -142,6 +146,11 @@ class ParticipanteController extends Controller
     }
 
     public function buscadorParticipantesPaginados($page, $criterio) {
+        
+        if (strlen($criterio)==0) {
+            return redirect()->route('participantes.index');
+        }
+
         return view("participantes.index", [
             "paginate" => (new BuscadorParticipantesUseCase)->ejecutar($criterio, $page),
             "criterio" => $criterio,

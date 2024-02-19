@@ -212,24 +212,18 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         $participantes = [];
         try {
 
-            $criterio = str_replace(" ","%", $criterio);
- 
+            // $criterio = str_replace(" ","%", $criterio);            
+
             $query = ParticipanteDao::select('id','primer_nombre','segundo_nombre','primer_apellido',
-                            'segundo_apellido','tipo_documento','documento','sexo','telefono','email'
-                        )
-                        ->where(function ($query) use ($criterio) {
-                            $query->where('primer_nombre', 'like', '%' . $criterio . '%')
-                                ->orWhere('segundo_nombre', 'like', '%' . $criterio . '%')
-                                ->orWhere('primer_apellido', 'like', '%' . $criterio . '%')
-                                ->orWhere('segundo_apellido', 'like', '%' . $criterio . '%')
-                                ->orWhere('documento', 'like', '%' . $criterio . '%')
-                                ->orWhere('telefono', 'like', '%' . $criterio . '%')
-                                ->orWhere('email', 'like', '%' . $criterio . '%');
-                        });
+                        'segundo_apellido','tipo_documento','documento','sexo','telefono','email'
+                    )
+                    ->whereRaw("MATCH(primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, documento, telefono, email) 
+                                AGAINST(? IN BOOLEAN MODE)", ['+'.$criterio.'*']);
 
             $totalRecords = $query->count();
 
             $items = $query->skip($paginate->Offset())->take($paginate->Limit())->get();
+            
 
             foreach($items as $item) {           
                 $participante = new Participante();
