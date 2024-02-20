@@ -1,5 +1,3 @@
-@if ($paginate->TotalRecords() > env('APP_PAGINADOR_NUM_ITEMS')) 
-
 @php 
   $dataPrevious = [$paginate->Previous()];
   $dataNext = [$paginate->Next()];
@@ -61,5 +59,3 @@
       window.location.href = opcionSeleccionada;
     }
   </script>
-
-@endif

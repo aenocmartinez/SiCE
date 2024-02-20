@@ -11,17 +11,21 @@ use Src\domain\Grupo;
 use Src\domain\repositories\GrupoRepository;
 
 use Sentry\Laravel\Facade as Sentry;
+use Src\infraestructure\util\Paginate;
 
 class GrupoDao extends Model implements GrupoRepository {
     protected $table = 'grupos';
-    protected $fillable = ['curso_calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada', 'cupos', 'hora', 'calendario_id'];
+    protected $fillable = ['curso_calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada', 'cupos', 'nombre', 'calendario_id'];
 
 
     public function formulariosInscripcion() {
         return $this->hasMany(FormularioInscripcionDao::class, 'grupo_id');
     }
 
-    public function listarGrupos(): array {
+    public static function listarGrupos($page=1): Paginate {
+
+        $paginate = new Paginate($page, env('APP_PAGINADOR_NUM_ITEMS_GRUPOS'));
+
         $listaGrupos = array();
         $cursoDao = new CursoDao();
         $calendarioDao = new CalendarioDao();
@@ -29,8 +33,9 @@ class GrupoDao extends Model implements GrupoRepository {
         $salonDao = new SalonDao();
 
         try {
-            $grupos = DB::table('grupos as g')
-                        ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 
+
+            $query = DB::table('grupos as g')
+                        ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 
                                 'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id',
                                 DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
                                 )
@@ -39,8 +44,11 @@ class GrupoDao extends Model implements GrupoRepository {
                         ->join('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
                         ->join('cursos as c', 'c.id', '=', 'cc.curso_id')
                         ->join('salones as s', 's.id', '=', 'g.salon_id')
-                        ->orderByDesc('g.id')
-                        ->get();
+                        ->orderByDesc('g.id');
+                
+                $totalRecords = $query->count();                
+                $grupos = $query->skip($paginate->Offset())->take($paginate->Limit())->get();
+        
 
             foreach ($grupos as $g) {
                 $grupo = new Grupo();                
@@ -48,6 +56,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setDia($g->dia);
                 $grupo->setJornada($g->jornada);
                 $grupo->setCupo($g->cupos);
+                $grupo->setNombre($g->nombre);
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 if (!$caledario->esVigente()) {
@@ -72,7 +81,10 @@ class GrupoDao extends Model implements GrupoRepository {
             Sentry::captureException($e);
         }
 
-        return $listaGrupos;
+        $paginate->setRecords($listaGrupos);
+        $paginate->setTotalRecords($totalRecords);
+
+        return $paginate;
     }
 
     public function buscarGrupoPorId(int $id): Grupo {
@@ -84,7 +96,7 @@ class GrupoDao extends Model implements GrupoRepository {
 
         try {
             $g = DB::table('grupos as g')
-                    ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 
+                    ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 
                             'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id', 'cc.costo', 'cc.modalidad'                          
                             )
                     ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
@@ -101,6 +113,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setDia($g->dia);
                 $grupo->setJornada($g->jornada);
                 $grupo->setCupo($g->cupos);
+                $grupo->setNombre($g->nombre);
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);
@@ -122,20 +135,16 @@ class GrupoDao extends Model implements GrupoRepository {
 
         return $grupo;
     }
-    
-    public function buscadorGrupo(string $criterio): array {
-        $grupos = array();
-        return $grupos;
-    }
 
     public function crearGrupo(Grupo $grupo): bool {
         $exito = true;
         try {
-            GrupoDao::create([
+            $nuevoGrupo = GrupoDao::create([
                 'curso_calendario_id' => $grupo->getCursoCalendarioId(), 
                 'salon_id' => $grupo->getSalon()->getId(), 
                 'orientador_id' => $grupo->getOrientador()->getId(), 
                 'dia' => $grupo->getDia(), 
+                'nombre' => null,
                 'jornada' => $grupo->getJornada(),
                 'cupos' => $grupo->getCupo(),                
                 'calendario_id' => $grupo->getCalendarioId()
@@ -144,7 +153,10 @@ class GrupoDao extends Model implements GrupoRepository {
         } catch (\Exception $e) {   
             $exito = false;
             Sentry::captureException($e);
-        }   
+        }
+
+        $nuevoGrupo->nombre = "G" . $nuevoGrupo->id;
+        $nuevoGrupo->save();
 
         return $exito;
     }
@@ -224,16 +236,9 @@ class GrupoDao extends Model implements GrupoRepository {
         try {
             $resultados = DB::table('grupos as g')
                         ->select(
-                            'g.id as grupoId',
-                            'c.id as cursoId',
-                            'ca.id as calendarioId',
-                            'ca.nombre as calendarioNombre',
-                            'c.nombre as nombreCurso',
-                            'g.dia',
-                            'g.jornada',
-                            'g.cupos',
-                            'cc.costo',
-                            'cc.modalidad',
+                            'g.id as grupoId', 'c.id as cursoId', 'ca.id as calendarioId', 'ca.nombre as calendarioNombre',
+                            'c.nombre as nombreCurso', 'g.dia', 'g.jornada', 'g.cupos', 'cc.costo',
+                            'cc.modalidad', 'g.nombre', 
                             DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
                         )
                         ->join('curso_calendario as cc', function ($join) use ($calendarioId) {
@@ -252,6 +257,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo = new Grupo();
 
                 $grupo->setId($r->grupoId);
+                $grupo->setNombre($r->nombre);
                 
                 $curso = new Curso($r->nombreCurso);
                 $curso->setId($r->cursoId);
@@ -282,7 +288,10 @@ class GrupoDao extends Model implements GrupoRepository {
         return $grupos;
     }
 
-    public function buscadorGrupos(string $criterio): array {
+    public static function buscadorGrupos(string $criterio, $page=1): Paginate {
+
+        $paginate = new Paginate($page, env('APP_PAGINADOR_NUM_ITEMS_GRUPOS'));
+
         $listaGrupos = array();
         $cursoDao = new CursoDao();
         $calendarioDao = new CalendarioDao();
@@ -291,33 +300,27 @@ class GrupoDao extends Model implements GrupoRepository {
 
         try {
 
-            $grupos = DB::table('grupos as g')
-                ->select(
-                    'g.id',
-                    'g.dia',
-                    'g.jornada',
-                    'g.curso_calendario_id',
-                    'g.cupos',
-                    'o.id as orientador_id',
-                    'c.id as curso_id',
-                    's.id as salon_id',
-                    'ca.id as calendario_id',
-                    DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
-                )
-                ->leftJoin('salones as s', 's.id', '=', 'g.salon_id')
-                ->leftJoin('orientadores as o', 'o.id', '=', 'g.orientador_id')
-                ->leftJoin('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
-                ->leftJoin('cursos as c', 'c.id', '=', 'cc.curso_id')
-                ->leftJoin('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
-                ->where(function ($query) use ($criterio) {
-                    $campos = ['o.nombre', 's.nombre', 'ca.nombre', 'cc.modalidad', 'g.cupos', 'g.dia', 'g.jornada', 'c.nombre', 'g.id'];
-            
-                    foreach ($campos as $campo) {
-                        $query->orWhere($campo, 'like', '%' . $criterio . '%');
-                    }
-                })
-                ->get();
-            
+            $query = DB::table('grupos as g')
+                    ->select(
+                        'g.id', 'g.dia', 'g.jornada', 'g.nombre', 'g.curso_calendario_id', 'g.cupos',
+                        'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id',
+                        DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
+                    )
+                    ->leftJoin('salones as s', 's.id', '=', 'g.salon_id')
+                    ->leftJoin('orientadores as o', 'o.id', '=', 'g.orientador_id')
+                    ->leftJoin('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
+                    ->leftJoin('cursos as c', 'c.id', '=', 'cc.curso_id')
+                    ->leftJoin('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
+                    ->where(function ($query) use ($criterio) {
+                        $campos = ['o.nombre', 's.nombre', 'ca.nombre', 'cc.modalidad', 'g.cupos', 'g.dia', 'g.jornada', 'c.nombre', 'g.nombre'];
+                
+                        foreach ($campos as $campo) {
+                            $query->orWhere($campo, 'like', '%' . $criterio . '%');
+                        }
+                    });
+        
+            $totalRecords = $query->count();                    
+            $grupos = $query->skip($paginate->Offset())->take($paginate->Limit())->orderByDesc('g.id')->get();
 
             foreach ($grupos as $g) {
                 $grupo = new Grupo();                
@@ -325,7 +328,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setDia($g->dia);
                 $grupo->setJornada($g->jornada);
                 $grupo->setCupo($g->cupos);
-                // $grupo->setHora($g->hora);
+                $grupo->setNombre($g->nombre);
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);
@@ -340,12 +343,15 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setSalon($salon);
                 $grupo->setTotalInscritos($g->totalInscritos);
 
-                array_push($listaGrupos, $grupo);
+                $listaGrupos[] = $grupo;
             }
         } catch (\Exception $e) {
             Sentry::captureException($e);
         }
 
-        return $listaGrupos;        
+        $paginate->setTotalRecords($totalRecords);
+        $paginate->setRecords($listaGrupos);
+
+        return $paginate;
     }
 }

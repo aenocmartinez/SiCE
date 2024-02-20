@@ -11,9 +11,10 @@ class Paginate {
     private $totalRecords;
     private $records;
 
-    public function __construct($page=1) {        
+    public function __construct($page=1, $itemsPerPage=0) {        
         $this->page = $page;        
-        $this->limit = env('APP_PAGINADOR_NUM_ITEMS');
+
+        $this->limit = ($itemsPerPage != 0) ? $itemsPerPage :  env('APP_PAGINADOR_NUM_ITEMS');
         
         $this->offset = ($this->page - 1) * $this->limit;        
         $this->records = array();

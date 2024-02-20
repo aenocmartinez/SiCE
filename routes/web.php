@@ -83,7 +83,6 @@ Route::get('/calendario/{calendarioId}/area/{areaId}/cursos', [CalendarioControl
 Route::get('/calendario/{calendarioId}/area/{areaId}/cursos-periodo', [CalendarioController::class, 'listarCursosDelCalendario'])->name('calendario.cursos_por_calendario');
 Route::delete('/calendario/{calendarioId}/curso/{cursoCalendarioId}/area/{areaId}', [CalendarioController::class, 'retirarCursoACalendario'])->name('calendario.retirar_curso');
 
-Route::get('/grupos',[GrupoController::class, 'index'])->name('grupos.index');
 Route::get('/grupos/{id}/editar', [GrupoController::class, 'edit'])->name('grupos.edit');
 Route::get('/grupos/crear', [GrupoController::class, 'create'])->name('grupos.create');
 Route::post('/grupos', [GrupoController::class, 'store'])->name('grupos.store');
@@ -92,6 +91,8 @@ Route::patch('/grupos/{id}/actualizar', [GrupoController::class, 'update'])->nam
 Route::post('/grupos/buscador', [GrupoController::class, 'buscadorGrupos'])->name('grupos.buscador');
 Route::get('/grupos/calendario/{calendarioId}/cursos/{cursoCalendarioIdActual}',[GrupoController::class, 'listarCursosPorCalendario'])->name('grupos.cursos_calendario');
 Route::get('/grupos/lista-orientadores/{cursoCalendarioId}/{orientadorIdActual}',[GrupoController::class, 'listarOrientadoresPorCursoCalendario'])->name('grupos.orientadores_por_curso_calendario');
+Route::get('/grupos/{page?}',[GrupoController::class, 'index'])->name('grupos.index');
+Route::get('/grupos/{page}/q/{criteria}', [GrupoController::class, 'buscadorGruposPaginados'])->name('grupos.buscador-paginador');
 
 // Route::get('/tipo-salones', [TipoSalonController::class, 'index'])->name('tipo-salones.index');
 Route::get('/tipo-salones/{id}/editar', [TipoSalonController::class, 'edit'])->name('tipo-salones.edit');

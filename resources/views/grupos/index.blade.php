@@ -7,6 +7,11 @@
 
 @php
     $criterio = isset($criterio) ? $criterio : '';
+    $route = "grupos.index";
+    $page = 1;
+    if (strlen($criterio)>0) {
+        $route = "grupos.buscador-paginador";
+    }
 @endphp
 
 <div class="row mb-3">
@@ -45,10 +50,10 @@
         <div class="block-content">
 
             <table class="table table-vcenter">
-                @forelse ($grupos as $grupo)
+                @forelse ($paginate->Records() as $grupo)
                 <tr>
                     <td class="fs-sm" style="width: 95%;">                        
-                        <h4 class="fw-normal mb-0">G: {{ $grupo->getId() }}</h4>
+                        <h4 class="fw-normal mb-0">{{ $grupo->getNombre() }}</h4>
                         <small class="fw-light">
                             Curso: {{ $grupo->getNombreCurso() }} ({{ $grupo->getModalidad() }}) <br>
                             Periodo: {{ $grupo->getNombreCalendario() }}<br>
@@ -110,6 +115,8 @@
                 </tr>
                 @endforelse 
             </table>     
+
+            @include('paginator', ['route'=>$route, 'criterio' => $criterio, 'page' => $page])
 
         </div>
     </div>

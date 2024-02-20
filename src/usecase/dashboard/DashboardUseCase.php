@@ -27,16 +27,17 @@ class DashboardUseCase {
             'totalCursosCreados' => 0,
         ];
 
-        $listaOrientadores = (new ListarOrientadoresUseCase)->ejecutar();
-        $datosDashboard['totalOrientadores'] = sizeof($listaOrientadores);
-
-        $listaCursos = $listarCursos = (new ListarCursosUseCase)->ejecutar();
-        $datosDashboard['totalCursosCreados'] = sizeof($listaCursos);
-                
+        $listaOrientadores = (new ListarOrientadoresUseCase)->ejecutar();        
         
+
+        $listaCursos = (new ListarCursosUseCase)->ejecutar();
+        
+                
         $calendarioVigente = Calendario::Vigente();
 
         if (!$calendarioVigente->existe()) {
+            $datosDashboard['totalOrientadores'] = sizeof($listaOrientadores);
+            $datosDashboard['totalCursosCreados'] = sizeof($listaCursos);
             return $datosDashboard;
         }
 
@@ -44,12 +45,14 @@ class DashboardUseCase {
 
         $inscripciones = $calendarioVigente->formulariosInscritos();
 
-        $datosDashboard = (new TotalesInscripcionesUseCase)->ejecutar($inscripciones);
-
+        $datosDashboard = (new TotalesInscripcionesUseCase)->ejecutar($inscripciones);              
         
         $listaCursosAbiertos = (new ListarCursosPorCalendarioUseCase)->ejecutar($calendarioVigente->getId());
         $datosDashboard['totalCursosAbiertos'] = sizeof($listaCursosAbiertos);        
 
+        $datosDashboard['totalOrientadores'] = sizeof($listaOrientadores);
+        $datosDashboard['totalCursosCreados'] = sizeof($listaCursos);
+        
         return $datosDashboard;
     }
 }

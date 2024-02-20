@@ -23,9 +23,9 @@ use Src\view\dto\GrupoDto;
 
 class GrupoController extends Controller
 {
-    public function index()
+    public function index($page=1)
     {
-        return view('grupos.index', ['grupos' => (new ListarGruposUseCase)->ejecutar()]);
+        return view('grupos.index', ['paginate' => (new ListarGruposUseCase)->ejecutar($page)]);
     }
 
     public function create()
@@ -121,10 +121,19 @@ class GrupoController extends Controller
             $criterio = request('criterio');
         }
 
-        $grupos = (new BuscadorGruposUseCase)->ejecutar($criterio);
+        return view("grupos.index", [
+            "paginate" => (new BuscadorGruposUseCase)->ejecutar($criterio),
+            "criterio" => $criterio,
+        ]);         
+    }
+
+    public function buscadorGruposPaginados($page=1, $criterio) {        
+        if (strlen($criterio) == 0) {
+            return redirect()->route('grupos.index');
+        }
 
         return view("grupos.index", [
-            "grupos" => $grupos,
+            "paginate" => (new BuscadorGruposUseCase)->ejecutar($criterio, $page),
             "criterio" => $criterio,
         ]);         
     }

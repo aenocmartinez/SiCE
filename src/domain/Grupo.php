@@ -3,6 +3,8 @@
 namespace Src\domain;
 
 use Carbon\Carbon;
+use Src\dao\mysql\GrupoDao;
+use Src\infraestructure\util\Paginate;
 
 class Grupo {
     private int $id;
@@ -10,7 +12,7 @@ class Grupo {
     private string $jornada;
     private int $totalInscritos;
     private int $cupo;
-    private $hora;
+    private $nombre;
     private Salon $salon;
     private Orientador $orientador;
     private CursoCalendario $cursoCalendario;
@@ -20,7 +22,7 @@ class Grupo {
         $this->id = 0;
         $this->dia = "";
         $this->jornada = "";
-        $this->hora = "";
+        $this->nombre = "";
         $this->totalInscritos = 0;
         $this->cupo = 0;
 
@@ -123,8 +125,8 @@ class Grupo {
         return $this->id > 0;
     }
 
-    public static function listar($repository): array {
-        return $repository->listarGrupos();
+    public static function listar($page=1): Paginate {
+        return GrupoDao::listarGrupos($page);
     }
 
     public static function buscarPorId(int $id, $repository): Grupo {
@@ -186,5 +188,13 @@ class Grupo {
 
     public function esCalendarioVigente(): bool {
         return $this->cursoCalendario->esCalendarioVigente();
+    }
+
+    public function setNombre($nombre): void {
+        $this->nombre = $nombre;
+    }
+
+    public function getNombre() {
+        return $this->nombre;
     }
 }

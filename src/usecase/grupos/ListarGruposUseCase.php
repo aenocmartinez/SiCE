@@ -7,8 +7,7 @@ use Src\domain\Grupo;
 
 class ListarGruposUseCase {
 
-    public function ejecutar(): array {
-        $grupoRepository = new GrupoDao();
-        return Grupo::listar($grupoRepository);
+    public function ejecutar($page=1) {
+        return Grupo::listar($page);
     }
 }
