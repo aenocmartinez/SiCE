@@ -202,12 +202,16 @@
               <div class="table-responsive">
                 <table class="table table-bordered table-vcenter">
                   <tbody>
-                    @foreach ($data["topCursosInscritos"] as $curso)                        
+                    @forelse ($data["topCursosInscritos"] as $curso)                        
                         <tr class="fs-sm">
                             <td><a class="block-title">{{ $curso['nombre'] }}</a></td>
                             <td class="text-center">{{ $curso['total'] }}</td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr class="fs-sm">
+                            <td colspan="2" class="text-center">No se encontraron inscripciones</td>
+                        </tr>                    
+                    @endforelse
 
                   </tbody>
                 </table>
