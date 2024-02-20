@@ -360,4 +360,17 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
 
         return $conteo;        
     }
+
+    public static function numeroParticipantesPorConvenioYCalendario($calendarioId): int {
+
+        $total = FormularioInscripcionDao::join('grupos as g', function ($join) use ($calendarioId) {
+            $join->on('formulario_inscripcion.grupo_id', '=', 'g.id')
+                 ->where('g.calendario_id', '=', $calendarioId)
+                 ->whereNotNull('formulario_inscripcion.convenio_id');
+        })
+        ->count();
+    
+        
+        return $total;
+    }
 }

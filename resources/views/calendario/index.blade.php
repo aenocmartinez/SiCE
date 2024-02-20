@@ -52,7 +52,7 @@
 
                         <a href="{{ route('calendario.estadisticas', $calendario->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
                             <i class="fa fa-fw fa-chart-pie"></i> Estadísticas
-                        </a>                                                
+                        </a>                                        
                         
 
                     </td>                    

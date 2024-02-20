@@ -18,11 +18,12 @@ class EstadisticasCalendarioUseCase {
             "fechaFin" => "",
             "estado" => "",
             "numeroParticipantes" => 0,
-            "numeroCursos" => 0,
             "totalIngresos" => 0,
+            "ingresosConvenio" => 0,
             "participantesMujeres" => 0,
             "participantesHombres" => 0,
-            "topCursosInscritos" => [],
+            "participantesConvenio" => 0,
+            "topCursosInscritos" => [],            
             "existe" => false,
         ];
 
@@ -42,6 +43,7 @@ class EstadisticasCalendarioUseCase {
 
         $data["participantesHombres"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('M', $calendario->getId());
         $data["participantesMujeres"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('F', $calendario->getId());
+        $data["participantesConvenio"] = ParticipanteDao::numeroParticipantesPorConvenioYCalendario($calendario->getId());
         $data["topCursosInscritos"] = CursoDao::top5CursosMasInscritosPorCalendario($calendario->getId());
                 
         $data["existe"] = true;
@@ -49,8 +51,8 @@ class EstadisticasCalendarioUseCase {
         $data["fechaInicio"] = $calendario->getFechaInicioFormateada();
         $data["fechaFin"] = $calendario->getFechaFinalFormateada();
         $data["estado"] = $calendario->estado();
-        $data["numeroCursos"] = 0;
-        $data["totalIngresos"] = $totales["pagoTotal"];        
+        $data["ingresosConvenio"] = $totales["pagoPorConvenio"];
+        $data["totalIngresos"] = $totales["pagoTotal"];
         $data["totalParticipantes"] = $totales["totalMatriculados"];
         
 

@@ -52,7 +52,7 @@
             <table class="table table-vcenter">
                 @forelse ($paginate->Records() as $grupo)
                 <tr>
-                    <td class="fs-sm" style="width: 95%;">                        
+                    <td class="fs-sm" style="width: 64%;">                        
                         <h4 class="fw-normal mb-0">{{ $grupo->getNombre() }}</h4>
                         <small class="fw-light">
                             Curso: {{ $grupo->getNombreCurso() }} ({{ $grupo->getModalidad() }}) <br>
@@ -79,33 +79,29 @@
 
                         </small> 
                     </td>
-                    <td class="text-center">
+                    <td class="d-sm-table-cell">
 
-                        <div class="btn-group">
+                        @if ($grupo->esCalendarioVigente())
+                            <a href="{{ route('grupos.edit', $grupo->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-secondary">
+                                <i class="fa fa-fw fa-pencil-alt"></i> Editar
+                            </a>   
 
-                            @if ($grupo->esCalendarioVigente())
-                                <a href="{{ route('grupos.edit', $grupo->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar grupo">
-                                    <i class="fa fa-fw fa-pencil-alt"></i>
-                                </a>
-                                <form method="POST" action="{{ route('grupos.delete', $grupo->getId()) }}" id="form-del-grupo-{{$grupo->getId()}}">
-                                    @csrf
-                                    @method('delete')
-                                    <button class="btn btn-sm btn-alt-secondary" 
+                            <form method="POST" action="{{ route('grupos.delete', $grupo->getId()) }}" class="d-inline-block" id="form-del-grupo-{{$grupo->getId()}}">
+                                @csrf
+                                @method('delete')
+                                    <button class="fs-xs fw-semibold py-1 px-3 btn rounded-pill btn-outline-danger"
                                             data-bs-toggle="tooltip" 
                                             title="eliminar grupo" 
                                             type="button"
                                             data-id="{{ $grupo->getId() }}"
                                             onclick="confirmDelete(this)">
-                                        <i class="fa fa-fw fa-trash-can"></i>
+                                        <i class="fa fa-fw fa-trash-can"></i> Eliminar
                                     </button>
-                                </form>
-                            @endif
-
-                            <a href="{{ route('grupos.edit', $grupo->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="reporte estadístico">
-                                <i class="fa fa-fw fa-chart-simple"></i>
-                            </a>                            
-
-                        </div>
+                            </form>                                              
+                        @endif
+                        <a href="{{ route('calendario.estadisticas', $grupo->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
+                            <i class="fa fa-fw fa-chart-pie"></i> Estadísticas
+                        </a>
 
                     </td>                    
                 </tr>

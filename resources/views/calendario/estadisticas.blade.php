@@ -68,22 +68,22 @@
             </div>
             <div class="block-content bg-body-light text-center">
               <div class="row items-push text-uppercase">
-                <div class="col-6 col-md-4">
+                <div class="col-6 col-md-3">
                   <div class="fw-semibold text-dark mb-1"># participantes</div>
                   <a class="link-fx fs-3 text-primary" href="javascript:void(0)">{{ $data["totalParticipantes"]}}</a>
                 </div>
-                <div class="col-6 col-md-4">
+                <div class="col-6 col-md-3">
+                  <div class="fw-semibold text-dark mb-1"># Parts. convenio</div>
+                  <a class="link-fx fs-3 text-primary" href="javascript:void(0)">{{ $data["participantesConvenio"]}}</a>
+                </div>                
+                <div class="col-6 col-md-3">
                   <div class="fw-semibold text-dark mb-1">Total ingresos</div>
                   <a class="link-fx fs-3 text-primary" href="javascript:void(0)">${{ $data["totalIngresos"] }} COP</a>
                 </div>
-                <div class="col-6 col-md-4">
-                  <div class="fw-semibold text-dark mb-1"># Cursos abiertos</div>
-                  <a class="link-fx fs-3 text-primary" href="javascript:void(0)">{{ $data['numeroCursos'] }}</a>
+                <div class="col-6 col-md-3">
+                  <div class="fw-semibold text-dark mb-1">Ing. por convenio</div>
+                  <a class="link-fx fs-3 text-primary" href="javascript:void(0)">${{ $data['ingresosConvenio'] }} COP</a>
                 </div>
-                <!-- <div class="col-6 col-md-3">
-                  <div class="fw-semibold text-dark mb-1"># Participantes</div>
-                  <a class="link-fx fs-3 text-primary" href="javascript:void(0)">{{ $data["totalParticipantes"]}}</a>
-                </div> -->
               </div>
             </div>
           </div>  
@@ -196,7 +196,7 @@
 
           <div class="block block-rounded">
             <div class="block-header block-header-default">
-              <h3 class="block-title text-center">Top 5 de cursos con más inscripciones</h3>
+              <h3 class="block-title">Top 5 de cursos con más inscripciones</h3>
             </div>
             <div class="block-content">
               <div class="table-responsive">
