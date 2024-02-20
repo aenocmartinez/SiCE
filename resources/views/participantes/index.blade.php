@@ -71,7 +71,7 @@
                             <a href="{{ route('participantes.edit', $p->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-secondary">
                                 <i class="fa fa-fw fa-pencil-alt"></i> Editar
                             </a>
-                            <a href="{{ route('participantes.formularios', $p->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-warning">
+                            <a href="{{ route('participantes.formularios', $p->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-success">
                                 <i class="fa fa-fw fa-address-card"></i> Inscripciones
                             </a>                           
                         </div>

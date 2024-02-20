@@ -97,7 +97,8 @@ class GrupoDao extends Model implements GrupoRepository {
         try {
             $g = DB::table('grupos as g')
                     ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 
-                            'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id', 'cc.costo', 'cc.modalidad'                          
+                            'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id', 'cc.costo', 'cc.modalidad',
+                            DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')                          
                             )
                     ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
                     ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
@@ -114,6 +115,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setJornada($g->jornada);
                 $grupo->setCupo($g->cupos);
                 $grupo->setNombre($g->nombre);
+                $grupo->setTotalInscritos($g->totalInscritos);
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);

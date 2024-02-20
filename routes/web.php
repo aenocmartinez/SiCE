@@ -95,6 +95,7 @@ Route::get('/grupos/calendario/{calendarioId}/cursos/{cursoCalendarioIdActual}',
 Route::get('/grupos/lista-orientadores/{cursoCalendarioId}/{orientadorIdActual}',[GrupoController::class, 'listarOrientadoresPorCursoCalendario'])->name('grupos.orientadores_por_curso_calendario');
 Route::get('/grupos/{page?}',[GrupoController::class, 'index'])->name('grupos.index');
 Route::get('/grupos/{page}/q/{criteria}', [GrupoController::class, 'buscadorGruposPaginados'])->name('grupos.buscador-paginador');
+Route::get('/grupos/{id}/mas-informacion', [GrupoController::class, 'masInformacion'])->name('grupos.mas-info');
 
 // Route::get('/tipo-salones', [TipoSalonController::class, 'index'])->name('tipo-salones.index');
 Route::get('/tipo-salones/{id}/editar', [TipoSalonController::class, 'edit'])->name('tipo-salones.edit');

@@ -62,7 +62,7 @@ class GrupoController extends Controller
 
         $grupo = (new BuscarGrupoPorIdUseCase)->ejecutar($id);
         if (!$grupo->existe()) {
-            return redirect()->route('grupos.index')->with('code', "200")->with('status', "grupo no encontrada");            
+            return redirect()->route('grupos.index')->with('code', "200")->with('status', "grupo no encontrado");
         }
 
         return view('grupos.edit', [
@@ -136,6 +136,15 @@ class GrupoController extends Controller
             "paginate" => (new BuscadorGruposUseCase)->ejecutar($criterio, $page),
             "criterio" => $criterio,
         ]);         
+    }
+
+    public function masInformacion($id) {
+        $grupo = (new BuscarGrupoPorIdUseCase)->ejecutar($id);
+        if (!$grupo->existe()) {
+            return redirect()->route('grupos.index')->with('code', "200")->with('status', "grupo no encontrado");
+        }
+        
+        return view('grupos.mas_informacion', ['grupo' => $grupo]);
     }
 
     private function hydrateDto($data): GrupoDto {            
