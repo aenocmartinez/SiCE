@@ -67,24 +67,13 @@
                     <td>{{ $p->getEmail() }}</td>
                     <td>{{ $p->getTelefono() }}</td>
                     <td class="text-center">
-                        <div class="btn-group">
-                            <a href="{{ route('participantes.edit', $p->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar participante">
-                                <i class="fa fa-fw fa-pencil-alt"></i>
+                        <div class="d-sm-table-cell">
+                            <a href="{{ route('participantes.edit', $p->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-secondary">
+                                <i class="fa fa-fw fa-pencil-alt"></i> Editar
                             </a>
-                            <a href="{{ route('participantes.formularios', $p->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="inscripciones">
-                                <i class="fa fa-fw fa-list-check"></i>
-                            </a>                            
-                            <!-- <form method="POST" action="{{ route('participantes.delete', $p->getId()) }}" id="form-del-participante-{{$p->getId()}}">
-                                @csrf @method('delete')
-                                <button class="btn btn-sm btn-alt-secondary" 
-                                        data-bs-toggle="tooltip" 
-                                        title="eliminar área" 
-                                        type="button"
-                                        data-id="{{ $p->getId() }}"
-                                        onclick="confirmDelete(this)">
-                                    <i class="fa fa-fw fa-trash-can"></i>
-                                </button>
-                            </form> -->
+                            <a href="{{ route('participantes.formularios', $p->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-warning">
+                                <i class="fa fa-fw fa-address-card"></i> Inscripciones
+                            </a>                           
                         </div>
                     </td>                    
                 </tr>

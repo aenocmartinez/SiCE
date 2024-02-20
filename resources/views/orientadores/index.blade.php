@@ -54,7 +54,7 @@
             <table class="table table-vcenter">
                 @forelse ($paginate->Records() as $orientador)
                 <tr>
-                    <td class="fs-sm" style="width: 95%;">
+                    <td class="fs-sm" style="width: 72%;">
                     <h4 class="fw-normal mb-0">{{ $orientador->getNombre() }}</h4>
                     <small>
                     {{ $orientador->getEmailPersonal() }} <br>
@@ -64,15 +64,13 @@
                     </small>
                     </td>
                     <td class="text-center">
-                        <div class="btn-group">
-                            <a href="{{ route('orientadores.edit', $orientador->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar orientador">
-                                <i class="fa fa-fw fa-pencil-alt"></i>
+                        <div class="d-sm-table-cell">
+                            <a href="{{ route('orientadores.edit', $orientador->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-secondary">
+                                <i class="fa fa-fw fa-pencil-alt"></i> Editar
                             </a>
-
-                            <a href="{{ route('orientadores.moreInfo', $orientador->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="más información">
-                            <i class="fa fa-fw fa-circle-info"></i>
-                            </a>
-
+                            <a href="{{ route('orientadores.moreInfo', $orientador->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
+                                <i class="fa fa-fw fa-circle-info"></i> Más información
+                            </a>                            
                         </div>
                     </td>                    
                 </tr>

@@ -51,7 +51,7 @@
             <table class="table table-vcenter">
                 @forelse ($paginate->Records() as $salon)
                 <tr>
-                    <td class="fs-sm" style="width: 95%;">
+                    <td class="fs-sm" style="width: 78%;">
                     <h4 class="fw-normal mb-0">{{ $salon->getNombreYTipoSalon() }}</h4>
                     <small>
                         Capacidad: {{ $salon->getCapacidad() }}<br> 
@@ -59,22 +59,20 @@
                     </small> 
                     </td>
                     <td class="text-center">
-                        <div class="btn-group">
-                            <a href="{{ route('salones.edit', $salon->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar salón">
-                                <i class="fa fa-fw fa-pencil-alt"></i>
+                        <div class="d-sm-table-cell">
+                            <a href="{{ route('salones.edit', $salon->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-secondary">
+                                <i class="fa fa-fw fa-pencil-alt"></i> Editar
                             </a>
-                            <form method="POST" action="{{ route('salones.delete', $salon->getId()) }}" id="form-del-salon-{{ $salon->getId() }}">
+                            <form method="POST" action="{{ route('salones.delete', $salon->getId()) }}" class="d-inline-block" id="form-del-salon-{{ $salon->getId() }}">
                                 @csrf
                                 @method('delete')
-                                <button class="btn btn-sm btn-alt-secondary" 
-                                        data-bs-toggle="tooltip" 
-                                        title="eliminar salón" 
+                                <button class="fs-xs fw-semibold py-1 px-3 btn rounded-pill btn-outline-danger" 
                                         type="button"
                                         data-id="{{ $salon->getId() }}"
                                         onclick="confirmDelete(this)">
-                                    <i class="fa fa-fw fa-trash-can"></i>
+                                    <i class="fa fa-fw fa-trash-can"></i> Eliminar
                                 </button>
-                            </form>
+                            </form>                                                        
                         </div>
                     </td>                    
                 </tr>
