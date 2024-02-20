@@ -79,6 +79,15 @@ class ConvenioController extends Controller
         return redirect()->route('convenios.index')->with('code', $response->code)->with('status', $response->message);
     }
 
+    public function masInformacion($id) {
+        $convenio = (new BuscarConvenioPorIdUseCase)->ejecutar($id);
+        if (!$convenio->existe()) {
+            return redirect()->route('convenios.index')->with('code', "200")->with('status', "convenio no encontrado");
+        }
+        
+        return view('convenios.mas_informacion', ['convenio' => $convenio]);        
+    }
+
     public function hydrateDto($req): ConvenioDto {
         $convenioDto = new ConvenioDto();
 

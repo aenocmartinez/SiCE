@@ -20,7 +20,7 @@
             <table class="table table-vcenter">
                 @forelse ($convenios as $convenio)
                 <tr>
-                    <td class="fs-sm" style="width: 78%;">
+                    <td class="fs-sm" style="width: 60%;">
                     <h4 class="fw-normal mb-0">{{ $convenio->getNombre() }} - {{ $convenio->getDescuento()."%" }} de descuento</h4>
                         <small class="fw-light">
                             {{ $convenio->getVigenciaEnTexto() }} <br>
@@ -41,7 +41,10 @@
                                         onclick="confirmDelete(this)">
                                     <i class="fa fa-fw fa-trash-can"></i> Eliminar
                                 </button>
-                            </form>                                                         
+                            </form> 
+                            <a href="{{ route('convenios.mas-info', $convenio->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
+                                <i class="fa fa-fw fa-circle-info"></i> Más información
+                            </a>                                                                                    
                         </div>
                     </td>                    
                 </tr>

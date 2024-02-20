@@ -14,6 +14,7 @@ class Convenio {
     private Calendario $calendario;
     private $descuento;
     private ConvenioRepository $repository;
+    private $numeroBeneficiados;
 
     public function __construct(string $nombre="")
     {
@@ -23,6 +24,7 @@ class Convenio {
         $this->fecFin = "";
         $this->calendario = new Calendario();
         $this->descuento = 0;
+        $this->numeroBeneficiados = 0;
     }
 
     public function setRepository($repository): void {
@@ -80,6 +82,14 @@ class Convenio {
     public function getNombreCalendario(): string {
         return $this->calendario->getNombre();
     }
+
+    public function setNumeroBeneficiados($numeroBeneficiados): void {
+        $this->numeroBeneficiados = $numeroBeneficiados;
+    }
+
+    public function getNumeroBeneficiados(): int {
+        return $this->numeroBeneficiados;
+    }    
 
     public function existe(): bool {
         return $this->id > 0;

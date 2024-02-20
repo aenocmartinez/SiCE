@@ -111,6 +111,7 @@ Route::get('/convenios/{id}/editar', [ConvenioController::class, 'edit'])->name(
 Route::post('convenios', [ConvenioController::class, 'store'])->name('convenios.store');
 Route::delete('/convenios/{id}', [ConvenioController::class, 'destroy'])->name('convenios.delete');
 Route::patch('/convenios', [ConvenioController::class, 'update'])->name('convenios.update');
+Route::get('/convenios/{id}/mas-informacion', [ConvenioController::class, 'masInformacion'])->name('convenios.mas-info');
 
 Route::get('/nueva-inscripcion/paso-1/existencia-participante', [FormularioInscripcionController::class, 'index'])->name('formulario-inscripcion.paso-1');
 Route::get('/nueva-inscripcion/paso-2/datos-participante/tipo-documento/{tipoDocumento}/documento/{documento}', [FormularioInscripcionController::class, 'create'])->name('formulario-inscripcion.paso-2');

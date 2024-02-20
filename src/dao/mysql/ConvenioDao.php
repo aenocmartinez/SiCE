@@ -4,6 +4,7 @@ namespace Src\dao\mysql;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Src\domain\Convenio;
 use Src\domain\repositories\ConvenioRepository;
 
@@ -46,7 +47,13 @@ class ConvenioDao extends Model implements ConvenioRepository {
         $convenio = new Convenio();
         try {
             $calendarioDao = new CalendarioDao();
-            $c = ConvenioDao::find($id);
+            $c = ConvenioDao::select('convenios.id', 'convenios.nombre', 'convenios.calendario_id', 
+                                    'convenios.fec_ini', 'convenios.fec_fin', 'convenios.descuento', DB::raw('COUNT(formulario_inscripcion.id) as numBeneficiados'))
+                        ->leftJoin('formulario_inscripcion', 'convenios.id', '=', 'formulario_inscripcion.convenio_id')
+                        ->where('convenios.id', $id)
+                        ->groupBy('convenios.id', 'convenios.nombre', 'convenios.calendario_id', 'convenios.fec_ini', 'convenios.fec_fin', 'convenios.descuento')
+                        ->first();
+
             if ($c) {
                 $convenio = new Convenio();
                 $convenio->setId($c->id);
@@ -54,6 +61,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenio->setFecInicio($c->fec_ini);
                 $convenio->setFecFin($c->fec_fin);
                 $convenio->setDescuento($c->descuento);
+                $convenio->setNumeroBeneficiados($c->numBeneficiados);
     
                 $calendario = $calendarioDao->buscarCalendarioPorId($c->calendario_id);
                 $convenio->setCalendario($calendario);
