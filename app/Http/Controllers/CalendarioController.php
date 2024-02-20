@@ -15,6 +15,7 @@ use Src\usecase\calendarios\EliminarCalendarioUseCase;
 use Src\usecase\calendarios\ActualizarCalendarioUseCase;
 use Src\usecase\calendarios\BuscarCalendarioPorIdUseCase;
 use Src\usecase\calendarios\AgregarCursoACalendarioUseCase;
+use Src\usecase\calendarios\EstadisticasCalendarioUseCase;
 use Src\usecase\calendarios\ListarCursosPorCalendarioUseCase;
 use Src\usecase\calendarios\RetirarCursoACalendarioUseCase;
 
@@ -167,6 +168,19 @@ class CalendarioController extends Controller
         return view('calendario._cursos_calendario', [
             'cursosCalendario' => (new ListarCursosPorCalendarioUseCase)->ejecutar($calendarioId, $areaId),
             'area_id' => $areaId,
+        ]);
+    }
+
+    public function estadisticas($id) {
+
+        $data = (new EstadisticasCalendarioUseCase)->ejecutar($id);
+        
+        if (!$data['existe']) {
+            return redirect()->route('calendario.index')->with('code', 401)->with('status','Periodo no encontrado.');
+        }
+
+        return view('calendario.estadisticas', [
+            'data' => $data,
         ]);
     }
 

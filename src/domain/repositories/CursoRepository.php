@@ -15,4 +15,5 @@ interface CursoRepository {
     public function listarCursosPorArea(int $areaId): array;
     public static function listaCursosPaginados($page=1): Paginate;
     public static function buscadorCursos(string $criterio, $page): Paginate;
+    public static function top5CursosMasInscritosPorCalendario($calendarioId): array;
 }

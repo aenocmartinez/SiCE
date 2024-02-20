@@ -82,6 +82,8 @@ Route::post('/calendario/agregar-curso',[CalendarioController::class, 'agregarCu
 Route::get('/calendario/{calendarioId}/area/{areaId}/cursos', [CalendarioController::class, 'listarCursosPorArea'])->name('calendario.cursos_por_area');
 Route::get('/calendario/{calendarioId}/area/{areaId}/cursos-periodo', [CalendarioController::class, 'listarCursosDelCalendario'])->name('calendario.cursos_por_calendario');
 Route::delete('/calendario/{calendarioId}/curso/{cursoCalendarioId}/area/{areaId}', [CalendarioController::class, 'retirarCursoACalendario'])->name('calendario.retirar_curso');
+Route::get('/calendario/{id}/estadisticas',[CalendarioController::class, 'estadisticas'])->name('calendario.estadisticas');
+
 
 Route::get('/grupos/{id}/editar', [GrupoController::class, 'edit'])->name('grupos.edit');
 Route::get('/grupos/crear', [GrupoController::class, 'create'])->name('grupos.create');

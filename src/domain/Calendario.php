@@ -4,6 +4,7 @@ namespace Src\domain;
 
 use DateTime;
 use Src\dao\mysql\CalendarioDao;
+use Src\infraestructure\util\FormatoFecha;
 
 class Calendario {
     private int $id;
@@ -48,6 +49,13 @@ class Calendario {
         return $this->fechaInicio;
     }
 
+    public function getFechaInicioFormateada(): string {
+        if (is_null($this->fechaInicio))
+            return "";
+        
+        return FormatoFecha::fechaDDdeMMdeYYYY($this->fechaInicio);
+    }
+
     public function setFechaFinal($fechaFinal): void{
         $this->fechaFinal = $fechaFinal;
     }
@@ -56,12 +64,19 @@ class Calendario {
         return $this->fechaFinal;
     }
 
+    public function getFechaFinalFormateada(): string {
+        if (is_null($this->fechaFinal))
+            return "";
+        
+        return FormatoFecha::fechaDDdeMMdeYYYY($this->fechaFinal);
+    }    
+
     public static function listar($repository): array {
         return $repository->listarCalendarios();
     }
 
-    public static function buscarPorId(int $id=0, $repository): Calendario {
-        return $repository->buscarCalendarioPorId($id);
+    public static function buscarPorId(int $id=0): Calendario {
+        return (new CalendarioDao())->buscarCalendarioPorId($id);
     }
 
     public static function buscarPorNombre(string $nombre, $repository): Calendario {

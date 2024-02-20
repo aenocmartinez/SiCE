@@ -22,38 +22,39 @@
             <table class="table table-vcenter">
                 @forelse ($calendarios as $calendario)
                 <tr>
-                    <td class="fs-sm" style="width: 95%;">                        
+                    <td class="fs-sm" style="width: 52%;">                        
                         <h4 class="fw-normal mb-0">{{ $calendario->getNombre() }}</h4>
                         <small class="fw-light">
                             {{ $calendario->getFechaInicio() }} al {{ $calendario->getFechaFinal()}} <br>
                             {{ $calendario->estado() }}
                         </small> 
                     </td>
-                    <td class="text-center">
-                        <div class="btn-group">
-
-                        @if ($calendario->esVigente())                        
-                            <a href="{{ route('calendario.edit', $calendario->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="editar periodo">
-                                <i class="fa fa-fw fa-pencil-alt"></i>
+                    <td class="d-sm-table-cell">
+                        @if ($calendario->esVigente())  
+                        
+                            <a href="{{ route('calendario.edit', $calendario->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-secondary">
+                                <i class="fa fa-fw fa-pencil-alt"></i> Editar
                             </a>
-                            <a href="{{ route('calendario.cursos', $calendario->getId()) }}" class="btn btn-sm btn-alt-secondary" data-bs-toggle="tooltip" title="Gestionar cursos del periodo">
-                                <i class="fa fa-fw fa-arrow-up-right-dots"></i>
-                            </a>                            
-                            <form method="POST" action="{{ route('calendario.delete', $calendario->getId()) }}" id="form-del-calendario-{{$calendario->getId()}}">
+                            <form method="POST" action="{{ route('calendario.delete', $calendario->getId()) }}" class="d-inline-block" id="form-del-calendario-{{$calendario->getId()}}">
                                 @csrf
                                 @method('delete')
-                                <button class="btn btn-sm btn-alt-secondary" 
-                                        data-bs-toggle="tooltip" 
-                                        title="eliminar periodo" 
+                                <button class="fs-xs fw-semibold py-1 px-3 btn rounded-pill btn-outline-danger" 
                                         type="button"
                                         data-id="{{ $calendario->getId() }}"
                                         onclick="confirmDelete(this)">
-                                    <i class="fa fa-fw fa-trash-can"></i>
+                                    <i class="fa fa-fw fa-trash-can"></i> Eliminar
                                 </button>
                             </form>
+                            <a href="{{ route('calendario.cursos', $calendario->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-success">
+                                <i class="fa fa-fw fa-book-open"></i> Abrir curso
+                            </a>                                                                              
                         @endif
 
-                        </div>
+                        <a href="{{ route('calendario.estadisticas', $calendario->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
+                            <i class="fa fa-fw fa-chart-pie"></i> Estadísticas
+                        </a>                                                
+                        
+
                     </td>                    
                 </tr>
                 @empty

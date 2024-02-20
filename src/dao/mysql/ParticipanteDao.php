@@ -346,4 +346,18 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         }
         return $exito;
     }
+
+    public static function numeroParticipantesPorGeneroYCalendario($sexo='M', $calendario_id): int {
+       
+        $conteo = ParticipanteDao::where('sexo', $sexo)
+            ->whereHas('formulariosInscripcion', function ($query) use ($calendario_id) {
+                $query->whereHas('grupo', function ($query) use ($calendario_id) {
+                    $query->where('calendario_id', $calendario_id);
+                });
+            })
+            ->count();
+        
+
+        return $conteo;        
+    }
 }

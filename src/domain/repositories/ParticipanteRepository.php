@@ -15,4 +15,5 @@ interface ParticipanteRepository {
     public function buscadorParticipantes(string $criterio, $page=1): Paginate;
     public function listarFormulariosDeInscripcionParticipante(int $participanteId): array;
     public function eliminarParticipante(int $participanteId): bool;
+    public static function numeroParticipantesPorGeneroYCalendario($sexo='M', $calendarioId): int;
 }

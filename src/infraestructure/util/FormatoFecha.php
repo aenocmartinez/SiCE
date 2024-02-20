@@ -31,4 +31,10 @@ class FormatoFecha {
         $fechaFormateada = $fecha->isoFormat('DD [de] MMMM, YYYY', 'Do MMMM, YYYY');
         return $fechaFormateada;
     }
+
+    public static function fechaDDdeMMdeYYYY($fecha) {
+        $fecha = Carbon::createFromFormat('Y-m-d', $fecha, 'UTC');
+        $fechaFormateada = $fecha->isoFormat('DD [de] MMMM [de] YYYY', 'Do MMMM, YYYY');
+        return $fechaFormateada;
+    }    
 }

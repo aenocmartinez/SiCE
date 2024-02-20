@@ -242,13 +242,37 @@ class CursoDao extends Model implements CursoRepository {
             }              
 
         } catch (\Exception $e) {
-            // Sentry::captureException($e);
-            dd($e->getMessage());
+            Sentry::captureException($e);
         }
 
         $paginate->setRecords($cursos);
         $paginate->setTotalRecords($totalRecords);
 
         return $paginate;
+    }
+
+    public static function top5CursosMasInscritosPorCalendario($calendarioId): array {
+        $cursos = [];
+
+        try {
+            $items = CursoDao::select('cursos.nombre', DB::raw('count(cursos.id) as total'))
+                ->join('curso_calendario as cc', 'cursos.id', '=', 'cc.curso_id')
+                ->join('grupos as g', 'g.curso_calendario_id', '=', 'cc.id')
+                ->join('formulario_inscripcion as f', 'f.grupo_id', '=', 'g.id')
+                ->where('cc.calendario_id', $calendarioId)
+                ->groupBy('cursos.nombre')->orderByDesc('total')->limit(5)->get();
+
+            foreach($items as $item) {
+                $data["nombre"] = $item->nombre;
+                $data["total"] = $item->total;
+
+                $cursos[] = $data;
+            }
+
+        } catch (\Exception $e) {
+            Sentry::captureException($e);
+        }
+
+        return $cursos;
     }
 }
