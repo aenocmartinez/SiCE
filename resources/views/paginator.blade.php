@@ -2,10 +2,15 @@
   $dataPrevious = [$paginate->Previous()];
   $dataNext = [$paginate->Next()];
 
-  if (strlen($criterio)>0) {
+  if (is_array($criterio)) {    
+    $dataPrevious = array_merge($dataPrevious, $criterio);
+    $dataNext = array_merge($dataNext, $criterio);
+
+  } else if (strlen($criterio)>0) {
     array_push($dataPrevious, $criterio);
     array_push($dataNext, $criterio);
   }
+
 @endphp
 
   <div class="block-content mt-0">
@@ -26,7 +31,9 @@
               @for($i=1; $i <= $paginate->NumberOfPages(); $i++)
                 @php
                   $data = [$i];
-                  if (strlen($criterio)>0) {
+                  if (is_array($criterio)) {
+                    $data = array_merge($data, $criterio);
+                  } else if (strlen($criterio)>0) {
                     array_push($data, $criterio);
                   }                  
                 @endphp

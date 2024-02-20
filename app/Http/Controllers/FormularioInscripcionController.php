@@ -29,18 +29,14 @@ use Src\usecase\formularios\AnularFormularioUseCase;
 
 class FormularioInscripcionController extends Controller
 {
-    public function listarParticipantes() {
-        
-        $periodos = (new ListarCalendariosUseCase)->ejecutar();
-        $idPeriodo = 0;
-        if (sizeof($periodos) > 0) {
-            $idPeriodo = $periodos[0]->getId();
-        }
-
+    public function listarParticipantes() {        
+        $calendario = Calendario::Vigente();
         return view('formularios.index', [
             'periodos' => (new ListarCalendariosUseCase)->ejecutar(),
             'estadoFormulario' => (ListaDeValor::estadosFormularioInscripcion()),
-            'formularios' => (new BuscarFormulariosUseCase)->ejecutar($idPeriodo, ''),
+            'paginate' => (new BuscarFormulariosUseCase)->ejecutar(),
+            'periodo' => $calendario->getId(),
+            'estado' => "",            
         ]);
     }
 
@@ -49,17 +45,24 @@ class FormularioInscripcionController extends Controller
     }
 
     public function filtrarInscripciones(BuscarInscripciones $req) {
-
         $filtro = $req->validated();
-
         return view('formularios.index', [
             'periodos' => (new ListarCalendariosUseCase)->ejecutar(),
             'estadoFormulario' => (ListaDeValor::estadosFormularioInscripcion()),
             'periodo' => $filtro['periodo'],
             'estado' => $filtro['estado'],
-            'formularios' => (new BuscarFormulariosUseCase)->ejecutar($filtro['periodo'], $filtro['estado']),
-        ]);
-        
+            'paginate' => (new BuscarFormulariosUseCase)->ejecutar($filtro['periodo'], $filtro['estado']),
+        ]);        
+    }
+
+    public function buscadorFormulariosPaginados($page=1, $periodo, $estado="") {
+        return view('formularios.index', [
+            'periodos' => (new ListarCalendariosUseCase)->ejecutar(),
+            'estadoFormulario' => (ListaDeValor::estadosFormularioInscripcion()),
+            'periodo' => $periodo,
+            'estado' => $estado,
+            'paginate' => (new BuscarFormulariosUseCase)->ejecutar($periodo, $estado, $page),
+        ]);    
     }
 
     public function create($tipoDocumento, $documento) {

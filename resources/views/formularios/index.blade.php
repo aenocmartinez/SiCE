@@ -4,6 +4,23 @@
 @section("description", "Listado de participantes inscritos según periodo.")
 
 @section("content")
+
+@php
+    $periodo = isset($periodo) ? $periodo : '';
+    $estado = isset($estado) ? $estado : '';
+    $criterio = isset($criterio) ? $criterio : '';
+
+    $route = "formularios.index";
+    $page = 1;
+    if (strlen($estado)>0 && strlen($periodo)>0) {        
+        $criterio = ["periodo" => $periodo, "estado" => $estado];        
+        $route = "formularios.buscador-paginador";
+    } else if (strlen($periodo)>0) {
+        $criterio = ["periodo" => $periodo, "estado" => $estado];                
+        $route = "formularios.buscador-paginador";        
+    }
+
+@endphp
  
 
 <div class="row">
@@ -69,7 +86,7 @@
                         <th></th>
                     </thead>
                 </tr>
-                @forelse ($formularios as $f)
+                @forelse ($paginate->Records() as $f)
                 <tr class="fs-xs">
                     <td>{{ $f->getNumero() }}</td>
                     <td>{{ $f->getParticipanteNombreCompleto() }}</td>
@@ -110,6 +127,8 @@
                 @endforelse 
             </table>
             <!-- Fin tabla -->
+
+            @include('paginator', ['route'=>$route, 'criterio' => $criterio, 'page' => $page])
 
     </div>
 

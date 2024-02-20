@@ -133,7 +133,7 @@ Route::post('/formularios/filtro', [FormularioInscripcionController::class, 'fil
 Route::get('/formularios/legalizar-inscripcion/{numeroFormulario}/formulario', [FormularioInscripcionController::class, 'editLegalizarInscripcion'])->name('formularios.edit-legalizar-inscripcion');
 Route::patch('/formularios/legalizar-inscripcion', [FormularioInscripcionController::class, 'legalizarInscripcion'])->name('formularios.legalizar-inscripcion');
 Route::patch('/formularios/{numeroFormulario}/participante/{participanteId}/anular', [FormularioInscripcionController::class, 'anularInscripcion'])->name('formularios.anular-inscripcion');
-
+Route::get('/formularios/p/{page}/periodo/{periodo}/estado/{estado?}', [FormularioInscripcionController::class, 'buscadorFormulariosPaginados'])->name('formularios.buscador-paginador');
 
 
 

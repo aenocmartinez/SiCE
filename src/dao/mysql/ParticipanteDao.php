@@ -366,6 +366,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         $total = FormularioInscripcionDao::join('grupos as g', function ($join) use ($calendarioId) {
             $join->on('formulario_inscripcion.grupo_id', '=', 'g.id')
                  ->where('g.calendario_id', '=', $calendarioId)
+                 ->where('formulario_inscripcion.estado', '=', 'Pagado')
                  ->whereNotNull('formulario_inscripcion.convenio_id');
         })
         ->count();
