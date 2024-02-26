@@ -24,7 +24,7 @@ class AreaController extends Controller
         return view('areas.index', compact('areas'));
     }
 
-    public function paginar($page) {
+    public function paginar($page=1) {
         return view("areas.index", [
             'paginate' => (new ListarAreasPaginadosUseCase)->ejecutar($page)
         ]);
@@ -33,7 +33,7 @@ class AreaController extends Controller
     public function buscarPorId($id) {
         $esValido = Validador::parametroId($id);
         if (!$esValido) {
-            return redirect()->route('areas.index', 1)                
+            return redirect()->route('areas.index')                
                     ->with('code', "401")
                     ->with('status', "parámetro no válido");
         }
@@ -42,7 +42,7 @@ class AreaController extends Controller
         $area = $casoUso->ejecutar($id);
 
         if (!$area->existe()) {
-            return redirect()->route('areas.index', 1)                
+            return redirect()->route('areas.index')                
                     ->with('code', "200")
                     ->with('status', "área no encontrada");            
         }
@@ -60,20 +60,20 @@ class AreaController extends Controller
         $casoUso = new CrearAreaUseCase();
         $response = $casoUso->ejecutar($datos['nombre']);
                 
-        return redirect()->route('areas.index', 1)->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('areas.index')->with('code', $response->code)->with('status', $response->message);
     }
 
     public function delete($id) {
         $esValido = Validador::parametroId($id);
         if (!$esValido) {
-            return redirect()->route('areas.index', 1)
+            return redirect()->route('areas.index')
                             ->with('status', 'parámetro no válido');
         }
 
         $casoUso = new EliminarAreaUseCase();
         $response = $casoUso->ejecutar($id);
     
-        return redirect()->route('areas.index', 1)->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('areas.index')->with('code', $response->code)->with('status', $response->message);
     }
     
     public function update(GuardarArea $req) {
@@ -88,6 +88,6 @@ class AreaController extends Controller
         $casoUso = new ActualizarAreaUseCase();
         $response = $casoUso->ejecutar($areaDto);
 
-        return redirect()->route('areas.index', 1)->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('areas.index')->with('code', $response->code)->with('status', $response->message);
     }    
 }

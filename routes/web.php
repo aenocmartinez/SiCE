@@ -36,7 +36,7 @@ Route::get('/areas/{id}/editar', [AreaController::class, 'buscarPorId'])->name('
 Route::post('areas', [AreaController::class, 'store'])->name('areas.store');
 Route::delete('/areas/{id}', [AreaController::class, 'delete'])->name('areas.delete');
 Route::patch('/areas', [AreaController::class, 'update'])->name('areas.update');
-Route::get('/areas/{page}', [AreaController::class, 'paginar'])->name('areas.index');
+Route::get('/areas/{page?}', [AreaController::class, 'paginar'])->name('areas.index');
 
 // Route::get('/cursos', [CursoController::class, 'index'])->name('cursos.index');
 Route::get('/cursos/{id}/editar', [CursoController::class, 'buscarPorId'])->name('cursos.edit');
@@ -44,19 +44,18 @@ Route::get('/cursos/crear', [CursoController::class, 'create'])->name('cursos.cr
 Route::post('/cursos', [CursoController::class, 'store'])->name('cursos.store');
 Route::delete('/cursos/{id}', [CursoController::class, 'delete'])->name('cursos.delete');
 Route::patch('/cursos/actualizar', [CursoController::class, 'update'])->name('cursos.update');
-Route::get('/cursos/{page}', [CursoController::class, 'paginar'])->name('cursos.index');
+Route::get('/cursos/{page?}', [CursoController::class, 'paginar'])->name('cursos.index');
 Route::post('/cursos/buscador', [CursoController::class, 'buscador'])->name('cursos.buscador');
 Route::get('/cursos/{page}/q/{criteria}', [CursoController::class, 'paginadorBuscador'])->name('cursos.buscador-paginador');
 
-// Route::get('/salones', [SalonController::class, 'index'])->name('salones.index');
 Route::get('/salones/{id}/editar', [SalonController::class, 'buscarPorId'])->name('salones.edit');
 Route::get('/salones/crear', [SalonController::class, 'create'])->name('salones.create');
 Route::post('/salones', [SalonController::class, 'store'])->name('salones.store');
 Route::delete('/salones/{id}', [SalonController::class, 'delete'])->name('salones.delete');
 Route::patch('/salones/actualizar', [SalonController::class, 'update'])->name('salones.update');
 Route::post('/salones/buscador', [SalonController::class, 'buscador'])->name('salones.buscador');
-Route::get('/salones/{page}', [SalonController::class, 'paginar'])->name('salones.index');
-Route::get('/salones/{page}/q/{criteria}', [SalonController::class, 'paginadorBuscador'])->name('salones.buscador-paginador');
+Route::get('/salones/{page?}', [SalonController::class, 'paginar'])->name('salones.index');
+Route::get('/salon/{page}/q/{criteria}', [SalonController::class, 'paginadorBuscador'])->name('salones.buscador-paginador');
 
 // Route::get('/orientadores', [OrientadorController::class, 'index'])->name('orientadores.index');
 Route::get('/orientadores/{id}/editar', [OrientadorController::class, 'edit'])->name('orientadores.edit');
@@ -65,7 +64,7 @@ Route::post('/orientadores', [OrientadorController::class, 'store'])->name('orie
 Route::delete('/orientadores/eliminar/{id}', [OrientadorController::class, 'delete'])->name('orientadores.delete');
 Route::patch('/orientadores/actualizar', [OrientadorController::class, 'update'])->name('orientadores.update');
 Route::post('/orientadores/buscador', [OrientadorController::class, 'buscador'])->name('orientadores.buscador');
-Route::get('/orientadores/{page}', [OrientadorController::class, 'listarPaginado'])->name('orientadores.index');
+Route::get('/orientadores/{page?}', [OrientadorController::class, 'listarPaginado'])->name('orientadores.index');
 Route::get('/orientadores/{page}/q/{criteria}', [OrientadorController::class, 'paginadorBuscador'])->name('orientadores.buscador-paginador');
 
 Route::get('/orientadores/{id}/mas-informacion', [OrientadorController::class, 'show'])->name('orientadores.moreInfo');
@@ -103,7 +102,7 @@ Route::get('/tipo-salones/crear', [TipoSalonController::class, 'create'])->name(
 Route::post('/tipo-salones', [TipoSalonController::class, 'store'])->name('tipo-salones.store');
 Route::delete('/tipo-salones/{id}', [TipoSalonController::class, 'destroy'])->name('tipo-salones.delete');
 Route::patch('/tipo-salones/actualizar', [TipoSalonController::class, 'update'])->name('tipo-salones.update');
-Route::get('/tipo-salones/{page}', [TipoSalonController::class, 'paginar'])->name('tipo-salones.index');
+Route::get('/tipo-salones/{page?}', [TipoSalonController::class, 'paginar'])->name('tipo-salones.index');
 
 Route::get('/convenios', [ConvenioController::class, 'index'])->name('convenios.index');
 Route::get('/convenios/crear', [ConvenioController::class, 'create'])->name('convenios.create');

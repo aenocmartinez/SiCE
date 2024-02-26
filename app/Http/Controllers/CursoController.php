@@ -26,7 +26,7 @@ class CursoController extends Controller
         return view("cursos.index", compact('cursos'));
     }
 
-    public function paginar($page) {
+    public function paginar($page=1) {
         return view("cursos.index", [
             'paginate' => (new ListarCursosPaginadosUseCase)->ejecutar($page)
         ]);
@@ -54,12 +54,12 @@ class CursoController extends Controller
     public function buscarPorId($id) {
         $esValido = Validador::parametroId($id);
         if (!$esValido)
-            return redirect()->route('cursos.index', 1)->with('code', "401")->with('status', "parámetro no válido");
+            return redirect()->route('cursos.index')->with('code', "401")->with('status', "parámetro no válido");
             
         $casoUsoBuscarCurso = new BuscarCursoPorIdUseCase();
         $curso = $casoUsoBuscarCurso->ejecutar($id);
         if (!$curso->existe())
-            return redirect()->route('cursos.index', 1)->with('code', "404")->with('status', "Curso no encontrado");
+            return redirect()->route('cursos.index')->with('code', "404")->with('status', "Curso no encontrado");
         
         $tipoCursos = explode(',', env('APP_TIPO_CURSOS'));
         
@@ -87,19 +87,19 @@ class CursoController extends Controller
         $casoUsoCrearCurso = new CrearCursoUseCase();
         $response = $casoUsoCrearCurso->ejecutar($cursoDto);
        
-        return redirect()->route('cursos.index', 1)->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('cursos.index')->with('code', $response->code)->with('status', $response->message);
     }
 
     public function delete($id) {
 
         $esValido = Validador::parametroId($id);
         if (!$esValido)
-            return redirect()->route('cursos.index', 1)->with('code', "401")->with('status', "parámetro no válido");           
+            return redirect()->route('cursos.index')->with('code', "401")->with('status', "parámetro no válido");           
 
         $casoUsoEliminarCurso = new EliminarCursoUseCase();
         $response = $casoUsoEliminarCurso->ejecutar($id);
 
-        return redirect()->route('cursos.index', 1)->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('cursos.index')->with('code', $response->code)->with('status', $response->message);
     }
     
     public function update(GuardarCurso $request) {
@@ -110,7 +110,7 @@ class CursoController extends Controller
         $casoUso = new ActualizarCursoUseCase();
         $response = $casoUso->ejecutar($cursoDto);
 
-        return redirect()->route('cursos.index', 1)->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('cursos.index')->with('code', $response->code)->with('status', $response->message);
     }        
 
     private function hydrateCursoDto(): CursoDto {

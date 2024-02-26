@@ -7,7 +7,7 @@
 @section("title", $titulo)
 
 @section("seccion")
-    <a class="link-fx" href="{{ route('cursos.index','1') }}">
+    <a class="link-fx" href="{{ route('cursos.index') }}">
         Cursos
     </a>
 @endsection

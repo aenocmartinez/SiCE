@@ -29,12 +29,12 @@
           <div class="btn-toolbar mb-1" role="toolbar" aria-label="Paginador">
             <select class="form-select fs-sm text-muted" id="page" name="page" onchange="paginate()">
               @for($i=1; $i <= $paginate->NumberOfPages(); $i++)
-                @php
+                @php                
                   $data = [$i];
-                  if (is_array($criterio)) {
-                    $data = array_merge($data, $criterio);
-                  } else if (strlen($criterio)>0) {
-                    array_push($data, $criterio);
+                  if (is_array($criterio)) {                    
+                    $data[] = $criterio;
+                  } else if (strlen($criterio)>0) {                    
+                    $data[] = $criterio;
                   }                  
                 @endphp
 

@@ -51,7 +51,7 @@
             </div>
                 
                 <button class="btn btn-large btn-info">{{ $btnText }}</button>        
-                <a href="{{ route('cursos.index', '1') }}" class="btn btn-large btn-light"> Cancelar</a>
+                <a href="{{ route('cursos.index') }}" class="btn btn-large btn-light"> Cancelar</a>
 
             </div>
         </div>

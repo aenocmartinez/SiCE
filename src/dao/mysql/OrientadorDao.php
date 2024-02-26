@@ -158,10 +158,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 "orientadores.documento" => $criterio,
                 "orientadores.email_institucional" => $criterio,
                 "orientadores.email_personal" => $criterio,
-                "orientadores.eps" => $criterio,
-                "orientadores.direccion" => $criterio,
                 "orientadores.nivel_estudio" => $criterio,
-                "orientadores.rango_salarial" => $criterio,
                 "areas.nombre" => $criterio,
             ];
 
@@ -175,15 +172,17 @@ class OrientadorDao extends Model implements OrientadorRepository {
                     'orientadores.eps', 'orientadores.estado',
                     'orientadores.observacion', 'orientadores.fec_nacimiento',
                     'orientadores.nivel_estudio', 'orientadores.rango_salarial'
-                 );            
+                 );
+            
             foreach ($filtro as $campo => $valor) {
                 $query->orWhere($campo, 'like', '%' . $valor . '%');
             }
-
+            
+            $query->distinct('orientadores.id');
+            
             $totalRecords = $query->count();
-
-            $query->distinct();
-            $items = $query->skip($paginate->Offset())->take($paginate->Limit())->get();
+            $items = $query->skip($paginate->Offset())->take($paginate->Limit())->get();            
+        
             
             foreach($items as $item) {
                 $orientador = new Orientador();

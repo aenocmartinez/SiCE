@@ -22,7 +22,7 @@ class TipoSalonController extends Controller
         return view("tipo_salones.index", compact('tipo_salones'));
     }
 
-    public function paginar($page) {        
+    public function paginar($page=1) {        
         return view("tipo_salones.index", [
             'paginate' => (new ListarTipoSalonesPaginadoUseCase)->ejecutar($page),
         ]);

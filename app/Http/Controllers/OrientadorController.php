@@ -73,7 +73,7 @@ class OrientadorController extends Controller
         $casoUso = new CrearOrientadorUseCase();
         $response = $casoUso->ejecutar($orientadorDto);
 
-        return redirect()->route('orientadores.index', 1)->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('orientadores.index')->with('code', $response->code)->with('status', $response->message);
     }
 
     public function delete($id) {
@@ -82,7 +82,7 @@ class OrientadorController extends Controller
         $casoUso = new EliminarOrientadorUseCase();
         $response = $casoUso->ejecutar($id);
 
-        return redirect()->route('orientadores.index', 1)->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('orientadores.index')->with('code', $response->code)->with('status', $response->message);
     }
     
     public function update(GuardarOrientador $request) {
@@ -92,7 +92,7 @@ class OrientadorController extends Controller
         $casoUso = new ActualizarOrientadorUseCase();
         $response = $casoUso->ejecutar($orientadorDto);
 
-        return redirect()->route('orientadores.index', 1)->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('orientadores.index')->with('code', $response->code)->with('status', $response->message);
     }     
 
     private function hydrateDto($data): OrientadorDto {
@@ -145,14 +145,14 @@ class OrientadorController extends Controller
     private function validarParametroId($id) {
         $esValido = Validador::parametroId($id);
         if (!$esValido) {
-            return redirect()->route('orientadores.index', 1)->with('code', "401")->with('status', "parámetro no válido");
+            return redirect()->route('orientadores.index')->with('code', "401")->with('status', "parámetro no válido");
         }        
     }
 
     public function show($id) {
         $orientador = (new BuscarOrientadorPorIdUseCase)->ejecutar($id);
         if (!$orientador->existe()) {
-            return redirect()->route('cursos.index', 1)->with('code', "404")->with('status', "Orientador no encontrado");
+            return redirect()->route('cursos.index')->with('code', "404")->with('status', "Orientador no encontrado");
         }
 
         return view('orientadores.moreInfo', [
@@ -160,7 +160,7 @@ class OrientadorController extends Controller
         ]);
     }
 
-    public function listarPaginado($page) {              
+    public function listarPaginado($page=1) {              
         return view("orientadores.index", [
             'paginate' => (new ListarOrientadoresPaginadoUseCase)->ejecutar($page),
         ]);        
@@ -179,7 +179,7 @@ class OrientadorController extends Controller
         if (!is_null(request('criterio'))) {
             $criterio = request('criterio');
         } else {
-            return redirect()->route('orientadores.index', 1);
+            return redirect()->route('orientadores.index');
         }
 
         return view("orientadores.index", [

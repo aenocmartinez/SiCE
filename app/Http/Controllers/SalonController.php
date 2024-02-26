@@ -24,7 +24,7 @@ class SalonController extends Controller
         return view("salones.index", compact('salones'));
     }
 
-    public function paginar($page) {
+    public function paginar($page=1) {
         return view("salones.index", [
             'paginate' => (new ListarSalonesPaginadoUseCase)->ejecutar($page)
         ]);
@@ -59,6 +59,7 @@ class SalonController extends Controller
     }
 
     public function paginadorBuscador($page, $criterio) {
+        
         return view("salones.index", [
             "paginate" => (new BuscadorSalonesUseCase)->ejecutar($criterio, $page), 
             "criterio" => $criterio
