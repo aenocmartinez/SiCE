@@ -23,11 +23,14 @@ class ActualizarGrupoUseCase {
             return new Response('404', 'Grupo no encontrado');
         }
 
-        $cursoCalendario = new CursoCalendario(new Calendario(), new Curso());
+        $calendario = new Calendario();
+        $calendario->setId($grupoDto->calendarioId);
+
+        $cursoCalendario = new CursoCalendario($calendario, new Curso());
         $cursoCalendario->setId($grupoDto->cursoCalendarioId);
 
         $grupo->setCursoCalendario($cursoCalendario);
-
+    
 
         $orientador = new Orientador;
         $orientador->setId($grupoDto->orientadorId);
