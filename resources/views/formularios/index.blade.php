@@ -12,12 +12,12 @@
 
     $route = "formularios.index";
     $page = 1;
-    if (strlen($estado)>0 && strlen($periodo)>0) {        
+    if (strlen($estado)>0 && strlen($periodo)>0) {       
         $criterio = ["periodo" => $periodo, "estado" => $estado];        
         $route = "formularios.buscador-paginador";
-    } else if (strlen($periodo)>0) {
-        $criterio = ["periodo" => $periodo, "estado" => $estado];                
-        $route = "formularios.buscador-paginador";        
+    } else if (strlen($periodo)>0) {          
+        $criterio = ["periodo" => $periodo, "estado" => $estado];
+        $route = "formularios.buscador-paginador";
     }
 
 @endphp

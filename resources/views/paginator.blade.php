@@ -10,7 +10,7 @@
     array_push($dataPrevious, $criterio);
     array_push($dataNext, $criterio);
   }
-
+  
 @endphp
 
   <div class="block-content mt-0">
@@ -32,7 +32,7 @@
                 @php                
                   $data = [$i];
                   if (is_array($criterio)) {                    
-                    $data[] = $criterio;
+                    $data = array_merge($data, $criterio);
                   } else if (strlen($criterio)>0) {                    
                     $data[] = $criterio;
                   }                  
