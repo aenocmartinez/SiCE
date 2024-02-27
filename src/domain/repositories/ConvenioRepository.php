@@ -11,4 +11,5 @@ interface ConvenioRepository  {
     public function crearConvenio(Convenio $convenio): bool;
     public function actualizarConvenio(Convenio $convenio): bool;
     public function eliminarConvenio(int $convenioId): bool;
+    public function agregarBeneficiarioAConvenio(int $convenioId, int $participanteId): bool;
 }

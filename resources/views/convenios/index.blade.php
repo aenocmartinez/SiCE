@@ -44,10 +44,12 @@
                             </form> 
                             <a href="{{ route('convenios.mas-info', $convenio->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
                                 <i class="fa fa-fw fa-circle-info"></i> Más info
-                            </a>                              
-                            <a href="{{ route('convenios.mas-info', $convenio->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-warning">
-                                <i class="fa fa-fw fa-file-import"></i> Importar archivo
-                            </a>                                                                                                               
+                            </a>   
+                            @if (!$convenio->tieneBeneficiariosPotenciales())                                
+                            <a href="{{ route('convenios.beneficiarios', $convenio->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-warning">
+                                <i class="fa fa-fw fa-file-import"></i> Cargar beneficiados
+                            </a>                                                                  
+                            @endif                           
                         </div>
                     </td>                    
                 </tr>

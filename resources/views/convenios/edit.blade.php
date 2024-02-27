@@ -8,7 +8,7 @@
 
 @section("seccion")
     <a class="link-fx" href="{{ route('convenios.index') }}">
-        Áreas
+        Convenios
     </a>
 @endsection
 

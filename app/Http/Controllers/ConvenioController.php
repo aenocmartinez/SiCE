@@ -10,6 +10,7 @@ use Src\infraestructure\util\Validador;
 use Src\usecase\calendarios\ListarCalendariosUseCase;
 use Src\usecase\convenios\ActualizarConvenioUseCase;
 use Src\usecase\convenios\BuscarConvenioPorIdUseCase;
+use Src\usecase\convenios\CargarBeneficiariosConvenioUseCase;
 use Src\usecase\convenios\CrearConvenioUseCase;
 use Src\usecase\convenios\EliminarConvenioUseCase as ConveniosEliminarConvenioUseCase;
 use Src\usecase\convenios\ListarConveniosUseCase;
@@ -85,7 +86,35 @@ class ConvenioController extends Controller
             return redirect()->route('convenios.index')->with('code', "200")->with('status', "convenio no encontrado");
         }
         
-        return view('convenios.mas_informacion', ['convenio' => $convenio]);        
+        return view('convenios.mas_informacion', ['convenio' => $convenio]);
+    }
+
+    public function formBeneficiarios($id) {
+        $convenio = (new BuscarConvenioPorIdUseCase)->ejecutar($id);
+        if (!$convenio->existe()) {
+            return redirect()->route('convenios.index')->with('code', "200")->with('status', "convenio no encontrado");
+        }
+        
+        return view('convenios.beneficiarios', ['convenio' => $convenio]);
+    }
+
+    public function cargarBeneficiarios(Request $request) {
+        
+        $archivo = $request->file('archivo');
+        $convenio = (new BuscarConvenioPorIdUseCase)->ejecutar($request['convenioId']);
+        if (!$convenio->existe()) {
+            return redirect()->route('convenios.index')->with('code', "200")->with('status', "convenio no encontrado");
+        }
+
+        
+        if (!$archivo) { 
+            return redirect()->route('convenios.index')->with('code', "500")->with('status', "Archivo no vállido");
+        }
+
+        (new CargarBeneficiariosConvenioUseCase)->ejecutar($convenio, $archivo);
+
+        return redirect()->route('convenios.index')->with('code', "200")->with('status', "Se ha cargado con éxito los participantes beneficiados.");
+        
     }
 
     public function hydrateDto($req): ConvenioDto {

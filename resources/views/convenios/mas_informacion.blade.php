@@ -36,7 +36,7 @@
                         </tr>                         
                         <tr class="fs-sm">
                             <td>Participantes beneficiados</td>
-                            <td>{{ $convenio->getNumeroBeneficiados() }}</td>
+                            <td>{{ $convenio->getNumeroInscritos() }}</td>
                         </tr>                         
                         <tr class="fs-sm">
                             <td>Periodo</td>

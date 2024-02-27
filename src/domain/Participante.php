@@ -2,6 +2,7 @@
 
 namespace Src\domain;
 
+use Src\dao\mysql\ParticipanteDao;
 use Src\domain\repositories\ParticipanteRepository;
 
 class Participante {
@@ -41,7 +42,8 @@ class Participante {
         $this->email = "";
         $this->eps = "";
         $this->contactoEmergencia = "";
-        $this->telefonoEmergencia = "";        
+        $this->telefonoEmergencia = ""; 
+        $this->repository = new ParticipanteDao();       
     }
 
     public function setRepository($repository): void {
@@ -217,5 +219,10 @@ class Participante {
 
     public function getDocumentoCompleto(): string {
         return $this->getTipoDocumento(). " - " . $this->getDocumento();
+    }
+
+    public static function buscarParticipantePorCedula($cedula): Participante {
+        $participanteDao = new ParticipanteDao();
+        return $participanteDao->buscarParticipantePorDocumento("CC", $cedula);
     }
 }

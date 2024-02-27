@@ -15,6 +15,10 @@ class ConvenioDao extends Model implements ConvenioRepository {
     protected $table = 'convenios';
     protected $fillable = ['nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento'];
 
+    public function beneficiarios() {
+        $this->belongsToMany(ParticipanteDao::class,'convenio_id', 'participante_id', 'convenio_participante');
+    }
+
     public function listarConvenios(): array {
         $listaConvenios = array();
 
@@ -22,6 +26,13 @@ class ConvenioDao extends Model implements ConvenioRepository {
 
             $calendarioDao = new CalendarioDao();
             $convenios = ConvenioDao::all();
+
+            $convenios = ConvenioDao::select('convenios.id', 'nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento',
+                                        DB::raw('COUNT(convenio_participante.id) as numBeneficiados'))
+                        ->leftJoin('convenio_participante', 'convenio_participante.convenio_id', '=', 'convenios.id')
+                        ->groupBy('convenios.id')
+                        ->get();
+
             foreach($convenios as $c) {
                 $convenio = new Convenio();
                 $convenio->setId($c->id);
@@ -29,6 +40,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenio->setFecInicio($c->fec_ini);
                 $convenio->setFecFin($c->fec_fin);
                 $convenio->setDescuento($c->descuento);
+                $convenio->setNumeroBeneficiados($c->numBeneficiados);
     
                 $calendario = $calendarioDao->buscarCalendarioPorId($c->calendario_id);
                 $convenio->setCalendario($calendario);
@@ -48,8 +60,11 @@ class ConvenioDao extends Model implements ConvenioRepository {
         try {
             $calendarioDao = new CalendarioDao();
             $c = ConvenioDao::select('convenios.id', 'convenios.nombre', 'convenios.calendario_id', 
-                                    'convenios.fec_ini', 'convenios.fec_fin', 'convenios.descuento', DB::raw('COUNT(formulario_inscripcion.id) as numBeneficiados'))
+                                    'convenios.fec_ini', 'convenios.fec_fin', 'convenios.descuento', 
+                                    DB::raw('COUNT(formulario_inscripcion.id) as numIncripciones'),
+                                    DB::raw('COUNT(convenio_participante.id) as numBeneficiados'))
                         ->leftJoin('formulario_inscripcion', 'convenios.id', '=', 'formulario_inscripcion.convenio_id')
+                        ->leftJoin('convenio_participante', 'convenios.id', '=', 'convenio_participante.convenio_id')
                         ->where('convenios.id', $id)
                         ->groupBy('convenios.id', 'convenios.nombre', 'convenios.calendario_id', 'convenios.fec_ini', 'convenios.fec_fin', 'convenios.descuento')
                         ->first();
@@ -61,7 +76,10 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenio->setFecInicio($c->fec_ini);
                 $convenio->setFecFin($c->fec_fin);
                 $convenio->setDescuento($c->descuento);
+                $convenio->setNumeroInscritos($c->numIncripciones);
                 $convenio->setNumeroBeneficiados($c->numBeneficiados);
+
+                // dd($c->numBeneficiados);
     
                 $calendario = $calendarioDao->buscarCalendarioPorId($c->calendario_id);
                 $convenio->setCalendario($calendario);
@@ -156,5 +174,25 @@ class ConvenioDao extends Model implements ConvenioRepository {
         }
 
         return $exito;
+    }
+
+    public function agregarBeneficiarioAConvenio(int $convenioId, int $participanteId): bool {
+
+        try {
+
+            $fechaHoraActual = now()->toDateTimeString();
+
+            DB::table('convenio_participante')->insert([
+                'convenio_id' => $convenioId,
+                'participante_id' => $participanteId,
+                'created_at' => $fechaHoraActual,
+                'updated_at' => $fechaHoraActual,
+            ]);
+
+        } catch(\Exception $e) {
+            dd($e->getMessage());
+            Sentry::captureException($e);
+        }
+        return true;
     }
 }

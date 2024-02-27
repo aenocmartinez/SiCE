@@ -3,8 +3,8 @@
 namespace Src\domain;
 
 use Carbon\Carbon;
+use Src\dao\mysql\ConvenioDao;
 use Src\domain\repositories\ConvenioRepository;
-use Src\infraestructure\util\FormatoFecha;
 
 class Convenio {
     private int $id;
@@ -15,6 +15,7 @@ class Convenio {
     private $descuento;
     private ConvenioRepository $repository;
     private $numeroBeneficiados;
+    private $numeroInscritos;
 
     public function __construct(string $nombre="")
     {
@@ -25,6 +26,7 @@ class Convenio {
         $this->calendario = new Calendario();
         $this->descuento = 0;
         $this->numeroBeneficiados = 0;
+        $this->numeroInscritos = 0;
     }
 
     public function setRepository($repository): void {
@@ -89,7 +91,19 @@ class Convenio {
 
     public function getNumeroBeneficiados(): int {
         return $this->numeroBeneficiados;
-    }    
+    }
+    
+    public function setNumeroInscritos(int $numeroInscritos): void {
+        $this->numeroInscritos = $numeroInscritos;
+    }
+
+    public function getNumeroInscritos(): int {
+        return $this->numeroInscritos;
+    }
+
+    public function tieneBeneficiariosPotenciales(): bool {
+        return $this->numeroBeneficiados > 0;
+    }
 
     public function existe(): bool {
         return $this->id > 0;
@@ -134,5 +148,10 @@ class Convenio {
 
         return "El convenio ha caducado";
 
+    }
+
+    public function agregarParticipante(Participante $participante): bool {
+                
+        return (new ConvenioDao())->agregarBeneficiarioAConvenio($this->id, $participante->getId());
     }
 }
