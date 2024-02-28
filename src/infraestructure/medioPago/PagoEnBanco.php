@@ -5,37 +5,38 @@ namespace Src\infraestructure\medioPago;
 use Carbon\Carbon;
 use Picqer\Barcode\BarcodeGeneratorPNG;
 use Src\dao\mysql\FormularioInscripcionDao;
+use Src\domain\FormularioInscripcion;
+use Src\domain\FormularioInscripcionPago;
 use Src\infraestructure\pdf\DataPDF;
 use Src\infraestructure\pdf\SicePDF;
 use Src\infraestructure\util\FormatoFecha;
-use Src\view\dto\ConfirmarInscripcionDto;
 use Src\view\dto\Response;
 
 class PagoEnBanco implements IMedioPago{
 
-    public function Pagar(ConfirmarInscripcionDto $confirmarInscripcionDto): Response {
+    public function Pagar(FormularioInscripcionPago $datosDePago): Response {
 
         // Plantillas
-        $path_css1      = __DIR__ . "/template/style.css";
-        $html = $this->contenidoHtml($confirmarInscripcionDto->formularioId);
+        // $path_css1      = __DIR__ . "/template/style.css";
+        // $html = $this->contenidoHtml($formularioInscripcion->getId());
 
-        $nombreArchivo = "RECIBO_PAGO_" . strtotime(Carbon::now()) . $confirmarInscripcionDto->formularioId . ".pdf";
+        // $nombreArchivo = "RECIBO_PAGO_" . strtotime(Carbon::now()) . $formularioInscripcion->getId() . ".pdf";
 
-        $dataPdf = new DataPDF($nombreArchivo);
-        $dataPdf->setData([
-            'path_css1' => $path_css1,
-            'html' => $html,
-        ]);
+        // $dataPdf = new DataPDF($nombreArchivo);
+        // $dataPdf->setData([
+        //     'path_css1' => $path_css1,
+        //     'html' => $html,
+        // ]);
         
 
-        $exito = SicePDF::generarFormatoPago($dataPdf);
+        // $exito = SicePDF::generarFormatoPago($dataPdf);
         
-        if (!$exito) {
-            return new Response("500", "Ha ocurrido un error al generar el pdf");
-        }
+        // if (!$exito) {
+        //     return new Response("500", "Ha ocurrido un error al generar el pdf");
+        // }
 
         $response = new Response("201", "Se ha registrado con éxito.");
-        $response->data['nombre_archivo'] = $nombreArchivo;
+        // $response->data['nombre_archivo'] = $nombreArchivo;
         
         return $response;
     }

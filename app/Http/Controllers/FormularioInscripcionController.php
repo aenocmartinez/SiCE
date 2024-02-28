@@ -213,15 +213,15 @@ class FormularioInscripcionController extends Controller
         if (!$formulario->existe()) {
             return redirect()->route('formularios.index')->with('code', "404")->with('status', "El formulario no fue encontrado.");
         }
-
+        
         return view('formularios.legalizar_inscripcion',[
             'formulario' => $formulario,
         ]);
     }
 
     public function legalizarInscripcion(LegalizarFormularioInscripcion $req) {
-        $parametro = $req->validated();
-        $response = (new LegalizarInscripcionUseCase)->ejecutar($parametro['formularioId'], $parametro['voucher']);
+        $parametro = $req->validated();        
+        $response = (new LegalizarInscripcionUseCase)->ejecutar($parametro['formularioId'], $parametro['voucher'], $parametro['valorPago'], $parametro['convenioId']);
         return redirect()->route('formularios.index')->with('code', $response->code)->with('status', $response->message);
     }
 
@@ -240,6 +240,7 @@ class FormularioInscripcionController extends Controller
         $formularioDto->valorDescuento = $datos['valor_descuento'];
         $formularioDto->totalAPagar = $datos['total_a_pagar'];
         $formularioDto->voucher = $datos['voucher'];
+        $formularioDto->valorPagoParcial = $datos['valorPago'];
 
         return $formularioDto;
     }

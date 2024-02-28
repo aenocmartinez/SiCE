@@ -5,6 +5,13 @@ namespace Src\usecase\formularios;
 use Carbon\Carbon;
 use Src\dao\mysql\DiaFestivoDao;
 use Src\dao\mysql\FormularioInscripcionDao;
+use Src\infraestructure\diasFestivos\Calendario;
+use Src\domain\Convenio;
+use Src\domain\FormularioInscripcion;
+use Src\domain\FormularioInscripcionPago;
+use Src\domain\Grupo;
+use Src\domain\Participante;
+use Src\infraestructure\medioPago\PagoFactory;
 use Src\view\dto\ConfirmarInscripcionDto;
 use Src\view\dto\Response;
 
@@ -12,23 +19,52 @@ class ConfirmarInscripcionUseCase {
     
     public function ejecutar(ConfirmarInscripcionDto $confirmarInscripcionDto): Response {
         
-        $formularioRepository = new FormularioInscripcionDao();   
-
-        $anio = Carbon::now()->year;
-        $diaFestivo = DiaFestivoDao::buscarDiasFestivoPorAnio($anio);
+        date_default_timezone_set('America/Bogota');
+        $fechaActual = Carbon::now();        
+        $diaFestivo = DiaFestivoDao::buscarDiasFestivoPorAnio($fechaActual->year);
         $diasFestivos = [];
         if ($diaFestivo->existe()) {
             $diasFestivos = explode(',', $diaFestivo->getFechas());
         }
 
-        $confirmarInscripcionDto->diasFesctivos = $diasFestivos;
+        $formularioInscripcion = new FormularioInscripcion();
+
+        $grupo = new Grupo();
+        $grupo->setId($confirmarInscripcionDto->grupoId);
+
+        $convenio = new Convenio();
+        $convenio->setId($confirmarInscripcionDto->convenioId);
+
+        $participante = new Participante();
+        $participante->setId($confirmarInscripcionDto->participanteId);
+
+        $formularioInscripcion->setGrupo($grupo);
+        $formularioInscripcion->setConvenio($convenio);
+        $formularioInscripcion->setParticipante($participante);
+        $formularioInscripcion->setEstado("Pendiente de pago");
+        $formularioInscripcion->setCostoCurso($confirmarInscripcionDto->costoCurso);
+        $formularioInscripcion->setValorDescuento($confirmarInscripcionDto->valorDescuento);
+        $formularioInscripcion->setTotalAPagar($confirmarInscripcionDto->totalAPagar);
+        $formularioInscripcion->setMedioPago($confirmarInscripcionDto->medioPago);
+        $formularioInscripcion->setVoucher($confirmarInscripcionDto->voucher);
+        $formularioInscripcion->setFechaCreacion($fechaActual);
+        $formularioInscripcion->setFechaMaxLegalizacion(Calendario::fechaSiguienteDiaHabil($fechaActual, $diasFestivos));
+        $formularioInscripcion->setNumero(strtotime($fechaActual) . $confirmarInscripcionDto->participanteId);
+        $formularioInscripcion->setValorPagoParcial($confirmarInscripcionDto->valorPagoParcial);
         
-                
-        $exito = $formularioRepository->crearInscripcion($confirmarInscripcionDto);
+        
+        $exito = $formularioInscripcion->Crear();
         if (!$exito) {
             return new Response("500", "Ha ocurrido al intentar confirmar la inscripción.");
         }
 
-        return (new PagarFormularioUseCase)->ejecutar($confirmarInscripcionDto);
+        $exito = $formularioInscripcion->AgregarPago();
+        if (!$exito) {
+            return new Response("500", "Ha ocurrido al intentar agregar el pago del formulario.");
+        }        
+
+        return new Response("201", "Se ha registrado con éxito.");
+
+        // return (new PagarFormularioUseCase)->ejecutar($formularioInscripcion);
     }
 }

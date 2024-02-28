@@ -2,10 +2,10 @@
 
 namespace Src\infraestructure\medioPago;
 
-use Src\view\dto\ConfirmarInscripcionDto;
+use Src\domain\FormularioInscripcionPago;
 use Src\view\dto\Response;
 
 interface IMedioPago {
 
-    public function Pagar(ConfirmarInscripcionDto $confirmarInscripcionDto): Response;
+    public function Pagar(FormularioInscripcionPago $datosDePago): Response;
 }

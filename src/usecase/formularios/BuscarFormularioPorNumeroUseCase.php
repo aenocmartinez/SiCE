@@ -8,8 +8,7 @@ use Src\domain\FormularioInscripcion;
 class BuscarFormularioPorNumeroUseCase {
 
     public function ejecutar($numeroFormulario): FormularioInscripcion{
-
-        $formularioRepository = new FormularioInscripcionDao();
-        return $formularioRepository->buscarFormularioPorNumero($numeroFormulario);
+                
+        return (new FormularioInscripcionDao())->buscarFormularioPorNumero($numeroFormulario);     
     }
 }

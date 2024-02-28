@@ -19,16 +19,19 @@
                     </label>
                 </div>                        
                 @foreach ($convenios as $convenio)     
-                    @if ($convenio->esVigente())                                
-                        <div class="form-check form-block">
-                            <input type="radio" class="form-check-input" id="convenio-{{ $convenio->getId() }}" value="{{ $convenio->getId().'@'.$convenio->getDescuento().'@'.$convenio->getNombre() }}" name="convenio">
-                            <label class="form-check-label" for="convenio-{{ $convenio->getId() }}">
-                                <span class="d-block fw-normal p-1">
-                                <span class="d-block fw-semibold mb-1">{{ $convenio->getNombre() }}</span>
-                                <span class="d-block fs-sm fw-medium text-muted"><span class="fw-semibold">{{ $convenio->getDescuento() }}%</span> de descuento</span>
-                                </span>
-                            </label>
-                        </div>
+                    @if ($convenio->esVigente())    
+                      @php
+                        $checked = ($convenio->getId() == $participante->getIdBeneficioConvenio()) ? 'checked' : '';
+                      @endphp                            
+                      <div class="form-check form-block">
+                          <input type="radio" class="form-check-input" {{ $checked }} id="convenio-{{ $convenio->getId() }}" value="{{ $convenio->getId().'@'.$convenio->getDescuento().'@'.$convenio->getNombre() }}" name="convenio">
+                          <label class="form-check-label" for="convenio-{{ $convenio->getId() }}">
+                              <span class="d-block fw-normal p-1">
+                              <span class="d-block fw-semibold mb-1">{{ $convenio->getNombre() }}</span>
+                              <span class="d-block fs-sm fw-medium text-muted"><span class="fw-semibold">{{ $convenio->getDescuento() }}%</span> de descuento</span>
+                              </span>
+                          </label>
+                      </div>
                     @endif                       
                 @endforeach
 
@@ -43,28 +46,28 @@
             <div class="block-content block-content-full pt-0">
               
               <div class="row g-3">
-                  <div class="col-6 col-sm-4">
+                  <!-- <div class="col-6 col-sm-4">
                     <div class="form-check form-block">
                       <input type="radio" class="form-check-input" id="medioPago-1" name="medioPago" value="pagoBanco" checked>
                       <label class="form-check-label bg-body-light text-center" for="medioPago-1">
                           Pago en Banco
                       </label>
                     </div>
-                  </div>
-                  <div class="col-6 col-sm-4">
+                  </div> -->
+                  <div class="col-6 col-sm-6">
                     <div class="form-check form-block">
-                      <input type="radio" class="form-check-input" id="medioPago-2" name="medioPago" value="pagoDatafono" {{ old('medioPago') == 'pagoDatafono' ? 'checked' : '' }}>
+                      <input type="radio" class="form-check-input" id="medioPago-2" name="medioPago" value="pagoDatafono" {{ old('medioPago') == 'pagoDatafono' ? 'checked' : '' }} checked>
                       <label class="form-check-label bg-body-light text-center" for="medioPago-2">
                           Pago Datáfono
                       </label>
                     </div>
                   </div>
                   
-                  <div class="col-6 col-sm-4">
+                  <div class="col-6 col-sm-6">
                     <div class="form-check form-block">
-                      <input type="radio" class="form-check-input" id="medioPago-3" name="medioPago" value="pagoPSE" {{ old('medioPago') == 'pagoPSE' ? 'checked' : '' }}>
+                      <input type="radio" class="form-check-input" id="medioPago-3" name="medioPago" value="pagoEcollect" {{ old('medioPago') == 'pagoEcollect' ? 'checked' : '' }}>
                       <label class="form-check-label bg-body-light text-center" for="medioPago-3">
-                          PSE
+                          ECollect
                       </label>
                     </div>
                   </div> 
@@ -75,13 +78,28 @@
                                 class="form-control @error('voucher') is-invalid @enderror" 
                                 id="voucher" 
                                 name="voucher" 
+                                value="{{ old('voucher') }}"
                                 placeholder="Ingresar el número de voucher">                                   
                         <label class="form-label" for="voucher">Voucher</label>
                         @error('voucher')
                             <span class="invalid-feedback" role="alert">
                                 {{ $message }}
                             </span>
-                        @enderror                            
+                        @enderror
+                    </div>
+                      <div class="form-floating">
+                        <input type="text" 
+                                class="form-control @error('valorPago') is-invalid @enderror" 
+                                id="valorPago" 
+                                name="valorPago" 
+                                value="{{ old('valorPago') }}"
+                                placeholder="Ingresar el valor de pago">                                   
+                        <label class="form-label" for="valorPago">Valor a pagar</label>
+                        @error('valorPago')
+                            <span class="invalid-feedback" role="alert">
+                                {{ $message }}
+                            </span>
+                        @enderror                        
                     </div>
                   </div>
 
@@ -162,10 +180,29 @@
         if($('input[name="medioPago"]:checked').val() == "pagoDatafono") {
             $("#s-voucher").show();
         }
+
+        if ($('input[name="convenio"]').is(':checked')) {
+            checkearConvenio();
+        }
         
         $('input[name="convenio"]').change(function(){
+            checkearConvenio();
+        });
 
-            const valor = $('input[name="convenio"]:checked').val();            
+        $('input[name="medioPago"]').change(function(){
+          const medioPago = $('input[name="medioPago"]:checked').val();
+          $("#s-voucher").hide();
+          if (medioPago=="pagoDatafono") {
+            $("#s-voucher").show();
+          } else {
+            $("#voucher").val("");
+          } 
+
+        });
+    });
+
+    function checkearConvenio() {
+      const valor = $('input[name="convenio"]:checked').val();            
             var datosConvenio = valor.split('@');
             
             $("#convenioId").val(datosConvenio[0]); 
@@ -183,19 +220,7 @@
 
             $('#idValorTotalAPagar').text(formatoMoneda( valores[0] ));
             $("#total_a_pagar").val(valores[0]); 
-        });
-
-        $('input[name="medioPago"]').change(function(){
-          const medioPago = $('input[name="medioPago"]:checked').val();
-          $("#s-voucher").hide();
-          if (medioPago=="pagoDatafono") {
-            $("#s-voucher").show();
-          } else {
-            $("#voucher").val("");
-          } 
-
-        });
-    });
+    }
 
     function calcularTotalAPagar(valorCosto, porcentajeDescuento) {
 

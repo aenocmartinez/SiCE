@@ -5,7 +5,7 @@ namespace Src\infraestructure\medioPago;
 use Src\domain\FormularioInscripcionPago;
 use Src\view\dto\Response;
 
-class PagoPSE implements IMedioPago {
+class PagoEcollect implements IMedioPago {
 
     public function Pagar(FormularioInscripcionPago $datosDePago): Response {
         return new Response();

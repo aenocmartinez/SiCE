@@ -2,6 +2,8 @@
 
 namespace Src\domain;
 
+use Src\dao\mysql\FormularioInscripcionDao;
+use Src\domain\repositories\FormularioRepository;
 use Src\infraestructure\util\FormatoMoneda;
 
 class FormularioInscripcion {
@@ -18,6 +20,8 @@ class FormularioInscripcion {
     private $valorDescuento;
     private $fechaMaxLegalizacion;
     private $costoCurso;
+    private $valorPagoParcial;
+    private FormularioRepository $repository;
 
     public function __construct() {
         $this->id = 0;
@@ -25,6 +29,8 @@ class FormularioInscripcion {
         $this->totalAPagar = 0;
         $this->valorDescuento = 0;
         $this->costoCurso = 0;
+        $this->valorPagoParcial = 0;
+        $this->repository = new FormularioInscripcionDao();
     }
 
     public function setId(int $id=0): void {
@@ -57,6 +63,16 @@ class FormularioInscripcion {
 
     public function getParticipanteSegundoApellido(): string {
         return $this->participante->getSegundoApellido();
+    }
+
+    public function getParticipanteIdBeneficioConvenio() {
+        $this->participante->buscarBeneficioVigentePorConvenio();
+        
+        if ($this->participante->getIdBeneficioConvenio() > 0) {
+            return $this->participante->getIdBeneficioConvenio();
+        }
+
+        return $this->getConvenioId();
     }
 
     public function getParticipanteNombreCompleto(): string {
@@ -261,6 +277,14 @@ class FormularioInscripcion {
         return FormatoMoneda::PesosColombianos($this->valorDescuento);
     }
 
+    public function setValorPagoParcial($valorPagoParcial): void {
+        $this->valorPagoParcial = $valorPagoParcial;
+    }
+
+    public function getValorPagoParcial() {
+        return $this->valorPagoParcial;
+    }
+
     public function existe(): bool {
         return $this->id > 0;
     }
@@ -292,4 +316,66 @@ class FormularioInscripcion {
     public function PendienteDePago(): bool {
         return $this->estado == "Pendiente de pago";
     }    
+
+    public function PagosRealizados(): array {
+        return $this->repository->pagosRealizadosPorFormulario($this->id);
+    }
+
+    public function TotalPagoRealizado() {
+        $totalPagado = 0;
+        $pagos = $this->PagosRealizados();
+        foreach($pagos as $pago) {
+            $totalPagado += $pago->getValor();
+        }
+        return $totalPagado;
+    }
+
+    public function EstadoPago(): string {
+
+        if ($this->estado == "Anulado") {
+            return $this->estado;
+        }
+        
+        $estado = "Pendiente de pago";
+        if ($this->totalAPagar == $this->TotalPagoRealizado()) {
+            $estado = "Pagado";
+        }
+        return $estado;
+    }
+
+    public function Crear(): bool {
+        return $this->repository->crearInscripcion($this);
+    }
+
+    public function Legalizar(): bool {        
+        
+        return $this->repository->legalizarFormulario($this);
+    }
+
+    public function AgregarPago(): bool {
+        $pago = new FormularioInscripcionPago($this->medioPago, $this->valorPagoParcial, $this->voucher, $this->fechaCreacion);
+
+        $exito = $this->repository->realizarPagoFormularioInscripcion($this->id, $pago);
+        if (!$exito) {
+            return false;
+        }
+
+        return $this->repository->cambiarEstadoDePagoDeUnFormulario($this->id, $this->EstadoPago());
+    }
+
+    public function tienePagosParciales(): bool {
+        return $this->TotalPagoRealizado() > 0;
+    }
+
+    public function totalAPagarConDescuentoDePagoParcialFormateado() {        
+        return FormatoMoneda::PesosColombianos( ($this->totalAPagar - $this->TotalPagoRealizado()) );
+    }
+
+    public function totalPendientePorPagar() {
+        return $this->totalAPagar - $this->TotalPagoRealizado();
+    }
+
+    public function totalPendientePorPagarFormateado() {
+        return FormatoMoneda::PesosColombianos(($this->totalAPagar - $this->TotalPagoRealizado()));
+    }
 }

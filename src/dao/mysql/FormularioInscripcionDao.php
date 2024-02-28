@@ -2,16 +2,15 @@
 
 namespace Src\dao\mysql;
 
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Src\domain\Convenio;
 use Src\domain\FormularioInscripcion;
 use Src\domain\repositories\FormularioRepository;
-use Src\infraestructure\diasFestivos\Calendario;
-use Src\view\dto\ConfirmarInscripcionDto;
 
 use Sentry\Laravel\Facade as Sentry;
+use Src\domain\FormularioInscripcionPago;
 use Src\infraestructure\util\Paginate;
 
 class FormularioInscripcionDao extends Model implements FormularioRepository {
@@ -61,18 +60,6 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                     'estado', 'costo_curso', 'valor_descuento', 'total_a_pagar', 'medio_pago', 
                     'numero_formulario', 'fecha_max_legalizacion']);
 
-            // $query = FormularioInscripcionDao::with('grupo')
-            //         ->whereHas('grupo', function ($query) use ($calendarioId) {
-            //             $query->where('calendario_id', $calendarioId);
-            //         })
-            //         ->when($estado, function ($query, $estado) {
-            //             return $query->where('estado', $estado);
-            //         })
-            //         ->orderByDesc('participante_id')
-            //         ->orderByDesc('id');
-
-            // $resultados = $query->get(['id', 'grupo_id', 'participante_id', 'convenio_id', 'created_at', 'estado', 'costo_curso', 'valor_descuento', 'total_a_pagar', 'medio_pago', 'numero_formulario', 'fecha_max_legalizacion']);
-
             foreach($resultados as $resultado) {
                 $formulario = new FormularioInscripcion();
                 $formulario->setId($resultado->id);
@@ -108,35 +95,33 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         return $paginate;
     }
 
-    public function crearInscripcion(ConfirmarInscripcionDto &$dto): bool {        
+    public function crearInscripcion(FormularioInscripcion &$formulario): bool {        
     
         $exito = true;
 
         try {
-            $participante = ParticipanteDao::find($dto->participanteId);
+            $participante = ParticipanteDao::find($formulario->getParticipanteId());
             if ($participante) {
                 $nuevoFormulario = new FormularioInscripcionDao();
-                $nuevoFormulario->grupo_id = $dto->grupoId;                
-                if ($dto->convenioId > 0) {
-                    $nuevoFormulario->convenio_id = $dto->convenioId;
+                $nuevoFormulario->grupo_id = $formulario->getGrupoId();
+                if ($formulario->getConvenioId() > 0) {
+                    $nuevoFormulario->convenio_id = $formulario->getConvenioId();
                 }
-                $nuevoFormulario->costo_curso = $dto->costoCurso;
-                $nuevoFormulario->valor_descuento = $dto->valorDescuento;
-                $nuevoFormulario->total_a_pagar = $dto->totalAPagar;
-                $nuevoFormulario->medio_pago = $dto->medioPago;
+                $nuevoFormulario->costo_curso = $formulario->getCostoCurso();
+                $nuevoFormulario->valor_descuento = $formulario->getValorDescuento();
+                $nuevoFormulario->total_a_pagar = $formulario->getTotalAPagar();
+                $nuevoFormulario->medio_pago = $formulario->getMedioPago();
                 
-                date_default_timezone_set('America/Bogota');
 
-                $fechaActual = Carbon::now();
-                $nuevoFormulario->created_at =  $fechaActual;
-                $nuevoFormulario->updated_at =  $fechaActual;
-                $nuevoFormulario->fecha_max_legalizacion = Calendario::fechaSiguienteDiaHabil($fechaActual, $dto->diasFesctivos);
+                $nuevoFormulario->created_at =  $formulario->getFechaCreacion();
+                $nuevoFormulario->updated_at =  $formulario->getFechaCreacion();
+                $nuevoFormulario->fecha_max_legalizacion = $formulario->getFechaCreacion();
 
-                $nuevoFormulario->numero_formulario = strtotime($fechaActual) . $dto->participanteId;
+                $nuevoFormulario->numero_formulario = $formulario->getNumero();
 
                 $participante->formulariosInscripcion()->save($nuevoFormulario);
 
-                $dto->formularioId = $nuevoFormulario->id;
+                $formulario->setId($nuevoFormulario->id);
             }
         } catch(Exception $e) {
             $exito = false;
@@ -161,20 +146,39 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         }
         return $exito;
     }
-
-    public function pagarInscripcion($formularioId, $voucher): bool {
+    public function cambiarEstadoDePagoDeUnFormulario($formularioId, $estado="Pendiente de pago"): bool {
         $exito = true;
         try {
             $formulario = FormularioInscripcionDao::find($formularioId);
             if ($formulario) {
-                $formulario->voucher = $voucher;
-                $formulario->estado = 'Pagado';
+                $formulario->estado = $estado;
                 $formulario->save();
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $exito = false;
             Sentry::captureException($e);
         }
+        return $exito;
+    }
+
+    public function realizarPagoFormularioInscripcion(int $formularioId, FormularioInscripcionPago $pago): bool {
+        $exito = true;
+        try {
+
+            FormularioInscripcionPagoDao::create([
+                'formulario_id' => $formularioId, 
+                'valor' => $pago->getValor(), 
+                'medio' => $pago->getMedio(), 
+                'voucher' => $pago->getVoucher(), 
+                'created_at' => $pago->getFecha(), 
+                'updated_at' => $pago->getFecha()
+            ]);
+
+        } catch (\Exception $e) {            
+            Sentry::captureException($e);
+            $exito = false;
+        }
+
         return $exito;
     }
 
@@ -268,15 +272,21 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         return $formulario;        
     }
 
-    public function legalizarFormulario(int $formularioId, string $voucher): bool {
+    public function legalizarFormulario(FormularioInscripcion $formulario): bool {
         $exito = true;
         try {
 
-            $formulario = FormularioInscripcionDao::find($formularioId);
-            if ($formulario) {
-                $formulario->estado = 'Pagado';
-                $formulario->voucher = $voucher;
-                $formulario->save();
+            $formularioDao = FormularioInscripcionDao::find($formulario->getId());
+            if ($formularioDao) {
+                if ($formulario->getConvenioId() > 0 ) {
+                    $formularioDao->convenio_id = $formulario->getConvenioId();
+                }
+
+                $formularioDao->total_a_pagar = $formulario->getTotalAPagar();
+                $formularioDao->valor_descuento = $formulario->getValorDescuento();
+                $formularioDao->estado = 'Pagado';
+                
+                $formularioDao->save();
             }
 
         } catch(Exception $e) {
@@ -285,5 +295,31 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         }
 
         return $exito;
+    }
+
+    public function pagosRealizadosPorFormulario($formularioId): array {
+        $pagos = [];
+        try {
+
+            $items = DB::table('formulario_inscripcion_pagos')
+                ->select('id', 'valor', 'medio', 'voucher', 'created_at')
+                ->where('formulario_id', $formularioId)
+                ->get();
+
+            foreach($items as $item) {
+                $pago = new FormularioInscripcionPago();
+                $pago->setId($item->id);
+                $pago->setValor($item->valor);
+                $pago->setMedio($item->medio);
+                $pago->setVoucher($item->voucher);
+                $pago->setFecha($item->created_at);
+
+                $pagos[] = $pago;
+            }
+
+        } catch (\Exception $e) {
+            Sentry::captureException($e);
+        }
+        return $pagos;
     }
 }

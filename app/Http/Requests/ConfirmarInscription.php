@@ -32,6 +32,7 @@ class ConfirmarInscription extends FormRequest
             'valor_descuento' => 'required',
             'total_a_pagar' => 'required',
             'voucher' => 'required_if:medioPago,pagoDatafono',
+            'valorPago' => 'required_if:medioPago,pagoDatafono',
         ];
     }
 
@@ -39,7 +40,20 @@ class ConfirmarInscription extends FormRequest
     {
         return [
             'medioPago.required' => 'Por favor indicar el medio de pago.',
-            'voucher.required_if' => 'El campo voucher es obligatorio'
+            'voucher.required_if' => 'El campo voucher es obligatorio',
+            'valorPago.required_if' => 'El campo valor a pagar es obligatorio',
         ];
     }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $cantidad1 = $this->input('total_a_pagar');
+            $cantidad2 = $this->input('valorPago');
+
+            if ($cantidad2 > $cantidad1) {
+                $validator->errors()->add('valorPago', 'El valor a pagar no puede superar el valor total a pagar.');
+            }
+        });
+    }  
 }

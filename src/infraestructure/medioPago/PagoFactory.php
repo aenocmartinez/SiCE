@@ -20,6 +20,7 @@ class PagoFactory {
         $mediosMap['pagoBanco'] = new PagoEnBanco;
         $mediosMap['pagoDatafono'] = new PagoDatafono;
         $mediosMap['pagoPSE'] = new PagoPSE;
+        $mediosMap['pagoEcollect'] = new PagoEcollect;
 
         return $mediosMap;
     }

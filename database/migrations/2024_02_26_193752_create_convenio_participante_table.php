@@ -17,6 +17,8 @@ class CreateConvenioParticipanteTable extends Migration
             $table->id();
             $table->unsignedBigInteger('convenio_id');
             $table->unsignedBigInteger('participante_id');
+            $table->enum('redimido', ['SI', 'NO'])->default('NO');
+            $table->enum('disponible', ['SI', 'NO'])->default('SI');
             $table->timestamps();
 
             $table->foreign('convenio_id')->references('id')->on('convenios')->onDelete('restrict');

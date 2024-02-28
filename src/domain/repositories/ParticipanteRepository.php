@@ -2,6 +2,7 @@
 
 namespace Src\domain\repositories;
 
+use Src\domain\Convenio;
 use Src\domain\Participante;
 use Src\infraestructure\util\Paginate;
 
@@ -17,4 +18,5 @@ interface ParticipanteRepository {
     public function eliminarParticipante(int $participanteId): bool;
     public static function numeroParticipantesPorGeneroYCalendario($sexo='M', $calendarioId): int;
     public static function numeroParticipantesPorConvenioYCalendario($calendarioId): int;
+    public function buscarBeneficiosAlParticipante(int $participanteId): Convenio;
 }

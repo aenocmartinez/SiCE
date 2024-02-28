@@ -23,6 +23,7 @@ class Participante {
     private string $eps;
     private string $contactoEmergencia;
     private string $telefonoEmergencia;
+    private $beneficio;
     private ParticipanteRepository $repository;
 
     public function __construct() {
@@ -43,6 +44,7 @@ class Participante {
         $this->eps = "";
         $this->contactoEmergencia = "";
         $this->telefonoEmergencia = ""; 
+        $this->beneficio = new Convenio();
         $this->repository = new ParticipanteDao();       
     }
 
@@ -224,5 +226,13 @@ class Participante {
     public static function buscarParticipantePorCedula($cedula): Participante {
         $participanteDao = new ParticipanteDao();
         return $participanteDao->buscarParticipantePorDocumento("CC", $cedula);
+    }
+
+    public function buscarBeneficioVigentePorConvenio() {
+        $this->beneficio = $this->repository->buscarBeneficiosAlParticipante($this->id);
+    }
+
+    public function getIdBeneficioConvenio(): int {
+        return $this->beneficio->getId();
     }
 }

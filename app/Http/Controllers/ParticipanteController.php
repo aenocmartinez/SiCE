@@ -7,6 +7,7 @@ use App\Http\Requests\LegalizarFormularioInscripcion;
 use Src\domain\Participante;
 use Src\infraestructure\util\ListaDeValor;
 use Src\infraestructure\util\Validador;
+use Src\usecase\convenios\ListarConveniosUseCase;
 use Src\usecase\formularios\AnularFormularioUseCase;
 use Src\usecase\formularios\BuscarFormularioPorNumeroUseCase;
 use Src\usecase\formularios\LegalizarInscripcionUseCase;
@@ -101,13 +102,15 @@ class ParticipanteController extends Controller
 
         return view('participantes.legalizar_inscripcion',[
             'formulario' => $formulario,
+            'convenios' => (new ListarConveniosUseCase)->ejecutar(),
         ]);
     }
 
     public function legalizarInscripcion(LegalizarFormularioInscripcion $req) {
-        $parametro = $req->validated();
-        $response = (new LegalizarInscripcionUseCase)->ejecutar($parametro['formularioId'], $parametro['voucher']);
-        return redirect()->route('participantes.formularios', [$parametro['participanteId']])
+        $datosLegalizaacion = $req->validated(); 
+        
+        $response = (new LegalizarInscripcionUseCase)->ejecutar($datosLegalizaacion);
+        return redirect()->route('participantes.formularios', [$datosLegalizaacion['participanteId']])
                         ->with('code', $response->code)
                         ->with('status', $response->message);        
     }

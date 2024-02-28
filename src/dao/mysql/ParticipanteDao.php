@@ -4,6 +4,7 @@ namespace Src\dao\mysql;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Src\domain\Calendario;
 use Src\domain\Convenio;
 use Src\domain\Curso;
@@ -373,5 +374,30 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
     
         
         return $total;
+    }
+
+    public function buscarBeneficiosAlParticipante(int $participanteId): Convenio {
+        $convenio = new Convenio();
+
+        try {
+            $item = DB::table('convenios as c')
+                ->select('c.id', 'c.descuento')
+                ->join('convenio_participante as cp', 'c.id', '=', 'cp.convenio_id')
+                ->join('participantes as p', 'p.id', '=', 'cp.participante_id')
+                ->where('p.id', $participanteId)
+                ->where('cp.redimido', 'NO')
+                ->where('cp.disponible', 'SI')
+                ->first();
+
+            if($item) {
+                $convenio->setId($item->id);
+                $convenio->setDescuento($item->descuento);
+            }
+
+        } catch(\Exception $e) {
+            Sentry::captureException($e);
+        }
+
+        return $convenio;
     }
 }

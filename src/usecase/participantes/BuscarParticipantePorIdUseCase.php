@@ -9,7 +9,16 @@ class BuscarParticipantePorIdUseCase {
 
     public function ejecutar(int $participanteId): Participante {
         $participanteRepository = new ParticipanteDao();
-        return $participanteRepository->buscarParticipantePorId($participanteId);
+        $participante = $participanteRepository->buscarParticipantePorId($participanteId);
+
+        if (!$participante->existe()) {
+            return $participante;
+        }
+
+        $participante->setRepository($participanteRepository);
+        $participante->buscarBeneficioVigentePorConvenio();
+
+        return $participante;
     }
 
 }
