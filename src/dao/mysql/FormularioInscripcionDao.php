@@ -322,4 +322,21 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         }
         return $pagos;
     }
+
+    public function redimirBeneficioConvenio($particianteId, $convenioId): bool {
+        $exito = true;
+        try {            
+            DB::table('convenio_participante')
+                ->where('convenio_id', $convenioId)
+                ->where('participante_id', $particianteId)
+                ->where('disponible', 'SI')
+                ->update(['redimido' => 'SI']);
+
+        } catch (\Exception $e) {
+            $exito = false;
+            Sentry::captureException($e);
+        }
+
+        return $exito;
+    }
 }

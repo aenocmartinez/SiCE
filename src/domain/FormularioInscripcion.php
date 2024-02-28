@@ -349,7 +349,12 @@ class FormularioInscripcion {
 
     public function Legalizar(): bool {        
         
-        return $this->repository->legalizarFormulario($this);
+        $exito = $this->repository->legalizarFormulario($this);
+        if (!$exito) {
+            return false;
+        }
+
+        return $this->repository->redimirBeneficioConvenio($this->getParticipanteId(), $this->getConvenioId());
     }
 
     public function AgregarPago(): bool {
