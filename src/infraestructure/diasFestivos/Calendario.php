@@ -19,7 +19,7 @@ class Calendario {
         return implode(",",$holidays);
     }
 
-    public static function fechaSiguienteDiaHabil($startDate, $holidays) {
+    public static function fechaSiguienteDiaHabil($startDate, $holidays) {        
         $date = new DateTime($startDate);
         $numberOfDays = env('APP_NUMERO_DIAS_HABILES_INSCRIPCION');
         $weekendDays = [6, 7];

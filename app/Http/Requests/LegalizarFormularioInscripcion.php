@@ -41,6 +41,7 @@ class LegalizarFormularioInscripcion extends FormRequest
     {
         return [
             'valorPago.required' => 'El campo valor a pagar es obligatorio',
+            'medioPago.required' => 'El medio de pago es obligatorio',
         ];
     } 
     

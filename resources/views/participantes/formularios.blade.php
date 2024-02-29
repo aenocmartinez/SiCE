@@ -41,12 +41,12 @@
             <table class="table table-vcenter">
                 <tr>
                     <thead class="text-center">
-                        <th style="width: 3%;">Formulario</th>
-                        <th style="width: 3%;">Periodo</th>
-                        <th style="width: 35%;">Curso</th>
-                        <th style="width: 20%;">Valor a pagar</th>
-                        <th style="width: 15%;">Estado</th>
-                        <th style="width: 25%;"></th>
+                        <th style="width: 16%;">Formulario</th>
+                        <th style="width: 16%;">Periodo</th>
+                        <th style="width: 16%;">Curso</th>
+                        <th style="width: 16%;">Fec. Max. Legalización</th>
+                        <th style="width: 16%;">Estado</th>
+                        <th style="width: 16%;"></th>
                     </thead>
                 </tr>                
                 @forelse ($formularios as $f)
@@ -61,7 +61,7 @@
                             {{ $f->getGrupoDia()  }} / {{ $f->getGrupoJornada() }}<br>{{ $f->getGrupoModalidad() }}
                         </small>
                     </td>
-                    <td class="text-center">{{ $f->getTotalAPagarFormateado() }}</td>
+                    <td class="text-center">{{ $f->getFechaMaxLegalizacion() }}</td>
                     <td class="text-center">{{ $f->getEstado() }}</td>
                     <td class="text-center">
                         <div class="btn-group">

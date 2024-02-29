@@ -110,7 +110,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
                 $nuevoFormulario->created_at =  $formulario->getFechaCreacion();
                 $nuevoFormulario->updated_at =  $formulario->getFechaCreacion();
-                $nuevoFormulario->fecha_max_legalizacion = $formulario->getFechaCreacion();
+                $nuevoFormulario->fecha_max_legalizacion = $formulario->getFechaMaxLegalizacion();
 
                 $nuevoFormulario->numero_formulario = $formulario->getNumero();
 

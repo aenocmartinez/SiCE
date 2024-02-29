@@ -164,7 +164,7 @@
 
                               <div class="col-6 col-sm-6">
                                 <div class="form-check form-block">
-                                  <input type="radio" class="form-check-input" id="medioPago-2" name="medioPago" value="pagoDatafono" {{ old('medioPago') == 'pagoDatafono' ? 'checked' : '' }} checked>
+                                  <input type="radio" class="form-check-input" id="medioPago-2" name="medioPago" value="pagoDatafono" {{ old('medioPago') == 'pagoDatafono' ? 'checked' : '' }}>
                                   <label class="form-check-label bg-body-light text-center" for="medioPago-2">
                                       Pago Datáfono
                                   </label>
