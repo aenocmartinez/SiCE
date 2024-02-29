@@ -83,8 +83,7 @@
                                         Anular
                                     </button>
                                 </form>
-                            @else
-                            Número pago: {{ $f->getVoucher() }}
+                            
                             @endif
                         </div>
                     </td>                    

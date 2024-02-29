@@ -154,10 +154,31 @@
                         </div>                        
                     </div>
 
-                    <div class="mb-4">
-                        <!-- <label class="form-label" for="comprobante">Comprobante de pago</label>
-                        <input class="form-control" type="file" id="comprobante">  -->
-                    </div>                    
+                    <div class="block-content-full pt-0">
+
+                        <div class="row g-3">
+
+                          <div class="col-6 col-sm-6">
+                            <div class="form-check form-block">
+                              <input type="radio" class="form-check-input" id="medioPago-2" name="medioPago" value="pagoDatafono" {{ old('medioPago') == 'pagoDatafono' ? 'checked' : '' }} checked>
+                              <label class="form-check-label bg-body-light text-center" for="medioPago-2">
+                                  Pago Datáfono
+                              </label>
+                            </div>
+                          </div>
+
+                          <div class="col-6 col-sm-6">
+                            <div class="form-check form-block">
+                              <input type="radio" class="form-check-input" id="medioPago-3" name="medioPago" value="pagoEcollect" {{ old('medioPago') == 'pagoEcollect' ? 'checked' : '' }}>
+                              <label class="form-check-label bg-body-light text-center" for="medioPago-3">
+                                  ECollect
+                              </label>
+                            </div>
+                          </div>                               
+
+                        </div>
+
+                    </div>           
 
                 </div>                        
 
@@ -181,16 +202,21 @@
       if ($('input[name="convenio"]').is(':checked')) {
 
         checkearConvenio();
-
-        // const convenio = $('input[name="convenio"]:checked').val();
-        // if (convenio.indexOf("0@0@No aplica") !== -1) {
-        //   $('#idCosto').text(formatoMoneda( $("#valor_pendiente_por_pagar").val() ));
-        // }
       }
 
       $('input[name="convenio"]').change(function(){   
             checkearConvenio();
       });
+
+      $('input[name="medioPago"]').change(function(){
+          const medioPago = $('input[name="medioPago"]:checked').val();
+          $("#s-voucher").hide();
+          if (medioPago=="pagoDatafono") {
+            $("#s-voucher").show();
+          } else {
+            $("#voucher").val("");
+          } 
+        });      
 
     });
 

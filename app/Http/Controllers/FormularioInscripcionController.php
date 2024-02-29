@@ -216,12 +216,14 @@ class FormularioInscripcionController extends Controller
         
         return view('formularios.legalizar_inscripcion',[
             'formulario' => $formulario,
+            'convenios' => (new ListarConveniosUseCase)->ejecutar(),
         ]);
     }
 
     public function legalizarInscripcion(LegalizarFormularioInscripcion $req) {
-        $parametro = $req->validated();        
-        $response = (new LegalizarInscripcionUseCase)->ejecutar($parametro['formularioId'], $parametro['voucher'], $parametro['valorPago'], $parametro['convenioId']);
+        $datosLegalizacion = $req->validated();        
+
+        $response = (new LegalizarInscripcionUseCase)->ejecutar($datosLegalizacion);
         return redirect()->route('formularios.index')->with('code', $response->code)->with('status', $response->message);
     }
 

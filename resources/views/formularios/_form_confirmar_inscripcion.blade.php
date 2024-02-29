@@ -177,9 +177,9 @@
 <script>
     $(document).ready(function(){
 
-        if($('input[name="medioPago"]:checked').val() == "pagoDatafono") {
+        // if($('input[name="medioPago"]:checked').val() == "pagoDatafono") {
             $("#s-voucher").show();
-        }
+        // }
 
         if ($('input[name="convenio"]').is(':checked')) {
             checkearConvenio();

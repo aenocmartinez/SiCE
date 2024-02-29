@@ -2,6 +2,7 @@
 
 namespace Src\domain;
 
+use Carbon\Carbon;
 use Src\dao\mysql\FormularioInscripcionDao;
 use Src\domain\repositories\FormularioRepository;
 use Src\infraestructure\util\FormatoMoneda;
@@ -12,24 +13,21 @@ class FormularioInscripcion {
     private Convenio $convenio;
     private Grupo $grupo;
     private string $numero;
-    private string $voucher;
     private string $estado;
-    private string $medioPago;
     private $fechaCreacion;
     private $totalAPagar;
     private $valorDescuento;
     private $fechaMaxLegalizacion;
     private $costoCurso;
-    private $valorPagoParcial;
+    private $valorPago;
     private FormularioRepository $repository;
 
     public function __construct() {
         $this->id = 0;
-        $this->voucher = "";
         $this->totalAPagar = 0;
         $this->valorDescuento = 0;
         $this->costoCurso = 0;
-        $this->valorPagoParcial = 0;
+        $this->valorPago = 0;
         $this->repository = new FormularioInscripcionDao();
     }
 
@@ -221,14 +219,6 @@ class FormularioInscripcion {
         return $this->estado;
     }
 
-    public function setVoucher(string $voucher): void {
-        $this->voucher = $voucher;
-    }
-
-    public function getVoucher(): string {
-        return $this->voucher;
-    }
-
     public function tieneConvenio(): bool {
         return $this->convenio->getId() > 0;
     }
@@ -237,7 +227,11 @@ class FormularioInscripcion {
         $this->estado = $estado;
     }
 
-    public function setFechaCreacion($fechaCreacion): void {
+    public function setFechaCreacion($fechaCreacion=""): void {
+        if ($fechaCreacion == "") {
+            date_default_timezone_set('America/Bogota');
+            $fechaCreacion = Carbon::now();            
+        }
         $this->fechaCreacion = $fechaCreacion;
     }
 
@@ -256,14 +250,6 @@ class FormularioInscripcion {
     public function getTotalAPagarFormateado() {
         return FormatoMoneda::PesosColombianos($this->totalAPagar);
     }
-
-    public function setMedioPago(string $medioPago): void {
-        $this->medioPago = $medioPago;
-    }
-
-    public function getMedioPago(): string {
-        return $this->medioPago;
-    }
     
     public function setValorDescuento($valorDescuento): void {
         $this->valorDescuento = $valorDescuento;
@@ -277,12 +263,12 @@ class FormularioInscripcion {
         return FormatoMoneda::PesosColombianos($this->valorDescuento);
     }
 
-    public function setValorPagoParcial($valorPagoParcial): void {
-        $this->valorPagoParcial = $valorPagoParcial;
+    public function setValorPago($valorPago): void {
+        $this->valorPago = $valorPago;
     }
 
-    public function getValorPagoParcial() {
-        return $this->valorPagoParcial;
+    public function getValorPago() {
+        return $this->valorPago;
     }
 
     public function existe(): bool {
@@ -343,23 +329,11 @@ class FormularioInscripcion {
         return $estado;
     }
 
-    public function Crear(): bool {
-        return $this->repository->crearInscripcion($this);
-    }
-
-    public function Legalizar(): bool {        
-        
-        $exito = $this->repository->legalizarFormulario($this);
-        if (!$exito) {
-            return false;
-        }
-
+    public function RedimirBeneficioConvenio(): bool {                
         return $this->repository->redimirBeneficioConvenio($this->getParticipanteId(), $this->getConvenioId());
     }
 
-    public function AgregarPago(): bool {
-        $pago = new FormularioInscripcionPago($this->medioPago, $this->valorPagoParcial, $this->voucher, $this->fechaCreacion);
-
+    public function AgregarPago(FormularioInscripcionPago $pago): bool {      
         $exito = $this->repository->realizarPagoFormularioInscripcion($this->id, $pago);
         if (!$exito) {
             return false;
@@ -382,5 +356,13 @@ class FormularioInscripcion {
 
     public function totalPendientePorPagarFormateado() {
         return FormatoMoneda::PesosColombianos(($this->totalAPagar - $this->TotalPagoRealizado()));
+    }
+
+    public function Crear(): bool {
+        return $this->repository->crearFormulario($this);
+    }
+
+    public function Actualizar(): bool {
+        return $this->repository->actualizarFormulario($this);
     }
 }

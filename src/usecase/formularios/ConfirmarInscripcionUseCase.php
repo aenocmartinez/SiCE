@@ -17,8 +17,7 @@ use Src\view\dto\Response;
 
 class ConfirmarInscripcionUseCase {
     
-    public function ejecutar(ConfirmarInscripcionDto $confirmarInscripcionDto): Response {
-        
+    public function ejecutar(ConfirmarInscripcionDto $confirmarInscripcionDto): Response {        
         date_default_timezone_set('America/Bogota');
         $fechaActual = Carbon::now();        
         $diaFestivo = DiaFestivoDao::buscarDiasFestivoPorAnio($fechaActual->year);
@@ -45,12 +44,10 @@ class ConfirmarInscripcionUseCase {
         $formularioInscripcion->setCostoCurso($confirmarInscripcionDto->costoCurso);
         $formularioInscripcion->setValorDescuento($confirmarInscripcionDto->valorDescuento);
         $formularioInscripcion->setTotalAPagar($confirmarInscripcionDto->totalAPagar);
-        $formularioInscripcion->setMedioPago($confirmarInscripcionDto->medioPago);
-        $formularioInscripcion->setVoucher($confirmarInscripcionDto->voucher);
         $formularioInscripcion->setFechaCreacion($fechaActual);
         $formularioInscripcion->setFechaMaxLegalizacion(Calendario::fechaSiguienteDiaHabil($fechaActual, $diasFestivos));
         $formularioInscripcion->setNumero(strtotime($fechaActual) . $confirmarInscripcionDto->participanteId);
-        $formularioInscripcion->setValorPagoParcial($confirmarInscripcionDto->valorPagoParcial);
+        $formularioInscripcion->setValorPago($confirmarInscripcionDto->valorPagoParcial);
         
         
         $exito = $formularioInscripcion->Crear();
@@ -58,10 +55,13 @@ class ConfirmarInscripcionUseCase {
             return new Response("500", "Ha ocurrido al intentar confirmar la inscripción.");
         }
 
-        $exito = $formularioInscripcion->AgregarPago();
+        $medioPago = PagoFactory::Medio($confirmarInscripcionDto->medioPago);
+        $exito = $medioPago->Pagar($formularioInscripcion, $confirmarInscripcionDto->voucher, $confirmarInscripcionDto->valorPagoParcial);
         if (!$exito) {
             return new Response("500", "Ha ocurrido al intentar agregar el pago del formulario.");
-        }        
+        }
+        
+        $formularioInscripcion->RedimirBeneficioConvenio();
 
         return new Response("201", "Se ha registrado con éxito.");
 

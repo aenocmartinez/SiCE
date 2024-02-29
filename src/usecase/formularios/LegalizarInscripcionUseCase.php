@@ -5,7 +5,11 @@ namespace Src\usecase\formularios;
 use Carbon\Carbon;
 use Src\dao\mysql\ConvenioDao;
 use Src\dao\mysql\FormularioInscripcionDao;
+use Src\domain\Convenio;
+use Src\infraestructure\medioPago\PagoFactory;
 use Src\view\dto\Response;
+
+use function Ramsey\Uuid\v1;
 
 class LegalizarInscripcionUseCase {
 
@@ -13,41 +17,34 @@ class LegalizarInscripcionUseCase {
 
         $response = new Response;
 
-        $formularioRepository = new FormularioInscripcionDao();
-        date_default_timezone_set('America/Bogota');
-        $fechaActual = Carbon::now();
-
-        $formulario = $formularioRepository->buscarFormularioPorId($datosLegalizacion['formularioId']);
+        $formulario = FormularioInscripcionDao::buscarFormularioPorId($datosLegalizacion['formularioId']);
         if (!$formulario->existe()) {
             $response->code = "404";
             $response->message = "El formulario no existe";
-        }        
-
-        $formulario->setMedioPago("pagoDatafono");
-        $formulario->setValorPagoParcial($datosLegalizacion['valorPago']);
-        $formulario->setVoucher($datosLegalizacion['voucher']);
-        $formulario->setFechaCreacion($fechaActual);
-
-        $exito = $formulario->AgregarPago();
-        if (!$exito) {
-            $response->code = "500";
-            $response->message = "Ha ocurrido un error en el sistema al agregar el pago";
+            return $response;
         }
-      
-        $formulario->setTotalAPagar($datosLegalizacion['total_a_pagar']);        
 
+        $formulario->setTotalAPagar($datosLegalizacion['total_a_pagar']);
+        $formulario->setValorDescuento($datosLegalizacion['valor_descuento']);
+        
+        
+        $convenio = new Convenio();
         if ($datosLegalizacion['convenioId'] > 0) {
-            $convenio = (new ConvenioDao())->buscarConvenioPorId($datosLegalizacion['convenioId']);
-            $formulario->setConvenio($convenio);            
-            $formulario->setValorDescuento($datosLegalizacion['valor_descuento']);
+            $convenio->setId($datosLegalizacion['convenioId']);
+            $formulario->setConvenio($convenio);
         }
-
-        $exito = $formulario->Legalizar();
+        
+        $exito = $formulario->Actualizar();
         if (!$exito) {
             $response->code = "500";
-            $response->message = "Ha ocurrido un error en el sistema al cambiar el estado del formulario";
+            $response->message = "Ha ocurrido un error en el sistema al actualizar el formulario";
         }
+        
+        $medioPago = PagoFactory::Medio($datosLegalizacion['medioPago']);
+        $medioPago->Pagar($formulario, $datosLegalizacion['voucher'], $datosLegalizacion['valorPago']);
+        
 
+        $formulario->RedimirBeneficioConvenio();
         
         $response->code = "200";
         $response->message = "El formulario se ha legalizado con éxito.";

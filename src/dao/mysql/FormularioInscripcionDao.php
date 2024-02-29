@@ -20,11 +20,9 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                             'participante_id', 
                             'convenio_id', 
                             'costo_curso', 
-                            'voucher',
                             'numero_formulario',
                             'valor_descuento', 
                             'total_a_pagar',
-                            'medio_pago',
                             'fecha_max_legalizacion'
                         ];
     
@@ -57,7 +55,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         $resultados = $query->skip($paginate->Offset())
             ->take($paginate->Limit())
             ->get(['id', 'grupo_id', 'participante_id', 'convenio_id', 'created_at', 
-                    'estado', 'costo_curso', 'valor_descuento', 'total_a_pagar', 'medio_pago', 
+                    'estado', 'costo_curso', 'valor_descuento', 'total_a_pagar',  
                     'numero_formulario', 'fecha_max_legalizacion']);
 
             foreach($resultados as $resultado) {
@@ -66,7 +64,6 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formulario->setEstado($resultado->estado);
                 $formulario->setFechaCreacion($resultado->created_at);
                 $formulario->setTotalAPagar($resultado->total_a_pagar);
-                $formulario->setMedioPago($resultado->medio_pago);
                 $formulario->setNumero($resultado->numero_formulario);
                 $formulario->setFechaMaxLegalizacion($resultado->fecha_max_legalizacion);
 
@@ -95,8 +92,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         return $paginate;
     }
 
-    public function crearInscripcion(FormularioInscripcion &$formulario): bool {        
-    
+    public function crearFormulario(FormularioInscripcion &$formulario): bool {            
         $exito = true;
 
         try {
@@ -110,7 +106,6 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $nuevoFormulario->costo_curso = $formulario->getCostoCurso();
                 $nuevoFormulario->valor_descuento = $formulario->getValorDescuento();
                 $nuevoFormulario->total_a_pagar = $formulario->getTotalAPagar();
-                $nuevoFormulario->medio_pago = $formulario->getMedioPago();
                 
 
                 $nuevoFormulario->created_at =  $formulario->getFechaCreacion();
@@ -129,7 +124,30 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         }
 
         return $exito;
-    } 
+    }
+    
+    public function actualizarFormulario(FormularioInscripcion $formulario): bool {
+        $exito = true;
+
+        try {
+            $formularioDao = FormularioInscripcionDao::find($formulario->getId());
+            if ($formularioDao) {                
+                $formularioDao->valor_descuento = $formulario->getValorDescuento();
+                $formularioDao->total_a_pagar = $formulario->getTotalAPagar();
+                
+                if ($formulario->getConvenioId() > 0) {
+                    $formularioDao->convenio_id = $formulario->getConvenioId();
+                }
+
+                $formularioDao->save();
+            }            
+        } catch(Exception $e) {
+            $exito = false;
+            Sentry::captureException($e);
+        }
+
+        return $exito;
+    }
     
     public function anularInscripcion($numeroFormulario): bool {
         $exito = true;
@@ -168,13 +186,14 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             FormularioInscripcionPagoDao::create([
                 'formulario_id' => $formularioId, 
                 'valor' => $pago->getValor(), 
-                'medio' => $pago->getMedio(), 
                 'voucher' => $pago->getVoucher(), 
+                'medio' => $pago->getMedio(), 
                 'created_at' => $pago->getFecha(), 
                 'updated_at' => $pago->getFecha()
             ]);
 
-        } catch (\Exception $e) {            
+        } catch (\Exception $e) {     
+            dd($e->getMessage());       
             Sentry::captureException($e);
             $exito = false;
         }
@@ -190,7 +209,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
         try {
             $resultado = FormularioInscripcionDao::select('id','numero_formulario','estado','total_a_pagar','created_at',
-                'valor_descuento','participante_id','grupo_id','convenio_id', 'voucher')    
+                'valor_descuento','participante_id','grupo_id','convenio_id')    
                 ->where('formulario_inscripcion.numero_formulario', $numeroFormulario)
                 ->first();
 
@@ -202,11 +221,6 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formulario->setValorDescuento($resultado->valor_descuento);
                 $formulario->setTotalAPagar($resultado->total_a_pagar);                
                 $formulario->setNumero($resultado->numero_formulario);
-
-                if (!is_null($resultado->voucher)) {
-                    $formulario->setVoucher($resultado->voucher);
-                }
-                
 
                 $grupo = $grupoDao->buscarGrupoPorId($resultado->grupo_id);
                 $participante = $participanteDao->buscarParticipantePorId($resultado->participante_id);
@@ -227,7 +241,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         return $formulario;
     }
 
-    public function buscarFormularioPorId(int $id): FormularioInscripcion {
+    public static function buscarFormularioPorId(int $id): FormularioInscripcion {
         $formulario = new FormularioInscripcion;
         $grupoDao = new GrupoDao();
         $participanteDao = new ParticipanteDao();
@@ -235,7 +249,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
         try {
             $resultado = FormularioInscripcionDao::select('id','numero_formulario','estado','total_a_pagar','created_at',
-                'valor_descuento','participante_id','grupo_id','convenio_id', 'voucher')    
+                'valor_descuento','participante_id','grupo_id','convenio_id')    
                 ->where('formulario_inscripcion.id', $id)
                 ->first();
 
@@ -247,11 +261,6 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formulario->setValorDescuento($resultado->valor_descuento);
                 $formulario->setTotalAPagar($resultado->total_a_pagar);                
                 $formulario->setNumero($resultado->numero_formulario);
-
-                if (!is_null($resultado->voucher)) {
-                    $formulario->setVoucher($resultado->voucher);
-                }
-                
 
                 $grupo = $grupoDao->buscarGrupoPorId($resultado->grupo_id);
                 $participante = $participanteDao->buscarParticipantePorId($resultado->participante_id);

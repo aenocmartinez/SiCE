@@ -273,13 +273,11 @@ class CalendarioDao extends Model implements CalendarioRepository {
             'formulario_inscripcion.grupo_id',
             'formulario_inscripcion.participante_id',
             'formulario_inscripcion.convenio_id',
-            'formulario_inscripcion.voucher',
             'formulario_inscripcion.numero_formulario',
             'formulario_inscripcion.estado',
             'formulario_inscripcion.costo_curso',
             'formulario_inscripcion.valor_descuento',
-            'formulario_inscripcion.total_a_pagar',
-            'formulario_inscripcion.medio_pago'
+            'formulario_inscripcion.total_a_pagar'
         )
         ->join('grupos', function($join) use ($calendarioId) {
             $join->on('grupos.id', '=', 'formulario_inscripcion.grupo_id')
@@ -303,22 +301,15 @@ class CalendarioDao extends Model implements CalendarioRepository {
             }
             $convenio->setId($convenioId);
 
-            $voucher = "";
-            if ($r->voucher) {
-                $voucher = $r->voucher;
-            }
-
             $inscripcion->setId($r->id);
             $inscripcion->setGrupo($grupo);
             $inscripcion->setParticipante($participante);
             $inscripcion->setConvenio($convenio);
-            $inscripcion->setVoucher($voucher);
             $inscripcion->setNumero($r->numero_formulario);
             $inscripcion->setEstado($r->estado);
             $inscripcion->setCostoCurso($r->costo_curso);
             $inscripcion->setValorDescuento($r->valor_descuento);
             $inscripcion->setTotalAPagar($r->total_a_pagar);
-            $inscripcion->setMedioPago($r->medio_pago);
 
             array_push($inscripciones, $inscripcion);        
         }

@@ -33,6 +33,7 @@ class LegalizarFormularioInscripcion extends FormRequest
             'valor_descuento' => 'nullable',
             'costo_curso' => 'required',
             'total_a_pagar' => 'required',
+            'medioPago' => 'required'
         ];                
     }
 
@@ -50,7 +51,7 @@ class LegalizarFormularioInscripcion extends FormRequest
             $cantidad2 = $this->input('valorPago');
 
             if ($cantidad2 != $cantidad1) {
-                $validator->errors()->add('valorPago', 'El valor a pagar debe ser igual el valor total a pagar.');
+                $validator->errors()->add('valorPago', 'El valor a pagar debe ser igual al valor total a pagar.');
             }
         });
     }      

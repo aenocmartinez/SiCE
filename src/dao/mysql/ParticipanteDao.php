@@ -264,7 +264,6 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                     'formulario_inscripcion.estado',
                     'formulario_inscripcion.total_a_pagar',
                     'formulario_inscripcion.created_at',
-                    'formulario_inscripcion.voucher',
                     'grupos.id as grupo_id',
                     'grupos.dia',
                     'grupos.jornada',
@@ -292,10 +291,6 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                     $formulario->setTotalAPagar($resultado->total_a_pagar);
                     $formulario->setFechaCreacion($resultado->created_at);
                     
-                    if (!is_null($resultado->voucher)) {
-                        $formulario->setVoucher($resultado->voucher);
-                    }
-
                     $nombreConvenio = "";
                     if (!is_null($resultado->nombre_convenio)) {
                         $nombreConvenio = $resultado->nombre_convenio;

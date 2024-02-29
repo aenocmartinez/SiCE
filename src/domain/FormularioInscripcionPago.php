@@ -2,6 +2,7 @@
 
 namespace Src\domain;
 
+use Carbon\Carbon;
 use Src\infraestructure\util\FormatoFecha;
 use Src\infraestructure\util\FormatoMoneda;
 
@@ -13,11 +14,13 @@ class FormularioInscripcionPago {
     private $fecha;
     private $voucher;
 
-    public function __construct($medioPago="Datafono", $valorPagoParcial=0, $voucher="", $fechaCreacion="") {
+    public function __construct($medioPago="Datafono", $valorPagoParcial=0, $voucher="") {
         $this->medio = $medioPago;
         $this->valor = $valorPagoParcial;
         $this->voucher = $voucher;
-        $this->fecha = $fechaCreacion;
+
+        date_default_timezone_set('America/Bogota');       
+        $this->fecha = Carbon::now();
     }
 
     public function setId($id): void {

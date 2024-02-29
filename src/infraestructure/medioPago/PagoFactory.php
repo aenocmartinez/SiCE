@@ -8,7 +8,7 @@ class PagoFactory {
         $mediosMap = self::cargarMedios();
 
         if (!isset($mediosMap[$tipoMedio])) {
-            return $mediosMap['pagoBanco'];    
+            return $mediosMap['pagoDatafono'];    
         }
 
         return $mediosMap[$tipoMedio];
