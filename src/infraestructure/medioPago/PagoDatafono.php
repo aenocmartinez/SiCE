@@ -8,7 +8,7 @@ use Src\view\dto\Response;
 
 class PagoDatafono implements IMedioPago {
 
-    public function Pagar(FormularioInscripcion $formulario, string $voucher, $valorPago): Response {        
+    public function Pagar(FormularioInscripcion $formulario, $voucher, $valorPago): Response {        
         $exito = $formulario->AgregarPago(new FormularioInscripcionPago("pagoDatafono", $valorPago, $voucher));
         if (!$exito) {
             return new Response("500", "Ha ocurrido un error al pagar la inscripción");

@@ -7,7 +7,7 @@ use Src\view\dto\Response;
 
 class PagoPSE implements IMedioPago {
 
-    public function Pagar(FormularioInscripcion $formulario, string $voucher, $valorPago): Response {
+    public function Pagar(FormularioInscripcion $formulario, $voucher, $valorPago): Response {
         return new Response();
     }
 }

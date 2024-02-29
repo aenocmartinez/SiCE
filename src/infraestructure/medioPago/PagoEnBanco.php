@@ -14,7 +14,7 @@ use Src\view\dto\Response;
 
 class PagoEnBanco implements IMedioPago{
 
-    public function Pagar(FormularioInscripcion $formulario, string $voucher, $valorPago): Response {
+    public function Pagar(FormularioInscripcion $formulario, $voucher, $valorPago): Response {
 
         // Plantillas
         // $path_css1      = __DIR__ . "/template/style.css";

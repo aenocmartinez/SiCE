@@ -31,8 +31,10 @@ class ConfirmarInscription extends FormRequest
             'costo_curso' => 'required',
             'valor_descuento' => 'required',
             'total_a_pagar' => 'required',
-            'voucher' => 'required_if:medioPago,pagoDatafono',
-            'valorPago' => 'required_if:medioPago,pagoDatafono',
+            'voucher' => 'required',
+            'valorPago' => 'required',
+            // 'voucher' => 'required_if:medioPago,pagoDatafono',
+            // 'valorPago' => 'required_if:medioPago,pagoDatafono',
         ];
     }
 
@@ -40,8 +42,10 @@ class ConfirmarInscription extends FormRequest
     {
         return [
             'medioPago.required' => 'Por favor indicar el medio de pago.',
-            'voucher.required_if' => 'El campo voucher es obligatorio',
-            'valorPago.required_if' => 'El campo valor a pagar es obligatorio',
+            'voucher.required' => 'El campo voucher es obligatorio',
+            'valorPago.required' => 'El campo valor a pagar es obligatorio',            
+            // 'voucher.required_if' => 'El campo voucher es obligatorio',
+            // 'valorPago.required_if' => 'El campo valor a pagar es obligatorio',
         ];
     }
 

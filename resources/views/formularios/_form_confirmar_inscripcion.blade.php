@@ -191,12 +191,12 @@
 
         $('input[name="medioPago"]').change(function(){
           const medioPago = $('input[name="medioPago"]:checked').val();
-          $("#s-voucher").hide();
-          if (medioPago=="pagoDatafono") {
-            $("#s-voucher").show();
-          } else {
-            $("#voucher").val("");
-          } 
+          // $("#s-voucher").hide();
+          // if (medioPago=="pagoDatafono") {
+          //   $("#s-voucher").show();
+          // } else {
+          //   $("#voucher").val("");
+          // } 
 
         });
     });

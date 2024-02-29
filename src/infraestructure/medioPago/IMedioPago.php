@@ -7,5 +7,5 @@ use Src\view\dto\Response;
 
 interface IMedioPago {
 
-    public function Pagar(FormularioInscripcion $formulario, string $voucher, $valorPago): Response;
+    public function Pagar(FormularioInscripcion $formulario, $voucher, $valorPago): Response;
 }
