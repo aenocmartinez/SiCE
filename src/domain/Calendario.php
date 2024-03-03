@@ -19,6 +19,7 @@ class Calendario {
         $this->nombre = $nombre;
         $this->fechaInicio = $fechaInicio;
         $this->fechaFinal = $fechaFinal;
+        $this->repository = new CalendarioDao();
     }
 
     public function setRepository($repository): void {
@@ -150,4 +151,9 @@ class Calendario {
     public static function Vigente(): Calendario {
         return CalendarioDao::obtenerCalendarioActualVigente();
     }
+
+    public function listarGruposParaFormularioInscripcionPublico(): array {
+        return $this->repository->listarGruposParaInscripcion($this->id);
+    }
+
 }

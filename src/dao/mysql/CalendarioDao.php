@@ -16,6 +16,10 @@ use Src\domain\Convenio;
 use Src\domain\FormularioInscripcion;
 use Src\domain\Grupo;
 use Src\domain\Participante;
+use Src\infraestructure\util\FormatoMoneda;
+use Src\view\dto\AreaInscripcionDto;
+use Src\view\dto\AreasInscripcionDto;
+use Src\view\dto\GrupoInscripcionDto;
 
 class CalendarioDao extends Model implements CalendarioRepository {
 
@@ -315,5 +319,55 @@ class CalendarioDao extends Model implements CalendarioRepository {
         }
     
         return $inscripciones;
+    }
+
+    public function listarGruposParaInscripcion(int $calendarioId): array {
+        $areas = [];
+        try {
+
+            $items = DB::table('grupos as g')
+                        ->select('a.id as areaId', 'a.nombre as areaNombre', 'g.id as grupoId', 'g.nombre as grupoNombre', 'g.dia', 'g.jornada', 
+                                 'ca.nombre as periodo', 'c.nombre as cursoNombre', 'cc.costo', 'cc.modalidad', 
+                                 DB::raw('(g.cupos - (select count(*) from formulario_inscripcion f where f.grupo_id = g.id)) as cuposDisponibles'))
+                        ->join('curso_calendario as cc', function ($join) use ($calendarioId) {
+                            $join->on('g.curso_calendario_id', '=', 'cc.id')
+                                ->where('cc.calendario_id', '=', $calendarioId);
+                        })
+                        ->join('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
+                        ->join('cursos as c', 'c.id', '=', 'cc.curso_id')
+                        ->join('areas as a', 'a.id', '=', 'c.area_id')
+                        ->orderBy('areaNombre')
+                        ->orderBy('cursoNombre')
+                        ->get();
+
+            foreach($items as $item) {
+                $key = $item->areaId;
+                if (!isset($areas[$key])) {
+                    $areas[$key] = new AreaInscripcionDto();
+                }                
+                $areas[$key]->areaId = $item->areaId;
+                $areas[$key]->areaNombre = mb_strtoupper($item->areaNombre, 'UTF-8');
+                
+                $grupo = new GrupoInscripcionDto();
+                    $grupo->grupoId = $item->grupoId;
+                    $grupo->grupoNombre = $item->grupoNombre;
+                    $grupo->dia = $item->dia;
+                    $grupo->jornada = $item->jornada;
+                    $grupo->periodo = $item->periodo;
+                    $grupo->cursoNombre = $item->cursoNombre;
+                    $grupo->costo = FormatoMoneda::PesosColombianos($item->costo);
+                    $grupo->modalidad = $item->modalidad;
+                    $grupo->cuposDisponibles = $item->cuposDisponibles;      
+
+                $areas[$key]->grupos[] = $grupo;
+                
+            }
+
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            Sentry::captureException($e);
+        }
+
+        return $areas;
     }
 }

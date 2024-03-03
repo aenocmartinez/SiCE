@@ -20,4 +20,5 @@ interface CalendarioRepository {
     public static function existeCalendarioVigente(): bool;
     public static function obtenerCalendarioActualVigente(): Calendario;
     public function listarInscripcionesPorCalendario(int $calendarioId): array;
+    public function listarGruposParaInscripcion(int $calendarioId): array;
 }

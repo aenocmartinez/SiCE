@@ -9,6 +9,7 @@ use App\Http\Controllers\CursoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FormularioInscripcionController;
 use App\Http\Controllers\GrupoController;
+use App\Http\Controllers\InscripcionPublicaController;
 use App\Http\Controllers\OrientadorController;
 use App\Http\Controllers\ParticipanteController;
 use App\Http\Controllers\SalonController;
@@ -153,3 +154,12 @@ Route::get('/participantes/legalizar-inscripcion/{numeroFormulario}/formulario',
 Route::patch('/participantes/legalizar-inscripcion', [ParticipanteController::class, 'legalizarInscripcion'])->name('participantes.legalizar-inscripcion');
 Route::get('/participantes/{page?}', [ParticipanteController::class, 'index'])->name('participantes.index');
 Route::get('/salones/{page}/q/{criteria}', [ParticipanteController::class, 'buscadorParticipantesPaginados'])->name('participantes.buscador-paginador');
+
+
+// Version pública
+
+
+Route::get('/public/inscripcion', [InscripcionPublicaController::class, 'index'])->name('public.inicio');
+Route::post('/public/inscripcion/consultar-participante', [InscripcionPublicaController::class, 'consultarExistencia'])->name('public.consultar-existencia');
+Route::get('/public/inscripcion/formulario-participante', [InscripcionPublicaController::class, 'formularioParticipante'])->name('public.formulario-participante');
+Route::post('/public/inscripcion/guardar-datos-participante', [InscripcionPublicaController::class, 'guardarDatosParticipante'])->name('public.guardar-datos-participante');
