@@ -9,12 +9,11 @@ use App\Http\Controllers\CursoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FormularioInscripcionController;
 use App\Http\Controllers\GrupoController;
-use App\Http\Controllers\InscripcionPublicaController;
 use App\Http\Controllers\OrientadorController;
 use App\Http\Controllers\ParticipanteController;
 use App\Http\Controllers\SalonController;
 use App\Http\Controllers\TipoSalonController;
-
+use App\Http\Controllers\InscripcionPublicaController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -163,3 +162,6 @@ Route::get('/public/inscripcion', [InscripcionPublicaController::class, 'index']
 Route::post('/public/inscripcion/consultar-participante', [InscripcionPublicaController::class, 'consultarExistencia'])->name('public.consultar-existencia');
 Route::get('/public/inscripcion/formulario-participante', [InscripcionPublicaController::class, 'formularioParticipante'])->name('public.formulario-participante');
 Route::post('/public/inscripcion/guardar-datos-participante', [InscripcionPublicaController::class, 'guardarDatosParticipante'])->name('public.guardar-datos-participante');
+
+Route::get('/public/inscripcion/participante/{participanteId}/grupo/{grupoId}', [InscripcionPublicaController::class, 'formularioInscripcion'])->name('public.inscribir-participante-a-grupo');
+Route::post('/public/inscripcion/confirmar', [InscripcionPublicaController::class, 'confirmarInscripcion'])->name('public.confirmar-inscripcion');

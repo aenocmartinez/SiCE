@@ -1,5 +1,10 @@
 @extends('plantillas.publico')
 
+@section('nameSection', 'Paso 1: Consulta si ya estás en nuestra base de datos')
+
+@section('description')
+    Usted está a punto de comenzar el proceso de inscripción a los <strong>Cursos de Extensión</strong> de la Universidad Colegio Mayor de Cundinamarca.
+@endsection
 
 @section('content')
 <div class="col-sm-8 col-xl-4">

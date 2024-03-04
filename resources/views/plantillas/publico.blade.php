@@ -43,18 +43,10 @@
               <div class="p-4 p-xl-5 flex-grow-1 d-flex align-items-center">
                 <div class="w-100">
                   <a class="link-fx fw-semibold fs-2 text-white" href="#">
-                    Universidad Colegio Mayor de Cundinamarca
+                    @yield('nameSection')                    
                   </a>
                   <p class="text-white-75 me-xl-4 mt-2">
-                    Usted está a punto de comenzar el proceso de inscripción a los <strong>Cursos de Extensión</strong> de la Universidad Colegio Mayor de Cundinamarca.
-                    
-                    
-                        <!-- <ol class="text-white-75 me-xl-8">
-                            <li>Comprobar si usted existe en nuestra base de datos</li>
-                            <li>Actualizar datos personales</li>
-                            <li>Seleccionar curso a inscribir</li>
-                            <li>Realizar pago</li>
-                        </ol>                     -->
+                    @yield('description')                  
                   </p>
                 </div>
               </div>
