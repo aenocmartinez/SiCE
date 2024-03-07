@@ -24,7 +24,7 @@
           </button>
           <button class="btn btn-primary px-4 py-2" data-toggle="click-ripple">
             <i class="fa fa-fw fa-database me-1"></i>          
-            Separar cupo
+            Reservar cupo
           </button>
       </div>
       </form>
