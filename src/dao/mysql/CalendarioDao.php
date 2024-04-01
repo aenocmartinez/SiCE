@@ -230,7 +230,10 @@ class CalendarioDao extends Model implements CalendarioRepository {
         $fechaActual = Carbon::now()->toDateString();
         $resultado = DB::table('calendarios')
             ->selectRaw("IF('$fechaActual' BETWEEN fec_ini AND fec_fin, 'true', 'false') AS esta_entre_fechas")
+            ->orderBy('id', 'desc')
             ->first();
+            // ->toSql();
+            // dd($resultado);
         
         if (!$resultado)
             return false;

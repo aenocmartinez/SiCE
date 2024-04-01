@@ -126,7 +126,7 @@ class FormularioInscripcionController extends Controller
     public function buscarParticipantePorDocumento(BuscarParticipantePorDocumento $req) {
         
         if (!Calendario::existeCalendarioVigente()) {
-            return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "No existe periodo académica vigente.");
+            return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "No existe periodo académico vigente.");
         }
 
         $datos = $req->validated();

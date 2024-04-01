@@ -20,12 +20,12 @@
       <div class="my-1 text-center">
           <button class="btn btn-primary px-4 py-2" data-toggle="click-ripple">          
             <i class="fa fa-fw fa-sack-dollar me-1"></i>
-            Pago Ecollect
+            Realizar pago por Ecollect
           </button>
-          <button class="btn btn-primary px-4 py-2" data-toggle="click-ripple">
+          <!-- <button class="btn btn-primary px-4 py-2" data-toggle="click-ripple">
             <i class="fa fa-fw fa-database me-1"></i>          
             Reservar cupo
-          </button>
+          </button> -->
       </div>
       </form>
 

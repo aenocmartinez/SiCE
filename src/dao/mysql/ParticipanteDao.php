@@ -380,7 +380,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
             $item = DB::table('convenios as c')
                 ->select('c.id', 'c.descuento')
                 ->join('convenio_participante as cp', 'c.id', '=', 'cp.convenio_id')
-                ->join('participantes as p', 'p.id', '=', 'cp.participante_id')
+                ->join('participantes as p', 'p.documento', '=', 'cp.cedula')
                 ->where('p.id', $participanteId)
                 ->where('cp.redimido', 'NO')
                 ->where('cp.disponible', 'SI')
