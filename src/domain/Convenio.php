@@ -152,6 +152,6 @@ class Convenio {
 
     public function agregarParticipante(Participante $participante): bool {
                 
-        return (new ConvenioDao())->agregarBeneficiarioAConvenio($this->id, $participante->getId());
+        return (new ConvenioDao())->agregarBeneficiarioAConvenio($this->id, $participante->getDocumento());
     }
 }

@@ -15,16 +15,18 @@ class CreateConvenioParticipanteTable extends Migration
     {
         Schema::create('convenio_participante', function (Blueprint $table) {
             $table->id();
+            // $table->unsignedBigInteger('participante_id');
             $table->unsignedBigInteger('convenio_id');
-            $table->unsignedBigInteger('participante_id');
+            $table->string('cedula', 30);
             $table->enum('redimido', ['SI', 'NO'])->default('NO');
             $table->enum('disponible', ['SI', 'NO'])->default('SI');
             $table->timestamps();
 
             $table->foreign('convenio_id')->references('id')->on('convenios')->onDelete('restrict');
-            $table->foreign('participante_id')->references('id')->on('participantes')->onDelete('restrict');
+            // $table->foreign('participante_id')->references('id')->on('participantes')->onDelete('restrict');
 
-            $table->unique(['convenio_id', 'participante_id']);
+            // $table->unique(['convenio_id', 'participante_id']);
+            $table->unique(['convenio_id', 'cedula']);
         });
     }
 

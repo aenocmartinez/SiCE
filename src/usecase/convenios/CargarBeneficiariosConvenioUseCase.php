@@ -8,9 +8,11 @@ use Src\domain\Participante;
 
 class CargarBeneficiariosConvenioUseCase {
 
+    const CEDULA = 0;        
+    
     public function ejecutar(Convenio $convenio, $archivo) {
-
         
+
         $reader = ReaderEntityFactory::createXLSXReader(); // O createReaderFromFile($file) para autodetectar el formato
         $reader->open($archivo);
 
@@ -18,12 +20,12 @@ class CargarBeneficiariosConvenioUseCase {
 
             foreach ($sheet->getRowIterator() as $row) {
 
-                $cedula = $row->toArray();
+                $registro = $row->toArray();
 
-                $participante = Participante::buscarParticipantePorCedula($cedula[0]);
+                $participante = Participante::buscarParticipantePorCedula($registro[self::CEDULA]);
 
                 if (!$participante->existe()) {
-                    continue;
+                    $participante->setDocumento($registro[self::CEDULA]);
                 }
                 
                 $convenio->agregarParticipante($participante);                            

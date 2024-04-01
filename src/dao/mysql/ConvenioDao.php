@@ -176,7 +176,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
         return $exito;
     }
 
-    public function agregarBeneficiarioAConvenio(int $convenioId, int $participanteId): bool {
+    public function agregarBeneficiarioAConvenio(int $convenioId, string $cedula): bool {
 
         try {
 
@@ -184,7 +184,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
 
             DB::table('convenio_participante')->insert([
                 'convenio_id' => $convenioId,
-                'participante_id' => $participanteId,
+                'cedula' => $cedula,
                 'created_at' => $fechaHoraActual,
                 'updated_at' => $fechaHoraActual,
             ]);
