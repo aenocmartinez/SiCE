@@ -26,6 +26,7 @@ class FormularioPublicoInscripionConsultarExistencia extends FormRequest
         return [
             'tipoDocumento' => 'required',
             'documento' => 'required',
+            'captcha' => 'required|captcha',
         ];
     }
 

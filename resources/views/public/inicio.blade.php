@@ -7,6 +7,14 @@
 @endsection
 
 @section('content')
+<style>
+.captcha-img {
+    width: 200px; /* Se ajusta el tamaño de la imagen */
+    height: auto;
+    font-size: 20px; /* Se ajusta el tamaño de la fuente del texto */
+}
+</style>
+
 <div class="col-sm-8 col-xl-4">
     <form method="post" action="{{ route('public.consultar-existencia') }}">
         @csrf
@@ -30,8 +38,22 @@
                 </span>
             @enderror        
         </div>
+
+        <div class="mb-4 text-center">
+            <input type="text" class="form-control py-3 text-center @error('captcha') is-invalid @enderror" id="captcha" name="captcha" placeholder="Escribe los caracteres de la imagen">
+            @error('captcha')
+                <span class="invalid-feedback text-center" role="alert">
+                    {{ $message }}
+                </span>
+            @enderror             
+            <br>
+
+            {!! captcha_img('captcha-img') !!}
+
+        </div>
+
+
         <div class="text-center">
-   
             <button type="submit" class="btn btn-outline-primary" data-toggle="click-ripple">
                 <i class="fa fa-fw fa-magnifying-glass me-1 opacity-50"></i>
                 Continuar

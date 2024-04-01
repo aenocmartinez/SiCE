@@ -12,6 +12,7 @@
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
+        "mews/captcha": "^3.3",
         "mpdf/mpdf": "^8.2",
         "nesbot/carbon": "^2.71",
         "picqer/php-barcode-generator": "^2.4",
