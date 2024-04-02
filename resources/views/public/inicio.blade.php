@@ -31,7 +31,7 @@
                 </span>
             @enderror
             <br>
-            <input type="text" class="form-control py-3 text-center @error('documento') is-invalid @enderror" id="documento" name="documento" placeholder="Número de documento">
+            <input type="text" class="form-control py-3 text-center @error('documento') is-invalid @enderror" autocomplete="off" id="documento" name="documento" placeholder="Número de documento" value="{{ old('documento') }}">
             @error('documento')
                 <span class="invalid-feedback text-center" role="alert">
                     {{ $message }}

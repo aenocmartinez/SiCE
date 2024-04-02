@@ -6,7 +6,7 @@
   
     <title>{{ config('app.name') }}</title>
 
-    <meta name="description" content="OneUI - Bootstrap 5 Admin Template &amp; UI Framework created by pixelcave and published on Themeforest">
+    <meta name="description" content="Cursos de Extensión - Universidad Colegio Mayor de Cundinamarca">
     <meta name="author" content="pixelcave">
     <meta name="robots" content="noindex, nofollow">
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -141,13 +141,13 @@
             <div class="dropdown d-inline-block ms-2">
               <button type="button" class="btn btn-sm btn-alt-secondary d-flex align-items-center" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <img class="rounded-circle" src="{{asset('assets/media/avatars/avatar10.jpg')}}" alt="Header Avatar" style="width: 21px;">
-                <span class="d-none d-sm-inline-block ms-2">Abimelec Enoc Martinez Robles</span>
+                <span class="d-none d-sm-inline-block ms-2">{{ Auth::user()->name }}</span>
                 <i class="fa fa-fw fa-angle-down d-none d-sm-inline-block opacity-50 ms-1 mt-1"></i>
               </button>
               <div class="dropdown-menu dropdown-menu-md dropdown-menu-end p-0 border-0" aria-labelledby="page-header-user-dropdown">
                 <div class="p-3 text-center bg-body-light border-bottom rounded-top">
                   <img class="img-avatar img-avatar48 img-avatar-thumb" src="{{asset('assets/media/avatars/avatar10.jpg')}}" alt="">
-                  <p class="mt-2 mb-0 fw-medium">{{ "Abimelec Enoc Martínez Robles" }}</p>
+                  <p class="mt-2 mb-0 fw-medium">{{ Auth::user()->name }}</p>
                   <p class="mb-0 text-muted fs-sm fw-medium">{{ "Administrador" }}</p>
                 </div>
                 <!-- PERFIL -->
@@ -159,9 +159,18 @@
                 <!-- </div> -->
                 <div role="separator" class="dropdown-divider m-0"></div>
                 <div class="p-2">
-                  <a class="dropdown-item d-flex align-items-center justify-content-between" href="{{ route('home') }}">
+                  <!-- <a class="dropdown-item d-flex align-items-center justify-content-between" href="{{ route('home') }}">
                     <span class="fs-sm fw-medium">Cerrar sesión</span>
-                  </a>
+                  </a> -->
+                  <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+
+                            <x-dropdown-link :href="route('logout')"
+                                    onclick="event.preventDefault();
+                                                this.closest('form').submit();">
+                                Cerrar sesión
+                            </x-dropdown-link>
+                        </form>                  
                 </div>
               </div>
             </div>
