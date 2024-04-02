@@ -1,3 +1,10 @@
+@php
+    $checked = '';
+    if ($participante->existe()) {
+        $checked = $participante->vinculadoUnicolMayor() ? 'checked' : '';
+    }
+@endphp
+
 <input type="hidden" name="id" value="{{ $participante->getId() }}">
 
 <div class="block block-rounded">
@@ -208,7 +215,13 @@
                             <span class="invalid-feedback" role="alert">
                                 {{ $message }}
                             </span>
-                        @enderror               
+                        @enderror 
+                        
+                    <br><br>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="vinculadoUnicolMayor" name="vinculadoUnicolMayor" {{ $checked }}>
+                        <label class="form-check-label" for="disponible">¿Tiene vínculo laboral con la Universidad?</label>
+                    </div>
 
             </div>            
 

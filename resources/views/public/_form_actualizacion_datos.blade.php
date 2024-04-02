@@ -1,3 +1,9 @@
+@php
+    $checked = '';
+    if ($participante->existe()) {
+        $checked = $participante->vinculadoUnicolMayor() ? 'checked' : '';
+    }
+@endphp
 
 <div class="row push">
 
@@ -224,7 +230,13 @@
                         {{ $message }}
                 </span>
                 @enderror                
-        </div>          
+        </div> 
+        
+        <!-- <br><br>
+        <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="vinculadoUnicolMayor" name="vinculadoUnicolMayor" {{ $checked }}>
+                <label class="form-check-label" for="disponible">¿Tiene vínculo laboral con la Universidad?</label>
+        </div> -->
 
     </div> 
     

@@ -6,6 +6,15 @@
         $totalPago = $totalPago - $descuento;
     }
 
+    if ($participante->vinculadoUnicolMayor()) {
+      $convenio = new Src\domain\Convenio(env('CONVENIO_NOMBRE_UNICOLMAYOR'));
+      $convenio->setId(env('CONVENIO_ID_UNICOLMAYOR'));
+      $convenio->setDescuento(100);
+
+      $descuento = $grupo->getCosto() * ($convenio->getDescuento()/100);
+      $totalPago = $totalPago - $descuento;      
+    }
+
     $descuentoFormateado = Src\infraestructure\util\FormatoMoneda::PesosColombianos($descuento);
     $totalPagoFormateado = Src\infraestructure\util\FormatoMoneda::PesosColombianos($totalPago);
 @endphp

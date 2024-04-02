@@ -18,14 +18,19 @@
       @include('public._form_confirmar_inscripcion')    
 
       <div class="my-1 text-center">
-          <button class="btn btn-primary px-4 py-2" data-toggle="click-ripple">          
-            <i class="fa fa-fw fa-sack-dollar me-1"></i>
-            Realizar pago por Ecollect
-          </button>
-          <!-- <button class="btn btn-primary px-4 py-2" data-toggle="click-ripple">
-            <i class="fa fa-fw fa-database me-1"></i>          
-            Reservar cupo
-          </button> -->
+
+          @if ( $participante->vinculadoUnicolMayor() )
+            <button class="btn btn-primary px-4 py-2" data-toggle="click-ripple">
+              <i class="fa fa-fw fa-database me-1"></i>          
+              Confirmar inscripción
+            </button>
+          @else 
+            <button class="btn btn-primary px-4 py-2" data-toggle="click-ripple">          
+              <i class="fa fa-fw fa-sack-dollar me-1"></i>
+              Realizar pago por Ecollect
+            </button>          
+          @endif
+
       </div>
       </form>
 

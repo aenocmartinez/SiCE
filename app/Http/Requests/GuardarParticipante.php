@@ -41,7 +41,8 @@ class GuardarParticipante extends FormRequest
             'contactoEmergencia' => 'required',
             'telefonoEmergencia' => 'required',
             'convenio' => 'nullable|integer',
-            'id' => 'nullable'
+            'id' => 'nullable',
+            'vinculadoUnicolMayor' => 'nullable'
         ];
     }
 

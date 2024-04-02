@@ -35,7 +35,8 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                             'email',
                             'eps',
                             'contacto_emergencia',
-                            'telefono_emergencia'
+                            'telefono_emergencia',
+                            'vinculado_a_unicolmayor'
                         ];
     
     public function formulariosInscripcion() {
@@ -64,6 +65,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                 $participante->setEps($participanteDao->eps);
                 $participante->setContactoEmergencia($participanteDao->contacto_emergencia);
                 $participante->setTelefonoEmergencia($participanteDao->telefono_emergencia);
+                $participante->setVinculadoUnicolMayor($participanteDao->vinculado_a_unicolmayor);
             }
 
         } catch (Exception $e) {
@@ -92,7 +94,8 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                 'email' => $participante->getEmail(),
                 'eps' => $participante->getEps(),
                 'contacto_emergencia' => $participante->getContactoEmergencia(),
-                'telefono_emergencia' => $participante->getTelefonoEmergencia()
+                'telefono_emergencia' => $participante->getTelefonoEmergencia(),
+                'vinculado_a_unicolmayor' => $participante->vinculadoUnicolMayor(),
             ]);
 
             $exito = true;
@@ -125,7 +128,8 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                     'email' => $participante->getEmail(),
                     'eps' => $participante->getEps(),
                     'contacto_emergencia' => $participante->getContactoEmergencia(),
-                    'telefono_emergencia' => $participante->getTelefonoEmergencia()
+                    'telefono_emergencia' => $participante->getTelefonoEmergencia(),
+                    'vinculado_a_unicolmayor' => $participante->vinculadoUnicolMayor(),
                 ]);
 
             $exito = true;
@@ -160,6 +164,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                 $participante->setEps($participanteDao->eps);
                 $participante->setContactoEmergencia($participanteDao->contacto_emergencia);
                 $participante->setTelefonoEmergencia($participanteDao->telefono_emergencia);
+                $participante->setVinculadoUnicolMayor($participanteDao->vinculado_a_unicolmayor);
             }
 
         } catch (Exception $e) {

@@ -191,6 +191,11 @@ class ParticipanteController extends Controller
             $participanteDto->id = request()->id;
         }
 
+        $participanteDto->vinculadoUnicolMayor = true;
+        if (is_null(request()->vinculadoUnicolMayor)) {
+            $participanteDto->vinculadoUnicolMayor = false;
+        }
+
         return $participanteDto;
     }
 }

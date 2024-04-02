@@ -19,5 +19,6 @@ class ParticipanteDto {
     public string $email;
     public string $eps;
     public string $contactoEmergencia;
-    public string $telefonoEmergencia;    
+    public string $telefonoEmergencia; 
+    public bool $vinculadoUnicolMayor;   
 }

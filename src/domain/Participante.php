@@ -24,6 +24,7 @@ class Participante {
     private string $contactoEmergencia;
     private string $telefonoEmergencia;
     private $beneficio;
+    private bool $vinculadoUnicolMayor;
     private ParticipanteRepository $repository;
 
     public function __construct() {
@@ -45,12 +46,21 @@ class Participante {
         $this->contactoEmergencia = "";
         $this->telefonoEmergencia = ""; 
         $this->beneficio = new Convenio();
+        $this->vinculadoUnicolMayor = false;
         $this->repository = new ParticipanteDao();       
     }
 
     public function setRepository($repository): void {
         $this->repository = $repository;
     }
+
+    public function setVinculadoUnicolMayor(bool $vinculadoUnicolMayor): void {
+        $this->vinculadoUnicolMayor = $vinculadoUnicolMayor;
+    }
+
+    public function vinculadoUnicolMayor(): bool {
+        return $this->vinculadoUnicolMayor;
+    }    
 
     public function setId(int $id): void {
         $this->id = $id;

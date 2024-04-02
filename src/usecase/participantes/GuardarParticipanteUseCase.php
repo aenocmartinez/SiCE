@@ -34,6 +34,10 @@ class GuardarParticipanteUseCase {
         $participante->setContactoEmergencia($participanteDto->contactoEmergencia);
         $participante->setTelefonoEmergencia($participanteDto->telefonoEmergencia);
         $participante->setRepository($participanteRepository);
+        
+        if (isset($participanteDto->vinculadoUnicolMayor)) {
+            $participante->setVinculadoUnicolMayor($participanteDto->vinculadoUnicolMayor);
+        }
 
         if ($participante->existe()) {
             $exito = $participante->actualizar();
