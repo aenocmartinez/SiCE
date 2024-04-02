@@ -47,7 +47,11 @@ class FormularioInscripcion {
 
     public function getPathComprobantePago() {
         return $this->pathComprobantePago;
-    }    
+    }   
+    
+    public function tieneComprobanteDePago(): bool {
+        return $this->pathComprobantePago != "";
+    }
 
     public function setParticipante(Participante $participante): void {
         $this->participante = $participante;

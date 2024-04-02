@@ -108,6 +108,9 @@ class InscripcionPublicaController extends Controller
 
         if ($pdfPath) {
             $pdfPath = url('/') . "/" . $pdfPath;
+            
+            $pdfPath = str_replace('/public/', '/storage/', $pdfPath);
+
             $formularioDto->pathComprobantePago = $pdfPath;
         }
 

@@ -211,7 +211,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         $convenioDao = new ConvenioDao();
 
         try {
-            $resultado = FormularioInscripcionDao::select('id','numero_formulario','estado','total_a_pagar','created_at',
+            $resultado = FormularioInscripcionDao::select('id','numero_formulario','estado','total_a_pagar','created_at', 'path_comprobante_pago', 
                 'valor_descuento','participante_id','grupo_id','convenio_id')    
                 ->where('formulario_inscripcion.numero_formulario', $numeroFormulario)
                 ->first();
@@ -224,6 +224,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formulario->setValorDescuento($resultado->valor_descuento);
                 $formulario->setTotalAPagar($resultado->total_a_pagar);                
                 $formulario->setNumero($resultado->numero_formulario);
+                $formulario->setPathComprobantePago($resultado->path_comprobante_pago);
 
                 $grupo = $grupoDao->buscarGrupoPorId($resultado->grupo_id);
                 $participante = $participanteDao->buscarParticipantePorId($resultado->participante_id);
@@ -251,7 +252,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         $convenioDao = new ConvenioDao();
 
         try {
-            $resultado = FormularioInscripcionDao::select('id','numero_formulario','estado','total_a_pagar','created_at',
+            $resultado = FormularioInscripcionDao::select('id','numero_formulario','estado','total_a_pagar','created_at', 'path_comprobante_pago', 
                 'valor_descuento','participante_id','grupo_id','convenio_id')    
                 ->where('formulario_inscripcion.id', $id)
                 ->first();
@@ -264,6 +265,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formulario->setValorDescuento($resultado->valor_descuento);
                 $formulario->setTotalAPagar($resultado->total_a_pagar);                
                 $formulario->setNumero($resultado->numero_formulario);
+                $formulario->setPathComprobantePago($resultado->path_comprobante_pago);
 
                 $grupo = $grupoDao->buscarGrupoPorId($resultado->grupo_id);
                 $participante = $participanteDao->buscarParticipantePorId($resultado->participante_id);
