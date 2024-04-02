@@ -154,6 +154,14 @@
                         </div>                        
                     </div>
 
+                    <div class="mb-4 text-center">
+                      @if ($formulario->tieneComprobanteDePago())
+                      <a href="{{ $formulario->getPathComprobantePago() }}" class="btn btn-lg rounded-pill btn-alt-info px-4 me-1 mb-3" target="_blank">
+                          <i class="fa fa-download me-1"></i> Ver comprobante de pago
+                      </a>                        
+                      @endif
+                    </div>                    
+
                     <div class="block-content-full pt-0">
 
                         <div class="row g-3">
