@@ -60,8 +60,8 @@ class InscripcionPublicaController extends Controller
 
         $response = (new GuardarParticipanteUseCase)->ejecutar($participanteDto);
 
-        if ($response->code == "500") {
-            dd("Ha ocurrido un error");
+        if ($response->code == "201") {            
+            $participante = (new BuscarParticipantePorDocumentoUseCase)->ejecutar($participanteDto->tipoDocumento, $participanteDto->documento);
         }
         
         $calendarioVigente = Calendario::Vigente();

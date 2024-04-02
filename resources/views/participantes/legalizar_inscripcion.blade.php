@@ -1,7 +1,7 @@
 @extends("plantillas.principal")
 
 @php
-    $titulo = "Legalizacion inscripción";
+    $titulo = "Legalización inscripción";
 @endphp
 
 @section("title", $titulo)

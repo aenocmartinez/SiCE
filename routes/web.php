@@ -2,18 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
-// use App\Http\Controllers\AreaController;
-// use App\Http\Controllers\CalendarioController;
-// use App\Http\Controllers\ConvenioController;
-// use App\Http\Controllers\CursoController;
-// use App\Http\Controllers\DashboardController;
-// use App\Http\Controllers\FormularioInscripcionController;
-// use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\HomeController;
-// use App\Http\Controllers\OrientadorController;
-// use App\Http\Controllers\ParticipanteController;
-// use App\Http\Controllers\SalonController;
-// use App\Http\Controllers\TipoSalonController;
+
 use App\Http\Controllers\InscripcionPublicaController;
 /*
 |--------------------------------------------------------------------------

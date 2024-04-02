@@ -326,12 +326,11 @@ class CalendarioDao extends Model implements CalendarioRepository {
 
     public function listarGruposParaInscripcion(int $calendarioId): array {
         $areas = [];
-        try {
-
+        try {            
             $items = DB::table('grupos as g')
                         ->select('a.id as areaId', 'a.nombre as areaNombre', 'g.id as grupoId', 'g.nombre as grupoNombre', 'g.dia', 'g.jornada', 
                                  'ca.nombre as periodo', 'c.nombre as cursoNombre', 'cc.costo', 'cc.modalidad', 
-                                 DB::raw('(g.cupos - (select count(*) from formulario_inscripcion f where f.grupo_id = g.id)) as cuposDisponibles'))
+                                 DB::raw('(g.cupos - (select count(*) from formulario_inscripcion f where f.grupo_id = g.id and f.estado = \'Pagado\')) as cuposDisponibles'))
                         ->join('curso_calendario as cc', function ($join) use ($calendarioId) {
                             $join->on('g.curso_calendario_id', '=', 'cc.id')
                                 ->where('cc.calendario_id', '=', $calendarioId);
