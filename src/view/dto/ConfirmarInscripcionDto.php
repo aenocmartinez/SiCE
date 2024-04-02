@@ -16,4 +16,5 @@ class ConfirmarInscripcionDto {
     public $valorPagoParcial;
     public $diasFesctivos;
     public $estado;
+    public $pathComprobantePago;
 }

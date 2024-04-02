@@ -7,24 +7,26 @@
 
     <title>{{ config('app.name') }}</title>
 
-    <meta name="description" content="OneUI - Bootstrap 5 Admin Template &amp; UI Framework created by pixelcave and published on Themeforest">
+    <meta name="description" content="Cursos de Extensión - Universidad Colegio Mayor de Cundinamarca">
     <meta name="author" content="pixelcave">
     <meta name="robots" content="noindex, nofollow">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Open Graph Meta -->
-    <meta property="og:title" content="OneUI - Bootstrap 5 Admin Template &amp; UI Framework">
-    <meta property="og:site_name" content="OneUI">
-    <meta property="og:description" content="OneUI - Bootstrap 5 Admin Template &amp; UI Framework created by pixelcave and published on Themeforest">
+    <meta property="og:title" content="{{ config('app.name') }}">
+    <meta property="og:site_name" content="{{ config('app.name') }}">
+    <meta property="og:description" content="{{ config('app.name') }}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="">
     <meta property="og:image" content="">
 
 
-    <link rel="shortcut icon" href="{{asset('assets/media/favicons/favicon.png')}}">
-    <link rel="icon" type="image/png" sizes="192x192" href="{{asset('assets/media/favicons/favicon-192x192.png')}}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{asset('assets/media/favicons/apple-touch-icon-180x180.png')}}">
+    <link rel="shortcut icon" href="https://www.unicolmayor.edu.co/_templates/UNICOL-PORTAL-2021/recursos/images/favicon/apple-icon-57x57.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://www.unicolmayor.edu.co/_templates/UNICOL-PORTAL-2021/recursos/images/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://www.unicolmayor.edu.co/_templates/UNICOL-PORTAL-2021/recursos/images/favicon/apple-icon-57x57.png">
     
+    <link rel="stylesheet" href="{{asset('assets/js/plugins/sweetalert2/sweetalert2.min.css')}}">
+
     <link rel="stylesheet" id="css-main" href="{{asset('assets/css/oneui.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/js/plugins/flatpickr/flatpickr.min.css')}}">
   </head>
@@ -94,10 +96,33 @@
     <!-- jQuery (required for jQuery Validation plugin) -->
     <script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
 
+    <script src="{{asset('assets/js/plugins/sweetalert2/sweetalert2.min.js')}}"></script>
+
     <!-- Page JS Plugins -->
     <script src="{{asset('assets/js/plugins/jquery-validation/jquery.validate.min.js')}}"></script>
 
     <!-- Page JS Code -->
     <script src="{{asset('assets/js/pages/op_auth_reminder.min.js')}}"></script>
+
+    @if (session('status'))
+        @php
+          $icon = 'fa fa-info-circle me-1';
+          $type = 'success';
+          if (session('code') == '401' || session('code') == '500' || session('code') == '404') {
+            $icon = 'fa fa-times me-1';
+            $type = 'danger';
+          }
+        @endphp
+        <script>
+          // One.helpers('jq-notify', {type: '{{ $type }}', icon: '{{ $icon }}', message: "{{ session('status') }}"});
+          Swal.fire({
+              icon: '{{ $type }}',
+              title: "{{ session('status') }}",
+              text: "En máximo 3 días recibirás la confirmación de tu inscripción.",
+              confirmButtonText: 'Aceptar'
+            });        
+        </script>            
+      @endif
+          
   </body>
 </html>

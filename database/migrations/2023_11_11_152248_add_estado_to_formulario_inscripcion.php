@@ -14,7 +14,7 @@ class AddEstadoToFormularioInscripcion extends Migration
     public function up()
     {
         Schema::table('formulario_inscripcion', function (Blueprint $table) {
-            $table->enum('estado', ['Pendiente de pago', 'Pagado', 'Anulado'])->after('numero_formulario')->default('Pendiente de pago');
+            $table->enum('estado', ['Pendiente de pago', 'Pagado', 'Anulado', 'Revisar comprobante de pago'])->after('numero_formulario')->default('Pendiente de pago');
             $table->decimal('costo_curso',8,2)->after('estado')->default(0);
             $table->decimal('valor_descuento',8,2)->after('costo_curso')->default(0);
             $table->decimal('total_a_pagar',8,2)->after('valor_descuento')->default(0);

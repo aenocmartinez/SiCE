@@ -17,6 +17,9 @@ use Src\usecase\participantes\GuardarParticipanteUseCase;
 use Src\view\dto\ConfirmarInscripcionDto;
 use Src\view\dto\ParticipanteDto;
 
+use Illuminate\Support\Facades\Storage;
+
+
 class InscripcionPublicaController extends Controller
 {
     public function index() {            
@@ -98,12 +101,19 @@ class InscripcionPublicaController extends Controller
     }
 
     public function confirmarInscripcion(FormularioPublicoConfirmarInscripcion $req) {
-        
+    
         $formularioDto = $this->hydrateConfirmarInscripcionDto( $req->validated() );
         
+        $pdfPath = $req->file('pdf')->store('public/pdfs');
+
+        if ($pdfPath) {
+            $pdfPath = url('/') . "/" . $pdfPath;
+            $formularioDto->pathComprobantePago = $pdfPath;
+        }
+
         $response = (new ConfirmarInscripcionUseCase)->ejecutar($formularioDto);  
 
-        return redirect()->route('public.inicio');
+        return redirect()->route('public.inicio')->with('code', $response->code)->with('status', $response->message);
     }
 
     private function hydrateConfirmarInscripcionDto($datos): ConfirmarInscripcionDto {
@@ -169,5 +179,27 @@ class InscripcionPublicaController extends Controller
         }
 
         return $participanteDto;
+    }  
+    
+    public function uploadPDF(Request $request)
+    {
+        // Validar la solicitud
+        $request->validate([
+            'pdf' => 'required|file|mimes:pdf|max:2048', // Solo PDFs y tamaño máximo de 2 MB
+        ]);
+
+        // Procesar el archivo PDF
+        if ($request->file('pdf')->isValid()) {
+            $pdfPath = $request->file('pdf')->store('public/pdfs');
+            // $pdfPath = $request->file('pdf')->store('pdfs'); // Guardar el PDF en el almacenamiento
+
+            // Lógica adicional si es necesario
+            dd($pdfPath);
+
+            // return response()->json(['path' => $pdfPath], 200); // Devolver la ruta del PDF almacenado
+        } else {
+            dd("Error carga PDF");
+            // return response()->json(['error' => 'Error al cargar el PDF'], 400);
+        }
     }    
 }

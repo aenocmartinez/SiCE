@@ -20,6 +20,7 @@ class FormularioInscripcion {
     private $fechaMaxLegalizacion;
     private $costoCurso;
     private $valorPago;
+    private $pathComprobantePago;
     private FormularioRepository $repository;
 
     public function __construct() {
@@ -28,6 +29,7 @@ class FormularioInscripcion {
         $this->valorDescuento = 0;
         $this->costoCurso = 0;
         $this->valorPago = 0;
+        $this->pathComprobantePago = "";
         $this->repository = new FormularioInscripcionDao();
     }
 
@@ -38,6 +40,14 @@ class FormularioInscripcion {
     public function getId(): int {
         return $this->id;
     }
+
+    public function setPathComprobantePago($pathComprobantePago): void {
+        $this->pathComprobantePago = $pathComprobantePago;
+    }
+
+    public function getPathComprobantePago() {
+        return $this->pathComprobantePago;
+    }    
 
     public function setParticipante(Participante $participante): void {
         $this->participante = $participante;

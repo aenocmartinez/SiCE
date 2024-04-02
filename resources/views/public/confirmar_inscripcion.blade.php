@@ -12,29 +12,50 @@
 
   <div class="my-5">
 
-    <form method="post" action="{{ route('public.confirmar-inscripcion') }}">
+    <form method="post" action="{{ route('public.confirmar-inscripcion') }}" enctype="multipart/form-data">
       @csrf
 
       @include('public._form_confirmar_inscripcion')    
 
-      <div class="my-1 text-center">
+      <div class="my-1 text-end">
 
           @if ( $participante->vinculadoUnicolMayor() )
             <button class="btn btn-primary px-4 py-2" data-toggle="click-ripple">
-              <i class="fa fa-fw fa-database me-1"></i>          
+              <i class="fa fa-database me-1"></i>          
               Confirmar inscripción
             </button>
           @else 
-            <button class="btn btn-primary px-4 py-2" data-toggle="click-ripple">          
-              <i class="fa fa-fw fa-sack-dollar me-1"></i>
-              Realizar pago por Ecollect
-            </button>          
+
+            
           @endif
 
       </div>
       </form>
 
+
+
   </div>
 
 </div>
+
+<script>
+function confirmEcollect() {
+    
+    Swal.fire({
+        title: 'Importante',
+        html: 'A partir de ahora serás redirigido a la plataforma de pago Ecollect en una nueva pestaña. Allí podrás completar el proceso de pago de manera segura y confiable.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, estoy seguro',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+          var miRedirect = document.createElement('a');
+          miRedirect.setAttribute('href', 'https://www.e-collect.com/customers/pagosunicolmayor.htm');
+          miRedirect.setAttribute('target', '_blank');
+          miRedirect.click();          
+        }
+    });
+}
+</script>
 @endsection

@@ -34,3 +34,5 @@ Route::post('/public/inscripcion/guardar-datos-participante', [InscripcionPublic
 
 Route::get('/public/inscripcion/participante/{participanteId}/grupo/{grupoId}', [InscripcionPublicaController::class, 'formularioInscripcion'])->name('public.inscribir-participante-a-grupo');
 Route::post('/public/inscripcion/confirmar', [InscripcionPublicaController::class, 'confirmarInscripcion'])->name('public.confirmar-inscripcion');
+
+Route::post('/public/inscripcion/cargar-comprobante-pago', [InscripcionPublicaController::class, 'uploadPDF'])->name('upload.pdf');

@@ -65,13 +65,52 @@
               </tbody>
               <tbody>
                 <tr>
-                  <td class="ps-0 fw-medium">Total</td>
-                  <td class="pe-0 fw-bold text-end" id="idValorTotalAPagar">{{ $totalPagoFormateado }}</td>
+                  <td class="ps-0 fw-medium">Total a pagar</td>
+                  <td class="pe-0 fw-bold text-end" id="idValorTotalAPagar">
+                    <a class="fw-semibold" href="javascript:void(0)"><h3>{{ $totalPagoFormateado }}</h3></a>
+                </td>
+                </tr>
+                <tr>
+                  <td class="ps-0 fw-sm text-center" colspan="10">
+                    <button type="button" class="btn btn-success me-1 mb-1" onclick="confirmEcollect();">
+                    <i class="fa fa-circle-dollar-to-slot me-1"></i>
+                        Realizar pago por Ecollect
+                    </button>
+                    <br>
+                    <a href="{{asset('biblioteca/Instructivo_pago_en_linea_2.pdf')}}" target="_blank" style="font-size:14px;">
+                        <i class="fa fa-download me-1"></i>
+                        Consulta aquí el instructivo para pagos en línea por medio de la plataforma Ecollect
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="ps-0 fw-sm text-center" colspan="10" style="font-size:14px; padding-top:30px;">
+                    <h2 class="text-danger">¡Importante!</h2>
+                    <h5 class="text-warning">Una vez que hayas realizado el pago, es imprescindible que cargues el comprobante de pago en formato PDF en nuestro sistema.</h5>
+                    Esto nos permitirá registrar tu transacción de manera adecuada e iniciar el proceso de verificación de tu inscripción, 
+                    que tardará 3 días hábiles a partir de la fecha de carga del comprobante de pago.  Se te notificará al correo electrónico registrado en la inscripción.
+                    <br><br>Recuerda que es responsabilidad del usuario asegurarse de que el comprobante de pago se cargue correctamente en el sistema.
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
-        </div>
+
+          <div class="col-8 container">
+            <div class="input-group mb-5">
+              <input class="form-control fs-sm" type="file" name="pdf" id="pdf" accept=".pdf">
+              @error('pdf')
+                  <div class="alert alert-danger">{{ $message }}</div>
+              @enderror
+              <button type="submit" class="btn btn-alt-primary fs-sm">
+                  <i class="fa fa-fw fa-upload"></i> Cargar comprobante y finalizar
+              </button>                        
+            </div>
+          </div>
+          <br>
+
+
+        </div>   
     
       </div>
     

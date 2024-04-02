@@ -40,7 +40,8 @@ class ConfirmarInscripcionUseCase {
         $formularioInscripcion->setGrupo($grupo);
         $formularioInscripcion->setConvenio($convenio);
         $formularioInscripcion->setParticipante($participante);
-        $formularioInscripcion->setEstado("Pendiente de pago");
+        // $formularioInscripcion->setEstado("Pendiente de pago");
+        $formularioInscripcion->setEstado("Revisar comprobante de pago");        
         $formularioInscripcion->setCostoCurso($confirmarInscripcionDto->costoCurso);
         $formularioInscripcion->setValorDescuento($confirmarInscripcionDto->valorDescuento);
         $formularioInscripcion->setTotalAPagar($confirmarInscripcionDto->totalAPagar);
@@ -48,6 +49,7 @@ class ConfirmarInscripcionUseCase {
         $formularioInscripcion->setFechaMaxLegalizacion(Calendario::fechaSiguienteDiaHabil($fechaActual, $diasFestivos));
         $formularioInscripcion->setNumero(strtotime($fechaActual) . $confirmarInscripcionDto->participanteId);
         $formularioInscripcion->setValorPago($confirmarInscripcionDto->valorPagoParcial);
+        $formularioInscripcion->setPathComprobantePago($confirmarInscripcionDto->pathComprobantePago);
         
         
         $exito = $formularioInscripcion->Crear();
@@ -63,7 +65,7 @@ class ConfirmarInscripcionUseCase {
         
         $formularioInscripcion->RedimirBeneficioConvenio();
 
-        return new Response("201", "Se ha registrado con éxito.");
+        return new Response("201", "¡La inscripción se ha realizado con éxito!");
 
         // return (new PagarFormularioUseCase)->ejecutar($formularioInscripcion);
     }

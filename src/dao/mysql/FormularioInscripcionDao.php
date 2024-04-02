@@ -23,7 +23,8 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                             'numero_formulario',
                             'valor_descuento', 
                             'total_a_pagar',
-                            'fecha_max_legalizacion'
+                            'fecha_max_legalizacion',
+                            'path_comprobante_pago'
                         ];
     
     public function grupo() {
@@ -111,8 +112,10 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $nuevoFormulario->created_at =  $formulario->getFechaCreacion();
                 $nuevoFormulario->updated_at =  $formulario->getFechaCreacion();
                 $nuevoFormulario->fecha_max_legalizacion = $formulario->getFechaMaxLegalizacion();
+                $nuevoFormulario->estado = $formulario->getEstado();
 
                 $nuevoFormulario->numero_formulario = $formulario->getNumero();
+                $nuevoFormulario->path_comprobante_pago = $formulario->getPathComprobantePago();
 
                 $participante->formulariosInscripcion()->save($nuevoFormulario);
 
