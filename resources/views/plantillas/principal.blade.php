@@ -157,113 +157,25 @@
                     <span class="badge rounded-pill bg-primary ms-2">1</span>
                   </a> -->
                 <!-- </div> -->
-                <div role="separator" class="dropdown-divider m-0"></div>
-                <div class="p-2">
+                <!-- <div role="separator" class="dropdown-divider m-0"></div> -->
+                <div class="p-1 text-center">
                   <!-- <a class="dropdown-item d-flex align-items-center justify-content-between" href="{{ route('home') }}">
                     <span class="fs-sm fw-medium">Cerrar sesión</span>
                   </a> -->
                   <form method="POST" action="{{ route('logout') }}">
                             @csrf
-
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                                Cerrar sesión
+                                <span class="fs-sm fw-medium">Cerrar sesión</span>                            
                             </x-dropdown-link>
                         </form>                  
                 </div>
               </div>
             </div>
-            <!-- END User Dropdown -->
 
-            <!-- Notifications Dropdown -->
-            <div class="dropdown d-inline-block ms-2">
-              <button type="button" class="btn btn-sm btn-alt-secondary" id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-fw fa-bell"></i>
-                <span class="text-primary">•</span>
-              </button>
-              <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0 border-0 fs-sm" aria-labelledby="page-header-notifications-dropdown">
-                <div class="p-2 bg-body-light border-bottom text-center rounded-top">
-                  <h5 class="dropdown-header text-uppercase">Notificaciones</h5>
-                </div>
-                <ul class="nav-items mb-0">
-                  <li>
-                    <a class="text-dark d-flex py-2" href="javascript:void(0)">
-                      <div class="flex-shrink-0 me-2 ms-3">
-                        <i class="fa fa-fw fa-check-circle text-success"></i>
-                      </div>
-                      <div class="flex-grow-1 pe-2">
-                        <div class="fw-semibold">Nueva matrícula legalizada</div>
-                        <span class="fw-medium text-muted">Hace 15 minutos</span>
-                      </div>
-                    </a>
-                  </li>
-                  <!-- <li>
-                    <a class="text-dark d-flex py-2" href="javascript:void(0)">
-                      <div class="flex-shrink-0 me-2 ms-3">
-                        <i class="fa fa-fw fa-plus-circle text-primary"></i>
-                      </div>
-                      <div class="flex-grow-1 pe-2">
-                        <div class="fw-semibold">1 new sale, keep it up</div>
-                        <span class="fw-medium text-muted">22 min ago</span>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="text-dark d-flex py-2" href="javascript:void(0)">
-                      <div class="flex-shrink-0 me-2 ms-3">
-                        <i class="fa fa-fw fa-times-circle text-danger"></i>
-                      </div>
-                      <div class="flex-grow-1 pe-2">
-                        <div class="fw-semibold">Update failed, restart server</div>
-                        <span class="fw-medium text-muted">26 min ago</span>
-                      </div>
-                    </a>
-                  </li>
-                  <li>
-                    <a class="text-dark d-flex py-2" href="javascript:void(0)">
-                      <div class="flex-shrink-0 me-2 ms-3">
-                        <i class="fa fa-fw fa-plus-circle text-primary"></i>
-                      </div>
-                      <div class="flex-grow-1 pe-2">
-                        <div class="fw-semibold">2 new sales, keep it up</div>
-                        <span class="fw-medium text-muted">33 min ago</span>
-                      </div>
-                    </a>
-                  </li> -->
-                  <li>
-                    <a class="text-dark d-flex py-2" href="javascript:void(0)">
-                      <div class="flex-shrink-0 me-2 ms-3">
-                        <i class="fa fa-fw fa-user-plus text-success"></i>
-                      </div>
-                      <div class="flex-grow-1 pe-2">
-                        <div class="fw-semibold">Nueva inscripción</div>
-                        <span class="fw-medium text-muted">Hace 41 min</span>
-                      </div>
-                    </a>
-                  </li>
-                  <!-- <li>
-                    <a class="text-dark d-flex py-2" href="javascript:void(0)">
-                      <div class="flex-shrink-0 me-2 ms-3">
-                        <i class="fa fa-fw fa-check-circle text-success"></i>
-                      </div>
-                      <div class="flex-grow-1 pe-2">
-                        <div class="fw-semibold">You have a new follower</div>
-                        <span class="fw-medium text-muted">42 min ago</span>
-                      </div>
-                    </a>
-                  </li> -->
-                </ul>
-                <!-- <div class="p-2 border-top text-center">
-                  <a class="d-inline-block fw-medium" href="javascript:void(0)">
-                    <i class="fa fa-fw fa-arrow-down me-1 opacity-50"></i> Load More..
-                  </a>
-                </div> -->
-              </div>
-            </div>
-            <!-- END Notifications Dropdown -->
           </div>
-          <!-- END Right Section -->
+          
         </div>
         <!-- END Header Content -->
 

@@ -40,27 +40,27 @@
               <div class="col-md-8 col-lg-6 col-xl-4">
                 <!-- Sign In Block -->
                 <div class="block block-rounded mb-0">
-                  <!-- <div class="block-header block-header-default">
-                    <h3 class="block-title">Sign In</h3>
+                  <div class="block-header block-header-default">
+                    <h3 class="block-title">Cursos de extensión</h3>
                     <div class="block-options">
-                      <a class="btn-block-option fs-sm" href="op_auth_reminder.html">Forgot Password?</a>
-                      <a class="btn-block-option" href="op_auth_signup.html" data-bs-toggle="tooltip" data-bs-placement="left" title="New Account">
-                        <i class="fa fa-user-plus"></i>
-                      </a>
+                      <!-- <a class="btn-block-option fs-sm" href="op_auth_reminder.html">Forgot Password?</a> -->
+                      <!-- <a class="btn-block-option" href="op_auth_signup.html" data-bs-toggle="tooltip" data-bs-placement="left" title="New Account"> -->
+                        <i class="fa fa-user"></i>
+                      <!-- </a> -->
                     </div>
-                  </div> -->
+                  </div>
                   <div class="block-content">
                     <div class="p-sm-3 px-lg-4 px-xxl-5 py-lg-5">
-                      <h1 class="h2 mb-1">Cursos de extensión</h1>
+                      <h1 class="h2 mb-1 text-center">Login</h1>
                       <p class="fw-medium text-muted text-center">
-                        Bienvenido, por favor inicia sesión.
+                        <!-- Bienvenido, por favor inicia sesión. -->
                       </p>
 
                       <form class="js-validation-signin" action="{{ route('login') }}" method="POST">
                         @csrf
                         <div class="py-3">
                           <div class="mb-4">
-                            <input type="email" class="form-control form-control-alt form-control-lg" id="email" name="email" placeholder="Correo electrónico">
+                            <input type="email" class="form-control form-control-alt form-control-lg" id="email" name="email" placeholder="Correo electrónico" value="{{ old('email') }}">
                           </div>
                           <div class="mb-4">
                             <input type="password" class="form-control form-control-alt form-control-lg" id="password" name="password" placeholder="Contraseña">
