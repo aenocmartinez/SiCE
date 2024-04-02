@@ -17,19 +17,6 @@
 
       @include('public._form_confirmar_inscripcion')    
 
-      <div class="my-1 text-end">
-
-          @if ( $participante->vinculadoUnicolMayor() )
-            <button class="btn btn-primary px-4 py-2" data-toggle="click-ripple">
-              <i class="fa fa-database me-1"></i>          
-              Confirmar inscripción
-            </button>
-          @else 
-
-            
-          @endif
-
-      </div>
       </form>
 
 

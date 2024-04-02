@@ -25,7 +25,7 @@ class FormularioPublicoConfirmarInscripcion extends FormRequest
     {
         return [
             'participanteId' => 'required',
-            'total_a_pagar' => 'required',
+            'total_a_pagar' => 'required|numeric',
             'valor_descuento' => 'required',
             'convenioId' => 'required',
             'grupoId' => 'required',
@@ -33,7 +33,21 @@ class FormularioPublicoConfirmarInscripcion extends FormRequest
             'voucher' => 'nullable',
             'valorPago' => 'nullable',
             'medioPago' => 'nullable',
-            'pdf' => 'required|file|mimes:pdf|max:2048',
+            // 'pdf' => 'required_if|file|mimes:pdf|max:2048',
+            'pdf' => 'nullable|file|mimes:pdf|max:2048'
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            // Verifica si total_a_pagar es mayor a 0
+            if ($this->total_a_pagar > 0) {
+                // Si total_a_pagar es mayor a 0, entonces el archivo PDF es requerido
+                $validator->sometimes('pdf', 'required', function ($input) {
+                    return $input->total_a_pagar > 0;
+                });
+            }
+        });
     }
 }

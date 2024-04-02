@@ -104,14 +104,18 @@ class InscripcionPublicaController extends Controller
     
         $formularioDto = $this->hydrateConfirmarInscripcionDto( $req->validated() );
         
-        $pdfPath = $req->file('pdf')->store('public/pdfs');
+        $formularioDto->pathComprobantePago = "";
+        if (!is_null(request()->pdf)) {
 
-        if ($pdfPath) {
-            $pdfPath = url('/') . "/" . $pdfPath;
-            
-            $pdfPath = str_replace('/public/', '/storage/', $pdfPath);
-
-            $formularioDto->pathComprobantePago = $pdfPath;
+            $pdfPath = $req->file('pdf')->store('public/pdfs');
+    
+            if ($pdfPath) {
+                $pdfPath = url('/') . "/" . $pdfPath;
+                
+                $pdfPath = str_replace('/public/', '/storage/', $pdfPath);
+    
+                $formularioDto->pathComprobantePago = $pdfPath;
+            }
         }
 
         $response = (new ConfirmarInscripcionUseCase)->ejecutar($formularioDto);  
