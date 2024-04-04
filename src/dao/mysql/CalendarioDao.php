@@ -329,7 +329,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
         try {            
             $items = DB::table('grupos as g')
                         ->select('a.id as areaId', 'a.nombre as areaNombre', 'g.id as grupoId', 'g.nombre as grupoNombre', 'g.dia', 'g.jornada', 
-                                 'ca.nombre as periodo', 'c.nombre as cursoNombre', 'cc.costo', 'cc.modalidad', 
+                                 'ca.nombre as periodo', 'c.nombre as cursoNombre', 'cc.costo', 'cc.modalidad', 'o.nombre as orientadorNombre',
                                  DB::raw('(g.cupos - (select count(*) from formulario_inscripcion f where f.grupo_id = g.id and f.estado = \'Pagado\')) as cuposDisponibles'))
                         ->join('curso_calendario as cc', function ($join) use ($calendarioId) {
                             $join->on('g.curso_calendario_id', '=', 'cc.id')
@@ -337,6 +337,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                         })
                         ->join('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
                         ->join('cursos as c', 'c.id', '=', 'cc.curso_id')
+                        ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
                         ->join('areas as a', 'a.id', '=', 'c.area_id')
                         ->orderBy('areaNombre')
                         ->orderBy('cursoNombre')
@@ -359,7 +360,8 @@ class CalendarioDao extends Model implements CalendarioRepository {
                     $grupo->cursoNombre = $item->cursoNombre;
                     $grupo->costo = FormatoMoneda::PesosColombianos($item->costo);
                     $grupo->modalidad = $item->modalidad;
-                    $grupo->cuposDisponibles = $item->cuposDisponibles;      
+                    $grupo->cuposDisponibles = $item->cuposDisponibles;  
+                    $grupo->nombreOrientador = $item->orientadorNombre;    
 
                 $areas[$key]->grupos[] = $grupo;
                 

@@ -49,7 +49,10 @@
                     <tbody>
                     @foreach ($item->grupos as $grupo)
                       <tr class="fs-sm">
-                        <td>{{ $grupo->grupoNombre . ": " . $grupo->cursoNombre }}</td>
+                        <td class="text-info">
+                          {{ $grupo->grupoNombre . ": " . $grupo->cursoNombre }} <br>
+                          <span style="font-size: 12px;" class="text-dark">Orientador: {{ $grupo->nombreOrientador }}</span>
+                        </td>
                         <td class="text-center">{{ $grupo->dia . " / " . $grupo->jornada }}</td>
                         <td class="text-center">{{ $grupo->costo }}</td>                        
                         <td class="text-center">{{ $grupo->cuposDisponibles }}</td>

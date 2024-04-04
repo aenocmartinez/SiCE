@@ -105,6 +105,7 @@ class InscripcionPublicaController extends Controller
         $formularioDto = $this->hydrateConfirmarInscripcionDto( $req->validated() );
         
         $formularioDto->pathComprobantePago = "";
+        
         if (!is_null(request()->pdf)) {
 
             $pdfPath = $req->file('pdf')->store('public/pdfs');

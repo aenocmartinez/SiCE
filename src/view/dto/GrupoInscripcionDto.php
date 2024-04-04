@@ -13,4 +13,5 @@ class GrupoInscripcionDto {
     public $costo;
     public $modalidad;
     public $cuposDisponibles;
+    public $nombreOrientador;
 }
