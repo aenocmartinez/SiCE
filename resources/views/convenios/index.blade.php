@@ -24,7 +24,10 @@
                     <h4 class="fw-normal mb-0">{{ $convenio->getNombre() }} - {{ $convenio->getDescuento()."%" }} de descuento</h4>
                         <small class="fw-light">
                             {{ $convenio->getVigenciaEnTexto() }} <br>
-                            Calendario: {{ $convenio->getNombreCalendario() }}<br>
+                            @if ($convenio->esCooperativa())                                
+                                Es una cooperativa <br>
+                            @endif
+                            Calendario: {{ $convenio->getNombreCalendario() }}<br>                            
                         </small>                     
                     </td>
                     <td class="text-center">

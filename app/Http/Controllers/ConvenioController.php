@@ -124,7 +124,13 @@ class ConvenioController extends Controller
         $convenioDto->nombre = $req['nombre'];
         $convenioDto->fechaInicial = $req['fec_ini'];
         $convenioDto->fechaFinal = $req['fec_fin'];
-        $convenioDto->descuento = $req['descuento'];   
+        $convenioDto->descuento = $req['descuento'];  
+
+        $convenioDto->esCooperativa = true;
+        if (is_null(request()->esCooperativa)) {
+            $convenioDto->esCooperativa = false;
+        }
+
         if (isset(request()->id)) {
             $convenioDto->id = request()->id;
         }             

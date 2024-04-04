@@ -13,7 +13,7 @@ use Sentry\Laravel\Facade as Sentry;
 class ConvenioDao extends Model implements ConvenioRepository {
     
     protected $table = 'convenios';
-    protected $fillable = ['nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento'];
+    protected $fillable = ['nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento', 'es_cooperativa'];
 
     public function beneficiarios() {
         $this->belongsToMany(ParticipanteDao::class,'convenio_id', 'participante_id', 'convenio_participante');
@@ -27,7 +27,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
             $calendarioDao = new CalendarioDao();
             $convenios = ConvenioDao::all();
 
-            $convenios = ConvenioDao::select('convenios.id', 'nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento',
+            $convenios = ConvenioDao::select('convenios.id', 'nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento', 'es_cooperativa', 
                                         DB::raw('COUNT(convenio_participante.id) as numBeneficiados'))
                         ->leftJoin('convenio_participante', 'convenio_participante.convenio_id', '=', 'convenios.id')
                         ->groupBy('convenios.id')
@@ -41,6 +41,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenio->setFecFin($c->fec_fin);
                 $convenio->setDescuento($c->descuento);
                 $convenio->setNumeroBeneficiados($c->numBeneficiados);
+                $convenio->setEsCooperativa($c->es_cooperativa);
     
                 $calendario = $calendarioDao->buscarCalendarioPorId($c->calendario_id);
                 $convenio->setCalendario($calendario);
@@ -59,7 +60,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
         $convenio = new Convenio();
         try {
             $calendarioDao = new CalendarioDao();
-            $c = ConvenioDao::select('convenios.id', 'convenios.nombre', 'convenios.calendario_id', 
+            $c = ConvenioDao::select('convenios.id', 'convenios.nombre', 'convenios.calendario_id', 'convenios.es_cooperativa',
                                     'convenios.fec_ini', 'convenios.fec_fin', 'convenios.descuento', 
                                     DB::raw('COUNT(formulario_inscripcion.id) as numIncripciones'),
                                     DB::raw('COUNT(convenio_participante.id) as numBeneficiados'))
@@ -78,6 +79,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenio->setDescuento($c->descuento);
                 $convenio->setNumeroInscritos($c->numIncripciones);
                 $convenio->setNumeroBeneficiados($c->numBeneficiados);
+                $convenio->setEsCooperativa($c->es_cooperativa);
 
                 // dd($c->numBeneficiados);
     
@@ -105,6 +107,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenio->setFecInicio($c->fec_ini);
                 $convenio->setFecFin($c->fec_fin);
                 $convenio->setDescuento($c->descuento);
+                $convenio->setEsCooperativa($c->es_cooperativa);
     
                 $calendario = $calendarioDao->buscarCalendarioPorId($c->calendario_id);
                 $convenio->setCalendario($calendario);
@@ -127,6 +130,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 'fec_ini' => $convenio->getFecInicio(), 
                 'fec_fin' => $convenio->getFecFin(), 
                 'descuento' => $convenio->getDescuento(),
+                'es_cooperativa' => $convenio->esCooperativa(),
             ]);
             
             $exito = true;
@@ -149,6 +153,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenioEncontrado->fec_ini = $convenio->getFecInicio();
                 $convenioEncontrado->fec_fin = $convenio->getFecFin();
                 $convenioEncontrado->descuento = $convenio->getDescuento();
+                $convenioEncontrado->es_cooperativa = $convenio->esCooperativa();
                 $convenioEncontrado->save();
             }
 

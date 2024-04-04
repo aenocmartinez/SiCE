@@ -16,6 +16,7 @@ class Convenio {
     private ConvenioRepository $repository;
     private $numeroBeneficiados;
     private $numeroInscritos;
+    private $esCooperativa;
 
     public function __construct(string $nombre="")
     {
@@ -27,10 +28,19 @@ class Convenio {
         $this->descuento = 0;
         $this->numeroBeneficiados = 0;
         $this->numeroInscritos = 0;
+        $this->esCooperativa = false;
     }
 
     public function setRepository($repository): void {
         $this->repository = $repository;
+    }
+
+    public function setEsCooperativa($esCooperativa=false): void {
+        $this->esCooperativa = $esCooperativa;
+    }
+
+    public function esCooperativa(): bool {
+        return $this->esCooperativa;
     }
 
     public function setid(int $id): void{

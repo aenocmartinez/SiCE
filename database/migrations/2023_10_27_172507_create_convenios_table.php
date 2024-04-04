@@ -20,6 +20,7 @@ class CreateConveniosTable extends Migration
             $table->date('fec_ini');
             $table->date('fec_fin');
             $table->double('descuento');
+            $table->boolean('es_cooperativa')->default(false);
 
             $table->foreign('calendario_id')->references('id')->on('calendarios');
 

@@ -10,5 +10,6 @@ class ConvenioDto {
     public $fechaInicial;
     public $fechaFinal;
     public $descuento;
+    public $esCooperativa;
 
 }

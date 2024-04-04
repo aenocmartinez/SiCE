@@ -1,3 +1,10 @@
+@php
+    $checked = '';
+    if ($convenio->existe()) {
+        $checked = $convenio->esCooperativa() ? 'checked' : '';
+    }
+@endphp
+
 <div class="block block-rounded">
 
     <div class="block-content">
@@ -85,7 +92,13 @@
                             <span class="invalid-feedback" role="alert">
                                 {{ $message }}
                             </span>
-                        @enderror            
+                        @enderror  
+                        
+                        <br>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="esCooperativa" name="esCooperativa" {{ $checked }}>
+                            <label class="form-check-label" for="disponible">Es una cooperativa</label>
+                        </div> 
             </div>
 
 
