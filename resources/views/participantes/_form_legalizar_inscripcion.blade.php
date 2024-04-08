@@ -177,7 +177,7 @@
 
                           <div class="col-6 col-sm-6">
                             <div class="form-check form-block">
-                              <input type="radio" class="form-check-input" id="medioPago-3" name="medioPago" value="pagoEcollect" {{ old('medioPago') == 'pagoEcollect' ? 'checked' : '' }}>
+                              <input type="radio" class="form-check-input" id="medioPago-3" name="medioPago" value="pagoEcollect" {{ old('medioPago') == 'pagoEcollect' || $formulario->pagadoPorEcollect() ? 'checked' : '' }}>
                               <label class="form-check-label bg-body-light text-center" for="medioPago-3">
                                   ECollect
                               </label>

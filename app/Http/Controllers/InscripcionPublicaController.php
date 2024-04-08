@@ -85,19 +85,25 @@ class InscripcionPublicaController extends Controller
     private function calcularValorDescuentoYTotalAPagar(Participante $participante, Grupo $grupo, Convenio $convenio): array {        
         
         $totalPago = $grupo->getCosto();
-        
+                
         $descuento = 0;
         if ($convenio->existe() && !$convenio->esCooperativa()) {
             $descuento = $grupo->getCosto() * ($convenio->getDescuento()/100);
         }
 
-        $totalPago = $totalPago - $descuento;            
+        $totalPago = $totalPago - $descuento;                    
     
-        if ($participante->vinculadoUnicolMayor()) {
-          $convenio = new Convenio(env('CONVENIO_NOMBRE_UNICOLMAYOR'));
-          $convenio->setId(env('CONVENIO_ID_UNICOLMAYOR'));
-          $totalPago = 0;
+        if ($participante->vinculadoUnicolMayor()) {     
+            
+            $totalPago = $grupo->getCosto();
+            
+            if ($participante->totalFormulariosInscritosPeriodoActula() == 0) {
+                $convenio = new Convenio(env('CONVENIO_NOMBRE_UNICOLMAYOR'));
+                $convenio->setId(env('CONVENIO_ID_UNICOLMAYOR'));
+                $totalPago = 0;
+            }
         }
+
 
         return [
             'totalPagoFormateado' => FormatoMoneda::PesosColombianos($totalPago),
@@ -246,7 +252,6 @@ class InscripcionPublicaController extends Controller
     
     public function uploadPDF(Request $request)
     {
-        // Validar la solicitud
         $request->validate([
             'pdf' => 'required|file|mimes:pdf|max:2048', // Solo PDFs y tamaño máximo de 2 MB
         ]);
@@ -254,15 +259,9 @@ class InscripcionPublicaController extends Controller
         // Procesar el archivo PDF
         if ($request->file('pdf')->isValid()) {
             $pdfPath = $request->file('pdf')->store('public/pdfs');
-            // $pdfPath = $request->file('pdf')->store('pdfs'); // Guardar el PDF en el almacenamiento
-
-            // Lógica adicional si es necesario
             dd($pdfPath);
-
-            // return response()->json(['path' => $pdfPath], 200); // Devolver la ruta del PDF almacenado
         } else {
             dd("Error carga PDF");
-            // return response()->json(['error' => 'Error al cargar el PDF'], 400);
         }
     }    
 }

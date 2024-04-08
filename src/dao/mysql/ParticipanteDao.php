@@ -387,7 +387,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                 ->join('convenio_participante as cp', 'c.id', '=', 'cp.convenio_id')
                 ->join('participantes as p', 'p.documento', '=', 'cp.cedula')
                 ->where('p.id', $participanteId)
-                ->where('cp.redimido', 'NO')
+                // ->where('cp.redimido', 'NO')
                 ->where('cp.disponible', 'SI')
                 ->first();
 
@@ -401,5 +401,16 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         }
 
         return $convenio;
+    }
+
+    public static function totalDeFormulariosInscritoPorUnParticipanteEnUnPeriodo($participanteId=0, $calendarioId=0): int {
+            $total = DB::table('formulario_inscripcion as f')
+            ->join('grupos as g', function ($join) use ($calendarioId) {
+                $join->on('g.id', '=', 'f.grupo_id')
+                    ->where('g.calendario_id', '=', $calendarioId);
+            })
+            ->where('f.participante_id', '=', $participanteId)
+            ->count();        
+        return $total;
     }
 }

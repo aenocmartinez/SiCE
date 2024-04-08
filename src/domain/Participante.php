@@ -245,12 +245,25 @@ class Participante {
     }
 
     public function buscarBeneficioVigentePorConvenio() {
-         if ($this->vinculadoUnicolMayor()) {        
+
+
+        if ($this->vinculadoUnicolMayor()) {    
+            
+            if ($this->totalFormulariosInscritosPeriodoActula() > 0) {
+                return new Convenio();
+            }
+
             $this->beneficio->setId(intval(env('CONVENIO_ID_UNICOLMAYOR')));
             $this->beneficio->setNombre(env('CONVENIO_NOMBRE_UNICOLMAYOR'));
             return ;
-        }       
+        }
+        
         $this->beneficio = $this->repository->buscarBeneficiosAlParticipante($this->id);
+    }
+
+    public function totalFormulariosInscritosPeriodoActula(): int {
+        $calendario = Calendario::Vigente();
+        return ParticipanteDao::totalDeFormulariosInscritoPorUnParticipanteEnUnPeriodo($this->id, $calendario->getId());                    
     }
 
     public function getIdBeneficioConvenio(): int {

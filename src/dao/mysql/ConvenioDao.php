@@ -80,8 +80,6 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenio->setNumeroInscritos($c->numIncripciones);
                 $convenio->setNumeroBeneficiados($c->numBeneficiados);
                 $convenio->setEsCooperativa($c->es_cooperativa);
-
-                // dd($c->numBeneficiados);
     
                 $calendario = $calendarioDao->buscarCalendarioPorId($c->calendario_id);
                 $convenio->setCalendario($calendario);

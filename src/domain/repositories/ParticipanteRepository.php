@@ -19,4 +19,5 @@ interface ParticipanteRepository {
     public static function numeroParticipantesPorGeneroYCalendario($sexo='M', $calendarioId): int;
     public static function numeroParticipantesPorConvenioYCalendario($calendarioId): int;
     public function buscarBeneficiosAlParticipante(int $participanteId): Convenio;
+    public static function totalDeFormulariosInscritoPorUnParticipanteEnUnPeriodo($participanteId=0, $calendarioId=0): int;
 }

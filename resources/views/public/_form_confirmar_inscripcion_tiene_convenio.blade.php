@@ -1,7 +1,9 @@
-      <div class="block block-rounded">
+<input type="hidden" name="medioPago" value="pagoEcollect">
+
+   <div class="block block-rounded">
           <div class="block-header">
             <h3 class="block-title text-center">
-              Resumen inscripción - TIENE CONVENIO
+              Resumen inscripción
             </h3>
           </div>
           <div class="block-content block-content-full">

@@ -1,9 +1,10 @@
 <input type="hidden" name="estado" value="Pendiente de pago">
+<input type="hidden" name="medioPago" value="pagoEcollect">
 
     <div class="block block-rounded">
           <div class="block-header">
             <h3 class="block-title text-center">
-              Resumen inscripción - Es Cooperativa
+              Resumen inscripción
             </h3>
           </div>
           <div class="block-content block-content-full">
