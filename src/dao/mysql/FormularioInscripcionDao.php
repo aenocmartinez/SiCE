@@ -342,7 +342,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         try {            
             DB::table('convenio_participante')
                 ->where('convenio_id', $convenioId)
-                ->where('participante_id', $particianteId)
+                ->where('cedula', $particianteId)
                 ->where('disponible', 'SI')
                 ->update(['redimido' => 'SI']);
 

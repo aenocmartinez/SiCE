@@ -17,6 +17,6 @@ interface FormularioRepository {
     public function realizarPagoFormularioInscripcion(int $formularioId, FormularioInscripcionPago $pago): bool;
     public function pagosRealizadosPorFormulario($formularioId): array;
     public function cambiarEstadoDePagoDeUnFormulario($formularioId, $estado="Pendiente de pago"): bool;
-    public function redimirBeneficioConvenio($particianteId, $convenioId): bool;
+    public function redimirBeneficioConvenio($cedula, $convenioId): bool;
     public function actualizarFormulario(FormularioInscripcion $formulario): bool;
 }

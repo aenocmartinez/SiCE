@@ -118,7 +118,7 @@
           Swal.fire({
               icon: '{{ $type }}',
               title: "{{ session('status') }}",
-              text: "En máximo 3 días recibirás la confirmación de tu inscripción.",
+              text: "",
               confirmButtonText: 'Aceptar'
             });        
         </script>            

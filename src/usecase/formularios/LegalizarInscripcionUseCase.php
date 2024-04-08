@@ -26,6 +26,7 @@ class LegalizarInscripcionUseCase {
 
         $formulario->setTotalAPagar($datosLegalizacion['total_a_pagar']);
         $formulario->setValorDescuento($datosLegalizacion['valor_descuento']);
+        $formulario->setEstado("Pagado");
         
         
         $convenio = new Convenio();
@@ -40,7 +41,7 @@ class LegalizarInscripcionUseCase {
             $response->message = "Ha ocurrido un error en el sistema al actualizar el formulario";
         }
         
-        $medioPago = PagoFactory::Medio($datosLegalizacion['medioPago']);
+        $medioPago = PagoFactory::Medio($datosLegalizacion['medioPago']);        
         $medioPago->Pagar($formulario, $datosLegalizacion['voucher'], $datosLegalizacion['valorPago']);
         
 

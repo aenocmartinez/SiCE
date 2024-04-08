@@ -17,7 +17,8 @@ use Src\view\dto\Response;
 
 class ConfirmarInscripcionUseCase {
     
-    public function ejecutar(ConfirmarInscripcionDto $confirmarInscripcionDto): Response {        
+    public function ejecutar(ConfirmarInscripcionDto $confirmarInscripcionDto): Response { 
+           
         date_default_timezone_set('America/Bogota');
         $fechaActual = Carbon::now();        
         $diaFestivo = DiaFestivoDao::buscarDiasFestivoPorAnio($fechaActual->year);

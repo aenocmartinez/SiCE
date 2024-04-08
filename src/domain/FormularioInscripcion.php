@@ -352,7 +352,7 @@ class FormularioInscripcion {
     }
 
     public function RedimirBeneficioConvenio(): bool {                
-        return $this->repository->redimirBeneficioConvenio($this->getParticipanteId(), $this->getConvenioId());
+        return $this->repository->redimirBeneficioConvenio($this->getParticipanteDocumento(), $this->getConvenioId());
     }
 
     public function AgregarPago(FormularioInscripcionPago $pago): bool {      

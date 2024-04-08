@@ -34,10 +34,10 @@ class TotalesInscripcionesUseCase {
                 $pagoSinDescuento += $inscripcion->getTotalAPagar();
             }           
 
-            if ($inscripcion->PendienteDePago()) {
+            if ($inscripcion->PendienteDePago() || $inscripcion->RevisarComprobanteDePago()) {
                 $totalPendintesDePago++;
                 $pagoPendientes += $inscripcion->getTotalAPagar();
-            }
+            }            
 
             if ($inscripcion->Anulado()) {
                 $totalAnulados++;                

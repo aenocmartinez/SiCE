@@ -222,6 +222,7 @@ class FormularioInscripcionController extends Controller
     }
 
     public function legalizarInscripcion(LegalizarFormularioInscripcion $req) {
+        
         $datosLegalizacion = $req->validated();        
 
         $response = (new LegalizarInscripcionUseCase)->ejecutar($datosLegalizacion);
