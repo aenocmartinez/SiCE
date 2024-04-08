@@ -57,18 +57,25 @@ class ConvenioDao extends Model implements ConvenioRepository {
     }
 
     public function buscarConvenioPorId(int $id): Convenio {
+        
         $convenio = new Convenio();
         try {
-            $calendarioDao = new CalendarioDao();
-            $c = ConvenioDao::select('convenios.id', 'convenios.nombre', 'convenios.calendario_id', 'convenios.es_cooperativa',
-                                    'convenios.fec_ini', 'convenios.fec_fin', 'convenios.descuento', 
-                                    DB::raw('COUNT(formulario_inscripcion.id) as numIncripciones'),
-                                    DB::raw('COUNT(convenio_participante.id) as numBeneficiados'))
-                        ->leftJoin('formulario_inscripcion', 'convenios.id', '=', 'formulario_inscripcion.convenio_id')
-                        ->leftJoin('convenio_participante', 'convenios.id', '=', 'convenio_participante.convenio_id')
-                        ->where('convenios.id', $id)
-                        ->groupBy('convenios.id', 'convenios.nombre', 'convenios.calendario_id', 'convenios.fec_ini', 'convenios.fec_fin', 'convenios.descuento')
-                        ->first();
+            
+            $c = DB::table('convenios as c')
+                ->select(
+                    'c.id',
+                    'c.nombre',
+                    'c.calendario_id',
+                    'c.es_cooperativa',
+                    'c.fec_ini',
+                    'c.fec_fin',
+                    'c.descuento',
+                    DB::raw('(select count(*) from formulario_inscripcion where convenio_id = c.id and estado <> \'Anulado\') as numeroInscritos'),
+                    DB::raw('(select count(*) from convenio_participante where convenio_id = c.id) as numeroBeneficiados')
+                )
+                ->where('c.id', $id)
+                ->first();
+
 
             if ($c) {
                 $convenio = new Convenio();
@@ -77,10 +84,11 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenio->setFecInicio($c->fec_ini);
                 $convenio->setFecFin($c->fec_fin);
                 $convenio->setDescuento($c->descuento);
-                $convenio->setNumeroInscritos($c->numIncripciones);
-                $convenio->setNumeroBeneficiados($c->numBeneficiados);
+                $convenio->setNumeroInscritos($c->numeroInscritos);
+                $convenio->setNumeroBeneficiados($c->numeroBeneficiados);
                 $convenio->setEsCooperativa($c->es_cooperativa);
-    
+            
+                $calendarioDao = new CalendarioDao();
                 $calendario = $calendarioDao->buscarCalendarioPorId($c->calendario_id);
                 $convenio->setCalendario($calendario);
             }
@@ -197,5 +205,53 @@ class ConvenioDao extends Model implements ConvenioRepository {
             Sentry::captureException($e);
         }
         return true;
+    }
+
+    public static function listadoParticipantesPorConvenio($convenioId=0, $calendarioId=0): array {
+
+        $participantes = [];
+
+        try {
+            $items = ParticipanteDao::select(
+                'participantes.primer_nombre',
+                'participantes.segundo_nombre',
+                'participantes.primer_apellido',
+                'participantes.segundo_apellido',
+                'participantes.tipo_documento',
+                'participantes.documento',
+                'cursos.nombre as nombre_curso',
+                'calendarios.nombre as periodo'
+            )
+            ->join('convenio_participante', 'participantes.documento', '=', 'convenio_participante.cedula')
+            ->join('formulario_inscripcion', function ($join) {
+                $join->on('formulario_inscripcion.convenio_id', '=', 'convenio_participante.convenio_id')
+                    ->on('formulario_inscripcion.participante_id', '=', 'participantes.id');
+            })
+            ->join('grupos', 'grupos.id', '=', 'formulario_inscripcion.grupo_id')
+            ->join('curso_calendario', 'curso_calendario.id', '=', 'grupos.curso_calendario_id')
+            ->join('cursos', 'cursos.id', '=', 'curso_calendario.curso_id')
+            ->join('calendarios', 'calendarios.id', '=', 'curso_calendario.calendario_id')
+            ->where('convenio_participante.convenio_id', $convenioId)
+            ->where('calendarios.id', $calendarioId)
+            ->orderBy('participantes.primer_nombre')
+            ->orderBy('participantes.primer_apellido')
+            ->get();
+
+            
+            $participantes[] = ['NOMBRE', 'TIPO_DOCUMENTO', 'DOCUMENTO', 'CURSO', 'PERIODO'];
+            foreach($items as $item) {
+                
+                $nombreCompleto = $item->primer_nombre . " " . $item->segundo_nombre . " " . $item->primer_apellido . " " . $item->segundo_apellido;
+
+                $participantes[] = [$nombreCompleto, $item->tipo_documento, $item->documento, $item->nombre_curso, $item->periodo];
+            }
+
+
+        } catch(\Exception $e) {
+            dd($e->getMessage());
+            Sentry::captureException($e);
+        }
+        
+        return $participantes;
     }
 }

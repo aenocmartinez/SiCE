@@ -17,6 +17,15 @@
 @section("subseccion", $titulo)
 
 @section("content")
+
+<div class="row mb-3">
+    <div class="d-flex justify-content-end">
+        <a href="{{ route('convenios.exportar-participantes', $convenio->getId()) }}" class="btn btn-outline-info me-1 mb-3">
+            <i class="fa fa-fw fa-download me-1"></i> Descargar participantes
+        </a>        
+    </div>
+</div>   
+
 <div class="block block-rounded">
 
     <div class="block-content">
@@ -35,9 +44,13 @@
                             <td>{{ $convenio->getDescuento() }}%</td>
                         </tr>                         
                         <tr class="fs-sm">
-                            <td>Participantes beneficiados</td>
+                            <td>Número proyectado de beneficiados</td>
+                            <td>{{ $convenio->getNumeroBeneficiados() }}</td>
+                        </tr>
+                        <tr class="fs-sm">
+                            <td>Total de inscripciones realizadas</td>
                             <td>{{ $convenio->getNumeroInscritos() }}</td>
-                        </tr>                         
+                        </tr>                          
                         <tr class="fs-sm">
                             <td>Periodo</td>
                             <td>{{ $convenio->getNombreCalendario() }}</td>

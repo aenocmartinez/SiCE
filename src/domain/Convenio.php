@@ -29,6 +29,7 @@ class Convenio {
         $this->numeroBeneficiados = 0;
         $this->numeroInscritos = 0;
         $this->esCooperativa = false;
+        $this->repository = new ConvenioDao();
     }
 
     public function setRepository($repository): void {
@@ -163,5 +164,14 @@ class Convenio {
     public function agregarParticipante(Participante $participante): bool {
                 
         return (new ConvenioDao())->agregarBeneficiarioAConvenio($this->id, $participante->getDocumento());
+    }
+
+    public function listarParticipantes(): array {
+        $calendario = Calendario::Vigente();
+        if (!$calendario->existe()) {
+            return [];
+        }
+        
+        return $this->repository->listadoParticipantesPorConvenio($this->id, $calendario->getId());
     }
 }

@@ -12,4 +12,5 @@ interface ConvenioRepository  {
     public function actualizarConvenio(Convenio $convenio): bool;
     public function eliminarConvenio(int $convenioId): bool;
     public function agregarBeneficiarioAConvenio(int $convenioId, string $cedula): bool;
+    public static function listadoParticipantesPorConvenio($convenioId=0, $calendarioId=0): array;
 }
