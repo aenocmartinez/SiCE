@@ -249,7 +249,7 @@ class Participante {
 
         if ($this->vinculadoUnicolMayor()) {    
             
-            if ($this->totalFormulariosInscritosPeriodoActula() > 0) {
+            if ($this->totalFormulariosInscritosPeriodoActual() > 0) {
                 return new Convenio();
             }
 
@@ -261,7 +261,7 @@ class Participante {
         $this->beneficio = $this->repository->buscarBeneficiosAlParticipante($this->id);
     }
 
-    public function totalFormulariosInscritosPeriodoActula(): int {
+    public function totalFormulariosInscritosPeriodoActual(): int {
         $calendario = Calendario::Vigente();
         return ParticipanteDao::totalDeFormulariosInscritoPorUnParticipanteEnUnPeriodo($this->id, $calendario->getId());                    
     }

@@ -22,6 +22,10 @@
                     @if ($convenio->esVigente())    
                       @php
                         $checked = ($convenio->getId() == $participante->getIdBeneficioConvenio()) ? 'checked' : '';
+
+                        if ($participante->vinculadoUnicolMayor() && $participante->totalFormulariosInscritosPeriodoActual() > 0) {
+                           $checked = '';
+                        }
                       @endphp                            
                       <div class="form-check form-block">
                           <input type="radio" class="form-check-input" {{ $checked }} id="convenio-{{ $convenio->getId() }}" value="{{ $convenio->getId().'@'.$convenio->getDescuento().'@'.$convenio->getNombre() }}" name="convenio">
