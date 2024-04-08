@@ -276,7 +276,8 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                     'curso_calendario.modalidad',
                     'calendarios.nombre as nombre_calendario',
                     'cursos.nombre as nombre_curso',
-                    'convenios.nombre as nombre_convenio'
+                    'convenios.nombre as nombre_convenio',
+                    'convenios.id as convenioId'
                 )
                 ->join('participantes as p', 'p.id', '=', 'formulario_inscripcion.participante_id')
                 ->join('grupos', 'grupos.id', '=', 'formulario_inscripcion.grupo_id')
@@ -298,11 +299,13 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                     $formulario->setFechaCreacion($resultado->created_at);
                     $formulario->setFechaMaxLegalizacion($resultado->fecha_max_legalizacion);
                     
-                    $nombreConvenio = "";
-                    if (!is_null($resultado->nombre_convenio)) {
-                        $nombreConvenio = $resultado->nombre_convenio;
+                    $convenio = new Convenio();
+                    if (!is_null($resultado->nombre_convenio)) {                        
+                        $convenio->setNombre($resultado->nombre_convenio);
+                        $convenio->setid($resultado->convenioId);
                     }
-                    $formulario->setConvenio(new Convenio($nombreConvenio));
+
+                    $formulario->setConvenio($convenio);
 
                     $grupo = new Grupo();
                     $grupo->setDia($resultado->dia);

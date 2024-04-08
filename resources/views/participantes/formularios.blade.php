@@ -62,7 +62,12 @@
                         </small>
                     </td>
                     <td class="text-center">{{ $f->getFechaMaxLegalizacion() }}</td>
-                    <td class="text-center">{{ $f->getEstado() }}</td>
+                    <td class="text-center">
+                        {{ $f->getEstado() }}
+                        @if ($f->tieneConvenio())
+                            Convenio: {{ $f->getConvenioNombre() }}
+                        @endif
+                    </td>
                     <td class="text-center">
                         <div class="btn-group">
                             @if ($f->PendienteDePago() || $f->RevisarComprobanteDePago())                            
