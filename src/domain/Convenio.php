@@ -5,6 +5,7 @@ namespace Src\domain;
 use Carbon\Carbon;
 use Src\dao\mysql\ConvenioDao;
 use Src\domain\repositories\ConvenioRepository;
+use Src\infraestructure\util\FormatoMoneda;
 
 class Convenio {
     private int $id;
@@ -17,6 +18,7 @@ class Convenio {
     private $numeroBeneficiados;
     private $numeroInscritos;
     private $esCooperativa;
+    private $totalPagar;
 
     public function __construct(string $nombre="")
     {
@@ -29,11 +31,24 @@ class Convenio {
         $this->numeroBeneficiados = 0;
         $this->numeroInscritos = 0;
         $this->esCooperativa = false;
+        $this->totalPagar = 0;
         $this->repository = new ConvenioDao();
     }
 
     public function setRepository($repository): void {
         $this->repository = $repository;
+    }
+
+    public function setTotalAPagar($totalPagar=0): void {
+        $this->totalPagar = $totalPagar;
+    }
+
+    public function getTotalAPagar() {
+        return $this->totalPagar;
+    }  
+    
+    public function getTotalAPagarFormatoMoneda() {
+        return FormatoMoneda::PesosColombianos($this->totalPagar);
     }
 
     public function setEsCooperativa($esCooperativa=false): void {
@@ -173,5 +188,9 @@ class Convenio {
         }
         
         return $this->repository->listadoParticipantesPorConvenio($this->id, $calendario->getId());
+    }
+
+    public function actualizarTotalAPagar() {
+        $this->repository->actualizarValorAPagarConvenio($this);
     }
 }

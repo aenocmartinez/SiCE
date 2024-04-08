@@ -416,4 +416,27 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
             ->count();        
         return $total;
     }
+
+    public function buscarFormularioInscripcionPorParticipanteYConvenioPendienteDepago($participanteId=0, $convenioId=0): FormularioInscripcion {
+        $formularioInscripcion = new FormularioInscripcion;
+
+        try {
+            $resultado = FormularioInscripcionDao::select('id', 'costo_curso')
+                        ->where('participante_id', $participanteId)
+                        ->where('convenio_id', $convenioId)
+                        ->where('estado', 'Pendiente de pago')
+                        ->first();
+            
+            if ($resultado) {
+                $formularioInscripcion->setId($resultado->id);
+                $formularioInscripcion->setCostoCurso($resultado->costo_curso);
+            }
+
+        } catch(\Exception $e) {
+            dd($e->getMessage());
+            Sentry::captureException($e);
+        }
+
+        return $formularioInscripcion;
+    }
 }

@@ -70,6 +70,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                     'c.fec_ini',
                     'c.fec_fin',
                     'c.descuento',
+                    'c.total_a_pagar',
                     DB::raw('(select count(*) from formulario_inscripcion where convenio_id = c.id and estado <> \'Anulado\') as numeroInscritos'),
                     DB::raw('(select count(*) from convenio_participante where convenio_id = c.id) as numeroBeneficiados')
                 )
@@ -87,6 +88,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenio->setNumeroInscritos($c->numeroInscritos);
                 $convenio->setNumeroBeneficiados($c->numeroBeneficiados);
                 $convenio->setEsCooperativa($c->es_cooperativa);
+                $convenio->setTotalAPagar($c->total_a_pagar);
             
                 $calendarioDao = new CalendarioDao();
                 $calendario = $calendarioDao->buscarCalendarioPorId($c->calendario_id);
@@ -253,5 +255,23 @@ class ConvenioDao extends Model implements ConvenioRepository {
         }
         
         return $participantes;
+    }
+
+    public function actualizarValorAPagarConvenio(Convenio $convenio): bool {
+        $exito = false;
+        try {
+            $convenioDao = ConvenioDao::find($convenio->getId());
+            if ($convenioDao) {
+                $convenioDao->total_a_pagar = $convenio->getTotalAPagar();
+                $convenioDao->save();
+            }
+
+            $exito = true;
+
+        } catch(Exception $e) {            
+            Sentry::captureException($e);
+        }
+
+        return $exito;        
     }
 }

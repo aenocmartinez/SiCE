@@ -391,4 +391,9 @@ class FormularioInscripcion {
     public function Actualizar(): bool {
         return $this->repository->actualizarFormulario($this);
     }
+
+    public function FacturarConvenio(): bool {
+        $this->repository = new FormularioInscripcionDao();
+        return $this->repository->actualizarFormularioPorFacturacionDeConvenio($this);
+    }
 }

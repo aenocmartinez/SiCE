@@ -13,7 +13,7 @@ use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\ConvenioController;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ExportarCSVController;
+
 use App\Http\Controllers\FormularioInscripcionController;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\OrientadorController;
@@ -146,6 +146,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/convenios/{id}/beneficiarios', [ConvenioController::class, 'formBeneficiarios'])->name('convenios.beneficiarios');
     Route::post('/convenios/importar-beneficiario', [ConvenioController::class, 'cargarBeneficiarios'])->name('convenios.cargar-beneficiarios');   
     Route::get('convenios/{id}/exportar-participantes', [ExportarCSVController::class, 'listaParticipantesConvenio'])->name('convenios.exportar-participantes');
+    Route::get('/convenios/{id}/facturar-convenio', [ConvenioController::class, 'facturarConvenio'])->name('convenios.facturar');
 
     Route::get('/nueva-inscripcion/paso-1/existencia-participante', [FormularioInscripcionController::class, 'index'])->name('formulario-inscripcion.paso-1');
     Route::get('/nueva-inscripcion/paso-2/datos-participante/tipo-documento/{tipoDocumento}/documento/{documento}', [FormularioInscripcionController::class, 'create'])->name('formulario-inscripcion.paso-2');

@@ -3,6 +3,7 @@
 namespace Src\domain\repositories;
 
 use Src\domain\Convenio;
+use Src\domain\FormularioInscripcion;
 use Src\domain\Participante;
 use Src\infraestructure\util\Paginate;
 
@@ -20,4 +21,5 @@ interface ParticipanteRepository {
     public static function numeroParticipantesPorConvenioYCalendario($calendarioId): int;
     public function buscarBeneficiosAlParticipante(int $participanteId): Convenio;
     public static function totalDeFormulariosInscritoPorUnParticipanteEnUnPeriodo($participanteId=0, $calendarioId=0): int;
+    public function buscarFormularioInscripcionPorParticipanteYConvenioPendienteDepago($participanteId=0, $convenioId=0):FormularioInscripcion;
 }

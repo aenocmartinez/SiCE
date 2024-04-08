@@ -273,4 +273,8 @@ class Participante {
     public function beneficioEsTipoCooperativa(): bool {
         return $this->beneficio->esCooperativa();
     }
+
+    public function formularioInscripcionPorConvenioPendienteDePago(Convenio $convenio): FormularioInscripcion {
+        return $this->repository->buscarFormularioInscripcionPorParticipanteYConvenioPendienteDepago($this->id, $convenio->getId());
+    }
 }

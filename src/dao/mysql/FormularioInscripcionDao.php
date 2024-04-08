@@ -353,4 +353,23 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
         return $exito;
     }
+
+    public function actualizarFormularioPorFacturacionDeConvenio(FormularioInscripcion $formulario): bool {
+        $exito = false;
+
+        try {
+            $formularioDao = FormularioInscripcionDao::find($formulario->getId());
+            if ($formularioDao) {
+                $formularioDao->valor_descuento = $formulario->getValorDescuento();
+                $formularioDao->total_a_pagar = $formulario->getTotalAPagar();
+                $formularioDao->estado = $formulario->getEstado();
+                $formularioDao->save();
+            }
+
+        } catch (\Exception $e) {
+            $exito = false;
+            Sentry::captureException($e);
+        }
+        return $exito;
+    }
 }

@@ -13,6 +13,7 @@ use Src\usecase\convenios\BuscarConvenioPorIdUseCase;
 use Src\usecase\convenios\CargarBeneficiariosConvenioUseCase;
 use Src\usecase\convenios\CrearConvenioUseCase;
 use Src\usecase\convenios\EliminarConvenioUseCase as ConveniosEliminarConvenioUseCase;
+use Src\usecase\convenios\FacturarConvenioUseCase;
 use Src\usecase\convenios\ListarConveniosUseCase;
 use Src\view\dto\ConvenioDto;
 
@@ -114,7 +115,19 @@ class ConvenioController extends Controller
         (new CargarBeneficiariosConvenioUseCase)->ejecutar($convenio, $archivo);
 
         return redirect()->route('convenios.index')->with('code', "200")->with('status', "Se ha cargado con éxito los participantes beneficiados.");
+    }
+
+    public function facturarConvenio($convenioId) {
+        $convenio = (new FacturarConvenioUseCase)->ejecutar($convenioId);
+        if (!$convenio->existe()) {
+            return redirect()->route('convenios.index')->with('code', "404")->with('status', "convenio no encontrado");
+        }
+
+        if ($convenio->getDescuento() == 0) {
+            return redirect()->route('convenios.index')->with('code', "500")->with('status', "No se puede facturar dado que el porcentaje de escuento es igual a 0");
+        }        
         
+        return view('convenios.mas_informacion', ['convenio' => $convenio])->with('code', "200")->with('status', "Se ha aplicado el descuento a los participantes con éxito.");
     }
 
     public function hydrateDto($req): ConvenioDto {
