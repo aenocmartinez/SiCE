@@ -52,9 +52,15 @@ class Participante {
 
     public function setRepository($repository): void {
         $this->repository = $repository;
-    }
+    }    
 
     public function setVinculadoUnicolMayor(bool $vinculadoUnicolMayor): void {
+
+        if ($vinculadoUnicolMayor) {        
+            $this->beneficio->setId(intval(env('CONVENIO_ID_UNICOLMAYOR')));
+            $this->beneficio->setNombre(env('CONVENIO_NOMBRE_UNICOLMAYOR'));            
+        }
+
         $this->vinculadoUnicolMayor = $vinculadoUnicolMayor;
     }
 
@@ -239,10 +245,19 @@ class Participante {
     }
 
     public function buscarBeneficioVigentePorConvenio() {
+         if ($this->vinculadoUnicolMayor()) {        
+            $this->beneficio->setId(intval(env('CONVENIO_ID_UNICOLMAYOR')));
+            $this->beneficio->setNombre(env('CONVENIO_NOMBRE_UNICOLMAYOR'));
+            return ;
+        }       
         $this->beneficio = $this->repository->buscarBeneficiosAlParticipante($this->id);
     }
 
     public function getIdBeneficioConvenio(): int {
         return $this->beneficio->getId();
+    }
+
+    public function beneficioEsTipoCooperativa(): bool {
+        return $this->beneficio->esCooperativa();
     }
 }

@@ -315,7 +315,11 @@ class FormularioInscripcion {
 
     public function PendienteDePago(): bool {
         return $this->estado == "Pendiente de pago";
-    }    
+    }
+    
+    public function RevisarComprobanteDePago(): bool {
+        return $this->estado == "Revisar comprobante de pago";
+    }
 
     public function PagosRealizados(): array {
         return $this->repository->pagosRealizadosPorFormulario($this->id);
@@ -333,6 +337,10 @@ class FormularioInscripcion {
     public function EstadoPago(): string {
 
         if ($this->estado == "Anulado") {
+            return $this->estado;
+        }
+
+        if ($this->estado == "Revisar comprobante de pago") {
             return $this->estado;
         }
         

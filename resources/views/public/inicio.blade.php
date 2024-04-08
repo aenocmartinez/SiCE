@@ -40,7 +40,7 @@
         </div>
 
         <div class="mb-4 text-center">
-            <input type="text" class="form-control py-3 text-center @error('captcha') is-invalid @enderror" id="captcha" name="captcha" placeholder="Escribe los caracteres de la imagen">
+            <input type="text" class="form-control py-3 text-center @error('captcha') is-invalid @enderror" id="captcha" name="captcha" autocomplete="off" placeholder="Escribe los caracteres de la imagen">
             @error('captcha')
                 <span class="invalid-feedback text-center" role="alert">
                     {{ $message }}

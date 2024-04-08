@@ -65,7 +65,7 @@
                     <td class="text-center">{{ $f->getEstado() }}</td>
                     <td class="text-center">
                         <div class="btn-group">
-                            @if ($f->getEstado() == "Pendiente de pago")                            
+                            @if ($f->PendienteDePago() || $f->RevisarComprobanteDePago())                            
                                 <a href="{{ route('participantes.edit-legalizar-inscripcion', [$f->getNumero()]) }}" 
                                         class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-info-light text-info"
                                         data-bs-toggle="tooltip" 

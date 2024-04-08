@@ -2,7 +2,6 @@
 
 namespace Src\domain;
 
-use Carbon\Carbon;
 use Src\dao\mysql\GrupoDao;
 use Src\infraestructure\util\Paginate;
 
@@ -35,6 +34,8 @@ class Grupo {
 
         $this->salon = new Salon;         
         $this->salon->setId($salonId);
+
+        $this->repository = new GrupoDao();
     }
 
     public function setRepository($repository): void {
@@ -196,5 +197,9 @@ class Grupo {
 
     public function getNombre() {
         return $this->nombre;
+    }
+
+    public function tieneCuposDisponibles(): bool {
+        return $this->repository->tieneCuposDisponibles($this->id);
     }
 }

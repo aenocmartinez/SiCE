@@ -89,17 +89,24 @@
                 @forelse ($paginate->Records() as $f)
                 <tr class="fs-xs">
                     <td>{{ $f->getNumero() }}</td>
-                    <td>{{ $f->getParticipanteNombreCompleto() }}</td>
+                    <td>{{ $f->getParticipanteNombreCompleto() }}
+                        @if ($f->tieneConvenio())
+                            <br>
+                            Convenio: {{ $f->getConvenioNombre() }}
+                        @endif                        
+                    </td>
                     <td>{{ $f->getParticipanteTipoYDocumento() }}</td>
                     <td class="text-center">
                         {{ $f->getGrupoNombreCurso() }}. <br>
                         G{{ $f->getGrupoId() }} - {{ $f->getGrupoDia() . " / ". $f->getGrupoJornada() }} <br>
                         Salón {{ $f->getGrupoSalon() }}
                     </td>
-                    <td>{{ $f->getEstado() }}</td>
+                    <td class="texte-center">
+                        {{ $f->getEstado() }} 
+                    </td>
                     <td>{{ $f->getFechaMaxLegalizacion() }}</td>
                     <td class="text-center">
-                    @if ($f->getEstado() == 'Pendiente de pago')                        
+                    @if ($f->PendienteDePago() || $f->RevisarComprobanteDePago())
                         <a href="{{ route('formularios.edit-legalizar-inscripcion', [$f->getNumero()]) }}" 
                                 class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-info-light text-info"
                                 data-bs-toggle="tooltip" 

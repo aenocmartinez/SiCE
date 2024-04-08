@@ -88,6 +88,7 @@ class ListaDeValor {
     public static function estadosFormularioInscripcion(): array {
         return [
             [ 'value' => 'Pendiente de pago', 'nombre' => 'Pendiente de pago'],
+            [ 'value' => 'Revisar comprobante de pago', 'nombre' => 'Revisar comprobante de pago'],
             [ 'value' => 'Pagado', 'nombre' => 'Pagado'],
             [ 'value' => 'Anulado', 'nombre' => 'Anulado'],
         ];        

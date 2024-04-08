@@ -40,8 +40,7 @@ class ConfirmarInscripcionUseCase {
         $formularioInscripcion->setGrupo($grupo);
         $formularioInscripcion->setConvenio($convenio);
         $formularioInscripcion->setParticipante($participante);
-        // $formularioInscripcion->setEstado("Pendiente de pago");
-        $formularioInscripcion->setEstado("Revisar comprobante de pago");        
+        $formularioInscripcion->setEstado($confirmarInscripcionDto->estado);  
         $formularioInscripcion->setCostoCurso($confirmarInscripcionDto->costoCurso);
         $formularioInscripcion->setValorDescuento($confirmarInscripcionDto->valorDescuento);
         $formularioInscripcion->setTotalAPagar($confirmarInscripcionDto->totalAPagar);
@@ -50,7 +49,11 @@ class ConfirmarInscripcionUseCase {
         $formularioInscripcion->setNumero(strtotime($fechaActual) . $confirmarInscripcionDto->participanteId);
         $formularioInscripcion->setValorPago($confirmarInscripcionDto->valorPagoParcial);
         $formularioInscripcion->setPathComprobantePago($confirmarInscripcionDto->pathComprobantePago);
-        
+
+        if (!$grupo->tieneCuposDisponibles()) {
+            dd("No hay cupos disponibles");
+            return new Response("409", "El grupo no tiene cupos disponibles");
+        }
         
         $exito = $formularioInscripcion->Crear();
         if (!$exito) {
@@ -66,7 +69,5 @@ class ConfirmarInscripcionUseCase {
         $formularioInscripcion->RedimirBeneficioConvenio();
 
         return new Response("201", "¡La inscripción se ha realizado con éxito!");
-
-        // return (new PagarFormularioUseCase)->ejecutar($formularioInscripcion);
     }
 }

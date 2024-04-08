@@ -15,7 +15,14 @@
     <form method="post" action="{{ route('public.confirmar-inscripcion') }}" enctype="multipart/form-data">
       @csrf
 
-      @include('public._form_confirmar_inscripcion')    
+      <input type="hidden" name="participanteId" value="{{ $participante->getId() }}">
+      <input type="hidden" name="total_a_pagar" value="{{ $totalPago }}">
+      <input type="hidden" name="valor_descuento" value="{{ $descuento }}">
+      <input type="hidden" name="convenioId" value="{{ $convenio->getId() }}">
+      <input type="hidden" name="grupoId" value="{{ $grupo->getId() }}">
+      <input type="hidden" name="costo_curso" value="{{ $grupo->getCosto() }}">
+
+      @include($formularioAMostrar)
 
       </form>
 

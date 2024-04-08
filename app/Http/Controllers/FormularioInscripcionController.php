@@ -170,6 +170,7 @@ class FormularioInscripcionController extends Controller
     }    
 
     public function vistaConfirmarInscripcion($participanteId, $grupoId) {
+        
         return view('formularios.confirmar_inscripcion',[
             'participante' => (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId),
             'grupo' => (new BuscarGrupoPorIdUseCase)->ejecutar($grupoId),
@@ -243,6 +244,11 @@ class FormularioInscripcionController extends Controller
         $formularioDto->totalAPagar = $datos['total_a_pagar'];
         $formularioDto->voucher = $datos['voucher'];
         $formularioDto->valorPagoParcial = $datos['valorPago'];
+
+        $formularioDto->estado = "Pendiente de pago";
+        if (isset($datos['estado'])) {
+            $formularioDto->estado = $datos['estado'];
+        }
 
         return $formularioDto;
     }

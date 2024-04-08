@@ -14,6 +14,7 @@
                 class="form-control fs-sm @error('primerNombre') is-invalid @enderror" 
                 id="primerNombre" 
                 name="primerNombre"
+                autocomplete="off"
                 value="{{ old('primerNombre', $participante->getPrimerNombre()) }}" placeholder="Primer nombre">
                 <label class="form-label text-gray-dark fw-normal fs-sm" for="primerNombre">Primer nombre</label>
                 @error('primerNombre')
@@ -29,6 +30,7 @@
                 class="form-control fs-sm @error('primerApellido') is-invalid @enderror" 
                 id="primerApellido" 
                 name="primerApellido"
+                autocomplete="off"
                 value="{{ old('primerApellido', $participante->getPrimerApellido()) }}" placeholder="Primer apellido">                                   
                 <label class="form-label text-gray-dark fw-normal fs-sm" for="primerApellido">Primer apellido</label>
                 @error('primerApellido')
@@ -61,6 +63,7 @@
                 class="js-flatpickr form-control fs-sm @error('fecNacimiento') is-invalid @enderror" 
                 id="fecNacimiento" 
                 name="fecNacimiento"
+                autocomplete="off"
                 value="{{ old('fecNacimiento', $participante->getFechaNacimiento()) }}" placeholder="Fecha de nacimiento">                                   
                 <label class="form-label text-gray-dark fw-normal fs-sm" for="fecNacimiento">Fecha de nacimiento</label>
                 @error('fecNacimiento')
@@ -76,6 +79,7 @@
                 class="form-control fs-sm @error('direccion') is-invalid @enderror" 
                 id="direccion" 
                 name="direccion"
+                autocomplete="off"
                 value="{{ old('direccion', $participante->getDireccion()) }}" placeholder="Dirección">                                   
                 <label class="form-label text-gray-dark fw-normal fs-sm" for="direccion">Dirección</label>
                 @error('direccion')
@@ -91,6 +95,7 @@
                 class="form-control fs-sm @error('telefono') is-invalid @enderror" 
                 id="telefono" 
                 name="telefono"
+                autocomplete="off"
                 value="{{ old('telefono', $participante->getTelefono()) }}" placeholder="Teléfono">                                   
                 <label class="form-label text-gray-dark fw-normal fs-sm" for="telefono">Teléfono</label>
                 @error('telefono')
@@ -122,6 +127,7 @@
                 class="form-control fs-sm @error('telefonoEmergencia') is-invalid @enderror" 
                 id="telefonoEmergencia" 
                 name="telefonoEmergencia"
+                autocomplete="off"
                 value="{{ old('telefonoEmergencia', $participante->getTelefonoEmergencia()) }}" placeholder="Número de teléfono del contacto de emergencia">                                   
                 <label class="form-label text-gray-dark fw-normal fs-sm" for="telefonoEmergencia">Número de teléfono del contacto de emergencia</label>                          
                 @error('telefonoEmergencia')
@@ -140,6 +146,7 @@
                 class="form-control fs-sm" 
                 id="segundoNombre" 
                 name="segundoNombre"
+                autocomplete="off"
                 value="{{ old('segundoNombre', $participante->getSegundoNombre()) }}" placeholder="Segundo nombre">                                   
                 <label class="form-label text-gray-dark fw-normal fs-sm" for="segundoNombre">Segundo nombre</label>                         
         </div> 
@@ -150,6 +157,7 @@
                 class="form-control fs-sm" 
                 id="segundoApellido" 
                 name="segundoApellido"
+                autocomplete="off"
                 value="{{ old('segundoApellido', $participante->getSegundoApellido()) }}" placeholder="Segundo apellido">                                   
                 <label class="form-label text-gray-dark fw-normal fs-sm" for="segundoApellido">Segundo apellido</label>                         
         </div>     
@@ -160,6 +168,7 @@
                 class="form-control fs-sm @error('documento') is-invalid @enderror" 
                 id="documento" 
                 name="documento"
+                autocomplete="off"
                 value="{{ old('documento', $participante->getDocumento()) }}" placeholder="Número de documento">                                   
                 <label class="form-label text-gray-dark fw-normal fs-sm" for="documento">Número de documento</label>
                 @error('documento')
@@ -208,6 +217,7 @@
                 class="form-control fs-sm @error('email') is-invalid @enderror" 
                 id="email" 
                 name="email"
+                autocomplete="off"
                 value="{{ old('email', $participante->getEmail()) }}" placeholder="Correo electrónico">                                   
                 <label class="form-label text-gray-dark fw-normal fs-sm" for="email">Correo electrónico</label>
                 @error('email')
@@ -223,6 +233,7 @@
                 class="form-control fs-sm @error('contactoEmergencia') is-invalid @enderror" 
                 id="contactoEmergencia" 
                 name="contactoEmergencia"
+                autocomplete="off"
                 value="{{ old('contactoEmergencia', $participante->getContactoEmergencia()) }}" placeholder="Nombre del contacto de emergencia">                                   
                 <label class="form-label text-gray-dark fw-normal fs-sm" for="contactoEmergencia">Nombre del contacto de emergencia</label>
                 @error('contactoEmergencia')

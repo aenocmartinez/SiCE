@@ -1,7 +1,7 @@
       <div class="block block-rounded">
           <div class="block-header">
             <h3 class="block-title text-center">
-              Resumen inscripción
+              Resumen inscripción - TIENE CONVENIO
             </h3>
           </div>
           <div class="block-content block-content-full">
@@ -22,8 +22,7 @@
                     </div>
                   </td>
                   <td class="pe-0 fw-medium text-end" id="idCosto">{{ $grupo->getCostoFormateado() }}</td>
-                </tr>
-                @if ($convenio->existe())                    
+                </tr>                
                 <tr>
                   <td class="ps-0">
                     <a class="fw-semibold" href="javascript:void(0)">Descuento convenio</a>
@@ -33,7 +32,6 @@
                     {{ $convenio->esCooperativa() ? '' : $descuentoFormateado }}
                   </td>
                 </tr>                
-                @endif
               </tbody>
               <tbody>
                 <tr>
@@ -43,16 +41,6 @@
                 </td>
                 </tr>
 
-                @if ( $participante->vinculadoUnicolMayor() )
-                <tr>
-                  <td class="ps-0 fw-sm text-center" colspan="10">                                
-                  <button class="btn btn-primary px-4 py-2" data-toggle="click-ripple">
-                    <i class="fa fa-database me-1"></i>          
-                    Confirmar inscripción
-                  </button>                
-                  </td>
-                </tr>
-                @else 
                 <tr>
                   <td class="ps-0 fw-sm text-center" colspan="10">
                     <button type="button" class="btn btn-success me-1 mb-1" onclick="confirmEcollect();">
@@ -75,12 +63,11 @@
                     <br><br>Recuerda que es responsabilidad del usuario asegurarse de que el comprobante de pago se cargue correctamente en el sistema.
                   </td>
                 </tr>
-                @endif
+
               </tbody>
             </table>
           </div>
 
-          @if (!$participante->vinculadoUnicolMayor() )
           <div class="col-8 container">
             <div class="input-group mb-5">
               <input class="form-control fs-sm" type="file" name="pdf" id="pdf" accept=".pdf">
@@ -92,9 +79,8 @@
               </button>                        
             </div>
           </div>
-          @endif
-          <br>
 
+          <br>
 
         </div>   
     

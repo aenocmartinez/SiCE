@@ -15,4 +15,5 @@ interface GrupoRepository {
     public function salonDisponible(Grupo $grupo): bool;
     public function listarGruposDisponiblesParaMatricula(int $calendarioId, int $areaId): array;
     public static function buscadorGrupos(string $criterio, $page=1): Paginate;
+    public function tieneCuposDisponibles($grupoId=0): bool;
 }

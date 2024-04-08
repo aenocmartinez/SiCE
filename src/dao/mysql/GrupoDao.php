@@ -23,7 +23,7 @@ class GrupoDao extends Model implements GrupoRepository {
     }
 
     public static function listarGrupos($page=1): Paginate {
-
+        
         $paginate = new Paginate($page, env('APP_PAGINADOR_NUM_ITEMS_GRUPOS'));
 
         $listaGrupos = array();
@@ -37,7 +37,7 @@ class GrupoDao extends Model implements GrupoRepository {
             $query = DB::table('grupos as g')
                         ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 
                                 'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id',
-                                DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
+                                DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and (fi.estado <> "Anulado" and fi.estado <> "Pagado")) as totalInscritos')
                                 )
                         ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
                         ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
@@ -98,7 +98,7 @@ class GrupoDao extends Model implements GrupoRepository {
             $g = DB::table('grupos as g')
                     ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 
                             'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id', 'cc.costo', 'cc.modalidad',
-                            DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')                          
+                            DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and (fi.estado <> "Anulado" and fi.estado <> "Pagado")) as totalInscritos')                          
                             )
                     ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
                     ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
@@ -241,7 +241,7 @@ class GrupoDao extends Model implements GrupoRepository {
                             'g.id as grupoId', 'c.id as cursoId', 'ca.id as calendarioId', 'ca.nombre as calendarioNombre',
                             'c.nombre as nombreCurso', 'g.dia', 'g.jornada', 'g.cupos', 'cc.costo',
                             'cc.modalidad', 'g.nombre', 
-                            DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
+                            DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and (fi.estado <> "Anulado" and fi.estado <> "Pagado")) as totalInscritos')
                         )
                         ->join('curso_calendario as cc', function ($join) use ($calendarioId) {
                             $join->on('cc.id', '=', 'g.curso_calendario_id')
@@ -306,7 +306,7 @@ class GrupoDao extends Model implements GrupoRepository {
                     ->select(
                         'g.id', 'g.dia', 'g.jornada', 'g.nombre', 'g.curso_calendario_id', 'g.cupos',
                         'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id',
-                        DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
+                        DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and (fi.estado <> "Anulado" and fi.estado <> "Pagado")) as totalInscritos')
                     )
                     ->leftJoin('salones as s', 's.id', '=', 'g.salon_id')
                     ->leftJoin('orientadores as o', 'o.id', '=', 'g.orientador_id')
@@ -355,5 +355,18 @@ class GrupoDao extends Model implements GrupoRepository {
         $paginate->setRecords($listaGrupos);
 
         return $paginate;
+    }
+
+    public function tieneCuposDisponibles($grupoId=0): bool {
+
+        $result = GrupoDao::select(
+            DB::raw("
+                IF((cupos - (SELECT count(*) AS totalInscritos FROM formulario_inscripcion WHERE grupo_id = grupos.id AND (estado = 'Pagado' OR estado = 'Revisar comprobante de pago'))) > 0, 'SI', 'NO') as tieneCuposDisponibles
+            ")
+        )
+        ->where('id', $grupoId)
+        ->first();        
+
+        return $result->tieneCuposDisponibles == "SI";
     }
 }

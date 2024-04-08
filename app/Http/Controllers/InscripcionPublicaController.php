@@ -7,6 +7,10 @@ use App\Http\Requests\FormularioPublicoGuardarParticipante;
 use App\Http\Requests\FormularioPublicoInscripionConsultarExistencia;
 use Illuminate\Http\Request;
 use Src\domain\Calendario;
+use Src\domain\Convenio;
+use Src\domain\Grupo;
+use Src\domain\Participante;
+use Src\infraestructure\util\FormatoMoneda;
 use Src\infraestructure\util\ListaDeValor;
 use Src\usecase\convenios\BuscarConvenioPorIdUseCase;
 use Src\usecase\formularios\ConfirmarInscripcionUseCase;
@@ -16,8 +20,6 @@ use Src\usecase\participantes\BuscarParticipantePorIdUseCase;
 use Src\usecase\participantes\GuardarParticipanteUseCase;
 use Src\view\dto\ConfirmarInscripcionDto;
 use Src\view\dto\ParticipanteDto;
-
-use Illuminate\Support\Facades\Storage;
 
 
 class InscripcionPublicaController extends Controller
@@ -80,6 +82,32 @@ class InscripcionPublicaController extends Controller
         ]);
     }
 
+    private function calcularValorDescuentoYTotalAPagar(Participante $participante, Grupo $grupo, Convenio $convenio): array {        
+        
+        $totalPago = $grupo->getCosto();
+        
+        $descuento = 0;
+        if ($convenio->existe() && !$convenio->esCooperativa()) {
+            $descuento = $grupo->getCosto() * ($convenio->getDescuento()/100);
+        }
+
+        $totalPago = $totalPago - $descuento;            
+    
+        if ($participante->vinculadoUnicolMayor()) {
+          $convenio = new Convenio(env('CONVENIO_NOMBRE_UNICOLMAYOR'));
+          $convenio->setId(env('CONVENIO_ID_UNICOLMAYOR'));
+          $totalPago = 0;
+        }
+
+        return [
+            'totalPagoFormateado' => FormatoMoneda::PesosColombianos($totalPago),
+            'descuentoFormateado' => FormatoMoneda::PesosColombianos($descuento),
+            'totalPago' => $totalPago,
+            'descuento' => $descuento,
+            'convenio' => $convenio,
+        ];
+    }
+
     public function formularioInscripcion($participanteId, $grupoId) {
         $participante = (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId);
         if (!$participante->existe()) {
@@ -92,11 +120,33 @@ class InscripcionPublicaController extends Controller
         }
 
         $convenio = (new BuscarConvenioPorIdUseCase)->ejecutar($participante->getIdBeneficioConvenio());
+
+        $datosDePago = $this->calcularValorDescuentoYTotalAPagar($participante, $grupo, $convenio);
+        
+        $formularioAMostrar = "public._form_confirmar_inscripcion_no_tiene_convenio";
+        if ($convenio->existe()) 
+        {                
+            $formularioAMostrar = "public._form_confirmar_inscripcion_tiene_convenio";
+
+            if ($convenio->esCooperativa()) 
+            {
+                $formularioAMostrar = "public._form_confirmar_inscripcion_es_cooperativa";
+            }            
+        }
+
+        if ($participante->vinculadoUnicolMayor()) {
+            $formularioAMostrar = "public._form_confirmar_inscripcion_ucmc";
+        }
         
         return view('public.confirmar_inscripcion', [
             'participante' => $participante,
             'grupo' => $grupo,
-            'convenio' => $convenio
+            'convenio' => $datosDePago['convenio'],
+            'totalPago' => $datosDePago['totalPago'],
+            'descuento' => $datosDePago['descuento'],
+            'totalPagoFormateado' => $datosDePago['totalPagoFormateado'],
+            'descuentoFormateado' => $datosDePago['descuentoFormateado'],
+            'formularioAMostrar' => $formularioAMostrar,
         ]);
     }
 
@@ -139,6 +189,11 @@ class InscripcionPublicaController extends Controller
         $formularioDto->costoCurso = $datos['costo_curso'];
         $formularioDto->valorDescuento = $datos['valor_descuento'];
         $formularioDto->totalAPagar = $datos['total_a_pagar'];
+
+        $formularioDto->estado = "Revisar comprobante de pago";
+        if (isset($datos['estado'])) {
+            $formularioDto->estado = $datos['estado'];
+        }
 
         $voucher = 0;
         if (isset($datos['voucher'])) {
