@@ -8,13 +8,17 @@ use Src\infraestructure\util\Paginate;
 
 class BuscarFormulariosUseCase {
 
-    public function ejecutar($periodoId=0, $estado="", $page=1): Paginate {
+    public function ejecutar($periodoId=0, $estado="", $documento="", $page=1): Paginate {
 
-        $calendario = Calendario::Vigente();
-        if ($calendario->existe()) {
-            $periodoId = $calendario->getId();
-        }
+        // $calendario = Calendario::Vigente();
+        // if ($calendario->existe()) {
+        //     $periodoId = $calendario->getId();
+        // }
 
-        return (new FormularioInscripcionDao)->listarFormulariosPorPeriodo($periodoId, $estado, $page);
+        // if ($periodoId == $calendario->getId()) {
+
+        // }
+
+        return (new FormularioInscripcionDao)->listarFormulariosPorPeriodo($periodoId, $estado, $documento, $page);
     }
 }

@@ -25,7 +25,8 @@ class BuscarInscripciones extends FormRequest
     {
         return [
             'periodo' => 'required|integer',
-            'estado' => 'nullable'
+            'estado' => 'nullable',
+            'documento' => 'nullable'
         ];
     }
 }

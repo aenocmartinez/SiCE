@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Src\domain\Calendario;
 use Src\infraestructure\util\ListaDeValor;
 use Src\usecase\areas\ListarAreasUseCase;
+use Src\usecase\calendarios\BuscarCalendarioPorIdUseCase;
 use Src\usecase\calendarios\ListarCalendariosUseCase;
 use Src\usecase\convenios\ListarConveniosUseCase;
 use Src\usecase\formularios\BuscarFormularioPorNumeroUseCase;
@@ -44,14 +45,17 @@ class FormularioInscripcionController extends Controller
         return view('formularios.buscar_por_documento');
     }
 
-    public function filtrarInscripciones(BuscarInscripciones $req) {
+    public function filtrarInscripciones(BuscarInscripciones $req) {        
         $filtro = $req->validated();
+
         return view('formularios.index', [
             'periodos' => (new ListarCalendariosUseCase)->ejecutar(),
             'estadoFormulario' => (ListaDeValor::estadosFormularioInscripcion()),
             'periodo' => $filtro['periodo'],
             'estado' => $filtro['estado'],
-            'paginate' => (new BuscarFormulariosUseCase)->ejecutar($filtro['periodo'], $filtro['estado']),
+            'documento' => $filtro['documento'],
+            'paginate' => (new BuscarFormulariosUseCase)->ejecutar($filtro['periodo'], $filtro['estado'], $filtro['documento']),
+            'calendario' => (new BuscarCalendarioPorIdUseCase)->ejecutar($filtro['periodo']),
         ]);        
     }
 
@@ -61,6 +65,7 @@ class FormularioInscripcionController extends Controller
             'estadoFormulario' => (ListaDeValor::estadosFormularioInscripcion()),
             'periodo' => $periodo,
             'estado' => $estado,
+            'calendario' => (new BuscarCalendarioPorIdUseCase)->ejecutar($periodo),
             'paginate' => (new BuscarFormulariosUseCase)->ejecutar($periodo, $estado, $page),
         ]);    
     }

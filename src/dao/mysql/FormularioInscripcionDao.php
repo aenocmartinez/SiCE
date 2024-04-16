@@ -31,7 +31,11 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         return $this->belongsTo(GrupoDao::class, 'grupo_id');
     }
 
-    public function listarFormulariosPorPeriodo(int $calendarioId, $estado, $page=1): Paginate {
+    public function participante() {
+        return $this->belongsTo(ParticipanteDao::class, 'participante_id');
+    }    
+
+    public function listarFormulariosPorPeriodo(int $calendarioId, $estado, $documento, $page=1): Paginate {
         
         $paginate = new Paginate($page);
         
@@ -40,22 +44,41 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             $grupoDao = new GrupoDao();
             $participanteDao = new ParticipanteDao();
             $convenioDao = new ConvenioDao();
-            
+
+
+            // $query = FormularioInscripcionDao::with('grupo')
+            // ->whereHas('grupo', function ($query) use ($calendarioId) {
+            //     $query->where('calendario_id', $calendarioId);
+            // })
+            // ->when($estado, function ($query, $estado) {
+            //     return $query->where('estado', $estado);
+            // })
+            // ->orderByDesc('participante_id')
+            // ->orderByDesc('id');
+
             $query = FormularioInscripcionDao::with('grupo')
-            ->whereHas('grupo', function ($query) use ($calendarioId) {
-                $query->where('calendario_id', $calendarioId);
-            })
-            ->when($estado, function ($query, $estado) {
-                return $query->where('estado', $estado);
-            })
-            ->orderByDesc('participante_id')
-            ->orderByDesc('id');
+                    ->leftJoin('participantes', 'formulario_inscripcion.participante_id', '=', 'participantes.id')
+                    ->whereHas('grupo', function ($query) use ($calendarioId) {
+                        $query->where('calendario_id', $calendarioId);
+                    })
+                    ->where(function ($query) use ($estado, $documento) {
+                        $query->when($estado, function ($query, $estado) {
+                            $query->where('estado', $estado);
+                        })
+                        ->when($documento, function ($query, $documento) {
+                            $query->where('participantes.documento', $documento);
+                        });
+                    })
+                    ->orderByDesc('participante_id')
+                    ->orderByDesc('id');
+
+                    // dd($query->toSql());
         
         $totalRecords = $query->count(); 
         
         $resultados = $query->skip($paginate->Offset())
             ->take($paginate->Limit())
-            ->get(['id', 'grupo_id', 'participante_id', 'convenio_id', 'created_at', 
+            ->get(['formulario_inscripcion.id', 'grupo_id', 'participante_id', 'convenio_id', 'formulario_inscripcion.created_at', 
                     'estado', 'costo_curso', 'valor_descuento', 'total_a_pagar',  
                     'numero_formulario', 'fecha_max_legalizacion']);
 
@@ -84,6 +107,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             }
 
         } catch (Exception $e) {
+            dd($e->getMessage());
             Sentry::captureException($e);
         }
         

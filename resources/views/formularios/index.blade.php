@@ -8,15 +8,14 @@
 @php
     $periodo = isset($periodo) ? $periodo : '';
     $estado = isset($estado) ? $estado : '';
+    $documento = isset($documento) ? $documento : '';
     $criterio = isset($criterio) ? $criterio : '';
 
     $route = "formularios.index";
     $page = 1;
-    if (strlen($estado)>0 && strlen($periodo)>0) {       
-        $criterio = ["periodo" => $periodo, "estado" => $estado];        
-        $route = "formularios.buscador-paginador";
-    } else if (strlen($periodo)>0) {          
-        $criterio = ["periodo" => $periodo, "estado" => $estado];
+
+    $criterio = ["periodo" => $periodo, "estado" => $estado, "documento" => $documento];   
+    if (strlen($estado)>0 || strlen($periodo)>0 || strlen($documento)>0) {
         $route = "formularios.buscador-paginador";
     }
 
@@ -29,7 +28,7 @@
 
             <form class="row row-cols-lg-auto align-items-center pb-3" action="{{ route('formularios.buscar-inscritos')}}" method="POST">
             @csrf
-                <div class="col-xl-4">     
+                <div class="col-xl-3">     
                     <select class="form-select @error('periodo') is-invalid @enderror" id="periodo" name="periodo">
                         <option value="">Selecciona periodo</option>
                         @foreach ($periodos as $p)
@@ -51,7 +50,7 @@
                     @enderror                                            
                 </div>
     
-                <div class="col-xl-4">
+                <div class="col-xl-3">
                     <select class="form-select" id="estado" name="estado">
                         <option value="">[Mostrar todo]</option>
                         @foreach ($estadoFormulario as $e)   
@@ -62,8 +61,12 @@
                         @endforeach
                     </select>                           
                 </div>  
+
+                <div class="col-xl-3">
+                    <input type="text" name="documento" id="documento" value="{{ $documento }}" class="form-control" placeholder="Número documento">
+                </div>
                 
-                <div class="col-xl-4">                
+                <div class="col-xl-3">                
                     <button class="btn btn-info">
                     <i class="fa fa-search me-1 opacity-50"></i>
                         Buscar inscripciones
@@ -106,6 +109,9 @@
                     </td>
                     <td>{{ $f->getFechaMaxLegalizacion() }}</td>
                     <td class="text-center">
+                    @if ($calendario->esVigente())
+                        
+                    
                     @if ($f->PendienteDePago() || $f->RevisarComprobanteDePago())
                         <a href="{{ route('formularios.edit-legalizar-inscripcion', [$f->getNumero()]) }}" 
                                 class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-info-light text-info"
@@ -124,6 +130,8 @@
                                 Anular
                             </button>
                         </form>                                             
+                    @endif
+
                     @endif
                     </td>                    
                 </tr>

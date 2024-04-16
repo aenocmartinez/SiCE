@@ -8,7 +8,7 @@ use Src\domain\FormularioInscripcionPago;
 use Src\infraestructure\util\Paginate;
 
 interface FormularioRepository {
-    public function listarFormulariosPorPeriodo(int $calendarioId, $estado, $page=1): Paginate;
+    public function listarFormulariosPorPeriodo(int $calendarioId, $estado, $documento, $page=1): Paginate;
     public function crearFormulario(FormularioInscripcion &$formulario): bool;
     public function anularInscripcion($numeroFormulario): bool;
     public function buscarFormularioPorNumero($numeroFormulario): FormularioInscripcion;
