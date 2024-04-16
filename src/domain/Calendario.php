@@ -119,7 +119,6 @@ class Calendario {
         return $this->esVigente() ? "Vigente" : "Caducado";
     }
 
-
     /**    
      * @param Curso: $curso
      * @param $datos: [(int)'cupo', (float)'costo', (string)'modalidad']
@@ -156,4 +155,7 @@ class Calendario {
         return $this->repository->listarGruposParaInscripcion($this->id);
     }
 
+    public static function pasarANoDisponibleLosBeneficiosPorConvenioDeUnParticipante() {
+        CalendarioDao::pasarANoDisponibleLosBeneficiosPorConvenioDeUnParticipante();
+    }
 }

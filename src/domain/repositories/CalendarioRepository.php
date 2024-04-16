@@ -21,4 +21,5 @@ interface CalendarioRepository {
     public static function obtenerCalendarioActualVigente(): Calendario;
     public function listarInscripcionesPorCalendario(int $calendarioId): array;
     public function listarGruposParaInscripcion(int $calendarioId): array;
+    public static function pasarANoDisponibleLosBeneficiosPorConvenioDeUnParticipante(): void;
 }

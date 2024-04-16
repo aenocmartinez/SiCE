@@ -27,6 +27,8 @@ class CrearCalendarioUseCase {
             return new Response('500', 'Ha ocurrido un error en el sistema');
         }
 
+        $calendario->pasarANoDisponibleLosBeneficiosPorConvenioDeUnParticipante();
+
         $convenio = new Convenio("Convenio empleados y contratistas UnicolMayor");
         $convenio->setFecInicio($calendarioDto->fechaInicial);
         $convenio->setFecFin($calendarioDto->fechaFinal);
@@ -35,7 +37,7 @@ class CrearCalendarioUseCase {
         $convenio->setEsUCMC(true);
         $convenio->setCalendario($calendario);
         $convenio->crear();        
-        
+
         return new Response('200', 'Registro creado con éxito');
     }
 }

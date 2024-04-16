@@ -374,4 +374,12 @@ class CalendarioDao extends Model implements CalendarioRepository {
 
         return $areas;
     }
+
+    public static function pasarANoDisponibleLosBeneficiosPorConvenioDeUnParticipante(): void {        
+        try {
+            DB::table('convenio_participante')->update(['disponible' => 'NO']);
+        } catch (\Exception $e) {
+            Sentry::captureException($e);
+        }
+    }
 }
