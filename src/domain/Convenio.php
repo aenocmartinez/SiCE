@@ -18,6 +18,7 @@ class Convenio {
     private $numeroBeneficiados;
     private $numeroInscritos;
     private $esCooperativa;
+    private $esUCMC;
     private $totalPagar;
 
     public function __construct(string $nombre="")
@@ -26,11 +27,12 @@ class Convenio {
         $this->id = 0;
         $this->fecInicio = "";
         $this->fecFin = "";
-        $this->calendario = new Calendario();
+        $this->calendario = Calendario::Vigente();
         $this->descuento = 0;
         $this->numeroBeneficiados = 0;
         $this->numeroInscritos = 0;
         $this->esCooperativa = false;
+        $this->esUCMC = false;
         $this->totalPagar = 0;
         $this->repository = new ConvenioDao();
     }
@@ -111,6 +113,10 @@ class Convenio {
         return $this->calendario->getNombre();
     }
 
+    public function existeCalendarioVigente(): bool {
+        return $this->calendario->getId() > 0;
+    }
+
     public function setNumeroBeneficiados($numeroBeneficiados): void {
         $this->numeroBeneficiados = $numeroBeneficiados;
     }
@@ -136,6 +142,9 @@ class Convenio {
     }
 
     public function crear(): bool {
+        if ($this->esUCMC()) {
+            ConvenioDao::cerrarElUltimoConveniosUCMC();            
+        }
         return $this->repository->crearConvenio($this);
     }
 
@@ -192,5 +201,17 @@ class Convenio {
 
     public function actualizarTotalAPagar() {
         $this->repository->actualizarValorAPagarConvenio($this);
+    }
+
+    public function esUCMC(): bool {
+        return $this->esUCMC;
+    }
+
+    public function setEsUCMC(bool $esUCMC): void {
+        $this->esUCMC = $esUCMC;
+    }
+    
+    public static function UCMCActual(): Convenio {
+        return ConvenioDao::obtenerConvenioUCMCActual();
     }
 }

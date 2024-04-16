@@ -56,9 +56,9 @@ class Participante {
 
     public function setVinculadoUnicolMayor(bool $vinculadoUnicolMayor): void {
 
-        if ($vinculadoUnicolMayor) {        
-            $this->beneficio->setId(intval(env('CONVENIO_ID_UNICOLMAYOR')));
-            $this->beneficio->setNombre(env('CONVENIO_NOMBRE_UNICOLMAYOR'));            
+        if ($vinculadoUnicolMayor) {                                
+            $this->beneficio->setId(Convenio::UCMCActual()->getId());
+            $this->beneficio->setNombre(Convenio::UCMCActual()->getNombre());
         }
 
         $this->vinculadoUnicolMayor = $vinculadoUnicolMayor;
@@ -253,8 +253,8 @@ class Participante {
                 return new Convenio();
             }
 
-            $this->beneficio->setId(intval(env('CONVENIO_ID_UNICOLMAYOR')));
-            $this->beneficio->setNombre(env('CONVENIO_NOMBRE_UNICOLMAYOR'));
+            $this->beneficio->setId(Convenio::UCMCActual()->getId());
+            $this->beneficio->setNombre(Convenio::UCMCActual()->getNombre());
             return ;
         }
         

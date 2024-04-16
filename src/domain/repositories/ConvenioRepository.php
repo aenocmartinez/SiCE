@@ -14,4 +14,6 @@ interface ConvenioRepository  {
     public function agregarBeneficiarioAConvenio(int $convenioId, string $cedula): bool;
     public static function listadoParticipantesPorConvenio($convenioId=0, $calendarioId=0): array;
     public function actualizarValorAPagarConvenio(Convenio $convenio): bool;
+    public static function cerrarElUltimoConveniosUCMC(): bool;
+    public static function obtenerConvenioUCMCActual(): Convenio;
 }

@@ -4,6 +4,7 @@ namespace Src\usecase\calendarios;
 
 use Src\dao\mysql\CalendarioDao;
 use Src\domain\Calendario;
+use Src\domain\Convenio;
 use Src\view\dto\CalendarioDto;
 use Src\view\dto\Response;
 
@@ -24,8 +25,16 @@ class ActualizarCalendarioUseCase {
         $calendario->setFechaFinal($calendarioDto->fechaFinal);
 
         $exito = $calendario->actualizar();
-        if (!$exito)
+        if (!$exito) {
             return new Response('500', 'Ha ocurrido un error en el sistema');
+        }
+
+        $convenioUCMC = Convenio::UCMCActual();
+        if ($convenioUCMC->existe()) {
+            $convenioUCMC->setFecInicio($calendarioDto->fechaInicial);
+            $convenioUCMC->setFecFin($calendarioDto->fechaFinal);
+            $convenioUCMC->actualizar();
+        }
         
         return new Response('200', 'Registro actualizado con éxito');
     }

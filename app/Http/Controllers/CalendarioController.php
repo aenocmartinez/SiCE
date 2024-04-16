@@ -38,9 +38,7 @@ class CalendarioController extends Controller
     public function store(GuardarCalenadario $request)
     {
         $data = $request->validated();        
-        $calendarioDto = new CalendarioDto($data['nombre'], $data['fec_ini'], $data['fec_fin']);
-        $casoUsoCrearCalendario = new CrearCalendarioUseCase();
-        $response = $casoUsoCrearCalendario->ejecutar($calendarioDto);
+        $response = (new CrearCalendarioUseCase())->ejecutar(new CalendarioDto($data['nombre'], $data['fec_ini'], $data['fec_fin']));
         
         return redirect()->route('calendario.index')->with('code', $response->code)->with('status', $response->message);
     }

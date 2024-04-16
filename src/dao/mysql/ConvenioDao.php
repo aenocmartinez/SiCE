@@ -13,7 +13,7 @@ use Sentry\Laravel\Facade as Sentry;
 class ConvenioDao extends Model implements ConvenioRepository {
     
     protected $table = 'convenios';
-    protected $fillable = ['nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento', 'es_cooperativa'];
+    protected $fillable = ['nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento', 'es_cooperativa', 'es_ucmc_actual'];
 
     public function beneficiarios() {
         $this->belongsToMany(ParticipanteDao::class,'convenio_id', 'participante_id', 'convenio_participante');
@@ -31,6 +31,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                                         DB::raw('COUNT(convenio_participante.id) as numBeneficiados'))
                         ->leftJoin('convenio_participante', 'convenio_participante.convenio_id', '=', 'convenios.id')
                         ->groupBy('convenios.id')
+                        ->orderBy('convenios.id', 'desc')
                         ->get();
 
             foreach($convenios as $c) {
@@ -131,7 +132,8 @@ class ConvenioDao extends Model implements ConvenioRepository {
 
     public function crearConvenio(Convenio $convenio): bool {
         $exito = false;
-        try {
+        try {       
+           
             ConvenioDao::create([
                 'nombre' => $convenio->getNombre(),
                 'calendario_id' => $convenio->getCalendarioId(), 
@@ -139,11 +141,13 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 'fec_fin' => $convenio->getFecFin(), 
                 'descuento' => $convenio->getDescuento(),
                 'es_cooperativa' => $convenio->esCooperativa(),
+                'es_ucmc_actual' => $convenio->esUCMC(),
             ]);
             
             $exito = true;
 
-        } catch(Exception $e) {            
+        } catch(Exception $e) {   
+            dd($e->getMessage());         
             Sentry::captureException($e);
         }
 
@@ -273,5 +277,33 @@ class ConvenioDao extends Model implements ConvenioRepository {
         }
 
         return $exito;        
+    }
+
+    public static function cerrarElUltimoConveniosUCMC(): bool {
+        $exito = true;
+        try {
+            static::where('es_ucmc_actual', true)->update(['es_ucmc_actual' => false]);
+        } catch(Exception $e) {            
+            $exito = false;
+            Sentry::captureException($e);
+        }
+
+        return $exito;
+    }
+
+    public static function obtenerConvenioUCMCActual(): Convenio {
+        $convenio = new Convenio();
+        try {            
+            $reg = static::where('es_ucmc_actual', true)->first();
+            if ($reg) {
+                $convenio->setNombre($reg->nombre);
+                $convenio->setId($reg->id);
+                $convenio->setDescuento($reg->descuento);
+                $convenio->setEsUCMC(true);
+            }
+        } catch (Exception $e) {
+            Sentry::captureException($e);
+        }
+        return $convenio;
     }
 }

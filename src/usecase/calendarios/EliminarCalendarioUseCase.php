@@ -4,6 +4,7 @@ namespace Src\usecase\calendarios;
 
 use Src\dao\mysql\CalendarioDao;
 use Src\domain\Calendario;
+use Src\domain\Convenio;
 use Src\view\dto\Response;
 
 class EliminarCalendarioUseCase {
@@ -15,6 +16,12 @@ class EliminarCalendarioUseCase {
         $calendario = Calendario::buscarPorId($id, $calendarioReposity);
         if (!$calendario->existe())
             return new Response('404', 'Calendario no encontrado');
+
+
+        $convenioUCMC = Convenio::UCMCActual();
+        if ($convenioUCMC->existe()) {
+            $convenioUCMC->eliminar();
+        }
 
         $calendario->setRepository($calendarioReposity);
         $exito = $calendario->eliminar();

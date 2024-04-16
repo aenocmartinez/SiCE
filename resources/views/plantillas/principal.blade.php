@@ -281,7 +281,7 @@
           $icon = 'fa fa-info-circle me-1';
           $type = 'success';
           if (session('code') == '401' || session('code') == '500' || session('code') == '404') {
-            $icon = 'fa fa-times me-1';
+            
             $type = 'danger';
           }
         @endphp

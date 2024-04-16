@@ -31,7 +31,7 @@ class ConvenioController extends Controller
     {        
         return view('convenios.create', [
             'convenio' => new Convenio(),
-            'calendarios' => (new ListarCalendariosUseCase)->ejecutar(),
+            // 'calendarios' => (new ListarCalendariosUseCase)->ejecutar(),
         ]);
     }
 

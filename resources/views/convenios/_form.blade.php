@@ -29,23 +29,13 @@
                 <br>
 
                 <label class="form-label" for="calendario">Periodo</label>
-                <select class="form-select @error('calendario') is-invalid @enderror" id="calendario" name="calendario">
-                    <option value="">Selecciona un periodo</option>
-                    @foreach ($calendarios as $calendario)
-                        @if ($calendario->esVigente())                            
-                            <option 
-                                value="{{ $calendario->getId() }}"
-                                {{ old('calendario', $convenio->getCalendarioId()) == $calendario->getId() ? 'selected' : '' }}
-                                >{{ $calendario->getNombre() }}
-                            </option>
-                        @endif
-                    @endforeach
-                </select>
-                @error('calendario')
-                    <span class="invalid-feedback" role="alert">
-                        {{ $message }}
-                    </span>
-                @enderror                  
+                <input type="hidden" name="calendario" value="{{ $convenio->getCalendarioId() }}">
+                <input type="text" 
+                       class="form-control" 
+                       name="periodo" 
+                       id="periodo" 
+                       disabled
+                       value="{{ $convenio->existeCalendarioVigente() ? $convenio->getNombreCalendario() : 'No existe periodo académico vigente' }}">
 
                 <br>                      
 
@@ -100,10 +90,11 @@
                             <label class="form-check-label" for="disponible">Es una cooperativa</label>
                         </div> 
             </div>
-
-
+            
             <div class="col-12 mt-4">
+                @if ($convenio->esVigente())
                 <button class="btn btn-large btn-info">{{ $btnText }}</button>        
+                @endif
                 <a href="{{ route('convenios.index') }}" class="btn btn-large btn-light"> Cancelar</a>
             </div>
 

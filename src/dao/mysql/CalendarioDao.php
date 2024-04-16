@@ -80,7 +80,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
         return $calendario;
     }
 
-    public function crearCalendario(Calendario $calendario): bool {
+    public function crearCalendario(Calendario &$calendario): bool {
         $exito = false;
         try {
             $result = CalendarioDao::create([
@@ -89,10 +89,11 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 'fec_fin' => $calendario->getFechaFinal()
             ]);
 
-            $exito = $result['id'] > 0;
+            $calendario->setId($result['id']);
+            $exito = true;
 
         } catch (\Exception $e) {
-            Sentry::captureException($e);
+            Sentry::captureException($e);            
         }   
         return $exito;
     }

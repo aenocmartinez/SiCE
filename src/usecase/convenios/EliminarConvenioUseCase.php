@@ -18,7 +18,7 @@ class EliminarConvenioUseCase {
         
         $exito = $convenio->eliminar();
         if (!$exito) {
-            return new Response("500", "Ha ocurrido un error en el sistema");
+            return new Response("500", "No se puede eliminar el convenio porque tiene registros relacionados.");
         }        
         
         return new Response("200", "El convenio se ha eliminado con éxito.");        

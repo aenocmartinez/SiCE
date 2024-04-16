@@ -98,8 +98,9 @@ class InscripcionPublicaController extends Controller
             $totalPago = $grupo->getCosto();
             
             if ($participante->totalFormulariosInscritosPeriodoActual() == 0) {
-                $convenio = new Convenio(env('CONVENIO_NOMBRE_UNICOLMAYOR'));
-                $convenio->setId(env('CONVENIO_ID_UNICOLMAYOR'));
+                
+                $convenio = new Convenio(Convenio::UCMCActual()->getNombre());
+                $convenio->setId(Convenio::UCMCActual()->getId());
                 $totalPago = 0;
             }
         }
