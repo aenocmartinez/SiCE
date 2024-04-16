@@ -105,9 +105,9 @@
                 <a class="nav-main-link {{ setActive(['formularios.index', 'formularios.*']) }}" href="{{ route('formularios.index') }}">
                   <span class="nav-main-link-name">Listado de inscritos</span>
                 </a>
-                <a class="nav-main-link" href="{{ route('home') }}">
+                <!-- <a class="nav-main-link" href="{{ route('home') }}">
                   <span class="nav-main-link-name">Cambios y traslados</span>
-                </a>                
+                </a>                 -->
 
 
               </li>

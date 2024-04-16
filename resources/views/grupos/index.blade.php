@@ -52,7 +52,7 @@
             <table class="table table-vcenter">
                 @forelse ($paginate->Records() as $grupo)
                 <tr>
-                    <td class="fs-sm" style="width: 62%;">                        
+                    <td class="fs-sm" style="width: 45%;">                        
                         <h4 class="fw-normal mb-0">{{ $grupo->getNombre() }}</h4>
                         <small class="fw-light">
                             Curso: {{ $grupo->getNombreCurso() }} ({{ $grupo->getModalidad() }}) <br>
@@ -102,7 +102,9 @@
                         <a href="{{ route('grupos.mas-info', $grupo->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
                             <i class="fa fa-fw fa-circle-info"></i> Más información
                         </a>
-
+                        <a href="{{ route('grupos.descargar-listado-participantes', $grupo->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
+                            <i class="fa fa-fw fa-download"></i> Descargar Listado
+                        </a>
                     </td>                    
                 </tr>
                 @empty

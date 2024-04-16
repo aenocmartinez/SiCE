@@ -147,6 +147,11 @@ class GrupoController extends Controller
         return view('grupos.mas_informacion', ['grupo' => $grupo]);
     }
 
+    public function descargarListadoParticipantes($grupoId=0) {
+        // dd($grupoId);
+        return redirect()->route('grupos.index')->with('status','En construcción');
+    }
+
     private function hydrateDto($data): GrupoDto {            
         $grupoDto = new GrupoDto();
         $grupoDto->dia = $data['dia'];
@@ -163,4 +168,5 @@ class GrupoController extends Controller
         
         return $grupoDto;
     }
+
 }
