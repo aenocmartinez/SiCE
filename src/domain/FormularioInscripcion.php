@@ -193,6 +193,10 @@ class FormularioInscripcion {
         return $this->grupo->getNombreCalendario();
     }
 
+    public function esCalendarioVigente(): bool {
+        return $this->grupo->esCalendarioVigente();
+    }
+
     public function getGrupoCursoCosto() {
         return $this->grupo->getCostoFormateado();
     }

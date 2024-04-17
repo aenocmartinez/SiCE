@@ -30,13 +30,15 @@ use Src\usecase\formularios\AnularFormularioUseCase;
 
 class FormularioInscripcionController extends Controller
 {
-    public function listarParticipantes() {        
+    public function listarParticipantes() {   
+        
         $calendario = Calendario::Vigente();
         return view('formularios.index', [
             'periodos' => (new ListarCalendariosUseCase)->ejecutar(),
             'estadoFormulario' => (ListaDeValor::estadosFormularioInscripcion()),
-            'paginate' => (new BuscarFormulariosUseCase)->ejecutar(),
+            'paginate' => (new BuscarFormulariosUseCase)->ejecutar($calendario->getId()),
             'periodo' => $calendario->getId(),
+            'calendario' => $calendario,
             'estado' => "",            
         ]);
     }
@@ -45,7 +47,7 @@ class FormularioInscripcionController extends Controller
         return view('formularios.buscar_por_documento');
     }
 
-    public function filtrarInscripciones(BuscarInscripciones $req) {        
+    public function filtrarInscripciones(BuscarInscripciones $req) {                
         $filtro = $req->validated();
 
         return view('formularios.index', [
@@ -59,7 +61,7 @@ class FormularioInscripcionController extends Controller
         ]);        
     }
 
-    public function buscadorFormulariosPaginados($page=1, $periodo, $estado="") {
+    public function buscadorFormulariosPaginados($page=1, $periodo, $estado="") {        
         return view('formularios.index', [
             'periodos' => (new ListarCalendariosUseCase)->ejecutar(),
             'estadoFormulario' => (ListaDeValor::estadosFormularioInscripcion()),

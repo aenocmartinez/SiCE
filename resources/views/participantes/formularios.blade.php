@@ -69,6 +69,7 @@
                         @endif
                     </td>
                     <td class="text-center">
+                        @if ($f->esCalendarioVigente())
                         <div class="btn-group">
                             @if ($f->PendienteDePago() || $f->RevisarComprobanteDePago())                            
                                 <a href="{{ route('participantes.edit-legalizar-inscripcion', [$f->getNumero()]) }}" 
@@ -91,6 +92,7 @@
                             
                             @endif
                         </div>
+                        @endif
                     </td>                    
                 </tr>
                 @empty

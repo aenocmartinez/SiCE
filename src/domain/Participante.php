@@ -245,14 +245,11 @@ class Participante {
     }
 
     public function buscarBeneficioVigentePorConvenio() {
-
-
-        if ($this->vinculadoUnicolMayor()) {    
-            
+        
+        if ($this->vinculadoUnicolMayor()) {        
             if ($this->totalFormulariosInscritosPeriodoActual() > 0) {
                 return new Convenio();
             }
-
             $this->beneficio->setId(Convenio::UCMCActual()->getId());
             $this->beneficio->setNombre(Convenio::UCMCActual()->getNombre());
             return ;

@@ -100,7 +100,7 @@ class Calendario {
         return $this->id > 0;
     }
 
-    public function esVigente(): bool {        
+    public function esVigente(): bool {     
         $vigente = false;
         $fechaActual = new DateTime(date("Y-m-d"));
         $fechaInicio = new DateTime($this->fechaInicio);

@@ -47,10 +47,9 @@ class GrupoDao extends Model implements GrupoRepository {
                         ->join('salones as s', 's.id', '=', 'g.salon_id')
                         ->orderByDesc('g.id');
                 
-                $totalRecords = $query->count();                
-                $grupos = $query->skip($paginate->Offset())->take($paginate->Limit())->get();
-        
-
+            $totalRecords = $query->count();
+            $grupos = $query->skip($paginate->Offset())->take($paginate->Limit())->get();               
+            
             foreach ($grupos as $g) {
                 $grupo = new Grupo();                
                 $grupo->setid($g->id);

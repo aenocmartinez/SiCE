@@ -8,7 +8,6 @@ class ListarFormulariosParticipanteUseCase {
 
     public function ejecutar(int $participanteId): array {
 
-        $participanteRepository = new ParticipanteDao();        
-        return $participanteRepository->listarFormulariosDeInscripcionParticipante($participanteId);
+        return (new ParticipanteDao())->listarFormulariosDeInscripcionParticipante($participanteId);
     }
 }

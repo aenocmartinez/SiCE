@@ -282,6 +282,9 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                     'grupos.jornada',
                     'curso_calendario.modalidad',
                     'calendarios.nombre as nombre_calendario',
+                    'calendarios.id as calendarioId',
+                    'calendarios.fec_ini as calendarioFechaIni',
+                    'calendarios.fec_fin as calendarioFechaFin',
                     'cursos.nombre as nombre_curso',
                     'convenios.nombre as nombre_convenio',
                     'convenios.id as convenioId'
@@ -321,7 +324,10 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                     $grupo->setId($resultado->grupo_id);
 
                         $calendario = new Calendario();
+                        $calendario->setId($resultado->calendarioId);
                         $calendario->setNombre($resultado->nombre_calendario);
+                        $calendario->setFechaInicio($resultado->calendarioFechaIni);
+                        $calendario->setFechaFinal($resultado->calendarioFechaFin);
 
                         $curso = new Curso();
                         $curso->setNombre($resultado->nombre_curso);
@@ -403,6 +409,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                 // ->where('cp.redimido', 'NO')
                 ->where('cp.disponible', 'SI')
                 ->first();
+            
 
             if($item) {
                 $convenio->setId($item->id);
