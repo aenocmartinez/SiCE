@@ -23,7 +23,7 @@ class CursoDao extends Model implements CursoRepository {
 
     public function calendarios() {
         return $this->belongsToMany(CalendarioDao::class, 'curso_calendario', 'curso_id', 'calendario_id')
-                    ->withPivot(['costo', 'modalidad', 'cupo'])
+                    ->withPivot(['costo', 'modalidad'])
                     ->withTimestamps();
     } 
 

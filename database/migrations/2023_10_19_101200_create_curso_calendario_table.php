@@ -19,7 +19,7 @@ class CreateCursoCalendarioTable extends Migration
             $table->unsignedBigInteger('curso_id');
             $table->enum('modalidad', ['Presencial', 'Virtual'])->default('Presencial');
             $table->double('costo', 8, 2)->default(0);
-            $table->integer('cupo')->default(0);
+            // $table->integer('cupo')->default(0);
 
             $table->foreign('calendario_id')->references('id')->on('calendarios');
             $table->foreign('curso_id')->references('id')->on('cursos');

@@ -40,8 +40,8 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $idUsuarioSesion = Auth::id();
-        DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+        // $idUsuarioSesion = Auth::id();
+        // DB::statement("SET @usuario_sesion = $idUsuarioSesion");
 
         $user = User::create([
             'name' => $request->name,

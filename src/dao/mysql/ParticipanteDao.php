@@ -28,7 +28,6 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                             'fecha_nacimiento',
                             'tipo_documento',
                             'documento',
-                            'fecha_expedicion',
                             'sexo',
                             'estado_civil',
                             'direccion',

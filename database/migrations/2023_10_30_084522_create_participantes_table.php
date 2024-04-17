@@ -22,7 +22,7 @@ class CreateParticipantesTable extends Migration
             $table->date('fecha_nacimiento');
             $table->string('tipo_documento', 5);
             $table->string('documento', 30);
-            $table->date('fecha_expedicion')->nullable();
+            // $table->date('fecha_expedicion')->nullable();
             $table->enum('sexo', ['M', 'F'])->default('M');
             $table->string('estado_civil', 100);
             $table->string('direccion');
