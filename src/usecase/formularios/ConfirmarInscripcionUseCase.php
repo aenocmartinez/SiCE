@@ -51,8 +51,7 @@ class ConfirmarInscripcionUseCase {
         $formularioInscripcion->setValorPago($confirmarInscripcionDto->valorPagoParcial);
         $formularioInscripcion->setPathComprobantePago($confirmarInscripcionDto->pathComprobantePago);
 
-        if (!$grupo->tieneCuposDisponibles()) {
-            dd("No hay cupos disponibles");
+        if (!$grupo->tieneCuposDisponibles()) {            
             return new Response("409", "El grupo no tiene cupos disponibles");
         }
         

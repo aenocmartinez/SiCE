@@ -123,7 +123,10 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
         try {
 
-            $idUsuarioSesion = Auth::id();
+            $idUsuarioSesion = Auth::id();            
+            if (strlen($idUsuarioSesion)==0) {
+                $idUsuarioSesion = env('SYSTEM_USER');
+            }
             DB::statement("SET @usuario_sesion = $idUsuarioSesion");
                         
             $participante = ParticipanteDao::find($formulario->getParticipanteId());
@@ -166,6 +169,9 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             if ($formularioDao) { 
                 
                 $idUsuarioSesion = Auth::id();
+                if (strlen($idUsuarioSesion)==0) {
+                    $idUsuarioSesion = env('SYSTEM_USER');
+                }
                 DB::statement("SET @usuario_sesion = $idUsuarioSesion");
 
                 $formularioDao->valor_descuento = $formulario->getValorDescuento();
@@ -192,6 +198,9 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             if ($formulario) {
                 
                 $idUsuarioSesion = Auth::id();
+                if (strlen($idUsuarioSesion)==0) {
+                    $idUsuarioSesion = env('SYSTEM_USER');
+                }
                 DB::statement("SET @usuario_sesion = $idUsuarioSesion");
 
                 $formulario->estado = 'Anulado';
@@ -211,6 +220,9 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             if ($formulario) {
 
                 $idUsuarioSesion = Auth::id();
+                if (strlen($idUsuarioSesion)==0) {
+                    $idUsuarioSesion = env('SYSTEM_USER');
+                }
                 DB::statement("SET @usuario_sesion = $idUsuarioSesion");                
 
                 $formulario->estado = $estado;
@@ -228,6 +240,9 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         try {
 
             $idUsuarioSesion = Auth::id();
+            if (strlen($idUsuarioSesion)==0) {
+                $idUsuarioSesion = env('SYSTEM_USER');
+            }
             DB::statement("SET @usuario_sesion = $idUsuarioSesion");
 
             FormularioInscripcionPagoDao::create([
@@ -338,6 +353,9 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             if ($formularioDao) {
                 
                 $idUsuarioSesion = Auth::id();
+                if (strlen($idUsuarioSesion)==0) {
+                    $idUsuarioSesion = env('SYSTEM_USER');
+                }
                 DB::statement("SET @usuario_sesion = $idUsuarioSesion");
 
                 if ($formulario->getConvenioId() > 0 ) {
@@ -390,6 +408,9 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         try {            
             
             $idUsuarioSesion = Auth::id();
+            if (strlen($idUsuarioSesion)==0) {
+                $idUsuarioSesion = env('SYSTEM_USER');
+            }
             DB::statement("SET @usuario_sesion = $idUsuarioSesion");
 
             DB::table('convenio_participante')
@@ -414,6 +435,9 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             if ($formularioDao) {
 
                 $idUsuarioSesion = Auth::id();
+                if (strlen($idUsuarioSesion)==0) {
+                    $idUsuarioSesion = env('SYSTEM_USER');
+                }                
                 DB::statement("SET @usuario_sesion = $idUsuarioSesion");
                                 
                 $formularioDao->valor_descuento = $formulario->getValorDescuento();

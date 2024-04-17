@@ -80,6 +80,9 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         try {
 
             $idUsuarioSesion = Auth::id();
+            if (strlen($idUsuarioSesion)==0) {
+                $idUsuarioSesion = env('SYSTEM_USER');
+            }
             DB::statement("SET @usuario_sesion = $idUsuarioSesion");
                         
             ParticipanteDao::create([
@@ -115,7 +118,10 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         $exito = false;
         try {
 
-            $idUsuarioSesion = Auth::id();
+            $idUsuarioSesion = Auth::id();            
+            if (strlen($idUsuarioSesion)==0) {
+                $idUsuarioSesion = env('SYSTEM_USER');
+            }
             DB::statement("SET @usuario_sesion = $idUsuarioSesion");            
 
             ParticipanteDao::whereId($participante->getId())
@@ -356,6 +362,9 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
             $participante = ParticipanteDao::find($participanteId);
             if ($participante) {
                 $idUsuarioSesion = Auth::id();
+                if (strlen($idUsuarioSesion)==0) {
+                    $idUsuarioSesion = env('SYSTEM_USER');
+                }
                 DB::statement("SET @usuario_sesion = $idUsuarioSesion");
                                 
                 $participante->delete();
