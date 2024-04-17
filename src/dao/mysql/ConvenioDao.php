@@ -4,6 +4,7 @@ namespace Src\dao\mysql;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Src\domain\Convenio;
 use Src\domain\repositories\ConvenioRepository;
@@ -133,7 +134,10 @@ class ConvenioDao extends Model implements ConvenioRepository {
     public function crearConvenio(Convenio $convenio): bool {
         $exito = false;
         try {       
-           
+
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+            
             ConvenioDao::create([
                 'nombre' => $convenio->getNombre(),
                 'calendario_id' => $convenio->getCalendarioId(), 
@@ -160,6 +164,10 @@ class ConvenioDao extends Model implements ConvenioRepository {
         try {
             $convenioEncontrado = ConvenioDao::find($convenio->getId());
             if ($convenioEncontrado) {
+
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
                 $convenioEncontrado->nombre = $convenio->getNombre();
                 $convenioEncontrado->calendario_id = $convenio->getCalendarioId();
                 $convenioEncontrado->fec_ini = $convenio->getFecInicio();
@@ -183,6 +191,10 @@ class ConvenioDao extends Model implements ConvenioRepository {
         try {
             $convenioEncontrado = ConvenioDao::find($convenioId);
             if ($convenioEncontrado) {
+                
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
                 $convenioEncontrado->delete();
             }
             $exito = true;
@@ -196,6 +208,9 @@ class ConvenioDao extends Model implements ConvenioRepository {
     public function agregarBeneficiarioAConvenio(int $convenioId, string $cedula): bool {
 
         try {
+            
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
 
             $fechaHoraActual = now()->toDateTimeString();
 
@@ -266,6 +281,10 @@ class ConvenioDao extends Model implements ConvenioRepository {
         try {
             $convenioDao = ConvenioDao::find($convenio->getId());
             if ($convenioDao) {
+                
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
                 $convenioDao->total_a_pagar = $convenio->getTotalAPagar();
                 $convenioDao->save();
             }
@@ -282,6 +301,9 @@ class ConvenioDao extends Model implements ConvenioRepository {
     public static function cerrarElUltimoConveniosUCMC(): bool {
         $exito = true;
         try {
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+            
             static::where('es_ucmc_actual', true)->update(['es_ucmc_actual' => false]);
         } catch(Exception $e) {            
             $exito = false;

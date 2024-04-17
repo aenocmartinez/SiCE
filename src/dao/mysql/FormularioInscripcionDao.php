@@ -4,6 +4,7 @@ namespace Src\dao\mysql;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Src\domain\Convenio;
 use Src\domain\FormularioInscripcion;
@@ -121,6 +122,10 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         $exito = true;
 
         try {
+
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+                        
             $participante = ParticipanteDao::find($formulario->getParticipanteId());
             if ($participante) {
                 $nuevoFormulario = new FormularioInscripcionDao();
@@ -158,7 +163,11 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
         try {
             $formularioDao = FormularioInscripcionDao::find($formulario->getId());
-            if ($formularioDao) {                
+            if ($formularioDao) { 
+                
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
                 $formularioDao->valor_descuento = $formulario->getValorDescuento();
                 $formularioDao->total_a_pagar = $formulario->getTotalAPagar();
                 
@@ -181,6 +190,10 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         try {
             $formulario = FormularioInscripcionDao::where('numero_formulario', $numeroFormulario)->first();
             if ($formulario) {
+                
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
                 $formulario->estado = 'Anulado';
                 $formulario->save();
             }
@@ -196,6 +209,10 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         try {
             $formulario = FormularioInscripcionDao::find($formularioId);
             if ($formulario) {
+
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");                
+
                 $formulario->estado = $estado;
                 $formulario->save();
             }
@@ -209,6 +226,9 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
     public function realizarPagoFormularioInscripcion(int $formularioId, FormularioInscripcionPago $pago): bool {
         $exito = true;
         try {
+
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
 
             FormularioInscripcionPagoDao::create([
                 'formulario_id' => $formularioId, 
@@ -316,6 +336,10 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
             $formularioDao = FormularioInscripcionDao::find($formulario->getId());
             if ($formularioDao) {
+                
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
                 if ($formulario->getConvenioId() > 0 ) {
                     $formularioDao->convenio_id = $formulario->getConvenioId();
                 }
@@ -364,6 +388,10 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
     public function redimirBeneficioConvenio($particianteId, $convenioId): bool {
         $exito = true;
         try {            
+            
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
             DB::table('convenio_participante')
                 ->where('convenio_id', $convenioId)
                 ->where('cedula', $particianteId)
@@ -384,6 +412,10 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         try {
             $formularioDao = FormularioInscripcionDao::find($formulario->getId());
             if ($formularioDao) {
+
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+                                
                 $formularioDao->valor_descuento = $formulario->getValorDescuento();
                 $formularioDao->total_a_pagar = $formulario->getTotalAPagar();
                 $formularioDao->estado = $formulario->getEstado();

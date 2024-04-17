@@ -3,6 +3,7 @@
 namespace Src\dao\mysql;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Src\domain\Calendario;
 use Src\domain\Curso;
@@ -141,6 +142,10 @@ class GrupoDao extends Model implements GrupoRepository {
     public function crearGrupo(Grupo $grupo): bool {
         $exito = true;
         try {
+            
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
             $nuevoGrupo = GrupoDao::create([
                 'curso_calendario_id' => $grupo->getCursoCalendarioId(), 
                 'salon_id' => $grupo->getSalon()->getId(), 
@@ -166,6 +171,10 @@ class GrupoDao extends Model implements GrupoRepository {
     public function eliminarGrupo(Grupo $grupo): bool {
         try {
             $exito = false;
+
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
             $rs = GrupoDao::destroy($grupo->getId());
             if ($rs) {
                 $exito = true;
@@ -180,7 +189,11 @@ class GrupoDao extends Model implements GrupoRepository {
         try {            
             $exito = false;
             $rs = GrupoDao::find($grupo->getId());
-            if ($rs) {                
+            if ($rs) {            
+                
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+                                
                 $rs->update([
                     'salon_id' => $grupo->getSalon()->getId(), 
                     'orientador_id' => $grupo->getOrientador()->getId(), 

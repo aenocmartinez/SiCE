@@ -3,6 +3,8 @@
 namespace Src\dao\mysql;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Src\domain\repositories\SalonRepository;
 use Src\domain\Salon;
 
@@ -129,6 +131,9 @@ class SalonDao extends Model implements SalonRepository {
 
     public function crearSalon(Salon $salon): bool {
         try {
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+                        
             $result = SalonDao::create([
                 'nombre' => $salon->getNombre(),
                 'capacidad' => $salon->getCapacidad(),
@@ -145,6 +150,10 @@ class SalonDao extends Model implements SalonRepository {
     public function eliminarSalon(Salon $salon): bool {
         try {
             $exito = false;
+
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
             $rs = SalonDao::destroy($salon->getId());
             if ($rs) {
                 $exito = true;
@@ -159,7 +168,11 @@ class SalonDao extends Model implements SalonRepository {
         try {
             $exito = false;
             $rs = SalonDao::find($salon->getId());
-            if ($rs) {                
+            if ($rs) {     
+                
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+                                
                 $rs->nombre = $salon->getNombre();
                 $rs->capacidad = $salon->getCapacidad();
                 $rs->esta_disponible = $salon->estaDisponible();

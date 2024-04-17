@@ -4,6 +4,7 @@ namespace Src\dao\mysql;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Src\domain\Calendario;
 use Src\domain\Convenio;
@@ -79,6 +80,9 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         $exito = false;
         try {
 
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+                        
             ParticipanteDao::create([
                 'primer_nombre' => $participante->getPrimerNombre(),
                 'segundo_nombre' => $participante->getSegundoNombre(),
@@ -111,6 +115,9 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
     public function actualizarParticipante(Participante $participante): bool {
         $exito = false;
         try {
+
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");            
 
             ParticipanteDao::whereId($participante->getId())
                 ->update([
@@ -343,6 +350,9 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
 
             $participante = ParticipanteDao::find($participanteId);
             if ($participante) {
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+                                
                 $participante->delete();
             }
 

@@ -3,6 +3,7 @@
 namespace Src\dao\mysql;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Src\domain\repositories\AreaRepository;
 use Src\domain\Area;
@@ -62,6 +63,10 @@ class AreaDao extends Model implements AreaRepository {
     public function crearArea(Area $area): bool {
         $exito = false;
         try {
+
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+            
             $result = AreaDao::create([
                 'nombre' => $area->getNombre()
             ]);
@@ -76,6 +81,9 @@ class AreaDao extends Model implements AreaRepository {
     public function eliminarArea(Area $area): bool {
         $exito = false;
         try {
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
             $rs = AreaDao::destroy($area->getId());
             if ($rs) {
                 $exito = true;
@@ -91,6 +99,10 @@ class AreaDao extends Model implements AreaRepository {
         try {
             $rs = AreaDao::find($area->getId());
             if ($rs) {
+                
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
                 $rs->update([
                     'nombre' => $area->getNombre()
                 ]);                

@@ -3,6 +3,7 @@
 namespace Src\dao\mysql;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Src\domain\Area;
 use Src\domain\Curso;
@@ -101,6 +102,10 @@ class CursoDao extends Model implements CursoRepository {
 
     public function crearCurso(Curso $curso): bool {
         try {
+            
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
             $result = CursoDao::create([
                 'nombre' => $curso->getNombre(),
                 'area_id' => $curso->getArea()->getId(),
@@ -118,6 +123,10 @@ class CursoDao extends Model implements CursoRepository {
     public function eliminarCurso(Curso $curso): bool {
         try {
             $exito = false;
+
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
             $rs = CursoDao::destroy($curso->getId());
             if ($rs) {
                 $exito = true;
@@ -133,6 +142,10 @@ class CursoDao extends Model implements CursoRepository {
             $exito = false;
             $rs = CursoDao::find($curso->getId());
             if ($rs) {
+
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+                                
                 $rs->nombre = $curso->getNombre();
                 $rs->area_id = $curso->getArea()->getId();
                 $rs->tipo_curso = $curso->getTipoCurso();

@@ -10,7 +10,7 @@ use Src\domain\CursoCalendario;
 use Src\domain\repositories\CalendarioRepository;
 
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Auth;
 use Sentry\Laravel\Facade as Sentry;
 use Src\domain\Convenio;
 use Src\domain\FormularioInscripcion;
@@ -83,6 +83,10 @@ class CalendarioDao extends Model implements CalendarioRepository {
     public function crearCalendario(Calendario &$calendario): bool {
         $exito = false;
         try {
+
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+                        
             $result = CalendarioDao::create([
                 'nombre' => $calendario->getNombre(),
                 'fec_ini' => $calendario->getFechaInicio(),
@@ -101,6 +105,10 @@ class CalendarioDao extends Model implements CalendarioRepository {
     public function eliminarCalendario(Calendario $calendario): bool {
         $exito = false;
         try {
+
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
             $rs = CalendarioDao::destroy($calendario->getId());
             if ($rs) {
                 $exito = true;
@@ -116,6 +124,10 @@ class CalendarioDao extends Model implements CalendarioRepository {
         try {
             $rs = CalendarioDao::find($calendario->getId());
             if ($rs) {
+
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
                 $rs->update([
                     'nombre' => $calendario->getNombre(),
                     'fec_ini' => $calendario->getFechaInicio(),
@@ -136,6 +148,10 @@ class CalendarioDao extends Model implements CalendarioRepository {
 
             $calendario = CalendarioDao::find($cursoCalendario->getCalendarioId());
             if ($calendario) {
+
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
                 $calendario->cursos()->attach($cursoCalendario->getCursoId(), [
                     'costo' => $cursoCalendario->getCosto(), 
                     'modalidad' => $cursoCalendario->getModalidad(), 
@@ -377,6 +393,10 @@ class CalendarioDao extends Model implements CalendarioRepository {
 
     public static function pasarANoDisponibleLosBeneficiosPorConvenioDeUnParticipante(): void {        
         try {
+            
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
             DB::table('convenio_participante')->update(['disponible' => 'NO']);
         } catch (\Exception $e) {
             Sentry::captureException($e);

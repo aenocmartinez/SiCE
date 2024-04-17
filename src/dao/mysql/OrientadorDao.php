@@ -3,6 +3,7 @@
 namespace Src\dao\mysql;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Src\domain\Area;
 use Src\domain\CursoCalendario;
@@ -247,6 +248,10 @@ class OrientadorDao extends Model implements OrientadorRepository {
 
     public function crearOrientador(Orientador &$orientador): bool {
         try {
+            
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
             $data = [
                 'nombre' => $orientador->getNombre(), 
                 'tipo_documento' => $orientador->getTipoDocumento(), 
@@ -281,6 +286,10 @@ class OrientadorDao extends Model implements OrientadorRepository {
     public function eliminarOrientador(Orientador $orientador): bool {
         try {
             $exito = false;
+            
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
             $rs = OrientadorDao::destroy($orientador->getId());
             if ($rs) {
                 $exito = true;
@@ -296,6 +305,10 @@ class OrientadorDao extends Model implements OrientadorRepository {
             $exito = false;
             $rs = OrientadorDao::find($orientador->getId());
             if ($rs) {
+
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
                 $rs->nombre = $orientador->getNombre();
                 $rs->tipo_documento = $orientador->getTipoDocumento();
                 $rs->documento = $orientador->getDocumento();
@@ -331,6 +344,10 @@ class OrientadorDao extends Model implements OrientadorRepository {
         try {
             $o = OrientadorDao::find($orientador->getId());
             if ($o) {
+                
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
                 $o->areas()->attach([$area->getId()]);
             }
         } catch (\Exception $e) {
@@ -344,6 +361,9 @@ class OrientadorDao extends Model implements OrientadorRepository {
         try {
             $o = OrientadorDao::find($orientador->getId());
             if ($o) {
+
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
                 $o->areas()->detach();
             }
         } catch (\Exception $e) {

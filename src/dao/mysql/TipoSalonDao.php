@@ -3,6 +3,8 @@
 namespace Src\dao\mysql;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Src\domain\repositories\TipoSalonRepository;
 use Src\domain\TipoSalon;
 
@@ -60,6 +62,10 @@ class TipoSalonDao extends Model implements TipoSalonRepository {
 
     public function crearTipoSalon(TipoSalon $tipoSalon): bool {
         try {
+            
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
             $result = TipoSalonDao::create([
                 'nombre' => $tipoSalon->getNombre(),
             ]);
@@ -72,6 +78,10 @@ class TipoSalonDao extends Model implements TipoSalonRepository {
     public function eliminarTipoSalon(TipoSalon $tipoSalon): bool {
         try {
             $exito = false;
+
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
             $rs = TipoSalonDao::destroy($tipoSalon->getId());
             if ($rs) {
                 $exito = true;
@@ -87,6 +97,10 @@ class TipoSalonDao extends Model implements TipoSalonRepository {
             $exito = false;
             $rs = TipoSalonDao::find($tipoSalon->getId());
             if ($rs) {
+                
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
                 $rs->nombre = $tipoSalon->getNombre();
                 $rs->save();
                 $exito = true;

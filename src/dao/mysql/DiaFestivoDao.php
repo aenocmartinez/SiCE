@@ -4,6 +4,8 @@ namespace Src\dao\mysql;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Src\domain\DiaFestivo;
 use Src\domain\repositories\DiasFestivosRepository;
 
@@ -33,6 +35,10 @@ class DiaFestivoDao extends Model implements DiasFestivosRepository{
     public function crearDiasFestivoAnio(DiaFestivo $diaFestivo): bool {        
         $exito = false;
         try {
+
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+                        
             DiaFestivoDao::create([
                 'anio' => $diaFestivo->getAnio(),
                 'fechas' => $diaFestivo->getFechas(),
