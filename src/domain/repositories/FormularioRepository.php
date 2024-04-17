@@ -20,4 +20,5 @@ interface FormularioRepository {
     public function redimirBeneficioConvenio($cedula, $convenioId): bool;
     public function actualizarFormulario(FormularioInscripcion $formulario): bool;
     public function actualizarFormularioPorFacturacionDeConvenio(FormularioInscripcion $formulario): bool;
+    public static function listarFormulariosPorEstadoYCalendario($estado="", $calendarioId=0): array;
 }

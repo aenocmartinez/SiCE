@@ -15,10 +15,12 @@ class DashboardUseCase {
         $datosDashboard = [
             'totalInscripciones' => 0,
             'totalMatriculados' => 0,
+            'totalRevisionesPago' => 0,
             'totalPorConvenio' => 0,
             'totalPendintesDePago' => 0,
             'totalAnulados' => 0,
             'pagoSinDescuento' => 0,
+            'pagoRevisiones' => 0,
             'pagoPorConvenio' => 0,
             'pagoPendientes' => 0,
             'pagoTotal' => 0,

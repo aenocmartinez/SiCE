@@ -452,4 +452,58 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         }
         return $exito;
     }
+
+    public static function listarFormulariosPorEstadoYCalendario($estado="", $calendarioId=0): array{
+        $formularios = [];
+
+        try {
+            $grupoDao = new GrupoDao();
+            $participanteDao = new ParticipanteDao();
+            $convenioDao = new ConvenioDao();
+
+            $resultados = FormularioInscripcionDao::with('grupo')
+                    ->leftJoin('participantes', 'formulario_inscripcion.participante_id', '=', 'participantes.id')
+                    ->whereHas('grupo', function ($query) use ($calendarioId) {
+                        $query->where('calendario_id', $calendarioId);
+                    })
+                    ->where(function ($query) use ($estado) {
+                        $query->when($estado, function ($query, $estado) {
+                            $query->where('estado', $estado);
+                        });
+                    })
+                    ->orderByDesc('participante_id')
+                    ->orderByDesc('id')
+                    ->get(['formulario_inscripcion.id', 'grupo_id', 'participante_id', 'convenio_id', 'formulario_inscripcion.created_at', 
+                           'estado', 'costo_curso', 'valor_descuento', 'total_a_pagar', 'numero_formulario', 'fecha_max_legalizacion']);
+
+            foreach($resultados as $resultado) {
+                $formulario = new FormularioInscripcion();
+                $formulario->setId($resultado->id);
+                $formulario->setEstado($resultado->estado);
+                $formulario->setFechaCreacion($resultado->created_at);
+                $formulario->setTotalAPagar($resultado->total_a_pagar);
+                $formulario->setNumero($resultado->numero_formulario);
+                $formulario->setFechaMaxLegalizacion($resultado->fecha_max_legalizacion);
+
+                $grupo = $grupoDao->buscarGrupoPorId($resultado->grupo_id);
+                $participante = $participanteDao->buscarParticipantePorId($resultado->participante_id);
+                $convenio = new Convenio();
+
+                if (!is_null($resultado->convenio_id)) {
+                    $convenio = $convenioDao->buscarConvenioPorId($resultado->convenio_id);
+                }
+                
+                $formulario->setGrupo($grupo);
+                $formulario->setParticipante($participante);
+                $formulario->setConvenio($convenio);
+                
+                array_push($formularios, $formulario);
+            }
+
+        } catch (Exception $e) {
+            dd($e->getMessage());
+        }
+
+        return $formularios;
+    }
 }

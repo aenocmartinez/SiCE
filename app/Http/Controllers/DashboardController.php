@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Src\usecase\dashboard\BuscarFormulariosPorEstadoYCalendarioUseCase;
 use Src\usecase\dashboard\DashboardUseCase;
 use Src\usecase\dia_festivo\GuardarDiasFestivosDeUnAnioUseCase;
 
@@ -13,5 +14,12 @@ class DashboardController extends Controller
         return view('dashboard.index', [
             'datosDashboard' => (new DashboardUseCase)->ejecutar()]
         );
+    }
+
+    public function buscarFormulariosPorEstado($estado) {
+
+        return view('dashboard.formularios',[
+            'formularios' => (new BuscarFormulariosPorEstadoYCalendarioUseCase)->ejecutar($estado)
+        ]);
     }
 }

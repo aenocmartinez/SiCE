@@ -15,16 +15,16 @@
               <div class="block block-rounded d-flex flex-column h-100 mb-0">
                 <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
                   <dl class="mb-0">
-                    <dt class="fs-3 fw-bold">{{ $datosDashboard['totalInscripciones'] }}</dt>
-                    <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Inscripciones</dd>
+                    <dt class="fs-3 fw-bold">{{ $datosDashboard['totalRevisionesPago'] }}</dt>
+                    <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Revisar comprobante de pago</dd>
                   </dl>
                   <div class="item item-rounded-lg bg-body-light">
                     <i class="far fa-user-circle fs-3 text-primary"></i>
                   </div>
                 </div>
                 <div class="bg-body-light rounded-bottom">
-                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="javascript:void(0)">
-                    <span>Ver inscripciones</span>
+                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Revisar comprobante de pago') }}">
+                    <span>Ir a revisar</span>
                     <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
                   </a>
                 </div>
@@ -44,7 +44,7 @@
                   </div>
                 </div>
                 <div class="bg-body-light rounded-bottom">
-                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="javascript:void(0)">
+                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Pagado') }}">
                     <span>Ver matriculados</span>
                     <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
                   </a>
@@ -65,7 +65,7 @@
                   </div>
                 </div>
                 <div class="bg-body-light rounded-bottom">
-                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="javascript:void(0)">
+                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Pendiente de pago') }}">
                     <span>Ver pendientes</span>
                     <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
                   </a>
@@ -86,7 +86,7 @@
                   </div>
                 </div>
                 <div class="bg-body-light rounded-bottom">
-                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="javascript:void(0)">
+                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Anulado') }}">
                     <span>Ver anulados</span>
                     <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
                   </a>

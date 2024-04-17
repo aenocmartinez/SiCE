@@ -68,6 +68,7 @@ Route::middleware('auth')->group(function () {
                 ->name('logout');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/buscar-formularios/{estado}', [DashboardController::class, 'buscarFormulariosPorEstado'])->name('dashboard.buscar-formularios');
 
     Route::get('/areas/crear', [AreaController::class, 'create'])->name('areas.create');
     Route::get('/areas/{id}/editar', [AreaController::class, 'buscarPorId'])->name('areas.edit');
