@@ -4,7 +4,7 @@ namespace Src\domain;
 
 class CursoCalendario {
     private int $id;
-    private int $cupo;
+    // private int $cupo;
     private float $costo;
     private string $modalidad;
     private Calendario $calendario;
@@ -19,7 +19,7 @@ class CursoCalendario {
         $this->id = 0;
         $this->calendario = $calendario;
         $this->curso = $curso;
-        $this->cupo = (int)$datos['cupo'];
+        // $this->cupo = (int)$datos['cupo'];
         $this->costo = floatval($datos['costo']);
         $this->modalidad = $datos['modalidad'];
     }
@@ -44,9 +44,9 @@ class CursoCalendario {
         $this->costo = $costo;
     }
 
-    public function setCupo(int $cupo): void {
-        $this->cupo = $cupo;
-    }
+    // public function setCupo(int $cupo): void {
+    //     $this->cupo = $cupo;
+    // }
 
     public function getModalidad(): string {
         return $this->modalidad;
@@ -56,9 +56,9 @@ class CursoCalendario {
         return $this->costo;
     }
 
-    public function getCupo(): int {
-        return $this->cupo;
-    }
+    // public function getCupo(): int {
+    //     return $this->cupo;
+    // }
 
     public function getCalendario(): Calendario {
         return $this->calendario;

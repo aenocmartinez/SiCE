@@ -57,7 +57,13 @@
                 @forelse ($grupos as $grupo)
                 <tr>
                     <td class="fs-sm" style="width: 40%;">
-                        <p class="fw-normal mb-0">{{ $grupo->getCodigoGrupo() . " - " . $grupo->getNombreCurso() }} ({{ $grupo->getModalidad() }})</p>
+                        <p class="fw-normal mb-0">
+                            {{ $grupo->getCodigoGrupo() . " - " . $grupo->getNombreCurso() }} ({{ $grupo->getModalidad() }})
+                            <br>
+                            <span style="font-size: 12px">
+                                Orientador/a: {{ $grupo->getNombreOrientador() }}
+                            </span>
+                        </p>
                     </td>
                     <td class="fs-xs" style="width: 20%;">
                         <p class="fw-normal mb-0">{{ $grupo->getDia() }} / {{ $grupo->getJornada() }}</p>

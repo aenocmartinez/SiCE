@@ -28,7 +28,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
     
     public function cursos() {
         return $this->belongsToMany(CursoDao::class, 'curso_calendario', 'calendario_id', 'curso_id')
-                    ->withPivot(['costo', 'modalidad', 'cupo', 'id'])
+                    ->withPivot(['costo', 'modalidad', 'id'])
                     ->withTimestamps();
     }
 
@@ -155,7 +155,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 $calendario->cursos()->attach($cursoCalendario->getCursoId(), [
                     'costo' => $cursoCalendario->getCosto(), 
                     'modalidad' => $cursoCalendario->getModalidad(), 
-                    'cupo' => $cursoCalendario->getCupo()
+                    // 'cupo' => $cursoCalendario->getCupo()
                 ]);
 
             }            
@@ -196,7 +196,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
             $curso->setId($c->id);
 
             $datos = [
-                    'cupo' => $c->pivot->cupo, 
+                    // 'cupo' => $c->pivot->cupo, 
                     'costo' => $c->pivot->costo, 
                     'modalidad' => $c->pivot->modalidad
                 ];
@@ -228,7 +228,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 $curso = new Curso($item->nombre);
                 $curso->setId($item->id);
                 $datos = [
-                    'cupo' => $item->pivot->cupo, 
+                    // 'cupo' => $item->pivot->cupo, 
                     'costo' => $item->pivot->costo, 
                     'modalidad' => $item->pivot->modalidad
                 ];
