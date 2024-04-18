@@ -16,7 +16,7 @@
                     <thead class="text-center">
                         <th>Formulario</th>
                         <th>Participante</th>
-                        <th>Documento</th>
+                        <th>Convenio</th>
                         <th>Curso</th>
                         <th>Estado</th>
                         <th>Fecha max. legalización</th>
@@ -26,20 +26,29 @@
                 @forelse ($formularios as $f)
                 <tr class="fs-xs">
                     <td>{{ $f->getNumero() }}</td>
-                    <td>{{ $f->getParticipanteNombreCompleto() }}
-                        @if ($f->tieneConvenio())
-                            <br>
-                            Convenio: {{ $f->getConvenioNombre() }}
-                        @endif                        
+                    <td>
+                        {{ $f->getParticipanteNombreCompleto() }}
+                        <br>
+                        {{ $f->getParticipanteTipoYDocumento() }}
                     </td>
-                    <td>{{ $f->getParticipanteTipoYDocumento() }}</td>
+                    <td>
+                        @if ($f->tieneConvenio()) 
+                            {{ $f->getConvenioNombre() }} 
+                        @else
+                            N/A
+                        @endif                          
+                    </td>
                     <td class="text-center">
                         {{ $f->getGrupoNombreCurso() }}. <br>
                         G{{ $f->getGrupoId() }} - {{ $f->getGrupoDia() . " / ". $f->getGrupoJornada() }} <br>
                         Salón {{ $f->getGrupoSalon() }}
                     </td>
                     <td class="texte-center">
-                        {{ $f->getEstado() }} 
+                        @if ($f->tieneConvenio() && $f->tipoConvenioCooperativa()) 
+                            {{ $f->getConvenioNombre() }} 
+                        @else
+                            {{ $f->getEstado() }} 
+                        @endif
                     </td>
                     <td>{{ $f->getFechaMaxLegalizacion() }}</td>
                     <td class="text-center">

@@ -237,12 +237,16 @@ class FormularioInscripcion {
         return $this->numero;
     }
 
-    public function getEstado(): string {
+    public function getEstado(): string {        
         return $this->estado;
     }
 
     public function tieneConvenio(): bool {
         return $this->convenio->getId() > 0;
+    }
+
+    public function tipoConvenioCooperativa(): bool {
+        return $this->convenio->esCooperativa();
     }
 
     public function setEstado(string $estado): void {
@@ -344,6 +348,10 @@ class FormularioInscripcion {
 
     public function EstadoPago(): string {
 
+        if ($this->convenio->esCooperativa()) {
+            $estado = "Pagado";
+        }
+
         if ($this->estado == "Anulado") {
             return $this->estado;
         }
@@ -356,6 +364,7 @@ class FormularioInscripcion {
         if ($this->totalAPagar == $this->TotalPagoRealizado()) {
             $estado = "Pagado";
         }
+
         return $estado;
     }
 

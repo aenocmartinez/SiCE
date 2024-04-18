@@ -259,12 +259,12 @@ class ConvenioDao extends Model implements ConvenioRepository {
             ->get();
 
             
-            $participantes[] = ['NOMBRE', 'TIPO_DOCUMENTO', 'DOCUMENTO', 'CURSO', 'PERIODO'];
+            $participantes[] = ['NOMBRE', 'TIPO_DOCUMENTO', 'DOCUMENTO', 'CURSO', ''];
             foreach($items as $item) {
                 
                 $nombreCompleto = $item->primer_nombre . " " . $item->segundo_nombre . " " . $item->primer_apellido . " " . $item->segundo_apellido;
 
-                $participantes[] = [$nombreCompleto, $item->tipo_documento, $item->documento, $item->nombre_curso, $item->periodo];
+                $participantes[] = [$nombreCompleto, $item->tipo_documento, $item->documento, $item->nombre_curso, "Periodo: " . $item->periodo];
             }
 
 

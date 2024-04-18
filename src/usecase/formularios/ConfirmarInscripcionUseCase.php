@@ -12,6 +12,7 @@ use Src\domain\FormularioInscripcionPago;
 use Src\domain\Grupo;
 use Src\domain\Participante;
 use Src\infraestructure\medioPago\PagoFactory;
+use Src\usecase\convenios\BuscarConvenioPorIdUseCase;
 use Src\view\dto\ConfirmarInscripcionDto;
 use Src\view\dto\Response;
 
@@ -32,8 +33,15 @@ class ConfirmarInscripcionUseCase {
         $grupo = new Grupo();
         $grupo->setId($confirmarInscripcionDto->grupoId);
 
-        $convenio = new Convenio();
-        $convenio->setId($confirmarInscripcionDto->convenioId);
+
+        $convenio = (new BuscarConvenioPorIdUseCase)->ejecutar($confirmarInscripcionDto->convenioId);
+
+        $totalAPagar = $confirmarInscripcionDto->totalAPagar;
+        $estado = $confirmarInscripcionDto->estado;
+        if ($convenio->esCooperativa()) {
+            $totalAPagar = 0;
+            $estado = "Pagado";
+        }
 
         $participante = new Participante();
         $participante->setId($confirmarInscripcionDto->participanteId);
@@ -41,10 +49,10 @@ class ConfirmarInscripcionUseCase {
         $formularioInscripcion->setGrupo($grupo);
         $formularioInscripcion->setConvenio($convenio);
         $formularioInscripcion->setParticipante($participante);
-        $formularioInscripcion->setEstado($confirmarInscripcionDto->estado);  
+        $formularioInscripcion->setEstado($estado);  
         $formularioInscripcion->setCostoCurso($confirmarInscripcionDto->costoCurso);
         $formularioInscripcion->setValorDescuento($confirmarInscripcionDto->valorDescuento);
-        $formularioInscripcion->setTotalAPagar($confirmarInscripcionDto->totalAPagar);
+        $formularioInscripcion->setTotalAPagar($totalAPagar);
         $formularioInscripcion->setFechaCreacion($fechaActual);
         $formularioInscripcion->setFechaMaxLegalizacion(Calendario::fechaSiguienteDiaHabil($fechaActual, $diasFestivos));
         $formularioInscripcion->setNumero(strtotime($fechaActual) . $confirmarInscripcionDto->participanteId);

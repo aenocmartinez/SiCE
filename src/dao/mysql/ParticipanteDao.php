@@ -449,7 +449,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
             $resultado = FormularioInscripcionDao::select('id', 'costo_curso')
                         ->where('participante_id', $participanteId)
                         ->where('convenio_id', $convenioId)
-                        ->where('estado', 'Pendiente de pago')
+                        // ->where('estado', 'Pendiente de pago')
                         ->first();
             
             if ($resultado) {
