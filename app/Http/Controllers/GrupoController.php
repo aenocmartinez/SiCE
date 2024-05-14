@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GuardarGrupo;
-
+use ListarParticipantesGrupoUseCase;
 use Src\domain\Grupo;
 use Src\infraestructure\util\ListaDeValor;
 use Src\infraestructure\util\Validador;
@@ -17,6 +17,7 @@ use Src\usecase\grupos\CrearGrupoUseCase;
 use Src\usecase\grupos\EliminarGrupoUseCase;
 use Src\usecase\grupos\ListarCursosPorCalendarioUseCase;
 use Src\usecase\grupos\ListarGruposUseCase;
+use Src\usecase\grupos\ListarParticipantesGrupoUseCase as GruposListarParticipantesGrupoUseCase;
 use Src\usecase\orientadores\ListarOrientadoresUseCase;
 use Src\usecase\salones\ListarSalonesPorEstadoUseCase;
 use Src\view\dto\GrupoDto;
@@ -147,9 +148,28 @@ class GrupoController extends Controller
         return view('grupos.mas_informacion', ['grupo' => $grupo]);
     }
 
-    public function descargarListadoParticipantes($grupoId=0) {
-        // dd($grupoId);
-        return redirect()->route('grupos.index')->with('status','En construcción');
+    public function descargarListadoParticipantes($grupoId=0) {    
+        
+        $data = (new GruposListarParticipantesGrupoUseCase)->ejecutar($grupoId);
+
+        $fileName = 'listado_participantes.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ];
+
+        $callback = function () use ($data) {
+            $file = fopen('php://output', 'w');
+
+            foreach ($data as $row) {
+                fputcsv($file, $row);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);        
     }
 
     private function hydrateDto($data): GrupoDto {            

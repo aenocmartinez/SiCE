@@ -31,7 +31,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
             $convenios = ConvenioDao::select('convenios.id', 'nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento', 'es_cooperativa', 
                                         DB::raw('COUNT(convenio_participante.id) as numBeneficiados'))
                         ->leftJoin('convenio_participante', 'convenio_participante.convenio_id', '=', 'convenios.id')
-                        ->groupBy('convenios.id')
+                        ->groupBy('convenios.id', 'nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento', 'es_cooperativa')
                         ->orderBy('convenios.id', 'desc')
                         ->get();
 

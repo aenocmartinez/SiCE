@@ -16,4 +16,5 @@ interface GrupoRepository {
     public function listarGruposDisponiblesParaMatricula(int $calendarioId, int $areaId): array;
     public static function buscadorGrupos(string $criterio, $page=1): Paginate;
     public function tieneCuposDisponibles($grupoId=0): bool;
+    public static function listadoParticipantesGrupo($grupoId=0): array;
 }

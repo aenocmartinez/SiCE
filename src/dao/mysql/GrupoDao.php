@@ -404,4 +404,44 @@ class GrupoDao extends Model implements GrupoRepository {
 
         return $result->tieneCuposDisponibles == "SI";
     }
+
+    public static function listadoParticipantesGrupo($grupoId=0): array {
+        $participantes = [];
+
+        try {
+            
+            $items = ParticipanteDao::select(
+                'formulario_inscripcion.numero_formulario',
+                DB::raw("CONCAT(participantes.primer_nombre, ' ', participantes.segundo_nombre, ' ', participantes.primer_apellido, ' ', participantes.segundo_apellido) AS nombre_participante"),
+                DB::raw("CONCAT(participantes.tipo_documento, ' - ', participantes.documento) AS documento_participante"),
+                'participantes.telefono',
+                'participantes.email',
+                'convenios.nombre AS nombre_convenio',
+                DB::raw("IF(formulario_inscripcion.convenio_id IS NULL,
+                            IF(formulario_inscripcion.estado='Pagado', 'Legalizado', 'No legalizado'),
+                            IF(convenios.es_cooperativa, 'Legalizado', IF(formulario_inscripcion.estado='Pagado', 'Legalizado', 'No legalizado'))) as estadoInscripcion")
+            )
+            ->join('formulario_inscripcion', function ($join) use ($grupoId) {
+                $join->on('formulario_inscripcion.participante_id', '=', 'participantes.id')
+                    ->where('formulario_inscripcion.grupo_id', $grupoId);
+            })
+            ->leftJoin('convenios', 'convenios.id', '=', 'formulario_inscripcion.convenio_id')
+            ->orderBy('participantes.primer_nombre')
+            ->orderBy('participantes.primer_apellido')
+            ->get();
+
+            
+            $participantes[] = ['FORMULARIO', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO'];
+            foreach($items as $item) {        
+                $participantes[] = [$item->numero_formulario, $item->nombre_participante, $item->documento_participante, $item->telefono, $item->email, $item->nombre_convenio, $item->estadoInscripcion];
+            }
+
+
+        } catch(\Exception $e) {
+            dd($e->getMessage());
+            Sentry::captureException($e);
+        }
+        
+        return $participantes;        
+    }
 }
