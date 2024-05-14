@@ -47,7 +47,7 @@
                   <td class="ps-0 fw-sm text-center" colspan="10">
                     <button type="button" class="btn btn-success me-1 mb-1" onclick="confirmEcollect();">
                     <i class="fa fa-circle-dollar-to-slot me-1"></i>
-                        Realizar pago por Ecollect
+                      Realizar pago en línea
                     </button>
                     <br>
                     <a href="{{asset('biblioteca/Instructivo_pago_en_linea_2.pdf')}}" target="_blank" style="font-size:14px;">

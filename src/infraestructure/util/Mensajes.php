@@ -10,4 +10,8 @@ class Mensajes {
         $message["404"] = "Registro no encontrado";
         $message["500"] = "Ha ocurrido un error en el sistema";
     }
+
+    public static function CuerpoCorreoConfirmacionInscripcion($numeroFormulario) {
+        return "Una nueva inscripción ha sido realizada identificada con número: " . $numeroFormulario;
+    }
 }
