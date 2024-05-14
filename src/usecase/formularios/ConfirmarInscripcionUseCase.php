@@ -78,7 +78,7 @@ class ConfirmarInscripcionUseCase {
         
         $formularioInscripcion->RedimirBeneficioConvenio();
 
-        EmailService::SendEmail("Confirmación de inscripción cursos de extensión - UCMC", Mensajes::CuerpoCorreoConfirmacionInscripcion($formularioInscripcion->getNumero()), env('EMAIL_DESTINATARIOS'));
+        // EmailService::SendEmail("Confirmación de inscripción cursos de extensión - UCMC", Mensajes::CuerpoCorreoConfirmacionInscripcion($formularioInscripcion->getNumero()), env('EMAIL_DESTINATARIOS'));
 
         return new Response("201", "¡La inscripción se ha realizado con éxito!");
     }
