@@ -34,6 +34,7 @@
     
     
     <link rel="stylesheet" id="css-main" href="{{asset('assets/css/oneui.min.css')}}">
+    <link rel="stylesheet" id="css-main" href="{{asset('assets/css/estilos/principal.css')}}">
   </head>
 
   <body>
@@ -48,10 +49,9 @@
               <i class="fa fa-circle-notch text-primary"></i>
             </span>
             <span class="smini-hide fs-5 tracking-wider">
-              Logo              
-                <!-- <img src="{{asset('assets/media/favicons/logo_principal.png')}}" 
-                     width="30%" 
-                     alt="Universidad Colegio Mayor de Cundinamarca"> -->
+
+                <img class="logo" src="{{asset('assets/media/favicons/logo_principal.png')}}" 
+                     alt="Universidad Colegio Mayor de Cundinamarca">
             </span>
           </a>
           <!-- END Logo -->

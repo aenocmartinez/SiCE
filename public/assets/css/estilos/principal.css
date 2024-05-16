@@ -1,0 +1,22 @@
+#page-container.sidebar-dark #sidebar{
+    background-color: #00349a;
+}
+
+#page-container.sidebar-dark #sidebar .content-header {
+    background-color: #00349a;
+}
+
+.logo{
+    width: 50px;
+    height: 60px;
+    object-fit: cover;
+    position: absolute;
+    left: 38%;
+    top: 5%;    
+}
+
+
+.content-side{
+    background: #00349a;
+}
+

@@ -1,0 +1,90 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    position: relative;
+}
+.container {
+    width: 90%;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.header {
+    margin-bottom: 20px;
+}
+.header h1, .header h2, .header h3 {
+    text-align: left;
+    margin: 0;
+    font-weight: normal;
+}
+.header h1 {
+    font-size: 24px;
+}
+.header h2 {
+    font-size: 20px;
+    margin-top: 10px;
+}
+.header h3 {
+    font-size: 16px;
+    margin-top: 5px;
+}
+.info-table {
+    width: 60%;
+    margin-bottom: 2px;
+    font-size: 12px;
+    table-layout: auto;
+}
+.info-table td {
+    padding: 5px;
+    vertical-align: top;
+    text-align: left;
+}
+.info-table td.label {
+    font-weight: 100;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 11px;
+}
+th, td {
+    padding: 4px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+th {
+    background-color: #f4f4f4;
+    font-weight: normal;
+    font-size: 11px;
+}
+td {
+    font-size: 11px;
+}
+.student-name {
+    width: 25%;
+    text-align: left;
+}
+.day-cell {
+    width: 4.375%;
+}
+.footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 12px;
+    line-height: 0.5; /* Reduce el espacio entre las líneas del pie de página */
+}
+@media print {
+    body, .container {
+        background-color: #fff;
+        box-shadow: none;
+    }
+    .footer {
+        position: fixed;
+        bottom: 20px;
+        width: 100%;
+    }
+}

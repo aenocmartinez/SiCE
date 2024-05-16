@@ -148,7 +148,8 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
 
 
         } catch (Exception $e) {
-            Sentry::captureException($e);
+            dd($e->getMessage());
+            // Sentry::captureException($e);
         }
 
         return $exito;
@@ -404,6 +405,49 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         
         return $total;
     }
+
+    public static function numeroParticipantesUnicosPorCalendario($calendarioId): int {
+
+        $subquery = DB::table('formulario_inscripcion as fi')
+                    ->join('grupos as g', 'g.id', '=', 'fi.grupo_id')
+                    ->leftJoin('convenios as c', 'c.id', '=', 'fi.convenio_id')
+                    ->where('g.calendario_id', $calendarioId)
+                    ->select(
+                        'fi.participante_id',
+                        'fi.convenio_id',
+                        'fi.estado',
+                        'c.es_cooperativa',
+                        DB::raw("
+                            CASE
+                                WHEN fi.convenio_id IS NULL THEN
+                                    CASE
+                                        WHEN fi.estado = 'Pagado' THEN 'Legalizado'
+                                        ELSE 'No legalizado'
+                                    END
+                                ELSE
+                                    CASE
+                                        WHEN c.es_cooperativa = 1 THEN 'Legalizado'
+                                        ELSE
+                                            CASE
+                                                WHEN fi.estado = 'Pagado' THEN 'Legalizado'
+                                                ELSE 'No legalizado'
+                                            END
+                                    END
+                            END AS estado_legalizado
+                        ")
+                    );
+
+                    $numeroDeParticipantesUnicos = DB::table(DB::raw("({$subquery->toSql()}) as sub"))
+                    ->mergeBindings($subquery)
+                    ->where('sub.estado_legalizado', 'Legalizado')
+                    ->select(DB::raw('COUNT(DISTINCT sub.participante_id) AS numero_de_participantes_unicos'))
+                    ->first();
+
+                $numeroDeParticipantesUnicos = $numeroDeParticipantesUnicos->numero_de_participantes_unicos;
+    
+        
+        return $numeroDeParticipantesUnicos;
+    }    
 
     public function buscarBeneficiosAlParticipante(int $participanteId): Convenio {
         $convenio = new Convenio();

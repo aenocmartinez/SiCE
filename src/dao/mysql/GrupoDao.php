@@ -410,30 +410,58 @@ class GrupoDao extends Model implements GrupoRepository {
 
         try {
             
-            $items = ParticipanteDao::select(
-                'formulario_inscripcion.numero_formulario',
-                DB::raw("CONCAT(participantes.primer_nombre, ' ', participantes.segundo_nombre, ' ', participantes.primer_apellido, ' ', participantes.segundo_apellido) AS nombre_participante"),
-                DB::raw("CONCAT(participantes.tipo_documento, ' - ', participantes.documento) AS documento_participante"),
-                'participantes.telefono',
-                'participantes.email',
-                'convenios.nombre AS nombre_convenio',
-                DB::raw("IF(formulario_inscripcion.convenio_id IS NULL,
-                            IF(formulario_inscripcion.estado='Pagado', 'Legalizado', 'No legalizado'),
-                            IF(convenios.es_cooperativa, 'Legalizado', IF(formulario_inscripcion.estado='Pagado', 'Legalizado', 'No legalizado'))) as estadoInscripcion")
-            )
-            ->join('formulario_inscripcion', function ($join) use ($grupoId) {
-                $join->on('formulario_inscripcion.participante_id', '=', 'participantes.id')
-                    ->where('formulario_inscripcion.grupo_id', $grupoId);
+            $items = DB::table('participantes as p')
+            ->select([
+                'fi.numero_formulario',
+                DB::raw("CONCAT(p.primer_nombre, ' ', p.segundo_nombre, ' ', p.primer_apellido, ' ', p.segundo_apellido) AS nombre_participante"),
+                DB::raw("CONCAT(p.tipo_documento, ' - ', p.documento) AS documento_participante"),
+                'p.telefono',
+                'p.email',
+                DB::raw("IF(c.nombre IS NULL, 'N/A', c.nombre) as convenio"),
+                DB::raw("IF(
+                    fi.convenio_id IS NULL, 
+                    IF(fi.estado='Pagado', 'Legalizado', 'No legalizado'), 
+                    IF(c.es_cooperativa, 'Legalizado', 
+                        IF(fi.estado='Pagado', 'Legalizado', 'No legalizado')
+                    )
+                ) as estadoInscripcion"),
+                'g.nombre as grupo',
+                'g.dia',
+                'g.jornada',
+                'cu.nombre as curso',
+                'o.nombre as orientador',
+                'ca.nombre as calendario'
+            ])
+            ->join('formulario_inscripcion as fi', function($join) use ($grupoId) {
+                $join->on('fi.participante_id', '=', 'p.id')
+                     ->where('fi.grupo_id', '=', $grupoId);
             })
-            ->leftJoin('convenios', 'convenios.id', '=', 'formulario_inscripcion.convenio_id')
-            ->orderBy('participantes.primer_nombre')
-            ->orderBy('participantes.primer_apellido')
+            ->join('grupos as g', 'g.id', '=', 'fi.grupo_id')
+            ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
+            ->join('calendarios as ca', 'ca.id', '=', 'g.calendario_id')
+            ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
+            ->join('cursos as cu', 'cu.id', '=', 'cc.curso_id')
+            ->leftJoin('convenios as c', 'c.id', '=', 'fi.convenio_id')
+            ->orderBy('p.primer_nombre')
+            ->orderBy('p.primer_apellido')
             ->get();
+    
 
             
-            $participantes[] = ['FORMULARIO', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO'];
-            foreach($items as $item) {        
-                $participantes[] = [$item->numero_formulario, $item->nombre_participante, $item->documento_participante, $item->telefono, $item->email, $item->nombre_convenio, $item->estadoInscripcion];
+            $participantes[] = ['CURSO', 'ORIENTADOR', 'GRUPO', 'DIA', 'JORNADA', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO', 'PERIODO'];
+            foreach($items as $item) {                        
+                $participantes[] = [mb_strtoupper($item->curso, 'UTF-8'),
+                                    mb_strtoupper($item->orientador, 'UTF-8'),
+                                    $item->grupo, 
+                                    mb_strtoupper($item->dia, 'UTF-8'), 
+                                    mb_strtoupper($item->jornada, 'UTF-8'),                
+                                    mb_strtoupper($item->nombre_participante, 'UTF-8'), 
+                                    mb_strtoupper($item->documento_participante, 'UTF-8'), 
+                                    $item->telefono, 
+                                    mb_strtoupper($item->email, 'UTF-8'), 
+                                    mb_strtoupper($item->convenio, 'UTF-8'), 
+                                    mb_strtoupper($item->estadoInscripcion, 'UTF-8'),
+                                    mb_strtoupper($item->calendario, 'UTF-8')];
             }
 
 

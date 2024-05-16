@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Planilla de asistencia</h1>
+            <h3>Universidad Colegio Mayor de Cundinamarca</h3>
+            <table class="info-table">
+                <tr>
+                    <td class="label">Curso:</td>
+                    <td><span id="nombre-curso">{{CURSO}}</span></td>
+                </tr>
+                <tr>
+                    <td class="label">Grupo:</td>
+                    <td><span id="nombre-curso">{{GRUPO}}</span></td>
+                </tr>                
+                <tr>
+                    <td class="label">Horario:</td>
+                    <td><span id="horario-curso">{{HORARIO}}</span></td>
+                </tr>
+                <tr>
+                    <td class="label">Orientador:</td>
+                    <td><span id="nombre-docente">{{ORIENTADOR}}</span></td>
+                </tr>
+                <tr>
+                    <td class="label">Periodo:</td>
+                    <td><span id="periodo">{{PERIODO}}</span></td>
+                </tr>
+                <tr>
+                    <td class="label">Número participantes:</td>
+                    <td><span id="num-participantes">{{NUMERO_PARTICIPANTES}}</span></td>
+                </tr>                
+            </table>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th class="student-name">Participantes</th>
+                    <th class="day-cell">1</th>
+                    <th class="day-cell">2</th>
+                    <th class="day-cell">3</th>
+                    <th class="day-cell">4</th>
+                    <th class="day-cell">5</th>
+                    <th class="day-cell">6</th>
+                    <th class="day-cell">7</th>
+                    <th class="day-cell">8</th>
+                    <th class="day-cell">9</th>
+                    <th class="day-cell">10</th>
+                    <th class="day-cell">11</th>
+                    <th class="day-cell">12</th>
+                    <th class="day-cell">13</th>
+                    <th class="day-cell">14</th>
+                    <th class="day-cell">15</th>
+                    <th class="day-cell">16</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{PARTICIPANTES}}
+            </tbody>
+        </table>
+
+    </div>
+</body>
+</html>

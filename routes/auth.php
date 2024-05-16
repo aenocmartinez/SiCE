@@ -118,6 +118,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/calendario/{calendarioId}/area/{areaId}/cursos-periodo', [CalendarioController::class, 'listarCursosDelCalendario'])->name('calendario.cursos_por_calendario');
     Route::delete('/calendario/{calendarioId}/curso/{cursoCalendarioId}/area/{areaId}', [CalendarioController::class, 'retirarCursoACalendario'])->name('calendario.retirar_curso');
     Route::get('/calendario/{id}/estadisticas',[CalendarioController::class, 'estadisticas'])->name('calendario.estadisticas');    
+    Route::get('/calendario/{id}/descargar-participantes',[CalendarioController::class, 'descargarParticipantes'])->name('calendario.descargar-participantes');
 
     Route::get('/grupos/{id}/editar', [GrupoController::class, 'edit'])->name('grupos.edit');
     Route::get('/grupos/crear', [GrupoController::class, 'create'])->name('grupos.create');
@@ -131,6 +132,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/grupos/{page}/q/{criteria}', [GrupoController::class, 'buscadorGruposPaginados'])->name('grupos.buscador-paginador');
     Route::get('/grupos/{id}/mas-informacion', [GrupoController::class, 'masInformacion'])->name('grupos.mas-info');
     Route::get('/grupos/{id}/descargar-listado-participantes', [GrupoController::class, 'descargarListadoParticipantes'])->name('grupos.descargar-listado-participantes');
+    Route::get('/grupos/{id}/descargar-planilla-asistencia', [GrupoController::class, 'descargarPlanillaAsistencia'])->name('grupos.descargar-planilla-asistencia');
 
     Route::get('/tipo-salones/{id}/editar', [TipoSalonController::class, 'edit'])->name('tipo-salones.edit');
     Route::get('/tipo-salones/crear', [TipoSalonController::class, 'create'])->name('tipo-salones.create');

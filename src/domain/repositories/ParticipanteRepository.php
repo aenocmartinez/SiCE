@@ -22,4 +22,5 @@ interface ParticipanteRepository {
     public function buscarBeneficiosAlParticipante(int $participanteId): Convenio;
     public static function totalDeFormulariosInscritoPorUnParticipanteEnUnPeriodo($participanteId=0, $calendarioId=0): int;
     public function buscarFormularioInscripcionPorParticipanteYConvenioPendienteDepago($participanteId=0, $convenioId=0):FormularioInscripcion;
+    public static function numeroParticipantesUnicosPorCalendario($calendarioId): int;
 }

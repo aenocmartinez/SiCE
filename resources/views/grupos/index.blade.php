@@ -100,11 +100,14 @@
                             </form>                                              
                         @endif
                         <a href="{{ route('grupos.mas-info', $grupo->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
-                            <i class="fa fa-fw fa-circle-info"></i> Más información
+                            <i class="fa fa-fw fa-circle-info"></i> Más info
                         </a>
-                        <a href="{{ route('grupos.descargar-listado-participantes', $grupo->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
-                            <i class="fa fa-fw fa-download"></i> Descargar Listado
-                        </a>
+                        <!-- <a href="{{ route('grupos.descargar-listado-participantes', $grupo->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
+                            <i class="fa fa-fw fa-download"></i> XLS
+                        </a> -->
+                        <a href="{{ route('grupos.descargar-planilla-asistencia', $grupo->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
+                            <i class="fa fa-fw fa-download"></i> Planilla asistencia
+                        </a>                        
                     </td>                    
                 </tr>
                 @empty

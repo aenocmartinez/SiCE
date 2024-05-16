@@ -17,6 +17,7 @@ use Src\usecase\calendarios\BuscarCalendarioPorIdUseCase;
 use Src\usecase\calendarios\AgregarCursoACalendarioUseCase;
 use Src\usecase\calendarios\EstadisticasCalendarioUseCase;
 use Src\usecase\calendarios\ListarCursosPorCalendarioUseCase;
+use Src\usecase\calendarios\ListarParticipantesPorCalendarioUseCase;
 use Src\usecase\calendarios\RetirarCursoACalendarioUseCase;
 
 class CalendarioController extends Controller
@@ -170,7 +171,7 @@ class CalendarioController extends Controller
     }
 
     public function estadisticas($id) {
-
+        
         $data = (new EstadisticasCalendarioUseCase)->ejecutar($id);
         
         if (!$data['existe']) {
@@ -179,7 +180,32 @@ class CalendarioController extends Controller
 
         return view('calendario.estadisticas', [
             'data' => $data,
+            'calendarioId' => $id,
         ]);
+    }
+
+    public function descargarParticipantes($calendarioId) {
+
+        $data = (new ListarParticipantesPorCalendarioUseCase)->ejecutar($calendarioId);
+
+        $fileName = 'participantes_calendario_'.$calendarioId.'.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ];
+
+        $callback = function () use ($data) {
+            $file = fopen('php://output', 'w');
+
+            foreach ($data as $row) {
+                fputcsv($file, $row);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers); 
     }
 
     private function hydrateCursoCalendarioDto(): CursoCalendarioDto{        

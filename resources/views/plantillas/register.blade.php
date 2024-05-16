@@ -24,7 +24,8 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{asset('assets/media/favicons/apple-touch-icon-180x180.png')}}">
 
     <link rel="stylesheet" id="css-main" href="{{asset('assets/css/oneui.min.css')}}">
-
+    <link rel="stylesheet" id="css-main" href="{{asset('assets/css/estilos/auth.css')}}">
+    
   </head>
 
   <body>
@@ -90,7 +91,9 @@
             </div>
             <div class="fs-sm text-muted text-center">
               <strong>Universidad Colegio Mayor de Cundinamarca</strong> &copy; <span data-toggle="year-copy"></span>
+              
             </div>
+           
           </div>
 
           <!-- Terms Modal -->

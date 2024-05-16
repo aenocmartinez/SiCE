@@ -17,11 +17,12 @@ class EstadisticasCalendarioUseCase {
             "fechaInicio" => "",
             "fechaFin" => "",
             "estado" => "",
-            "numeroParticipantes" => 0,
+            "numeroParticipantesUnicos" => 0,
             "totalIngresos" => 0,
             "ingresosConvenio" => 0,
             "participantesMujeres" => 0,
             "participantesHombres" => 0,
+            "participantesOtrosGeneros" => 0,
             "participantesConvenio" => 0,
             "topCursosInscritos" => [],            
             "existe" => false,
@@ -43,8 +44,10 @@ class EstadisticasCalendarioUseCase {
 
         $data["participantesHombres"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('M', $calendario->getId());
         $data["participantesMujeres"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('F', $calendario->getId());
+        $data["participantesOtrosGeneros"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('Otro', $calendario->getId());
         $data["participantesConvenio"] = ParticipanteDao::numeroParticipantesPorConvenioYCalendario($calendario->getId());
         $data["topCursosInscritos"] = CursoDao::top5CursosMasInscritosPorCalendario($calendario->getId());
+        $data["numeroParticipantesUnicos"] = ParticipanteDao::numeroParticipantesUnicosPorCalendario($calendario->getId());
                 
         $data["existe"] = true;
         $data["nombre"] = $calendario->getNombre();

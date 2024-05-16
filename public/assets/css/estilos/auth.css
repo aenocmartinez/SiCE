@@ -1,0 +1,16 @@
+.logos{
+    margin-top: 5px;
+}
+
+.logo-principal{
+    width: 50px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.logo-otic{
+    width: 50px;
+    height: 60px;
+    object-fit: contain;
+
+}

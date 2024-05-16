@@ -29,6 +29,8 @@
 
     <link rel="stylesheet" id="css-main" href="{{asset('assets/css/oneui.min.css')}}">
     <link rel="stylesheet" href="{{asset('assets/js/plugins/flatpickr/flatpickr.min.css')}}">
+
+    <link rel="stylesheet" id="css-main" href="{{asset('assets/css/estilos/publico.css')}}">
   </head>
 
   <body>
@@ -38,7 +40,7 @@
       <!-- Main Container -->
       <main id="main-container">
         <!-- Page Content -->
-        <div class="bg-primary">
+        <div class="bg-primary fondo">
           <div class="row g-0 bg-primary-dark-op">
             <!-- Meta Info Section -->
             <div class="hero-static col-lg-3 d-none d-lg-flex flex-column justify-content-center">
@@ -53,6 +55,8 @@
                 </div>
               </div>
               <div class="p-4 p-xl-5 d-xl-flex justify-content-between align-items-center fs-sm">
+                <img class="logo-public" src="{{asset('assets/media/favicons/logo_principal.png')}}" 
+                  alt="Universidad Colegio Mayor de Cundinamarca">
                 <p class="fw-medium text-white-50 mb-0">
                   Universidad Colegio Mayor de Cundinamarca &copy; <span data-toggle="year-copy"></span>
                 </p>

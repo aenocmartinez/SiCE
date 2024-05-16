@@ -24,6 +24,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="https://www.unicolmayor.edu.co/_templates/UNICOL-PORTAL-2021/recursos/images/favicon/apple-icon-57x57.png">
 
     <link rel="stylesheet" id="css-main" href="{{asset('assets/css/oneui.min.css')}}">
+    <link rel="stylesheet" id="css-main" href="{{asset('assets/css/estilos/auth.css')}}">
 
   </head>
 
@@ -51,6 +52,8 @@
                   </div>
                   <div class="block-content">
                     <div class="p-sm-3 px-lg-4 px-xxl-5 py-lg-5">
+                    <img class="logo-otic" src="{{asset('assets/media/favicons/LogoEntidad2.png')}}" 
+                  alt="Universidad Colegio Mayor de Cundinamarca">
                       <h1 class="h2 mb-1 text-center">Login</h1>
                       <p class="fw-medium text-muted text-center">
                         <!-- Bienvenido, por favor inicia sesión. -->
@@ -94,6 +97,10 @@
             </div>
             <div class="fs-sm text-muted text-center">
               <strong>Universidad Colegio Mayor de Cundinamarca</strong> &copy; <span data-toggle="year-copy"></span>
+              <div class="logos">                  
+                  <img class="logo-otic" src="{{asset('assets/media/favicons/logo_otic.png')}}" 
+                  alt="Universidad Colegio Mayor de Cundinamarca">
+              </div>    
             </div>
           </div>
         </div>

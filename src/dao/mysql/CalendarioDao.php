@@ -402,4 +402,72 @@ class CalendarioDao extends Model implements CalendarioRepository {
             Sentry::captureException($e);
         }
     }
+
+    public static function listadoParticipantesPorCalendario($calendarioId=0): array {
+        $participantes = [];
+
+        try {
+            
+            $items = DB::table('participantes as p')
+            ->join('formulario_inscripcion as fi', 'fi.participante_id', '=', 'p.id')
+            ->join('grupos as g', function($join) use ($calendarioId) {
+                $join->on('g.id', '=', 'fi.grupo_id')
+                     ->where('g.calendario_id', '=', $calendarioId);
+            })
+            ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
+            ->join('calendarios as ca', 'ca.id', '=', 'g.calendario_id')
+            ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
+            ->join('cursos as cu', 'cu.id', '=', 'cc.curso_id')
+            ->leftJoin('convenios as c', 'c.id', '=', 'fi.convenio_id')
+            ->select(
+                'fi.numero_formulario',
+                DB::raw("CONCAT(p.primer_nombre, ' ', p.segundo_nombre, ' ', p.primer_apellido, ' ', p.segundo_apellido) AS nombre_participante"),
+                DB::raw("CONCAT(p.tipo_documento, ' - ', p.documento) AS documento_participante"),
+                'p.telefono',
+                'p.email',
+                DB::raw("IF(c.nombre IS NULL, 'N/A', c.nombre) as convenio"),
+                DB::raw("
+                    IF(fi.convenio_id IS NULL,  
+                        IF(fi.estado='Pagado', 'Legalizado', 'No legalizado'), 
+                        IF(c.es_cooperativa, 'Legalizado', 
+                            IF(fi.estado='Pagado', 'Legalizado', 'No legalizado')
+                        )
+                    ) as estadoInscripcion
+                "),
+                'g.nombre as grupo',
+                'g.dia',
+                'g.jornada',
+                'cu.nombre as curso',
+                'o.nombre as orientador',
+                'ca.nombre as calendario',
+                'fi.total_a_pagar'
+            )
+            ->orderBy('p.primer_nombre')
+            ->orderBy('p.primer_apellido')
+            ->get();
+
+            $participantes[] = ['PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CURSO', 'GRUPO', 'DIA', 'JORNADA', 'CONVENIO', 'VALOR_PAGADO', 'ESTADO', 'PERIODO'];
+            foreach($items as $item) {                        
+                $participantes[] = [mb_strtoupper($item->nombre_participante, 'UTF-8'),
+                                    mb_strtoupper($item->documento_participante, 'UTF-8'), 
+                                    $item->telefono, 
+                                    mb_strtoupper($item->email, 'UTF-8'),
+                                    mb_strtoupper($item->curso, 'UTF-8'),                                    
+                                    $item->grupo, 
+                                    mb_strtoupper($item->dia, 'UTF-8'), 
+                                    mb_strtoupper($item->jornada, 'UTF-8'),                
+                                    mb_strtoupper($item->convenio, 'UTF-8'), 
+                                    '$' . number_format($item->total_a_pagar, 2, ',', '.'),
+                                    mb_strtoupper($item->estadoInscripcion, 'UTF-8'),
+                                    mb_strtoupper($item->calendario, 'UTF-8')];
+            }
+
+
+        } catch(\Exception $e) {
+            dd($e->getMessage());
+            Sentry::captureException($e);
+        }
+        
+        return $participantes;        
+    }    
 }

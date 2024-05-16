@@ -241,13 +241,19 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 'participantes.tipo_documento',
                 'participantes.documento',
                 'cursos.nombre as nombre_curso',
-                'calendarios.nombre as periodo'
+                'calendarios.nombre as periodo',
+                'grupos.nombre as grupo',
+                'grupos.dia',
+                'grupos.jornada',
+                'formulario_inscripcion.total_a_pagar',
+                'convenios.nombre as convenio'
             )
             ->join('convenio_participante', 'participantes.documento', '=', 'convenio_participante.cedula')
             ->join('formulario_inscripcion', function ($join) {
                 $join->on('formulario_inscripcion.convenio_id', '=', 'convenio_participante.convenio_id')
                     ->on('formulario_inscripcion.participante_id', '=', 'participantes.id');
             })
+            ->join('convenios', 'convenios.id', '=', 'formulario_inscripcion.convenio_id')
             ->join('grupos', 'grupos.id', '=', 'formulario_inscripcion.grupo_id')
             ->join('curso_calendario', 'curso_calendario.id', '=', 'grupos.curso_calendario_id')
             ->join('cursos', 'cursos.id', '=', 'curso_calendario.curso_id')
@@ -259,12 +265,20 @@ class ConvenioDao extends Model implements ConvenioRepository {
             ->get();
 
             
-            $participantes[] = ['NOMBRE', 'TIPO_DOCUMENTO', 'DOCUMENTO', 'CURSO', ''];
+            $participantes[] = ['NOMBRE', 'TIPO_DOCUMENTO', 'DOCUMENTO', 'CURSO', 'GRUPO', 'HORARIO', 'VALOR_A_PAGAR', 'CONVENIO' ,'PERIODO'];
             foreach($items as $item) {
                 
                 $nombreCompleto = $item->primer_nombre . " " . $item->segundo_nombre . " " . $item->primer_apellido . " " . $item->segundo_apellido;
 
-                $participantes[] = [$nombreCompleto, $item->tipo_documento, $item->documento, $item->nombre_curso, "Periodo: " . $item->periodo];
+                $participantes[] = [mb_strtoupper($nombreCompleto, 'UTF-8'), 
+                                    $item->tipo_documento, 
+                                    $item->documento, 
+                                    mb_strtoupper($item->nombre_curso, 'UTF-8'), 
+                                    $item->grupo, 
+                                    mb_strtoupper($item->dia."/".$item->jornada, 'UTF-8'), 
+                                    '$' . number_format($item->total_a_pagar, 2, ',', '.'),
+                                    mb_strtoupper($item->convenio, 'UTF-8'),                                    
+                                    mb_strtoupper($item->periodo, 'UTF-8')];
             }
 
 

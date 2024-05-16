@@ -21,39 +21,7 @@
 
     <div class="block-content">
 
-    <!-- <div class="row">
-            <div class="col-6">
-              <a class="block block-rounded block-link-shadow text-center" href="javascript:void(0)">
-                <div class="block-content block-content-full">
-                  <div class="fs-2 fw-semibold text-dark">
-                    <i class="fa fa-pencil-alt"></i>
-                  </div>
-                </div>
-                <div class="block-content py-2 bg-body-light">
-                  <p class="fw-medium fs-sm text-muted mb-0">
-                    Edit Customer
-                  </p>
-                </div>
-              </a>
-            </div>
-            <div class="col-6">
-              <a class="block block-rounded block-link-shadow text-center" href="javascript:void(0)">
-                <div class="block-content block-content-full">
-                  <div class="fs-2 fw-semibold text-danger">
-                    <i class="fa fa-times"></i>
-                  </div>
-                </div>
-                <div class="block-content py-2 bg-body-light">
-                  <p class="fw-medium fs-sm text-danger mb-0">
-                    Remove Customer
-                  </p>
-                </div>
-              </a>
-            </div>
-
-    </div> -->
-
-    <div class="block block-rounded">
+      <div class="block block-rounded">
             <div class="block-content text-center">
               <div class="py-4">
 
@@ -66,133 +34,101 @@
                 </p>
               </div>
             </div>
+
             <div class="block-content bg-body-light text-center">
               <div class="row items-push text-uppercase">
-                <div class="col-6 col-md-3">
-                  <div class="fw-semibold text-dark mb-1"># participantes</div>
-                  <a class="link-fx fs-3 text-primary" href="javascript:void(0)">{{ $data["totalParticipantes"]}}</a>
+                <div class="col-6 col-md-4">
+                  <div class="fw-semibold text-dark mb-1"># participantes únicos</div>
+                  <a class="link-fx fs-3 text-primary" href="javascript:void(0)">{{ $data["numeroParticipantesUnicos"] }}</a>
                 </div>
-                <div class="col-6 col-md-3">
-                  <div class="fw-semibold text-dark mb-1"># Parts. convenio</div>
-                  <a class="link-fx fs-3 text-primary" href="javascript:void(0)">{{ $data["participantesConvenio"]}}</a>
+                <div class="col-6 col-md-4">
+                  <div class="fw-semibold text-dark mb-1"># form. matriculados</div>
+                  <a class="link-fx fs-3 text-primary" href="javascript:void(0)">{{ $data["totalParticipantes"] }}</a>
                 </div>                
-                <div class="col-6 col-md-3">
+                <div class="col-6 col-md-4">
+                  <div class="fw-semibold text-dark mb-1"># Parts. convenio</div>
+                  <a class="link-fx fs-3 text-primary" href="javascript:void(0)">{{ $data["participantesConvenio"] }}</a>
+                </div>                
+              </div>
+            </div>
+
+            <div class="block-content bg-body-light text-center">
+              <div class="row items-push text-uppercase">         
+                <div class="col-6 col-md-6">
                   <div class="fw-semibold text-dark mb-1">Total ingresos</div>
                   <a class="link-fx fs-3 text-primary" href="javascript:void(0)">${{ $data["totalIngresos"] }} COP</a>
                 </div>
-                <div class="col-6 col-md-3">
+                <div class="col-6 col-md-6">
                   <div class="fw-semibold text-dark mb-1">Ing. por convenio</div>
                   <a class="link-fx fs-3 text-primary" href="javascript:void(0)">${{ $data['ingresosConvenio'] }} COP</a>
                 </div>
               </div>
             </div>
+
+
           </div>  
           
-          
-          <div class="block block-rounded">
-            <!-- <div class="block-header block-header-default">
-              <h3 class="block-title">Addresses (2)</h3>
-            </div> -->
-            <div class="block-content">
-              <div class="row">
-                <div class="col-lg-6">
-                  <!-- Billing Address -->
-                  <div class="block block-rounded block-bordered">
-                    <div class="block-header border-bottom">
-                      <h3 class="block-title text-center">Participantes Hombres</h3>
+        
+          <div class="col-xl-12">
+            @php
+            $participantesHombres = ($data['participantesHombres'] / $data['numeroParticipantesUnicos']) * 100;
+            $participantesHombres = round($participantesHombres);
+
+            $participantesMujeres = ($data['participantesMujeres'] / $data['numeroParticipantesUnicos']) * 100;
+            $participantesMujeres = round($participantesMujeres);
+            
+            $participantesOtrosGeneros = ($data['participantesOtrosGeneros'] / $data['numeroParticipantesUnicos']) * 100;
+            $participantesOtrosGeneros = round($participantesOtrosGeneros);            
+
+            @endphp
+              <div class="block block-rounded text-center">
+
+                <div class="block-content block-content-full">
+                  <div class="row">
+                    <div class="col-4">
+                      <!-- Pie Chart Container -->
+                      <div class="js-pie-chart pie-chart fw-bold" data-percent="{{ $participantesHombres }}" data-line-width="3" data-size="70" data-bar-color="#82b54b" data-track-color="#e9e9e9">
+                        <span> {{ $participantesHombres }}%</span>
+                      </div>
+                      <p class="fs-sm fw-medium text-muted mt-2 mb-0">
+                      {{ $data["participantesHombres"] }} participante(s) hombre(s)
+                      </p>
                     </div>
-                    <div class="block-content">
-                      <div class="fs-4 mb-1 text-center">{{ $data["participantesHombres"] }}</div>
-                      <!-- <address class="fs-sm">
-                        Sunrise Str 620<br>
-                        Melbourne<br>
-                        Australia, 11-587<br><br>
-                        <i class="fa fa-phone"></i> (999) 888-55555<br>
-                        <i class="fa fa-envelope-o"></i> <a href="javascript:void(0)">company@example.com</a>
-                      </address> -->
+                    <div class="col-4">
+                      <!-- Pie Chart Container -->
+                      <div class="js-pie-chart pie-chart fw-bold" data-percent="{{ $participantesMujeres }}" data-line-width="3" data-size="70" data-bar-color="#e04f1a" data-track-color="#e9e9e9">
+                      <span> {{ $participantesMujeres }}%</span>
+                      </div>
+                      <p class="fs-sm fw-medium text-muted mt-2 mb-0">
+                      {{ $data["participantesMujeres"] }} participante(s) mujere(s)
+                      </p>
+                    </div>
+                    <div class="col-4">
+                      <!-- Pie Chart Container -->
+                      <div class="js-pie-chart pie-chart fw-bold" data-percent="{{ $participantesOtrosGeneros }}" data-line-width="3" data-size="70" data-bar-color="#ffb119" data-track-color="#e9e9e9">
+                      <span> {{ $participantesOtrosGeneros }}%</span>
+                      </div>
+                      <p class="fs-sm fw-medium text-muted mt-2 mb-0">
+                      {{ $data["participantesOtrosGeneros"] }} participante(s) otros géneros
+                      </p>
                     </div>
                   </div>
-                  <!-- END Billing Address -->
                 </div>
-                <div class="col-lg-6">
-                  <!-- Shipping Address -->
-                  <div class="block block-rounded block-bordered">
-                    <div class="block-header border-bottom">
-                      <h3 class="block-title text-center">Participantes Mujeres</h3>
-                    </div>
-                    <div class="block-content">
-                      <div class="fs-4 mb-1 text-center">{{ $data["participantesMujeres"] }}</div>
-                      <!-- <address class="fs-sm">
-                        Sunrise Str 620<br>
-                        Melbourne<br>
-                        Australia, 11-587<br><br>
-                        <i class="fa fa-phone"></i> (999) 888-55555<br>
-                        <i class="fa fa-envelope-o"></i> <a href="javascript:void(0)">company@example.com</a>
-                      </address> -->
-                    </div>
-                  </div>
-                  <!-- END Shipping Address -->
-                </div>
-              </div>
+              </div>                 
+          </div>
+
+
+          <div class="block block-rounded text-center">
+
+          <div class="block-content block-content-full">
+            <div class="row">
+              <div class="col-12">    
+                <a href="{{ route('calendario.descargar-participantes', $calendarioId) }}" type="button" class="btn btn-lg rounded-pill btn-alt-success px-4 me-1 mb-3">
+                  <i class="fa fa-download me-1"></i> Descargar los participantes del periodo
+                </a>
+            </div>
             </div>
           </div>
-          
-        
-          <!-- <div class="block block-rounded">
-            <div class="block-header block-header-default">
-              <h3 class="block-title">Referred Members (3)</h3>
-            </div>
-            <div class="block-content">
-              <div class="row items-push">
-                <div class="col-md-4">
-                  
-                  <a class="block block-rounded block-bordered block-link-shadow h-100 mb-0" href="javascript:void(0)">
-                    <div class="block-content block-content-full d-flex align-items-center justify-content-between">
-                      <div>
-                        <div class="fw-semibold mb-1">Susan Day</div>
-                        <div class="fs-sm text-muted">4 Orders</div>
-                      </div>
-                      <div class="ms-3">
-                        <img class="img-avatar" src="{{asset('assets/media/avatars/avatar1.jpg')}}" alt="">
-                      </div>
-                    </div>
-                  </a>
-                  
-                </div>
-                <div class="col-md-4">
-                  
-                  <a class="block block-rounded block-bordered block-link-shadow h-100 mb-0" href="javascript:void(0)">
-                    <div class="block-content block-content-full d-flex align-items-center justify-content-between">
-                      <div>
-                        <div class="fw-semibold mb-1">David Fuller</div>
-                        <div class="fs-sm text-muted">5 Orders</div>
-                      </div>
-                      <div class="ms-3">
-                        <img class="img-avatar" src="{{asset('assets/media/avatars/avatar12.jpg')}}" alt="">
-                      </div>
-                    </div>
-                  </a>
-                  
-                </div>
-                <div class="col-md-4">
-                  
-                  <a class="block block-rounded block-bordered block-link-shadow h-100 mb-0" href="javascript:void(0)">
-                    <div class="block-content block-content-full d-flex align-items-center justify-content-between">
-                      <div>
-                        <div class="fw-semibold mb-1">Lisa Jenkins</div>
-                        <div class="fs-sm text-muted">3 Orders</div>
-                      </div>
-                      <div class="ms-3">
-                        <img class="img-avatar" src="{{asset('assets/media/avatars/avatar7.jpg')}}" alt="">
-                      </div>
-                    </div>
-                  </a>
-                  
-                </div>
-              </div>
-            </div>
-          </div>           -->
-
 
           <div class="block block-rounded">
             <div class="block-header block-header-default">
