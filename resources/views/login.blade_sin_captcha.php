@@ -69,18 +69,7 @@
                           </div>
                           <div class="mb-4">
                             <input type="password" class="form-control form-control-alt form-control-lg" id="password" name="password" placeholder="Contraseña">
-                          </div>
-                          <div class="mb-4">
-                            <input type="text" class="form-control form-control-alt form-control-lg @error('captcha') is-invalid @enderror" id="captcha" name="captcha" placeholder="Escribe los caracteres de la imagen">
-                            @error('captcha')
-                                <span class="invalid-feedback text-center" role="alert">
-                                    {{ $message }}
-                                </span>
-                            @enderror
-                          </div>
-                          <div class="mb-4 text-center">
-                            {!! captcha_img('captcha-img') !!}
-                          </div>                          
+                          </div>                 
                         </div>
                         <div class="row mb-12">
                           <div class="col-md-12 col-xl-12">

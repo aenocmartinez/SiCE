@@ -33,11 +33,19 @@ class SicePDF {
             // $mpdf->WriteHTML($stylesheet2, \Mpdf\HTMLParserMode::HEADER_CSS);
 
             date_default_timezone_set('America/Bogota');
-            $date = date('Y-m-d H:i:s'); 
-
-            $footerText = 'Sistema de Información de Cursos de Extensión - SiCE.';
+            $html .= '
+                    <br><br><br><br><br>
+                    <div style="margin-left: 50px;">
+                        <p style="width: 200px; border-bottom: 1px solid #000; display: inline-block; margin-bottom: 2px;">&nbsp;</p>
+                        <p style="margin-top: 0;">Firma del docente</p>
+                    </div>
+                ';
+            
+            // Añadir pie de página con la fecha y hora de Colombia
+            $footerText = 'Vicerrectoría de Investigación, Innovación y Extensión Subdirección de Proyección y Extensión';
+            $date = date('Y-m-d H:i:s'); // Obtener la fecha y hora actuales en la zona horaria de Colombia
             $footerHTML = '<div style="font-size: 10px; font-weight: normal;">' . $footerText . ' - Página {PAGENO} - Generado el ' . $date . '</div>';
-            $mpdf->SetFooter($footerHTML);            
+            $mpdf->SetFooter($footerHTML);           
 
             $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
 

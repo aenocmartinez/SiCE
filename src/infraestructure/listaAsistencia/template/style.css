@@ -71,11 +71,26 @@ td {
 .day-cell {
     width: 4.375%;
 }
+.certification-cell {
+    width: 8%;
+}
 .footer {
     text-align: center;
     margin-top: 40px;
     font-size: 12px;
     line-height: 0.5; /* Reduce el espacio entre las líneas del pie de página */
+}
+.signature {
+    margin-top: 60px;
+    font-size: 12px;
+    text-align: left;
+}
+.signature span {
+    display: block;
+    border-top: 1px solid #000;
+    width: 80%; /* Adjust the width as needed */
+    padding-top: 5px;
+    margin-left: 0; /* Align to the left */
 }
 @media print {
     body, .container {

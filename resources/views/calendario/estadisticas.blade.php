@@ -71,14 +71,20 @@
         
           <div class="col-xl-12">
             @php
-            $participantesHombres = ($data['participantesHombres'] / $data['numeroParticipantesUnicos']) * 100;
-            $participantesHombres = round($participantesHombres);
+            $participantesHombres = 0;
+            $participantesMujeres = 0;
+            $participantesOtrosGeneros = 0;
 
-            $participantesMujeres = ($data['participantesMujeres'] / $data['numeroParticipantesUnicos']) * 100;
-            $participantesMujeres = round($participantesMujeres);
-            
-            $participantesOtrosGeneros = ($data['participantesOtrosGeneros'] / $data['numeroParticipantesUnicos']) * 100;
-            $participantesOtrosGeneros = round($participantesOtrosGeneros);            
+            if ($data['numeroParticipantesUnicos'] > 0 ) {
+              $participantesHombres = ($data['participantesHombres'] / $data['numeroParticipantesUnicos']) * 100;
+              $participantesHombres = round($participantesHombres);
+  
+              $participantesMujeres = ($data['participantesMujeres'] / $data['numeroParticipantesUnicos']) * 100;
+              $participantesMujeres = round($participantesMujeres);
+              
+              $participantesOtrosGeneros = ($data['participantesOtrosGeneros'] / $data['numeroParticipantesUnicos']) * 100;
+              $participantesOtrosGeneros = round($participantesOtrosGeneros);            
+            }
 
             @endphp
               <div class="block block-rounded text-center">

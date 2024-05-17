@@ -199,6 +199,8 @@ class GrupoController extends Controller
                 <td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td>
                 <td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td>
                 <td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td>
+                <td class=\"certification-cell\"></td>
+                <td class=\"certification-cell\"></td>                
             </tr>";
         }
 

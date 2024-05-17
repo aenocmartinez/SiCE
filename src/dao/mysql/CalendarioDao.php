@@ -29,7 +29,8 @@ class CalendarioDao extends Model implements CalendarioRepository {
     public function cursos() {
         return $this->belongsToMany(CursoDao::class, 'curso_calendario', 'calendario_id', 'curso_id')
                     ->withPivot(['costo', 'modalidad', 'id'])
-                    ->withTimestamps();
+                    ->withTimestamps()
+                    ->orderBy('nombre');
     }
 
     public function listarCalendarios(): array {

@@ -1,11 +1,17 @@
-.logos{
-    margin-top: 5px;
+.container-logo-principal{
+    margin-top: 15px;
 }
 
 .logo-principal{
     width: 50px;
-    height: 60px;
-    object-fit: contain;
+    height: 65px;
+    position: relative;
+    left: 45%;
+    top: 10%;  
+}
+
+.logos{
+    margin-top: 5px;
 }
 
 .logo-otic{
