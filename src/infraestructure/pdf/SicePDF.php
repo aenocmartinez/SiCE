@@ -62,4 +62,38 @@ class SicePDF {
 
         return $exito;
     }
+
+    public static function generarReciboMatricula(DataPDF $dataPDF): bool {
+
+        $exito = true;
+        try {
+
+            $data = $dataPDF->getData();
+            // $html = file_get_contents($data['path_template']);
+            $html = $data['html'];
+
+            $mpdf = new Mpdf([
+                'format' => $data['format'],
+                'orientation' => $data['orientation'],
+            ]);
+
+            $stylesheet1 = file_get_contents($data['path_css1']);
+            
+            $mpdf->WriteHTML($stylesheet1, \Mpdf\HTMLParserMode::HEADER_CSS);      
+
+            $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
+
+            $nombreArchivoPDF = $dataPDF->getFileName();
+
+            $pdfPath = storage_path() . '/' . $nombreArchivoPDF;
+
+            $mpdf->Output($pdfPath, 'F');            
+
+        } catch (Exception $e) {
+            $exito = false;
+            dd($e->getMessage());
+        } 
+
+        return $exito;
+    }
 }

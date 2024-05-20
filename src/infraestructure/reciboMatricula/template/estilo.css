@@ -1,0 +1,89 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.container {
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.header h1 {
+    margin: 0;
+    color: #333;
+    font-size: 24px;
+}
+.header .period {
+    margin: 10px 0;
+    color: #000;
+    font-size: 22px;
+    font-weight: bold;
+}
+.header .form-number {
+    margin: 10px 0;
+    color: #000;
+    font-size: 20px;
+    font-weight: bold;
+}
+.status {
+    text-align: right;
+    margin: 10px 0;
+    color: #777;
+    font-size: 18px;
+    font-weight: bold;
+}
+.status::before {
+    content: "Estado: ";
+    color: #000;
+    font-weight: normal;
+}
+.date {
+    text-align: right;
+    margin-bottom: 5px;
+    color: #666;
+}
+.legalization-date {
+    text-align: right;
+    margin-bottom: 20px;
+    color: #666;
+}
+.personal-info {
+    margin-bottom: 20px;
+}
+.personal-info p {
+    margin: 5px 0;
+    color: #555;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+table, th, td {
+    border: 1px solid #ddd;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+tfoot td {
+    font-weight: bold;
+}
+.footer {
+    text-align: center;
+    margin-top: 20px;
+}
+.footer p {
+    margin: 5px 0;
+    color: #555;
+}

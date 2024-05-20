@@ -161,6 +161,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/nueva-inscripcion/paso-4/confirmar-inscripion/participante/{participanteId}/grupo/{grupoId}', [FormularioInscripcionController::class, 'vistaConfirmarInscripcion'])->name('formulario-inscripcion.paso-4');
     Route::post('/nueva-inscripcion/paso-5/confirmar-inscripcion', [FormularioInscripcionController::class, 'confirmarInscripcion'])->name('formulario-inscripcion.paso-5');
     Route::get('/descargar-formato-pago/{nombre_archivo}', [FormularioInscripcionController::class, 'descargarFormatoPagoInscripcion'])->name('formulario-inscripcion.descargar-formato-pago');
+    Route::get('/descargar-recibo-matricula/{formularioId}', [FormularioInscripcionController::class, 'descargarReciboMatricula'])->name('formulario-inscripcion.descargar-recibo-matricula');
 
     Route::post('/nueva-inscripcion', [FormularioInscripcionController::class, 'store'])->name('formulario-inscripcion.store');
     Route::post('/nueva-inscripcion/buscar-participante', [FormularioInscripcionController::class, 'buscarParticipantePorDocumento'])->name('formulario-inscripcion.buscar_participante_por_documento');

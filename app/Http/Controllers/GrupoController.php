@@ -235,28 +235,7 @@ class GrupoController extends Controller
             'Content-Disposition' => 'attachment; filename="' . $nombre_archivo . '"',
         ];
         
-        return response()->download($ruta_archivo, $nombre_archivo, $headers)->deleteFileAfterSend(true);
-        
-        // $data = (new GruposListarParticipantesGrupoUseCase)->ejecutar($grupoId);
-
-        // $fileName = 'listado_participantes.csv';
-
-        // $headers = [
-        //     'Content-Type' => 'text/csv',
-        //     'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
-        // ];
-
-        // $callback = function () use ($data) {
-        //     $file = fopen('php://output', 'w');
-
-        //     foreach ($data as $row) {
-        //         fputcsv($file, $row);
-        //     }
-
-        //     fclose($file);
-        // };
-
-        // return redirect()->route('grupos.index');     
+        return response()->download($ruta_archivo, $nombre_archivo, $headers)->deleteFileAfterSend(true);    
     }
 
     private function hydrateDto($data): GrupoDto {            

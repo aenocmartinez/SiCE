@@ -9,7 +9,10 @@ use App\Http\Requests\ConfirmarInscription;
 use App\Http\Requests\GuardarParticipante;
 use App\Http\Requests\LegalizarFormularioInscripcion;
 use Illuminate\Http\Request;
+use NumberFormatter;
 use Src\domain\Calendario;
+use Src\infraestructure\pdf\DataPDF;
+use Src\infraestructure\pdf\SicePDF;
 use Src\infraestructure\util\ListaDeValor;
 use Src\usecase\areas\ListarAreasUseCase;
 use Src\usecase\calendarios\BuscarCalendarioPorIdUseCase;
@@ -27,6 +30,7 @@ use Src\usecase\participantes\GuardarParticipanteUseCase;
 use Src\view\dto\ConfirmarInscripcionDto;
 use Src\view\dto\ParticipanteDto;
 use Src\usecase\formularios\AnularFormularioUseCase;
+use Src\usecase\formularios\GenerarReciboMatriculaUseCase;
 
 class FormularioInscripcionController extends Controller
 {
@@ -204,14 +208,94 @@ class FormularioInscripcionController extends Controller
                             ->with('nombre_archivo', $nombre_archivo);
     }
 
-    function descargarFormatoPagoInscripcion($nombre_archivo) {
-        $ruta_archivo = $pdfPath = storage_path() . '/' . $nombre_archivo;
+    function descargarFormatoPagoInscripcion($formularioId) {
+
+    }
+
+    function descargarReciboMatricula($formularioId) {
+        
+        if ($formularioId == 0) {
+            return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "Formulario no válido.");
+        }    
+
+        $datos_recibo_pago = (new GenerarReciboMatriculaUseCase)->ejecutar($formularioId);
+
+        if (sizeof($datos_recibo_pago) == 0) {
+            return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "Formulario no válido.");
+        }
+
+        $formulario = $datos_recibo_pago[0][0];
+        $periodo = $datos_recibo_pago[0][1];
+        $estado = $datos_recibo_pago[0][2];
+        $participante_nombre = $datos_recibo_pago[0][3];
+        $participante_cedula = $datos_recibo_pago[0][4];
+        $participante_telefono = $datos_recibo_pago[0][5];
+        $participante_email = $datos_recibo_pago[0][6];
+        $participante_direccion = $datos_recibo_pago[0][7];
+        $fec_max_legalizacion = $datos_recibo_pago[0][12];
+
+
+        $path_css1 = __DIR__ . "/../../../src/infraestructure/reciboMatricula/template/estilo.css"; 
+        $path_template  = __DIR__ . "/../../../src/infraestructure/reciboMatricula/template/recibo_matricula.html";
+
+        $html = file_get_contents($path_template);
+        $html = str_replace('{{PERIODO}}', $periodo, $html);
+        $html = str_replace('{{FORMULARIO}}', $formulario, $html);
+        $html = str_replace('{{ESTADO}}', $estado, $html);
+        $html = str_replace('{{PARTICIPANTE_NOMBRE}}', $participante_nombre, $html);
+        $html = str_replace('{{PARTICIPANTE_CEDULA}}', $participante_cedula, $html);
+        $html = str_replace('{{PARTICIPANTE_TELEFONO}}', $participante_telefono, $html);        
+        $html = str_replace('{{PARTICIPANTE_EMAIL}}', $participante_email, $html);
+        $html = str_replace('{{PARTICIPANTE_DIRECCION}}', $participante_direccion, $html);
+
+        date_default_timezone_set('America/Bogota');
+        $html = str_replace('{{FECHA_RECIBO}}', date('Y-m-d'), $html);
+        $html = str_replace('{{FECHA_MAX_LEGALIZACION}}', $fec_max_legalizacion, $html);
+    
+        $cursos_pagados = "";
+
+        $CURSO_NOMBRE = 8;
+        $CURSO_COSTO = 9;
+        $CURSO_VALOR_DESCUENTO = 10;
+        $CURSO_TOTAL_PAGAR = 11;
+        
+        $TOTAL_FACTURA = 0;
+        
+        $formatter = new NumberFormatter('es_CO', NumberFormatter::CURRENCY);        
+        foreach($datos_recibo_pago as $index => $item) {   
+            
+            $TOTAL_FACTURA += $item[$CURSO_TOTAL_PAGAR];
+
+            $cursos_pagados .= "<tr>
+                <td>".$item[$CURSO_NOMBRE]."</td>
+                <td>". $formatter->formatCurrency($item[$CURSO_COSTO], 'COP') ."</td>
+                <td>". $formatter->formatCurrency($item[$CURSO_VALOR_DESCUENTO], 'COP') ."</td>
+                <td>". $formatter->formatCurrency($item[$CURSO_TOTAL_PAGAR], 'COP') ."</td>
+            </tr>";
+        }
+
+        $html = str_replace('{{CURSOS_PAGADOS}}', $cursos_pagados, $html);
+        $html = str_replace('{{TOTAL_PAGO}}', $formatter->formatCurrency($TOTAL_FACTURA, 'COP'), $html);
+        
+        
+        $nombre_archivo = "RECIBO_MATRICULA_" . $formulario . ".pdf";
+        $dataPdf = new DataPDF($nombre_archivo);
+        $dataPdf->setData([
+            'path_css1' => $path_css1,
+            'html' => $html,
+            'format' => 'Letter',
+            'orientation' => 'P',
+        ]);
+
+        SicePDF::generarReciboMatricula($dataPdf);
+                
+        $ruta_archivo = storage_path() . '/' . $nombre_archivo;
         $headers = [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="' . $nombre_archivo . '"',
         ];
-    
-        return response()->download($ruta_archivo, $nombre_archivo, $headers)->deleteFileAfterSend(true);
+        
+        return response()->download($ruta_archivo, $nombre_archivo, $headers)->deleteFileAfterSend(true);        
     }    
 
 

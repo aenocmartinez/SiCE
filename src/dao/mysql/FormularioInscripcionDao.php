@@ -501,9 +501,63 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             }
 
         } catch (Exception $e) {
-            dd($e->getMessage());
+            // dd($e->getMessage());
+            Sentry::captureException($e);
         }
 
         return $formularios;
+    }
+
+    public static function GenerarReciboDeMatricula($formularioId=0): array {        
+        $datosReciboMatricula = [];
+        try {            
+            $items = DB::table('formulario_inscripcion as f')
+                ->join('grupos as g', 'g.id', '=', 'f.grupo_id')
+                ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
+                ->join('cursos as c', 'c.id', '=', 'cc.curso_id')
+                ->join('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
+                ->join('participantes as p', 'p.id', '=', 'f.participante_id')
+                ->where('f.id', $formularioId)
+                ->select(
+                    'f.numero_formulario',
+                    'ca.nombre as PERIODO',
+                    'f.estado',
+                    DB::raw("CONCAT(p.primer_nombre, ' ', p.segundo_nombre, ' ', p.primer_apellido, ' ', p.segundo_apellido) as PARTICIPANTE_NOMBRE"),
+                    DB::raw("CONCAT(p.tipo_documento, ' ', p.documento) as DOCUMENTO"),
+                    'p.telefono',
+                    'p.email',
+                    'p.direccion',
+                    'c.nombre as CURSO_NOMBRE',
+                    'f.costo_curso',
+                    'f.valor_descuento',
+                    'f.total_a_pagar',
+                    'f.fecha_max_legalizacion'
+                )
+                ->get();
+
+                foreach($items as $item) {                    
+                    $datosReciboMatricula[] = [
+                        $item->numero_formulario,
+                        $item->PERIODO,
+                        $item->estado,
+                        mb_strtoupper($item->PARTICIPANTE_NOMBRE, 'utf8'),
+                        $item->DOCUMENTO,
+                        $item->telefono,
+                        $item->email,
+                        $item->direccion,
+                        $item->CURSO_NOMBRE,
+                        $item->costo_curso,
+                        $item->valor_descuento,
+                        $item->total_a_pagar,
+                        $item->fecha_max_legalizacion,
+                    ];
+                }
+
+            
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            // Sentry::captureException($e);
+        }
+        return $datosReciboMatricula;
     }
 }

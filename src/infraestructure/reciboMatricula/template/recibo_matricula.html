@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Comprobante de Matrícula</h1>
+            <div class="period">Periodo: {{PERIODO}}</div>
+            <div class="form-number">{{FORMULARIO}}</div>
+        </div>
+        <div class="status">Estado: {{ESTADO}}</div>
+        <div class="personal-info">
+            <p><strong>Nombre:</strong> {{PARTICIPANTE_NOMBRE}}</p>
+            <p><strong>Documento:</strong> {{PARTICIPANTE_CEDULA}}</p>
+            <p><strong>Teléfono:</strong> {{PARTICIPANTE_TELEFONO}}</p>
+            <p><strong>Email:</strong> {{PARTICIPANTE_EMAIL}}</p>
+            <p><strong>Dirección:</strong> {{PARTICIPANTE_DIRECCION}}</p>
+        </div>
+        <p class="date">Fecha de generación: {{FECHA_RECIBO}}</p>
+        <p class="legalization-date">Fecha máxima de legalización: {{FECHA_MAX_LEGALIZACION}}</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Curso</th>
+                    <th>Costo</th>
+                    <th>Valor Descuento</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="cursos">
+                {{CURSOS_PAGADOS}}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">Total</td>
+                    <td>{{TOTAL_PAGO}}</td>
+                </tr>
+            </tfoot>
+        </table>
+        <div class="footer">
+            <p>Cursos de Extensión</p>
+            <p>Universidad Colegio Mayor de Cundinamarca</p>
+        </div>
+    </div>
+</body>
+</html>
