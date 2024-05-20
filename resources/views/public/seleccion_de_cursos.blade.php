@@ -3,7 +3,8 @@
 @section('nameSection', 'Paso 3: Selecciona el curso en el que quieres participar')
 
 @section('description')
-    Usted está a punto de comenzar el proceso de inscripción a los <strong>Cursos de Extensión</strong> de la Universidad Colegio Mayor de Cundinamarca.
+    Es el momento de seleccionar el curso al que desea inscribirse. <br>
+    Haga clic en el área, se le mostrarán los cursos disponbiles, elija el de su interés y haga clic en el botón "Inscribirse".
 @endsection
 
 @section('content')

@@ -3,7 +3,7 @@
 @section('nameSection', 'Paso 2: Actualiza tus datos personales')
 
 @section('description')
-    Usted está a punto de comenzar el proceso de inscripción a los <strong>Cursos de Extensión</strong> de la Universidad Colegio Mayor de Cundinamarca.
+    Tenga ne cuenta diligenciar todos los campos obligatorios.
 @endsection
 
 

@@ -26,15 +26,15 @@ class FormularioPublicoInscripionConsultarExistencia extends FormRequest
         return [
             'tipoDocumento' => 'required',
             'documento' => 'required',
-            'captcha' => 'required|captcha',
+            // 'captcha' => 'required|captcha',
         ];
     }
 
     public function messages()
     {
         return [
-            'captcha.required' => 'Captcha es obligatorio',
-            'captcha.captcha' => 'Captcha no válido',         
+            // 'captcha.required' => 'Captcha es obligatorio',
+            // 'captcha.captcha' => 'Captcha no válido',         
         ];
     }  
 }

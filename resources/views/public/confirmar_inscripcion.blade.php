@@ -3,7 +3,11 @@
 @section('nameSection', 'Paso 4: Gestiona el pago de tu curso de extensión')
 
 @section('description')
-    Usted está a punto de comenzar el proceso de inscripción a los <strong>Cursos de Extensión</strong> de la Universidad Colegio Mayor de Cundinamarca.
+    Para confirmar su inscripción debe cargar el comprobante de pago. <br><br>
+    Haga clic en el botón <strong>"Realizar pago en línea"</strong>, sigas los pasos y cargue su comprobante. <br><br>
+
+    Si usted es beneficiario de un convenios de pagos extemporáneos, solo tendrá que hacer clic en el botón <strong>"Confirmar"</strong>.
+
 @endsection
 
 @section('content')

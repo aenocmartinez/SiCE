@@ -3,11 +3,7 @@
 @section('nameSection', 'Paso 1: Consulta si ya estás en nuestra base de datos')
 
 @section('description')
-    Usted está a punto de comenzar el proceso de inscripción a los 
-    <strong>Cursos de Extensión</strong> de la Universidad Colegio Mayor de Cundinamarca.
-    <br><br>
-    Le invitamos a que ingrese su número de documento y compruebe si se encuentra registrado. 
-    En caso que no lo esté se mostrará un formulario vacío en donde podrá registrar sus datos.
+    Usted está a punto de comenzar el proceso de inscripción a los <strong>Cursos de Extensión</strong> de la Universidad Colegio Mayor de Cundinamarca.
 @endsection
 
 @section('content')
@@ -42,6 +38,20 @@
                 </span>
             @enderror        
         </div>
+
+        <div class="mb-4 text-center">
+            <input type="text" class="form-control py-3 text-center @error('captcha') is-invalid @enderror" id="captcha" name="captcha" autocomplete="off" placeholder="Escribe los caracteres de la imagen">
+            @error('captcha')
+                <span class="invalid-feedback text-center" role="alert">
+                    {{ $message }}
+                </span>
+            @enderror             
+            <br>
+
+            {!! captcha_img('captcha-img') !!}
+
+        </div>
+
 
         <div class="text-center">
             <button type="submit" class="btn btn-outline-primary" data-toggle="click-ripple">
