@@ -11,4 +11,5 @@ class GrupoDto {
     public $dia;
     public $jornada;
     public $cupo;
+    public $bloqueado;
 }

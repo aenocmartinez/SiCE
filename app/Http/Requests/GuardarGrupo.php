@@ -33,6 +33,7 @@ class GuardarGrupo extends FormRequest
             'capacidad_salon' => 'required|integer',
             'cupo' => 'required|integer|gt:0|digits_between:1,2',
             'id' => 'numeric|nullable',
+            'bloqueado' => 'nullable'
         ];
     }
 

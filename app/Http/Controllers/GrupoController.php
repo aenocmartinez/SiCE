@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GuardarGrupo;
-use ListarParticipantesGrupoUseCase;
 use Src\domain\Grupo;
 use Src\infraestructure\pdf\DataPDF;
 use Src\infraestructure\pdf\SicePDF;
@@ -247,6 +246,11 @@ class GrupoController extends Controller
         $grupoDto->calendarioId = $data['calendario'];
         $grupoDto->orientadorId = $data['orientador'];
         $grupoDto->cupo = $data['cupo'];
+        
+        $grupoDto->bloqueado = true;
+        if (is_null(request()->bloqueado)) {
+            $grupoDto->bloqueado = false;
+        }        
 
         if (isset(request()->id)) {
             $grupoDto->id = request()->id;

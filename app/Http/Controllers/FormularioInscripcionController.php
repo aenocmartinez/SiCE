@@ -72,7 +72,6 @@ class FormularioInscripcionController extends Controller
             'estado' => $filtro['estado'],
             'documento' => $filtro['documento'],
             'paginate' => (new BuscarFormulariosUseCase)->ejecutar($filtro['periodo'], $filtro['estado'], $page, $filtro['documento']),
-            // 'paginate' => (new BuscarFormulariosUseCase)->ejecutar($filtro['periodo'], $filtro['estado']),
             'calendario' => (new BuscarCalendarioPorIdUseCase)->ejecutar($filtro['periodo']),
         ]);        
     }

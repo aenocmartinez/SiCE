@@ -40,7 +40,7 @@ class CrearGrupoUseCase {
         $grupo->setDia($grupoDto->dia);
         $grupo->setJornada($grupoDto->jornada);
         $grupo->setCupo($grupoDto->cupo);
-        // $grupo->setHora($grupoDto->hora);
+        $grupo->setBloqueado($grupoDto->bloqueado);
         $grupo->setRepository($grupoRepository);
 
         $existe = Grupo::validarExistencia($grupo, $grupoRepository);

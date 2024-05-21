@@ -1,3 +1,7 @@
+@php
+    $checked = $grupo->estaBloqueado() ? 'checked' : '';
+@endphp
+
 <input type="hidden" id="curso_calendario_id_actual" value="{{ $grupo->getCursoCalendarioId()}}">
 <input type="hidden" id="capacidad_salon" name="capacidad_salon" value="{{ old('capacidad_salon', $grupo->getCupo()) }}">
 
@@ -123,7 +127,13 @@
                     <span class="invalid-feedback" role="alert">
                         {{ $message }}
                     </span>
-                @enderror                              
+                @enderror        
+                
+                <br>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="bloqueado" name="bloqueado" {{ $checked }}>
+                    <label class="form-check-label" for="bloqueado">Bloqueado</label>
+                </div> 
 
             </div>
 

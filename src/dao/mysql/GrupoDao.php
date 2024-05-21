@@ -17,7 +17,7 @@ use Src\infraestructure\util\Paginate;
 
 class GrupoDao extends Model implements GrupoRepository {
     protected $table = 'grupos';
-    protected $fillable = ['curso_calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada', 'cupos', 'nombre', 'calendario_id'];
+    protected $fillable = ['curso_calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada', 'cupos', 'nombre', 'calendario_id', 'bloqueado'];
 
 
     public function formulariosInscripcion() {
@@ -37,7 +37,7 @@ class GrupoDao extends Model implements GrupoRepository {
         try {
 
             $query = DB::table('grupos as g')
-                        ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 
+                        ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 'g.bloqueado', 
                                 'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id',
                                 DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
                                 )
@@ -58,6 +58,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setJornada($g->jornada);
                 $grupo->setCupo($g->cupos);
                 $grupo->setNombre($g->nombre);
+                $grupo->setBloqueado($g->bloqueado);
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 if (!$caledario->esVigente()) {
@@ -97,7 +98,7 @@ class GrupoDao extends Model implements GrupoRepository {
 
         try {
             $g = DB::table('grupos as g')
-                    ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 
+                    ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 'g.bloqueado', 
                             'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id', 'cc.costo', 'cc.modalidad',
                             DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')                          
                             )
@@ -117,6 +118,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setCupo($g->cupos);
                 $grupo->setNombre($g->nombre);
                 $grupo->setTotalInscritos($g->totalInscritos);
+                $grupo->setBloqueado($g->bloqueado);
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);
@@ -154,7 +156,8 @@ class GrupoDao extends Model implements GrupoRepository {
                 'nombre' => null,
                 'jornada' => $grupo->getJornada(),
                 'cupos' => $grupo->getCupo(),                
-                'calendario_id' => $grupo->getCalendarioId()
+                'calendario_id' => $grupo->getCalendarioId(),
+                'bloqueado' => $grupo->estaBloqueado(),
             ]);
 
         } catch (\Exception $e) {               
@@ -200,7 +203,8 @@ class GrupoDao extends Model implements GrupoRepository {
                     'dia' => $grupo->getDia(), 
                     'jornada' => $grupo->getJornada(),
                     'cupos' => $grupo->getCupo(),
-                    'calendario_id' => $grupo->getCalendarioId()
+                    'calendario_id' => $grupo->getCalendarioId(),
+                    'bloqueado' => $grupo->estaBloqueado(),
                 ]);                
                 $exito = true;
             }
@@ -250,40 +254,43 @@ class GrupoDao extends Model implements GrupoRepository {
         $grupos = array();
         try {
             // $resultados = DB::table('grupos as g')
-            //             ->select(
-            //                 'g.id as grupoId', 'c.id as cursoId', 'ca.id as calendarioId', 'ca.nombre as calendarioNombre',
-            //                 'c.nombre as nombreCurso', 'g.dia', 'g.jornada', 'g.cupos', 'cc.costo',
-            //                 'cc.modalidad', 'g.nombre', 
-            //                 DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
-            //             )
-            //             ->join('curso_calendario as cc', function ($join) use ($calendarioId) {
-            //                 $join->on('cc.id', '=', 'g.curso_calendario_id')
-            //                     ->where('cc.calendario_id', '=', $calendarioId);
-            //             })
-            //             ->join('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
-            //             ->join('cursos as c', function ($join) use ($areaId) {
-            //                 $join->on('c.id', '=', 'cc.curso_id')
-            //                     ->where('c.area_id', '=', $areaId);
-            //             })
-            //             ->get();
-            $resultados = DB::table('grupos as g')
-            ->select(
-                'g.id as grupoId', 'c.id as cursoId', 'ca.id as calendarioId', 'ca.nombre as calendarioNombre',
-                'c.nombre as nombreCurso', 'g.dia', 'g.jornada', 'g.cupos', 'cc.costo',
-                'cc.modalidad', 'g.nombre', 'o.nombre as orientadorNombre',
-                DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
-            )
-            ->join('curso_calendario as cc', function ($join) use ($calendarioId) {
-                $join->on('cc.id', '=', 'g.curso_calendario_id')
-                    ->where('cc.calendario_id', '=', $calendarioId);
-            })
-            ->join('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
-            ->join('cursos as c', function ($join) use ($areaId) {
-                $join->on('c.id', '=', 'cc.curso_id')
-                    ->where('c.area_id', '=', $areaId);
-            })
-            ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
-            ->get();
+            // ->select(
+            //     'g.id as grupoId', 'c.id as cursoId', 'ca.id as calendarioId', 'ca.nombre as calendarioNombre',
+            //     'c.nombre as nombreCurso', 'g.dia', 'g.jornada', 'g.cupos', 'cc.costo',
+            //     'cc.modalidad', 'g.nombre', 'o.nombre as orientadorNombre',
+            //     DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
+            // )
+            // ->join('curso_calendario as cc', function ($join) use ($calendarioId) {
+            //     $join->on('cc.id', '=', 'g.curso_calendario_id')
+            //         ->where('cc.calendario_id', '=', $calendarioId);
+            // })
+            // ->join('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
+            // ->join('cursos as c', function ($join) use ($areaId) {
+            //     $join->on('c.id', '=', 'cc.curso_id')
+            //         ->where('c.area_id', '=', $areaId);
+            // })
+            // ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
+            // ->get();
+            $resultados =DB::table('grupos as g')
+                        ->select(
+                            'g.id as grupoId', 'c.id as cursoId', 'ca.id as calendarioId', 'ca.nombre as calendarioNombre',
+                            'c.nombre as nombreCurso', 'g.dia', 'g.jornada', 'g.cupos', 'cc.costo',
+                            'cc.modalidad', 'g.nombre', 'o.nombre as orientadorNombre',
+                            DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
+                        )
+                        ->join('curso_calendario as cc', function ($join) use ($calendarioId) {
+                            $join->on('cc.id', '=', 'g.curso_calendario_id')
+                                ->where('cc.calendario_id', '=', $calendarioId);
+                        })
+                        ->join('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
+                        ->join('cursos as c', function ($join) use ($areaId) {
+                            $join->on('c.id', '=', 'cc.curso_id')
+                                ->where('c.area_id', '=', $areaId);
+                        })
+                        ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
+                        ->where('g.bloqueado', 0)
+                        ->get();
+
         
 
             foreach($resultados as $r) {

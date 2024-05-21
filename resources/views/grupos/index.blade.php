@@ -53,7 +53,10 @@
                 @forelse ($paginate->Records() as $grupo)
                 <tr>
                     <td class="fs-sm" style="width: 45%;">                        
-                        <h4 class="fw-normal mb-0">{{ $grupo->getNombre() }}</h4>
+                        <h4 class="fw-normal mb-0">
+                            {{ $grupo->getNombre() }}
+                            <small class="fw-light text-danger">{{ $grupo->estaBloqueado() ? '(Bloqueado)' : '' }} </small>
+                        </h4>
                         <small class="fw-light">
                             Curso: {{ $grupo->getNombreCurso() }} ({{ $grupo->getModalidad() }}) <br>
                             Periodo: {{ $grupo->getNombreCalendario() }}<br>
