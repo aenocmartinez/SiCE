@@ -75,6 +75,7 @@ class ListaDeValor {
             "EMSSANAR E.S.S.",
             "CAPITAL SALUD EPS-S",
             "SAVIA SALUD EPS",
+            "SERVISALUD",
             "DUSAKAWI EPSI",
             "ASOCIACION INDIGENA DEL CAUCA EPSI",
             "ANAS WAYUU EPSI",
