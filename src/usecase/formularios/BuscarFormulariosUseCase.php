@@ -8,17 +8,7 @@ use Src\infraestructure\util\Paginate;
 
 class BuscarFormulariosUseCase {
 
-    public function ejecutar($periodoId=0, $estado="", $documento="", $page=1): Paginate {
-
-        // $calendario = Calendario::Vigente();
-        // if ($calendario->existe()) {
-        //     $periodoId = $calendario->getId();
-        // }
-
-        // if ($periodoId == $calendario->getId()) {
-
-        // }
-
+    public function ejecutar($periodoId=0, $estado="", $page=1, $documento=""): Paginate {      
         return (new FormularioInscripcionDao)->listarFormulariosPorPeriodo($periodoId, $estado, $documento, $page);
     }
 }

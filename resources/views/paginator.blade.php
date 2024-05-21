@@ -7,10 +7,10 @@
     $dataNext = array_merge($dataNext, $criterio);
 
   } else if (strlen($criterio)>0) {
-    array_push($dataPrevious, $criterio);
-    array_push($dataNext, $criterio);
+    $dataPrevious = array_push($dataPrevious, $criterio);
+    $dataNext = array_push($dataNext, $criterio);
   }
-  
+ 
 @endphp
 
   <div class="block-content mt-0">

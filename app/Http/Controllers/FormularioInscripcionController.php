@@ -73,7 +73,7 @@ class FormularioInscripcionController extends Controller
         ]);        
     }
 
-    public function buscadorFormulariosPaginados($page=1, $periodo, $estado="") {        
+    public function buscadorFormulariosPaginados($page=1, $periodo, $estado="") {  
         return view('formularios.index', [
             'periodos' => (new ListarCalendariosUseCase)->ejecutar(),
             'estadoFormulario' => (ListaDeValor::estadosFormularioInscripcion()),

@@ -28,7 +28,7 @@
 
             <form class="row row-cols-lg-auto align-items-center pb-3" action="{{ route('formularios.buscar-inscritos')}}" method="POST">
             @csrf
-                <div class="col-xl-3">     
+                <div class="col-xl-4">     
                     <select class="form-select @error('periodo') is-invalid @enderror" id="periodo" name="periodo">
                         <option value="">Selecciona periodo</option>
                         @foreach ($periodos as $p)
@@ -50,7 +50,7 @@
                     @enderror                                            
                 </div>
     
-                <div class="col-xl-3">
+                <div class="col-xl-4">
                     <select class="form-select" id="estado" name="estado">
                         <option value="">[Mostrar todo]</option>
                         @foreach ($estadoFormulario as $e)   
@@ -62,11 +62,11 @@
                     </select>                           
                 </div>  
 
-                <div class="col-xl-3">
+                <!-- <div class="col-xl-3">
                     <input type="text" name="documento" id="documento" value="{{ $documento }}" class="form-control" placeholder="Número documento">
-                </div>
+                </div> -->
                 
-                <div class="col-xl-3">                
+                <div class="col-xl-4">                
                     <button class="btn btn-info">
                     <i class="fa fa-search me-1 opacity-50"></i>
                         Buscar inscripciones

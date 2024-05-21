@@ -37,8 +37,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         return $this->belongsTo(ParticipanteDao::class, 'participante_id');
     }    
 
-    public function listarFormulariosPorPeriodo(int $calendarioId, $estado, $documento, $page=1): Paginate {
-        
+    public function listarFormulariosPorPeriodo(int $calendarioId, $estado, $documento, $page=1): Paginate {    
         $paginate = new Paginate($page);
         
         $formularios = [];
@@ -46,17 +45,6 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             $grupoDao = new GrupoDao();
             $participanteDao = new ParticipanteDao();
             $convenioDao = new ConvenioDao();
-
-
-            // $query = FormularioInscripcionDao::with('grupo')
-            // ->whereHas('grupo', function ($query) use ($calendarioId) {
-            //     $query->where('calendario_id', $calendarioId);
-            // })
-            // ->when($estado, function ($query, $estado) {
-            //     return $query->where('estado', $estado);
-            // })
-            // ->orderByDesc('participante_id')
-            // ->orderByDesc('id');
 
             $query = FormularioInscripcionDao::with('grupo')
                     ->leftJoin('participantes', 'formulario_inscripcion.participante_id', '=', 'participantes.id')
@@ -112,7 +100,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             dd($e->getMessage());
             Sentry::captureException($e);
         }
-        
+
         $paginate->setTotalRecords($totalRecords);
         $paginate->setRecords($formularios);
 
