@@ -117,11 +117,11 @@ class GrupoController extends Controller
         ]);        
     }
 
-    public function buscadorGrupos(){
+    public function buscadorGrupos(){        
         $criterio = '';
         if (!is_null(request('criterio'))) {
             $criterio = request('criterio');
-        }
+        }        
 
         return view("grupos.index", [
             "paginate" => (new BuscadorGruposUseCase)->ejecutar($criterio),

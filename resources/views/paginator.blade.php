@@ -2,13 +2,13 @@
   $dataPrevious = [$paginate->Previous()];
   $dataNext = [$paginate->Next()];
 
-  if (is_array($criterio)) {    
+  if (is_array($criterio)) {   
     $dataPrevious = array_merge($dataPrevious, $criterio);
     $dataNext = array_merge($dataNext, $criterio);
 
-  } else if (strlen($criterio)>0) {
-    $dataPrevious = array_push($dataPrevious, $criterio);
-    $dataNext = array_push($dataNext, $criterio);
+  } else if (strlen($criterio)>0) {    
+    $dataPrevious[] = $criterio;
+    $dataNext[] = $criterio;
   }
  
 @endphp

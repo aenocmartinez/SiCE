@@ -6,7 +6,7 @@
 @section("content")
 
 @php
-    $criterio = isset($criterio) ? $criterio : '';
+    $criterio = isset($criterio) ? $criterio : '';    
     $route = "grupos.index";
     $page = 1;
     if (strlen($criterio)>0) {
@@ -119,7 +119,6 @@
                 </tr>
                 @endforelse 
             </table>     
-
             @include('paginator', ['route'=>$route, 'criterio' => $criterio, 'page' => $page])
 
         </div>
