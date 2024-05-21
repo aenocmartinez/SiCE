@@ -63,15 +63,16 @@ class FormularioInscripcionController extends Controller
 
     public function filtrarInscripciones(BuscarInscripciones $req) {                
         $filtro = $req->validated();
+        $page = 1;
 
         return view('formularios.index', [
             'periodos' => (new ListarCalendariosUseCase)->ejecutar(),
             'estadoFormulario' => (ListaDeValor::estadosFormularioInscripcion()),
             'periodo' => $filtro['periodo'],
             'estado' => $filtro['estado'],
-            // 'documento' => $filtro['documento'],
-            // 'paginate' => (new BuscarFormulariosUseCase)->ejecutar($filtro['periodo'], $filtro['estado'], $filtro['documento']),
-            'paginate' => (new BuscarFormulariosUseCase)->ejecutar($filtro['periodo'], $filtro['estado']),
+            'documento' => $filtro['documento'],
+            'paginate' => (new BuscarFormulariosUseCase)->ejecutar($filtro['periodo'], $filtro['estado'], $page, $filtro['documento']),
+            // 'paginate' => (new BuscarFormulariosUseCase)->ejecutar($filtro['periodo'], $filtro['estado']),
             'calendario' => (new BuscarCalendarioPorIdUseCase)->ejecutar($filtro['periodo']),
         ]);        
     }
