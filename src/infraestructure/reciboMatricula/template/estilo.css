@@ -5,85 +5,77 @@ body {
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     height: 100vh;
+    padding: 0.5in; /* Ajustar margen para impresión */
 }
 .container {
     width: 100%;
     max-width: 800px;
-    padding: 20px;
+    padding: 0;
     box-sizing: border-box;
+    height: 5.5in; /* Altura de media página carta */
+    overflow: hidden;
+    margin: 0; /* Reducir espacio alrededor del contenedor */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 .header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 .header h1 {
     margin: 0;
     color: #333;
-    font-size: 24px;
+    font-size: 14px;
+}
+.header p {
+    margin: 2px 0;
+    color: #555;
+    font-size: 9px;
 }
 .header .period {
-    margin: 10px 0;
+    margin: 3px 0;
     color: #000;
-    font-size: 22px;
+    font-size: 11px;
     font-weight: bold;
-}
-.header .form-number {
-    margin: 10px 0;
-    color: #000;
-    font-size: 20px;
-    font-weight: bold;
-}
-.status {
-    text-align: right;
-    margin: 10px 0;
-    color: #777;
-    font-size: 18px;
-    font-weight: bold;
-}
-.status::before {
-    content: "Estado: ";
-    color: #000;
-    font-weight: normal;
 }
 .date {
     text-align: right;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
     color: #666;
-}
-.legalization-date {
-    text-align: right;
-    margin-bottom: 20px;
-    color: #666;
+    font-size: 9px;
 }
 .personal-info {
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 .personal-info p {
-    margin: 5px 0;
+    margin: 2px 0;
     color: #555;
+    font-size: 9px;
 }
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
+    font-size: 9px;
+    margin-bottom: 5px; /* Reducir margen inferior de la tabla */
 }
 table, th, td {
     border: 1px solid #ddd;
 }
 th, td {
-    padding: 12px;
+    padding: 3px;
     text-align: left;
+}
+.course-name {
+    font-weight: bold;
+    font-size: 10px;
+}
+.course-details {
+    font-size: 8px;
+    color: #666;
 }
 tfoot td {
     font-weight: bold;
-}
-.footer {
-    text-align: center;
-    margin-top: 20px;
-}
-.footer p {
-    margin: 5px 0;
-    color: #555;
 }

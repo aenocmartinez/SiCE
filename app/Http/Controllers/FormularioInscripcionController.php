@@ -34,6 +34,14 @@ use Src\usecase\formularios\GenerarReciboMatriculaUseCase;
 
 class FormularioInscripcionController extends Controller
 {
+    const CURSO_NOMBRE = 8;
+    const CURSO_COSTO = 9;
+    const CURSO_VALOR_DESCUENTO = 10;
+    const CURSO_TOTAL_PAGAR = 11;
+    const FORMULARIO = 0;
+    const ESTADO = 2; 
+    const FEC_MAX_LEGALIZACION = 12; 
+
     public function listarParticipantes() {   
         
         $calendario = Calendario::Vigente();
@@ -224,6 +232,8 @@ class FormularioInscripcionController extends Controller
             return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "Formulario no válido.");
         }
 
+        // dd($datos_recibo_pago);
+
         $formulario = $datos_recibo_pago[0][0];
         $periodo = $datos_recibo_pago[0][1];
         $estado = $datos_recibo_pago[0][2];
@@ -239,9 +249,7 @@ class FormularioInscripcionController extends Controller
         $path_template  = __DIR__ . "/../../../src/infraestructure/reciboMatricula/template/recibo_matricula.html";
 
         $html = file_get_contents($path_template);
-        $html = str_replace('{{PERIODO}}', $periodo, $html);
-        $html = str_replace('{{FORMULARIO}}', $formulario, $html);
-        $html = str_replace('{{ESTADO}}', $estado, $html);
+        $html = str_replace('{{PERIODO}}', $periodo, $html);        
         $html = str_replace('{{PARTICIPANTE_NOMBRE}}', $participante_nombre, $html);
         $html = str_replace('{{PARTICIPANTE_CEDULA}}', $participante_cedula, $html);
         $html = str_replace('{{PARTICIPANTE_TELEFONO}}', $participante_telefono, $html);        
@@ -250,32 +258,30 @@ class FormularioInscripcionController extends Controller
 
         date_default_timezone_set('America/Bogota');
         $html = str_replace('{{FECHA_RECIBO}}', date('Y-m-d'), $html);
-        $html = str_replace('{{FECHA_MAX_LEGALIZACION}}', $fec_max_legalizacion, $html);
     
-        $cursos_pagados = "";
-
-        $CURSO_NOMBRE = 8;
-        $CURSO_COSTO = 9;
-        $CURSO_VALOR_DESCUENTO = 10;
-        $CURSO_TOTAL_PAGAR = 11;
-        
         $TOTAL_FACTURA = 0;
         
+        $cursos_matriculados = "";        
         $formatter = new NumberFormatter('es_CO', NumberFormatter::CURRENCY);        
         foreach($datos_recibo_pago as $index => $item) {   
             
-            $TOTAL_FACTURA += $item[$CURSO_TOTAL_PAGAR];
-
-            $cursos_pagados .= "<tr>
-                <td>".$item[$CURSO_NOMBRE]."</td>
-                <td>". $formatter->formatCurrency($item[$CURSO_COSTO], 'COP') ."</td>
-                <td>". $formatter->formatCurrency($item[$CURSO_VALOR_DESCUENTO], 'COP') ."</td>
-                <td>". $formatter->formatCurrency($item[$CURSO_TOTAL_PAGAR], 'COP') ."</td>
+            $TOTAL_FACTURA += $item[self::CURSO_TOTAL_PAGAR];
+            $cursos_matriculados .= "<tr>
+                <td>
+                    <span class=\"course-name\">".$item[self::CURSO_NOMBRE]."</span><br>
+                    <span class=\"course-details\">Miércoles/Mañana</span>
+                </td>
+                <td>". $formatter->formatCurrency($item[self::CURSO_COSTO], 'COP') ."</td>
+                <td>". $formatter->formatCurrency($item[self::CURSO_VALOR_DESCUENTO], 'COP') ."</td>
+                <td>". $formatter->formatCurrency($item[self::CURSO_TOTAL_PAGAR], 'COP') ."</td>
+                <td>". $item[self::FORMULARIO] ."</td>
+                <td>". $item[self::ESTADO]."</td>
+                <td>". $item[self::FEC_MAX_LEGALIZACION]."</td>
             </tr>";
         }
 
-        $html = str_replace('{{CURSOS_PAGADOS}}', $cursos_pagados, $html);
-        $html = str_replace('{{TOTAL_PAGO}}', $formatter->formatCurrency($TOTAL_FACTURA, 'COP'), $html);
+        $html = str_replace('{{CURSOS_MATRICULADOS}}', $cursos_matriculados, $html);
+        $html = str_replace('{{TOTAL_PAGO_MATRICULA}}', $formatter->formatCurrency($TOTAL_FACTURA, 'COP'), $html);
         
         
         $nombre_archivo = "RECIBO_MATRICULA_" . $formulario . ".pdf";

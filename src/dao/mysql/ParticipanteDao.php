@@ -278,6 +278,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
             
             $resultados = FormularioInscripcionDao::select(
                     'formulario_inscripcion.id',
+                    'formulario_inscripcion.participante_id',
                     'formulario_inscripcion.numero_formulario',
                     'formulario_inscripcion.estado',
                     'formulario_inscripcion.total_a_pagar',
@@ -314,6 +315,11 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                     $formulario->setTotalAPagar($resultado->total_a_pagar);
                     $formulario->setFechaCreacion($resultado->created_at);
                     $formulario->setFechaMaxLegalizacion($resultado->fecha_max_legalizacion);
+                    
+                    $participante = new Participante();
+                    $participante->setId($resultado->participante_id);
+
+                    $formulario->setParticipante($participante);
                     
                     $convenio = new Convenio();
                     if (!is_null($resultado->nombre_convenio)) {                        
