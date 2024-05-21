@@ -507,29 +507,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         $calendarioId = $calendario->getId();
         
         try {            
-            // $items = DB::table('formulario_inscripcion as f')
-            //     ->join('grupos as g', 'g.id', '=', 'f.grupo_id')
-            //     ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
-            //     ->join('cursos as c', 'c.id', '=', 'cc.curso_id')
-            //     ->join('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
-            //     ->join('participantes as p', 'p.id', '=', 'f.participante_id')
-            //     ->where('f.id', $formularioId)
-            //     ->select(
-            //         'f.numero_formulario',
-            //         'ca.nombre as PERIODO',
-            //         'f.estado',
-            //         DB::raw("CONCAT(p.primer_nombre, ' ', p.segundo_nombre, ' ', p.primer_apellido, ' ', p.segundo_apellido) as PARTICIPANTE_NOMBRE"),
-            //         DB::raw("CONCAT(p.tipo_documento, ' ', p.documento) as DOCUMENTO"),
-            //         'p.telefono',
-            //         'p.email',
-            //         'p.direccion',
-            //         'c.nombre as CURSO_NOMBRE',
-            //         'f.costo_curso',
-            //         'f.valor_descuento',
-            //         'f.total_a_pagar',
-            //         'f.fecha_max_legalizacion'
-            //     )
-            //     ->get();
+
             $items = FormularioInscripcionDao::select([
                 'formulario_inscripcion.numero_formulario',
                 'calendarios.nombre as PERIODO',
@@ -543,7 +521,9 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 'formulario_inscripcion.costo_curso',
                 'formulario_inscripcion.valor_descuento',
                 'formulario_inscripcion.total_a_pagar',
-                'formulario_inscripcion.fecha_max_legalizacion'
+                'formulario_inscripcion.fecha_max_legalizacion',
+                'grupos.jornada',
+                'grupos.dia'
             ])
             ->join('grupos', function($join) use ($participanteId, $calendarioId) {
                 $join->on('grupos.id', '=', 'formulario_inscripcion.grupo_id')
@@ -571,6 +551,8 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                         $item->valor_descuento,
                         $item->total_a_pagar,
                         $item->fecha_max_legalizacion,
+                        $item->jornada,
+                        $item->dia
                     ];
                 }
 

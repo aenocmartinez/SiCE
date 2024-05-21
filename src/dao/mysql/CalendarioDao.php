@@ -447,7 +447,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
             ->orderBy('p.primer_apellido')
             ->get();
 
-            $participantes[] = ['PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CURSO', 'GRUPO', 'DIA', 'JORNADA', 'CONVENIO', 'VALOR_PAGADO', 'ESTADO', 'PERIODO'];
+            $participantes[] = ['PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CURSO', 'GRUPO', 'DIA', 'JORNADA', 'CONVENIO', 'PAGO', 'ESTADO', 'PERIODO'];
             foreach($items as $item) {                        
                 $participantes[] = [mb_strtoupper($item->nombre_participante, 'UTF-8'),
                                     mb_strtoupper($item->documento_participante, 'UTF-8'), 

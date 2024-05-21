@@ -41,6 +41,8 @@ class FormularioInscripcionController extends Controller
     const FORMULARIO = 0;
     const ESTADO = 2; 
     const FEC_MAX_LEGALIZACION = 12; 
+    const DIA = 14;
+    const JORNADA = 13;
 
     public function listarParticipantes() {   
         
@@ -67,8 +69,9 @@ class FormularioInscripcionController extends Controller
             'estadoFormulario' => (ListaDeValor::estadosFormularioInscripcion()),
             'periodo' => $filtro['periodo'],
             'estado' => $filtro['estado'],
-            'documento' => $filtro['documento'],
-            'paginate' => (new BuscarFormulariosUseCase)->ejecutar($filtro['periodo'], $filtro['estado'], $filtro['documento']),
+            // 'documento' => $filtro['documento'],
+            // 'paginate' => (new BuscarFormulariosUseCase)->ejecutar($filtro['periodo'], $filtro['estado'], $filtro['documento']),
+            'paginate' => (new BuscarFormulariosUseCase)->ejecutar($filtro['periodo'], $filtro['estado']),
             'calendario' => (new BuscarCalendarioPorIdUseCase)->ejecutar($filtro['periodo']),
         ]);        
     }
@@ -232,18 +235,13 @@ class FormularioInscripcionController extends Controller
             return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "Formulario no válido.");
         }
 
-        // dd($datos_recibo_pago);
-
         $formulario = $datos_recibo_pago[0][0];
         $periodo = $datos_recibo_pago[0][1];
-        $estado = $datos_recibo_pago[0][2];
         $participante_nombre = $datos_recibo_pago[0][3];
         $participante_cedula = $datos_recibo_pago[0][4];
         $participante_telefono = $datos_recibo_pago[0][5];
         $participante_email = $datos_recibo_pago[0][6];
         $participante_direccion = $datos_recibo_pago[0][7];
-        $fec_max_legalizacion = $datos_recibo_pago[0][12];
-
 
         $path_css1 = __DIR__ . "/../../../src/infraestructure/reciboMatricula/template/estilo.css"; 
         $path_template  = __DIR__ . "/../../../src/infraestructure/reciboMatricula/template/recibo_matricula.html";
@@ -269,7 +267,7 @@ class FormularioInscripcionController extends Controller
             $cursos_matriculados .= "<tr>
                 <td>
                     <span class=\"course-name\">".$item[self::CURSO_NOMBRE]."</span><br>
-                    <span class=\"course-details\">Miércoles/Mañana</span>
+                    <span class=\"course-details\">".$item[self::DIA]."/".$item[self::JORNADA]."</span>
                 </td>
                 <td>". $formatter->formatCurrency($item[self::CURSO_COSTO], 'COP') ."</td>
                 <td>". $formatter->formatCurrency($item[self::CURSO_VALOR_DESCUENTO], 'COP') ."</td>
