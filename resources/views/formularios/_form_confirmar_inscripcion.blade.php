@@ -111,6 +111,35 @@
 
             </div>             
             
+            <!-- Información complementaria -->
+            <div class="block-header">
+                <h3 class="block-title">
+                  Información complementaria
+                </h3>                        
+            </div>       
+            <div class="block-content block-content-full pt-0">              
+                <div class="form-floating">
+                    <input type="text" 
+                            class="js-flatpickr form-control" 
+                            id="fec_max_legalizacion" 
+                            name="fec_max_legalizacion" 
+                            value="{{ old('fec_max_legalizacion') }}"
+                            placeholder="Fec max. legalización">  
+                    <label class="form-label" for="fec_max_legalizacion">Fec. max. legalización</label>
+                </div>
+
+                <div class="form-floating">
+                    <input type="text" 
+                            class="form-control" 
+                            id="comentarios" 
+                            name="comentarios" 
+                            value="{{ old('comentarios', 'Sin comentarios') }}"
+                            placeholder="Comentarios">  
+                    <label class="form-label" for="comentarios">Comentarios</label>
+                </div>                
+            </div>
+
+            <!-- Fin información complementaria -->
 
         </div>
         
@@ -177,6 +206,9 @@
 
 <script src="{{asset('assets/js/oneui.app.min.js')}}"></script>
 <script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
+
+<script src="{{asset('assets/js/plugins/flatpickr/flatpickr.min.js')}}"></script>
+<script>One.helpersOnLoad(['js-flatpickr']);</script>
 
 <script>
     $(document).ready(function(){

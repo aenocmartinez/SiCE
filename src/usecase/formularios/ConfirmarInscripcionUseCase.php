@@ -56,10 +56,21 @@ class ConfirmarInscripcionUseCase {
         $formularioInscripcion->setValorDescuento($confirmarInscripcionDto->valorDescuento);
         $formularioInscripcion->setTotalAPagar($totalAPagar);
         $formularioInscripcion->setFechaCreacion($fechaActual);
+        
         $formularioInscripcion->setFechaMaxLegalizacion(Calendario::fechaSiguienteDiaHabil($fechaActual, $diasFestivos));
+        if (strlen($confirmarInscripcionDto->fec_max_legalizacion)>0) {
+            $formularioInscripcion->setFechaMaxLegalizacion($confirmarInscripcionDto->fec_max_legalizacion);
+        }
+        
         $formularioInscripcion->setNumero(strtotime($fechaActual) . $confirmarInscripcionDto->participanteId);
         $formularioInscripcion->setValorPago($confirmarInscripcionDto->valorPagoParcial);
         $formularioInscripcion->setPathComprobantePago($confirmarInscripcionDto->pathComprobantePago);
+
+        if (strlen($confirmarInscripcionDto->comentarios)>0) {
+            $formularioInscripcion->setComentarios($confirmarInscripcionDto->comentarios);
+        }
+
+
 
         if (!$grupo->tieneCuposDisponibles()) {            
             return new Response("409", "El grupo no tiene cupos disponibles");

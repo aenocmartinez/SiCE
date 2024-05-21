@@ -21,6 +21,7 @@ class FormularioInscripcion {
     private $costoCurso;
     private $valorPago;
     private $pathComprobantePago;
+    private $comentarios;
     private FormularioRepository $repository;
 
     public function __construct() {
@@ -30,7 +31,16 @@ class FormularioInscripcion {
         $this->costoCurso = 0;
         $this->valorPago = 0;
         $this->pathComprobantePago = "";
+        $this->comentarios = "Sin comentarios";
         $this->repository = new FormularioInscripcionDao();
+    }
+
+    public function setComentarios(string $comentarios=""): void {
+        $this->comentarios = $comentarios;
+    }
+
+    public function getComentarios(): string {
+        return $this->comentarios;
     }
 
     public function setId(int $id=0): void {

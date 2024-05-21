@@ -17,4 +17,6 @@ class ConfirmarInscripcionDto {
     public $diasFesctivos;
     public $estado;
     public $pathComprobantePago;
+    public $comentarios;
+    public $fec_max_legalizacion;
 }

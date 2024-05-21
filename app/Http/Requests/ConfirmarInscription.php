@@ -33,6 +33,8 @@ class ConfirmarInscription extends FormRequest
             'total_a_pagar' => 'required',
             'voucher' => 'required',
             'valorPago' => 'required',
+            'comentarios' => 'nullable',
+            'fec_max_legalizacion' => 'nullable',
             // 'voucher' => 'required_if:medioPago,pagoDatafono',
             // 'valorPago' => 'required_if:medioPago,pagoDatafono',
         ];

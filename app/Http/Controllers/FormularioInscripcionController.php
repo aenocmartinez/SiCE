@@ -340,6 +340,14 @@ class FormularioInscripcionController extends Controller
         $formularioDto->totalAPagar = $datos['total_a_pagar'];
         $formularioDto->voucher = $datos['voucher'];
         $formularioDto->valorPagoParcial = $datos['valorPago'];
+        
+        if (isset($datos['fec_max_legalizacion'])) {
+            $formularioDto->fec_max_legalizacion = $datos['fec_max_legalizacion'];
+        }
+
+        if (isset($datos['comentarios'])) {
+            $formularioDto->comentarios = $datos['comentarios'];
+        }        
 
         $formularioDto->estado = "Pendiente de pago";
         if (isset($datos['estado'])) {
