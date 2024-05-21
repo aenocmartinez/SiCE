@@ -42,12 +42,21 @@ class EstadisticasCalendarioUseCase {
         
         // $lista = (new ListarCursosPorCalendarioUseCase)->ejecutar($calendario->getId());
 
-        $data["participantesHombres"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('M', $calendario->getId());
-        $data["participantesMujeres"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('F', $calendario->getId());
-        $data["participantesOtrosGeneros"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('Otro', $calendario->getId());
+        // $data["participantesHombres"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('M', $calendario->getId());
+        $data["participantesHombres"] = ParticipanteDao::where('sexo','M')->count();
+
+        // $data["participantesMujeres"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('F', $calendario->getId());
+        $data["participantesMujeres"] = ParticipanteDao::where('sexo','F')->count();
+
+        // $data["participantesOtrosGeneros"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('Otro', $calendario->getId());
+        $data["participantesOtrosGeneros"] = ParticipanteDao::where('sexo','Otros')->count();
+
         $data["participantesConvenio"] = ParticipanteDao::numeroParticipantesPorConvenioYCalendario($calendario->getId());
         $data["topCursosInscritos"] = CursoDao::top5CursosMasInscritosPorCalendario($calendario->getId());
-        $data["numeroParticipantesUnicos"] = ParticipanteDao::numeroParticipantesUnicosPorCalendario($calendario->getId());
+        // $data["numeroParticipantesUnicos"] = ParticipanteDao::numeroParticipantesUnicosPorCalendario($calendario->getId());
+        $data["numeroParticipantesUnicos"] = ParticipanteDao::count();
+        
+        
                 
         $data["existe"] = true;
         $data["nombre"] = $calendario->getNombre();
@@ -57,7 +66,7 @@ class EstadisticasCalendarioUseCase {
         $data["ingresosConvenio"] = $totales["pagoPorConvenio"];
         $data["totalIngresos"] = $totales["pagoTotal"];
         $data["totalParticipantes"] = $totales["totalMatriculados"];
-        
+                
 
         return $data;
     }
