@@ -74,6 +74,7 @@ class ListaDeValor {
             "ASMET SALUD",
             "EMSSANAR E.S.S.",
             "CAPITAL SALUD EPS-S",
+            "SANIDAD DEL EJÉRCITO",
             "SAVIA SALUD EPS",
             "SERVISALUD",
             "DUSAKAWI EPSI",
