@@ -523,7 +523,8 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 'formulario_inscripcion.total_a_pagar',
                 'formulario_inscripcion.fecha_max_legalizacion',
                 'grupos.jornada',
-                'grupos.dia'
+                'grupos.dia',
+                'convenios.nombre as CONVENIO_NOMBRE' 
             ])
             ->join('grupos', function($join) use ($participanteId, $calendarioId) {
                 $join->on('grupos.id', '=', 'formulario_inscripcion.grupo_id')
@@ -534,7 +535,10 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             ->join('cursos', 'cursos.id', '=', 'curso_calendario.curso_id')
             ->join('calendarios', 'calendarios.id', '=', 'curso_calendario.calendario_id')
             ->join('participantes', 'participantes.id', '=', 'formulario_inscripcion.participante_id')
-            ->get();            
+            ->leftJoin('convenios', 'convenios.id', '=', 'formulario_inscripcion.convenio_id') 
+            ->where('formulario_inscripcion.estado', '<>', 'Anulado')
+            ->get();
+            
 
                 foreach($items as $item) {                    
                     $datosReciboMatricula[] = [
@@ -552,7 +556,8 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                         $item->total_a_pagar,
                         $item->fecha_max_legalizacion,
                         $item->jornada,
-                        $item->dia
+                        $item->dia,
+                        $item->CONVENIO_NOMBRE,
                     ];
                 }
 

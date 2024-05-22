@@ -1,5 +1,6 @@
 <input type="hidden" name="estado" value="Revisar comprobante de pago">
 <input type="hidden" name="medioPago" value="pagoEcollect">
+<input type="hidden" name="flagComprobante" value="flagComprobante">
 
     <div class="block block-rounded">
           <div class="block-header">
@@ -64,14 +65,17 @@
 
           <div class="col-8 container">
             <div class="input-group mb-5">
-              <input class="form-control fs-sm" type="file" name="pdf" id="pdf" accept=".pdf">
-              @error('pdf')
-                  <div class="alert alert-danger">{{ $message }}</div>
-              @enderror
+              <input class="form-control @error('pdf') is-invalid @enderror fs-sm" type="file" name="pdf" id="pdf" accept=".pdf">  
               <button type="submit" class="btn btn-alt-primary fs-sm">
                   <i class="fa fa-fw fa-upload"></i> Cargar comprobante y finalizar
               </button>                        
+              @error('pdf')
+                  <span class="invalid-feedback" role="alert">
+                      {{ $message }}
+                  </span>
+              @enderror              
             </div>
+
           </div>
           <br>
 

@@ -160,6 +160,10 @@ class InscripcionPublicaController extends Controller
     public function confirmarInscripcion(FormularioPublicoConfirmarInscripcion $req) {
     
         $formularioDto = $this->hydrateConfirmarInscripcionDto( $req->validated() );
+
+        if ($formularioDto->flagComprobante) {
+            dd("Es obligatorio enviar el formato");
+        }
         
         $formularioDto->pathComprobantePago = "";
         
@@ -196,6 +200,11 @@ class InscripcionPublicaController extends Controller
         $formularioDto->costoCurso = $datos['costo_curso'];
         $formularioDto->valorDescuento = $datos['valor_descuento'];
         $formularioDto->totalAPagar = $datos['total_a_pagar'];
+
+        $formularioDto->flagComprobante = false;
+        if (isset($datos['flagComprobante'])) {
+            $formularioDto->flagComprobante = true;
+        }        
 
         $formularioDto->estado = "Revisar comprobante de pago";
         if (isset($datos['estado'])) {

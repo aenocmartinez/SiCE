@@ -43,6 +43,7 @@ class FormularioInscripcionController extends Controller
     const FEC_MAX_LEGALIZACION = 12; 
     const DIA = 14;
     const JORNADA = 13;
+    const CONVENIO = 15;
 
     public function listarParticipantes() {   
         
@@ -263,11 +264,16 @@ class FormularioInscripcionController extends Controller
         $formatter = new NumberFormatter('es_CO', NumberFormatter::CURRENCY);        
         foreach($datos_recibo_pago as $index => $item) {   
             
+            $info_convenio = "";
+            if (!is_null($item[self::CONVENIO])) {
+                $info_convenio = "<br><br><strong>Convenio:</strong> ".$item[self::CONVENIO];
+            }
+
             $TOTAL_FACTURA += $item[self::CURSO_TOTAL_PAGAR];
             $cursos_matriculados .= "<tr>
                 <td>
                     <span class=\"course-name\">".$item[self::CURSO_NOMBRE]."</span><br>
-                    <span class=\"course-details\">".$item[self::DIA]."/".$item[self::JORNADA]."</span>
+                    <span class=\"course-details\">".$item[self::DIA]."/".$item[self::JORNADA].$info_convenio."</span>
                 </td>
                 <td>". $formatter->formatCurrency($item[self::CURSO_COSTO], 'COP') ."</td>
                 <td>". $formatter->formatCurrency($item[self::CURSO_VALOR_DESCUENTO], 'COP') ."</td>
