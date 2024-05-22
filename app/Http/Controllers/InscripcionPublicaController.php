@@ -160,10 +160,6 @@ class InscripcionPublicaController extends Controller
     public function confirmarInscripcion(FormularioPublicoConfirmarInscripcion $req) {
     
         $formularioDto = $this->hydrateConfirmarInscripcionDto( $req->validated() );
-
-        if ($formularioDto->flagComprobante) {
-            dd("Es obligatorio enviar el formato");
-        }
         
         $formularioDto->pathComprobantePago = "";
         
