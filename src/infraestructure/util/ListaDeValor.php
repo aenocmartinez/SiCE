@@ -83,6 +83,7 @@ class ListaDeValor {
             "MALLAMAS EPSI",
             "PIJAOS SALUD EPSI",
             "SALUD BÓLIVAR EPS SAS",
+            "UNISALUD",
             "NO ESTÁ AFILIADO"
        ];       
     }
