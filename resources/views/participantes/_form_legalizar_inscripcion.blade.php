@@ -222,7 +222,11 @@
           if (medioPago=="pagoDatafono") {
             $("#s-voucher").show();
           } else {
-            $("#voucher").val("");
+              $("#voucher").val("");
+              var miRedirect = document.createElement('a');
+              miRedirect.setAttribute('href', 'https://www.e-collect.com/customers/pagosunicolmayor.htm');
+              miRedirect.setAttribute('target', '_blank');
+              miRedirect.click();            
           } 
         });      
 

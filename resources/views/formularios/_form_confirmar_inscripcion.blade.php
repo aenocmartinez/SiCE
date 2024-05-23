@@ -227,13 +227,12 @@
 
         $('input[name="medioPago"]').change(function(){
           const medioPago = $('input[name="medioPago"]:checked').val();
-          // $("#s-voucher").hide();
-          // if (medioPago=="pagoDatafono") {
-          //   $("#s-voucher").show();
-          // } else {
-          //   $("#voucher").val("");
-          // } 
-
+            if (medioPago == "pagoEcollect") {
+              var miRedirect = document.createElement('a');
+              miRedirect.setAttribute('href', 'https://www.e-collect.com/customers/pagosunicolmayor.htm');
+              miRedirect.setAttribute('target', '_blank');
+              miRedirect.click();
+            }
         });
     });
 
