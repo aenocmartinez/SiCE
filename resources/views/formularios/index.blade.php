@@ -63,7 +63,7 @@
                 </div>  
 
                 <div class="col-xl-3">
-                    <input type="text" name="documento" id="documento" value="{{ $documento }}" class="form-control" placeholder="Número documento">
+                    <input type="text" name="documento" id="documento" value="{{ $documento }}" class="form-control" placeholder="Buscador">
                 </div>
                 
                 <div class="col-xl-3">                

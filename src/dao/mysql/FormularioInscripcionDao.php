@@ -47,22 +47,31 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             $convenioDao = new ConvenioDao();
 
             $query = FormularioInscripcionDao::with('grupo')
-                    ->leftJoin('participantes', 'formulario_inscripcion.participante_id', '=', 'participantes.id')
-                    ->whereHas('grupo', function ($query) use ($calendarioId) {
-                        $query->where('calendario_id', $calendarioId);
-                    })
-                    ->where(function ($query) use ($estado, $documento) {
-                        $query->when($estado, function ($query, $estado) {
-                            $query->where('estado', $estado);
-                        })
-                        ->when($documento, function ($query, $documento) {
-                            $query->where('participantes.documento', $documento);
-                        });
-                    })
-                    ->orderByDesc('participante_id')
-                    ->orderByDesc('id');
-
-                    // dd($query->toSql());
+            ->leftJoin('participantes', 'formulario_inscripcion.participante_id', '=', 'participantes.id')
+            ->leftJoin('grupos', 'formulario_inscripcion.grupo_id', '=', 'grupos.id')
+            ->whereHas('grupo', function ($query) use ($calendarioId) {
+                $query->where('calendario_id', $calendarioId);
+            })
+            ->where(function ($query) use ($estado, $documento) {
+                $query->when($estado, function ($query, $estado) {
+                    $query->where('estado', $estado);
+                })
+                ->when($documento, function ($query, $documento) {
+                    $query->where(function ($query) use ($documento) {
+                        $query->where('participantes.documento', 'LIKE', "%{$documento}%")
+                              ->orWhere('formulario_inscripcion.numero_formulario', 'LIKE', "%{$documento}%")
+                              ->orWhere('grupos.nombre', 'LIKE', "%{$documento}%")
+                              ->orWhereRaw("CONCAT(participantes.primer_nombre, ' ', participantes.segundo_nombre, ' ', participantes.primer_apellido, ' ', participantes.segundo_apellido) LIKE ?", ["%{$documento}%"])
+                              ->orWhereRaw("CONCAT(participantes.primer_nombre, ' ', participantes.primer_apellido, ' ', participantes.segundo_apellido) LIKE ?", ["%{$documento}%"])
+                              ->orWhereRaw("CONCAT(participantes.primer_nombre, ' ', participantes.segundo_nombre, ' ', participantes.primer_apellido) LIKE ?", ["%{$documento}%"])
+                              ->orWhereRaw("CONCAT(participantes.primer_nombre, ' ', participantes.primer_apellido) LIKE ?", ["%{$documento}%"]);
+                    });
+                });
+            })
+            ->orderByDesc('participante_id')
+            ->orderByDesc('formulario_inscripcion.id');
+        
+        
         
         $totalRecords = $query->count(); 
         
