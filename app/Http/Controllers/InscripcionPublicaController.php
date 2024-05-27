@@ -196,13 +196,13 @@ class InscripcionPublicaController extends Controller
     function descargarReciboMatricula($participanteId) {
         
         if ($participanteId == 0) {
-            return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "Formulario no válido.");
+            return redirect()->route('public.inicio')->with('code', "404")->with('status', "Formulario no válido.");
         }    
 
         $resultado = (new GenerarReciboMatriculaUseCase)->ejecutar($participanteId);
 
         if (!$resultado["exito"]) {
-            return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "Formulario no válido.");
+            return redirect()->route('public.inicio')->with('code', "404")->with('status', "Formulario no válido.");
         }
 
         $nombre_archivo = $resultado["nombre_archivo"];
