@@ -79,3 +79,9 @@ th, td {
 tfoot td {
     font-weight: bold;
 }
+.class-start {
+    margin-top: 10px;
+    font-size: 10px;
+    color: #333;
+    text-align: center;
+}

@@ -38,8 +38,10 @@ class CalendarioController extends Controller
 
     public function store(GuardarCalenadario $request)
     {
-        $data = $request->validated();        
-        $response = (new CrearCalendarioUseCase())->ejecutar(new CalendarioDto($data['nombre'], $data['fec_ini'], $data['fec_fin']));
+        $data = $request->validated();
+        $calendarioDto = new CalendarioDto($data['nombre'], $data['fec_ini'], $data['fec_fin']);
+        $calendarioDto->fechaInicioClase = $data['fec_ini_clase'];        
+        $response = (new CrearCalendarioUseCase())->ejecutar($calendarioDto);
         
         return redirect()->route('calendario.index')->with('code', $response->code)->with('status', $response->message);
     }
@@ -69,6 +71,7 @@ class CalendarioController extends Controller
         }
 
         $calendarioDto = new CalendarioDto($data['nombre'], $data['fec_ini'], $data['fec_fin']);
+        $calendarioDto->fechaInicioClase = $data['fec_ini_clase'];
         $calendarioDto->id = $id;
 
         $casoUsoActualizar = new ActualizarCalendarioUseCase();

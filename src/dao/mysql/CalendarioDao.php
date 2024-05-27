@@ -18,13 +18,12 @@ use Src\domain\Grupo;
 use Src\domain\Participante;
 use Src\infraestructure\util\FormatoMoneda;
 use Src\view\dto\AreaInscripcionDto;
-use Src\view\dto\AreasInscripcionDto;
 use Src\view\dto\GrupoInscripcionDto;
 
 class CalendarioDao extends Model implements CalendarioRepository {
 
     protected $table = 'calendarios';
-    protected $fillable = ['nombre', 'fec_ini', 'fec_fin'];   
+    protected $fillable = ['nombre', 'fec_ini', 'fec_fin', 'fec_ini_clase'];   
     
     public function cursos() {
         return $this->belongsToMany(CursoDao::class, 'curso_calendario', 'calendario_id', 'curso_id')
@@ -58,6 +57,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 $calendario->setNombre($result['nombre']);
                 $calendario->setFechaInicio($result['fec_ini']);
                 $calendario->setFechaFinal($result['fec_fin']);
+                $calendario->setFechaInicioClase($result['fec_ini_clase']);
             }
         } catch (\Exception $e) {
             Sentry::captureException($e);
@@ -74,6 +74,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 $calendario->setNombre($result['nombre']);
                 $calendario->setFechaInicio($result['fec_ini']);
                 $calendario->setFechaFinal($result['fec_fin']);
+                $calendario->setFechaInicioClase($result['fec_ini_clase']);
             }
         } catch (\Exception $e) {
             Sentry::captureException($e);
@@ -91,7 +92,8 @@ class CalendarioDao extends Model implements CalendarioRepository {
             $result = CalendarioDao::create([
                 'nombre' => $calendario->getNombre(),
                 'fec_ini' => $calendario->getFechaInicio(),
-                'fec_fin' => $calendario->getFechaFinal()
+                'fec_fin' => $calendario->getFechaFinal(),
+                'fec_ini_clase' => $calendario->getFechaInicioClase(),
             ]);
 
             $calendario->setId($result['id']);
@@ -132,7 +134,8 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 $rs->update([
                     'nombre' => $calendario->getNombre(),
                     'fec_ini' => $calendario->getFechaInicio(),
-                    'fec_fin' => $calendario->getFechaFinal()
+                    'fec_fin' => $calendario->getFechaFinal(),
+                    'fec_ini_clase' => $calendario->getFechaInicioClase(),
                 ]);                
                 $exito = true;
             }
@@ -263,9 +266,9 @@ class CalendarioDao extends Model implements CalendarioRepository {
         $calendarioVigente = new Calendario();
 
         $fechaActual = now()->toDateString();
-
+        
         $result = DB::table('calendarios')
-            ->select('id', 'nombre', 'fec_ini', 'fec_fin')
+            ->select('id', 'nombre', 'fec_ini', 'fec_fin', 'fec_ini_clase')
             ->where(function ($query) use ($fechaActual) {
                 $query->where('fec_ini', '<=', $fechaActual)
                     ->where('fec_fin', '>=', $fechaActual);
@@ -284,7 +287,8 @@ class CalendarioDao extends Model implements CalendarioRepository {
             $calendarioVigente->setId($result->id);
             $calendarioVigente->setNombre($result->nombre);
             $calendarioVigente->setFechaInicio($result->fec_ini);
-            $calendarioVigente->setFechaFinal($result->fec_fin);            
+            $calendarioVigente->setFechaFinal($result->fec_fin);  
+            $calendarioVigente->setFechaInicioClase($result->fec_ini_clase);            
         }
 
         return $calendarioVigente;

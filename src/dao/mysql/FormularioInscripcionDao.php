@@ -13,6 +13,7 @@ use Src\domain\repositories\FormularioRepository;
 use Sentry\Laravel\Facade as Sentry;
 use Src\domain\Calendario;
 use Src\domain\FormularioInscripcionPago;
+use Src\infraestructure\util\FormatoFecha;
 use Src\infraestructure\util\Paginate;
 
 class FormularioInscripcionDao extends Model implements FormularioRepository {
@@ -567,6 +568,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                         $item->jornada,
                         $item->dia,
                         $item->CONVENIO_NOMBRE,
+                        FormatoFecha::fechaFormateadaA5DeAgostoDe2024($calendario->getFechaInicioClase()),
                     ];
                 }
 

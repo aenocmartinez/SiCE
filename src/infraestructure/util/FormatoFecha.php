@@ -3,6 +3,7 @@
 namespace Src\infraestructure\util;
 
 use Carbon\Carbon;
+use DateTime;
 
 class FormatoFecha {
 
@@ -40,5 +41,29 @@ class FormatoFecha {
     
     public static function fechaTimestampFormateadaA_YMD($fecha) {
         return Carbon::createFromFormat('Y-m-d H:i:s', $fecha)->format('Y-m-d');
+    }
+
+    public static function fechaFormateadaA5DeAgostoDe2024($fecha) {
+        $fecha = new DateTime($fecha);
+        $formato_deseado = $fecha->format('j') . ' de ' . $fecha->format('F') . ' de ' . $fecha->format('Y');
+        $meses_en_espanol = array(
+            'January' => 'enero',
+            'February' => 'febrero',
+            'March' => 'marzo',
+            'April' => 'abril',
+            'May' => 'mayo',
+            'June' => 'junio',
+            'July' => 'julio',
+            'August' => 'agosto',
+            'September' => 'septiembre',
+            'October' => 'octubre',
+            'November' => 'noviembre',
+            'December' => 'diciembre'
+        );
+
+        $nombre_mes_ingles = $fecha->format('F');
+        $formato_deseado = str_replace($nombre_mes_ingles, $meses_en_espanol[$nombre_mes_ingles], $formato_deseado);
+
+        return $formato_deseado;
     }
 }

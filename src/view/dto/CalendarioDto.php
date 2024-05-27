@@ -8,6 +8,7 @@ class CalendarioDto {
     public string $nombre;
     public $fechaInicial;
     public $fechaFinal;
+    public $fechaInicioClase;
 
     public function __construct(string $nombre="", $fechaInicial="", $fechaFinal="") {
         $this->nombre = $nombre;

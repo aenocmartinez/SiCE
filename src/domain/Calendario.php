@@ -11,6 +11,7 @@ class Calendario {
     private string $nombre;
     private $fechaInicio;
     private $fechaFinal;
+    private $fechaInicioClase;
     private $repository;
     private $cursos = [];
 
@@ -40,6 +41,15 @@ class Calendario {
 
     public function getNombre(): string {
         return $this->nombre;
+    }
+
+    
+    public function setFechaInicioClase($fechaInicioClase): void {
+        $this->fechaInicioClase = $fechaInicioClase;
+    }
+
+    public function getFechaInicioClase() {
+        return $this->fechaInicioClase;
     }
 
     public function setFechaInicio($fechaInicio): void {

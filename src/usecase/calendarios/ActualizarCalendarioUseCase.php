@@ -23,6 +23,7 @@ class ActualizarCalendarioUseCase {
         $calendario->setNombre($calendarioDto->nombre);
         $calendario->setFechaInicio($calendarioDto->fechaInicial);
         $calendario->setFechaFinal($calendarioDto->fechaFinal);
+        $calendario->setFechaInicioClase($calendarioDto->fechaInicioClase);
 
         $exito = $calendario->actualizar();
         if (!$exito) {

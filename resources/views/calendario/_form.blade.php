@@ -47,8 +47,22 @@
                             {{ $message }}
                         </span>
                     @enderror
-            </div>
 
+                <label class="form-label mt-2" for="fec_ini_clase">Fecha inicio clase</label>
+                <input type="text" 
+                       class="js-flatpickr form-control @error('fec_ini_clase') is-invalid @enderror" 
+                       id="fec_ini_clase" 
+                       name="fec_ini_clase" 
+                       placeholder="Y-m-d"
+                       value="{{ old('fec_ini_clase', $calendario->getFechaInicioClase()) }}"
+                       >
+                    @error('fec_ini_clase')
+                        <span class="invalid-feedback" role="alert">
+                            {{ $message }}
+                        </span>
+                    @enderror                    
+            </div>
+            
             <div class="col-12 mt-4">
                 <button class="btn btn-large btn-info">{{ $btnText }}</button>        
                 <a href="{{ route('calendario.index') }}" class="btn btn-large btn-light"> Cancelar</a>

@@ -243,6 +243,7 @@ class FormularioInscripcionController extends Controller
         $participante_telefono = $datos_recibo_pago[0][5];
         $participante_email = $datos_recibo_pago[0][6];
         $participante_direccion = $datos_recibo_pago[0][7];
+        $fecha_inicio_clase = $datos_recibo_pago[0][16];
 
         $path_css1 = __DIR__ . "/../../../src/infraestructure/reciboMatricula/template/estilo.css"; 
         $path_template  = __DIR__ . "/../../../src/infraestructure/reciboMatricula/template/recibo_matricula.html";
@@ -254,6 +255,7 @@ class FormularioInscripcionController extends Controller
         $html = str_replace('{{PARTICIPANTE_TELEFONO}}', $participante_telefono, $html);        
         $html = str_replace('{{PARTICIPANTE_EMAIL}}', $participante_email, $html);
         $html = str_replace('{{PARTICIPANTE_DIRECCION}}', $participante_direccion, $html);
+        $html = str_replace('{{FECHA_INICIO_CLASE}}', $fecha_inicio_clase, $html);
 
         date_default_timezone_set('America/Bogota');
         $html = str_replace('{{FECHA_RECIBO}}', date('Y-m-d'), $html);
