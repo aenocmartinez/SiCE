@@ -10,10 +10,12 @@ use Src\domain\Calendario;
 use Src\domain\Convenio;
 use Src\domain\Grupo;
 use Src\domain\Participante;
+use Src\infraestructure\util\FormatoFecha;
 use Src\infraestructure\util\FormatoMoneda;
 use Src\infraestructure\util\ListaDeValor;
 use Src\usecase\convenios\BuscarConvenioPorIdUseCase;
 use Src\usecase\formularios\ConfirmarInscripcionUseCase;
+use Src\usecase\formularios\GenerarReciboMatriculaUseCase;
 use Src\usecase\grupos\BuscarGrupoPorIdUseCase;
 use Src\usecase\participantes\BuscarParticipantePorDocumentoUseCase;
 use Src\usecase\participantes\BuscarParticipantePorIdUseCase;
@@ -142,7 +144,10 @@ class InscripcionPublicaController extends Controller
         }
 
         if ($participante->vinculadoUnicolMayor()) {
-            $formularioAMostrar = "public._form_confirmar_inscripcion_ucmc";
+            $formularioAMostrar = "public._form_confirmar_inscripcion_no_tiene_convenio";
+            if ($participante->totalFormulariosInscritosPeriodoActual() == 0) {
+                $formularioAMostrar = "public._form_confirmar_inscripcion_ucmc";
+            }
         }
         
         return view('public.confirmar_inscripcion', [
@@ -158,7 +163,7 @@ class InscripcionPublicaController extends Controller
     }
 
     public function confirmarInscripcion(FormularioPublicoConfirmarInscripcion $req) {
-    
+            
         $formularioDto = $this->hydrateConfirmarInscripcionDto( $req->validated() );
         
         $formularioDto->pathComprobantePago = "";
@@ -176,10 +181,41 @@ class InscripcionPublicaController extends Controller
             }
         }
 
-        $response = (new ConfirmarInscripcionUseCase)->ejecutar($formularioDto);  
+        $calendarioVigente = Calendario::Vigente();
 
-        return redirect()->route('public.inicio')->with('code', $response->code)->with('status', $response->message);
+        $response = (new ConfirmarInscripcionUseCase)->ejecutar($formularioDto);  
+        
+        return view('public.mensaje_respuesta', [
+            'mensaje' => $response->message,
+            'code' => $response->code,
+            'participante' => $formularioDto->participanteId,
+            'fec_ini_clase' => FormatoFecha::fechaFormateadaA5DeAgostoDe2024($calendarioVigente->getFechaInicioClase()),
+        ]);
     }
+
+    function descargarReciboMatricula($participanteId) {
+        
+        if ($participanteId == 0) {
+            return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "Formulario no válido.");
+        }    
+
+        $resultado = (new GenerarReciboMatriculaUseCase)->ejecutar($participanteId);
+
+        if (!$resultado["exito"]) {
+            return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "Formulario no válido.");
+        }
+
+        $nombre_archivo = $resultado["nombre_archivo"];
+                
+        $ruta_archivo = storage_path() . '/' . $nombre_archivo;
+
+        $headers = [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $nombre_archivo . '"',
+        ];
+        
+        return response()->download($ruta_archivo, $nombre_archivo, $headers)->deleteFileAfterSend(true);        
+    }       
 
     private function hydrateConfirmarInscripcionDto($datos): ConfirmarInscripcionDto {
         $formularioDto = new ConfirmarInscripcionDto;

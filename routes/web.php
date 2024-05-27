@@ -36,3 +36,6 @@ Route::get('/public/inscripcion/participante/{participanteId}/grupo/{grupoId}', 
 Route::post('/public/inscripcion/confirmar', [InscripcionPublicaController::class, 'confirmarInscripcion'])->name('public.confirmar-inscripcion');
 
 Route::post('/public/inscripcion/cargar-comprobante-pago', [InscripcionPublicaController::class, 'uploadPDF'])->name('upload.pdf');
+
+Route::get('/public/inscripcion/{participanteId}/descargar-recibo-matricula', [InscripcionPublicaController::class, 'descargarReciboMatricula'])->name('public.descargar-recibo-matricula');
+
