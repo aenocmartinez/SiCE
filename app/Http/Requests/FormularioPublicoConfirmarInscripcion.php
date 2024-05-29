@@ -35,7 +35,8 @@ class FormularioPublicoConfirmarInscripcion extends FormRequest
             'medioPago' => 'nullable',
             'pdf' => 'nullable|file|mimes:pdf|max:2048',
             'estado' => 'nullable',
-            'flagComprobante' => 'nullable'
+            'flagComprobante' => 'nullable',
+            'formularioId' => 'nullable'
         ];
     }
 

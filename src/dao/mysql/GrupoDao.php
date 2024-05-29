@@ -253,24 +253,7 @@ class GrupoDao extends Model implements GrupoRepository {
     public function listarGruposDisponiblesParaMatricula(int $calendarioId, int $areaId): array {
         $grupos = array();
         try {
-            // $resultados = DB::table('grupos as g')
-            // ->select(
-            //     'g.id as grupoId', 'c.id as cursoId', 'ca.id as calendarioId', 'ca.nombre as calendarioNombre',
-            //     'c.nombre as nombreCurso', 'g.dia', 'g.jornada', 'g.cupos', 'cc.costo',
-            //     'cc.modalidad', 'g.nombre', 'o.nombre as orientadorNombre',
-            //     DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
-            // )
-            // ->join('curso_calendario as cc', function ($join) use ($calendarioId) {
-            //     $join->on('cc.id', '=', 'g.curso_calendario_id')
-            //         ->where('cc.calendario_id', '=', $calendarioId);
-            // })
-            // ->join('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
-            // ->join('cursos as c', function ($join) use ($areaId) {
-            //     $join->on('c.id', '=', 'cc.curso_id')
-            //         ->where('c.area_id', '=', $areaId);
-            // })
-            // ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
-            // ->get();
+
             $resultados =DB::table('grupos as g')
                         ->select(
                             'g.id as grupoId', 'c.id as cursoId', 'ca.id as calendarioId', 'ca.nombre as calendarioNombre',
@@ -289,9 +272,7 @@ class GrupoDao extends Model implements GrupoRepository {
                         })
                         ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
                         ->where('g.bloqueado', 0)
-                        ->get();
-
-        
+                        ->get();        
 
             foreach($resultados as $r) {
                 $grupo = new Grupo();

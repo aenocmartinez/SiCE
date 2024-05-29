@@ -274,4 +274,12 @@ class Participante {
     public function formularioInscripcionPorConvenioPendienteDePago(Convenio $convenio): FormularioInscripcion {
         return $this->repository->buscarFormularioInscripcionPorParticipanteYConvenioPendienteDepago($this->id, $convenio->getId());
     }
+
+    public function listarFormulariosPendientesDePago(): array {
+        return $this->repository->listarFormulariosPendientesDePago($this->id);
+    }
+
+    public function tieneFormulariosPendientesDePago(): bool {
+        return sizeof($this->listarFormulariosPendientesDePago()) > 0;
+    }
 }

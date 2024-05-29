@@ -32,10 +32,12 @@ Route::post('/public/inscripcion/consultar-participante', [InscripcionPublicaCon
 Route::get('/public/inscripcion/formulario-participante', [InscripcionPublicaController::class, 'formularioParticipante'])->name('public.formulario-participante');
 Route::post('/public/inscripcion/guardar-datos-participante', [InscripcionPublicaController::class, 'guardarDatosParticipante'])->name('public.guardar-datos-participante');
 
-Route::get('/public/inscripcion/participante/{participanteId}/grupo/{grupoId}', [InscripcionPublicaController::class, 'formularioInscripcion'])->name('public.inscribir-participante-a-grupo');
+Route::get('/public/inscripcion/{participanteId}/participante/{grupoId}/grupo/{formularioId}/formulario', [InscripcionPublicaController::class, 'formularioInscripcion'])->name('public.inscribir-participante-a-grupo');
 Route::post('/public/inscripcion/confirmar', [InscripcionPublicaController::class, 'confirmarInscripcion'])->name('public.confirmar-inscripcion');
 
 Route::post('/public/inscripcion/cargar-comprobante-pago', [InscripcionPublicaController::class, 'uploadPDF'])->name('upload.pdf');
 
 Route::get('/public/inscripcion/{participanteId}/descargar-recibo-matricula', [InscripcionPublicaController::class, 'descargarReciboMatricula'])->name('public.descargar-recibo-matricula');
+
+Route::get('/public/inscripcion/{participanteId}/selecionar-curso', [InscripcionPublicaController::class, 'seleccionarCursoMatricula'])->name('public.seleccionar-curso');
 

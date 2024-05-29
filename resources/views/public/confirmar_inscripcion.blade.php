@@ -25,12 +25,11 @@
       <input type="hidden" name="convenioId" value="{{ $convenio->getId() }}">
       <input type="hidden" name="grupoId" value="{{ $grupo->getId() }}">
       <input type="hidden" name="costo_curso" value="{{ $grupo->getCosto() }}">
-
+      <input type="hidden" name="formularioId" value="{{ $formularioId }}">
+      
       @include($formularioAMostrar)
 
       </form>
-
-
 
   </div>
 

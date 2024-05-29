@@ -58,7 +58,7 @@
                         <td class="text-center">{{ $grupo->cuposDisponibles }}</td>
                         <td class="d-none d-sm-table-cell text-center">
                         @if ($grupo->cuposDisponibles > 0)                          
-                          <a href="{{ route('public.inscribir-participante-a-grupo', [$participante->getId(), $grupo->grupoId]) }}" 
+                          <a href="{{ route('public.inscribir-participante-a-grupo', [$participante->getId(), $grupo->grupoId, $formularioId]) }}" 
                                   class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-info-light text-info"
                                   data-bs-toggle="tooltip" 
                                   data-toggle="click-ripple"

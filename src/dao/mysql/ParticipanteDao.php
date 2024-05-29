@@ -275,6 +275,10 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         $formularios = array();
 
         try {
+            $calendarioVigente = Calendario::Vigente();
+            if (!$calendarioVigente->existe()) {
+                return $formularios;
+            }
             
             $resultados = FormularioInscripcionDao::select(
                     'formulario_inscripcion.id',
@@ -303,6 +307,104 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                 ->join('cursos', 'cursos.id', '=', 'curso_calendario.curso_id')
                 ->leftJoin('convenios', 'convenios.id', '=', 'formulario_inscripcion.convenio_id')
                 ->where('p.id', $participanteId)
+                ->where('grupos.calendario_id', $calendarioVigente->getId())
+                ->orderByDesc('formulario_inscripcion.id')
+                ->get();
+
+                foreach($resultados as $resultado) {
+                    $formulario = new FormularioInscripcion();
+
+                    $formulario->setId($resultado->id);
+                    $formulario->setNumero($resultado->numero_formulario);
+                    $formulario->setEstado($resultado->estado);
+                    $formulario->setTotalAPagar($resultado->total_a_pagar);
+                    $formulario->setFechaCreacion($resultado->created_at);
+                    $formulario->setFechaMaxLegalizacion($resultado->fecha_max_legalizacion);
+                    
+                    $participante = new Participante();
+                    $participante->setId($resultado->participante_id);
+
+                    $formulario->setParticipante($participante);
+                    
+                    $convenio = new Convenio();
+                    if (!is_null($resultado->nombre_convenio)) {                        
+                        $convenio->setNombre($resultado->nombre_convenio);
+                        $convenio->setid($resultado->convenioId);
+                    }
+
+                    $formulario->setConvenio($convenio);
+
+                    $grupo = new Grupo();
+                    $grupo->setDia($resultado->dia);
+                    $grupo->setJornada($resultado->jornada);
+                    // $grupo->setHora($resultado->hora);
+                    $grupo->setId($resultado->grupo_id);
+
+                        $calendario = new Calendario();
+                        $calendario->setId($resultado->calendarioId);
+                        $calendario->setNombre($resultado->nombre_calendario);
+                        $calendario->setFechaInicio($resultado->calendarioFechaIni);
+                        $calendario->setFechaFinal($resultado->calendarioFechaFin);
+
+                        $curso = new Curso();
+                        $curso->setNombre($resultado->nombre_curso);
+
+                        $cursoCalendario = new CursoCalendario($calendario, $curso);
+                        $cursoCalendario->setModalidad($resultado->modalidad);
+
+                    $grupo->setCursoCalendario($cursoCalendario);
+
+                    $formulario->setGrupo($grupo);
+
+                    array_push($formularios, $formulario);
+
+                }
+            
+        } catch(Exception $e) {
+            Sentry::captureException($e);
+        }
+
+        return $formularios;
+    }
+
+    public function listarFormulariosPendientesDePago(int $participanteId): array {
+        $formularios = array();
+
+        try {
+            $calendarioVigente = Calendario::Vigente();
+            if (!$calendarioVigente->existe()) {
+                return $formularios;
+            }
+            
+            $resultados = FormularioInscripcionDao::select(
+                    'formulario_inscripcion.id',
+                    'formulario_inscripcion.participante_id',
+                    'formulario_inscripcion.numero_formulario',
+                    'formulario_inscripcion.estado',
+                    'formulario_inscripcion.total_a_pagar',
+                    'formulario_inscripcion.fecha_max_legalizacion',
+                    'formulario_inscripcion.created_at',
+                    'grupos.id as grupo_id',
+                    'grupos.dia',
+                    'grupos.jornada',
+                    'curso_calendario.modalidad',
+                    'calendarios.nombre as nombre_calendario',
+                    'calendarios.id as calendarioId',
+                    'calendarios.fec_ini as calendarioFechaIni',
+                    'calendarios.fec_fin as calendarioFechaFin',
+                    'cursos.nombre as nombre_curso',
+                    'convenios.nombre as nombre_convenio',
+                    'convenios.id as convenioId'
+                )
+                ->join('participantes as p', 'p.id', '=', 'formulario_inscripcion.participante_id')
+                ->join('grupos', 'grupos.id', '=', 'formulario_inscripcion.grupo_id')
+                ->join('calendarios', 'calendarios.id', '=', 'grupos.calendario_id')
+                ->join('curso_calendario', 'curso_calendario.id', '=', 'grupos.curso_calendario_id')
+                ->join('cursos', 'cursos.id', '=', 'curso_calendario.curso_id')
+                ->leftJoin('convenios', 'convenios.id', '=', 'formulario_inscripcion.convenio_id')
+                ->where('p.id', $participanteId)
+                ->where('grupos.calendario_id', $calendarioVigente->getId())
+                ->whereNotIn('formulario_inscripcion.estado', ['Anulado', 'Pagado', 'Revisar comprobante de pago'])
                 ->orderByDesc('formulario_inscripcion.id')
                 ->get();
 

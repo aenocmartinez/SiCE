@@ -32,6 +32,7 @@ class FormularioInscripcion {
         $this->valorPago = 0;
         $this->pathComprobantePago = "";
         $this->comentarios = "Sin comentarios";
+        $this->convenio = new Convenio();
         $this->repository = new FormularioInscripcionDao();
     }
 
@@ -253,6 +254,10 @@ class FormularioInscripcion {
 
     public function tieneConvenio(): bool {
         return $this->convenio->getId() > 0;
+    }
+
+    public function getConvenio(): Convenio {
+        return $this->convenio;
     }
 
     public function tipoConvenioCooperativa(): bool {

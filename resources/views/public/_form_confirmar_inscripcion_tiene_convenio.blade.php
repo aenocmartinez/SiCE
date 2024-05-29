@@ -25,7 +25,17 @@
                     </div>
                   </td>
                   <td class="pe-0 fw-medium text-end" id="idCosto">{{ $grupo->getCostoFormateado() }}</td>
-                </tr>                
+                </tr> 
+                @if ($totalAbono)                                  
+                  <tr>
+                    <td class="ps-0">
+                      <a class="fw-semibold" href="javascript:void(0)">Abonos realizados</a>
+                    </td>
+                    <td class="pe-0 text-end">
+                      {{ $totalAbono }}
+                    </td>
+                  </tr>
+                @endif                               
                 <tr>
                   <td class="ps-0">
                     <a class="fw-semibold" href="javascript:void(0)">Descuento convenio</a>
@@ -40,7 +50,7 @@
                 <tr>
                   <td class="ps-0 fw-medium">Total a pagar</td>
                   <td class="pe-0 fw-bold text-end" id="idValorTotalAPagar">
-                    <a class="fw-semibold" href="javascript:void(0)"><h3>{{ $totalPagoFormateado }}</h3></a>
+                    <a class="fw-semibold" href="javascript:void(0)"><h3>{{ $totalAPagarConAbono != "" ? $totalAPagarConAbono : $totalPagoFormateado }}</h3></a>
                 </td>
                 </tr>
 

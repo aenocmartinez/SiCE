@@ -175,6 +175,11 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
                 $formularioDao->valor_descuento = $formulario->getValorDescuento();
                 $formularioDao->total_a_pagar = $formulario->getTotalAPagar();
+                $formularioDao->estado = $formulario->getEstado();
+                
+                if ($formulario->getPathComprobantePago()) {
+                    $formularioDao->path_comprobante_pago = $formulario->getPathComprobantePago();
+                }
                 
                 if ($formulario->getConvenioId() > 0) {
                     $formularioDao->convenio_id = $formulario->getConvenioId();

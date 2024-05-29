@@ -8,7 +8,7 @@ class ConfirmarInscripcionDto {
     public int $grupoId;
     public string $medioPago;
     public int $convenioId;
-    public int $formularioId;
+    public int $formularioId = 0;
     public $costoCurso;
     public $valorDescuento;
     public $totalAPagar;
@@ -19,5 +19,5 @@ class ConfirmarInscripcionDto {
     public $pathComprobantePago;
     public $comentarios;
     public $fec_max_legalizacion;
-    public $flagComprobante;
+    public $flagComprobante;    
 }

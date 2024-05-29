@@ -124,7 +124,9 @@ class ParticipanteController extends Controller
         $participante = (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId);
         if (!$participante->existe()) {
             return redirect()->route('participantes.index')->with('code', "404")->with('status', "El participante no fue encontrado.");
-        }        
+        }
+
+        
 
         return view('participantes.formularios', [
             'participante' => $participante,

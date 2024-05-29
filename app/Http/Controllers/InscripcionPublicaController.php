@@ -8,12 +8,14 @@ use App\Http\Requests\FormularioPublicoInscripionConsultarExistencia;
 use Illuminate\Http\Request;
 use Src\domain\Calendario;
 use Src\domain\Convenio;
+use Src\domain\FormularioInscripcion;
 use Src\domain\Grupo;
 use Src\domain\Participante;
 use Src\infraestructure\util\FormatoFecha;
 use Src\infraestructure\util\FormatoMoneda;
 use Src\infraestructure\util\ListaDeValor;
 use Src\usecase\convenios\BuscarConvenioPorIdUseCase;
+use Src\usecase\formularios\BuscarFormularioPorIdUseCase;
 use Src\usecase\formularios\ConfirmarInscripcionUseCase;
 use Src\usecase\formularios\GenerarReciboMatriculaUseCase;
 use Src\usecase\grupos\BuscarGrupoPorIdUseCase;
@@ -73,27 +75,61 @@ class InscripcionPublicaController extends Controller
         
         $calendarioVigente = Calendario::Vigente();
         if (!$calendarioVigente->existe()) {
-            dd("No hay calendarios vigentes");
+            return redirect('public.inicio')->with('message', 'No hay calendarios vigentes')->with('code', 500);
         }
+
+        if ($participante->tieneFormulariosPendientesDePago()) {
+            return view('public.pagos_pendientes', [
+                'participante' => $participante
+            ]);
+        }
+ 
 
         $items = $calendarioVigente->listarGruposParaFormularioInscripcionPublico();
         
         return view('public.seleccion_de_cursos', [
             'items' => $items,
             'participante' => $participante,
+            'formularioId' => 0,
         ]);
     }
 
-    private function calcularValorDescuentoYTotalAPagar(Participante $participante, Grupo $grupo, Convenio $convenio): array {        
-        
-        $totalPago = $grupo->getCosto();
-                
-        $descuento = 0;
-        if ($convenio->existe() && !$convenio->esCooperativa()) {
-            $descuento = $grupo->getCosto() * ($convenio->getDescuento()/100);
+    public function seleccionarCursoMatricula($participanteId) {
+        $calendarioVigente = Calendario::Vigente();
+        if (!$calendarioVigente->existe()) {
+            return redirect('public.inicio')->with('message', 'No hay calendarios vigentes')->with('code', 500);
         }
 
-        $totalPago = $totalPago - $descuento;                    
+        $participante = (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId);
+        if (!$participante->existe()) {
+            return redirect('public.inicio')->with('message', 'El participante no existe')->with('code', 500);
+        }
+
+        $items = $calendarioVigente->listarGruposParaFormularioInscripcionPublico();
+       
+        return view('public.seleccion_de_cursos', [
+            'items' => $items,
+            'participante' => $participante,
+            'formularioId' => 0,
+        ]);
+    }
+
+    private function calcularValorDescuentoYTotalAPagar(Participante $participante, Grupo $grupo, Convenio $convenio, FormularioInscripcion $formulario): array {        
+        
+        $totalPago = $grupo->getCosto();
+        
+        $descuento = 0;
+        if ($convenio->existe() && !$convenio->esCooperativa()) {            
+            $descuento = $grupo->getCosto() * ($convenio->getDescuento()/100);
+        }
+        $totalPago = $totalPago - $descuento; 
+
+        $totalAbono = 0;
+        if ($formulario->existe()) {                        
+            foreach($formulario->PagosRealizados() as $pago) {
+                $totalAbono += $pago->getValor();
+            }
+        }
     
         if ($participante->vinculadoUnicolMayor()) {     
             
@@ -107,30 +143,44 @@ class InscripcionPublicaController extends Controller
             }
         }
 
-
         return [
             'totalPagoFormateado' => FormatoMoneda::PesosColombianos($totalPago),
             'descuentoFormateado' => FormatoMoneda::PesosColombianos($descuento),
             'totalPago' => $totalPago,
             'descuento' => $descuento,
             'convenio' => $convenio,
+            'totalAbono' => FormatoMoneda::PesosColombianos($totalAbono),
+            'totalAPagarConAbono' => FormatoMoneda::PesosColombianos(($totalPago - $totalAbono)),
         ];
     }
 
-    public function formularioInscripcion($participanteId, $grupoId) {
+    public function formularioInscripcion($participanteId, $grupoId, $formularioId=0) {
+
         $participante = (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId);
         if (!$participante->existe()) {
-            dd("No existe el participante");
+            return redirect('public.inicio')->with('message', 'El participante no existe')->with('code', 500);
         }
 
         $grupo = (new BuscarGrupoPorIdUseCase)->ejecutar($grupoId);
         if (!$grupo->existe()){ 
-            dd("No existe el grupo");
+            return redirect('public.inicio')->with('message', 'El grupo seleccionado no existe')->with('code', 500);
+        }
+
+        $formulario = (new BuscarFormularioPorIdUseCase)->ejecutar($formularioId);
+        
+        if ($formulario->existe()) {
+
+            if ($formulario->Pagado() || $formulario->RevisarComprobanteDePago()) {
+                return redirect('public.inicio')->with('message', 'La inscripción al curso está en estado pagado o en revisión de comprobante de pago.')->with('code', 500);
+            }
         }
 
         $convenio = (new BuscarConvenioPorIdUseCase)->ejecutar($participante->getIdBeneficioConvenio());
+        if ($formulario->tieneConvenio()) {         
+            $convenio = $formulario->getConvenio();
+        }
 
-        $datosDePago = $this->calcularValorDescuentoYTotalAPagar($participante, $grupo, $convenio);
+        $datosDePago = $this->calcularValorDescuentoYTotalAPagar($participante, $grupo, $convenio, $formulario);
         
         $formularioAMostrar = "public._form_confirmar_inscripcion_no_tiene_convenio";
         if ($convenio->existe()) 
@@ -158,12 +208,16 @@ class InscripcionPublicaController extends Controller
             'descuento' => $datosDePago['descuento'],
             'totalPagoFormateado' => $datosDePago['totalPagoFormateado'],
             'descuentoFormateado' => $datosDePago['descuentoFormateado'],
+            'totalAPagarConAbono' => $datosDePago['totalAPagarConAbono'],
+            'totalAbono' => $datosDePago['totalAbono'],
             'formularioAMostrar' => $formularioAMostrar,
+            'formularioId' => $formularioId,
+            'formulario' => $formulario,
         ]);
     }
 
     public function confirmarInscripcion(FormularioPublicoConfirmarInscripcion $req) {
-            
+
         $formularioDto = $this->hydrateConfirmarInscripcionDto( $req->validated() );
         
         $formularioDto->pathComprobantePago = "";
@@ -232,6 +286,7 @@ class InscripcionPublicaController extends Controller
         $formularioDto->costoCurso = $datos['costo_curso'];
         $formularioDto->valorDescuento = $datos['valor_descuento'];
         $formularioDto->totalAPagar = $datos['total_a_pagar'];
+        $formularioDto->formularioId = $datos['formularioId'];
 
         $formularioDto->flagComprobante = false;
         if (isset($datos['flagComprobante'])) {
