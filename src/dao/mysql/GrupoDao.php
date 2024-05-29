@@ -205,10 +205,11 @@ class GrupoDao extends Model implements GrupoRepository {
                     'cupos' => $grupo->getCupo(),
                     'calendario_id' => $grupo->getCalendarioId(),
                     'bloqueado' => $grupo->estaBloqueado(),
+                    'curso_calendario_id' => $grupo->getCursoCalendarioId(),
                 ]);                
                 $exito = true;
             }
-        } catch (\Exception $e) {
+        } catch (\Exception $e) {            
             Sentry::captureException($e);
         }   
         return $exito; 
