@@ -27,7 +27,8 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                             'valor_descuento', 
                             'total_a_pagar',
                             'fecha_max_legalizacion',
-                            'path_comprobante_pago'
+                            'path_comprobante_pago',
+                            'comentarios'
                         ];
     
     public function grupo() {
@@ -147,6 +148,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
                 $nuevoFormulario->numero_formulario = $formulario->getNumero();
                 $nuevoFormulario->path_comprobante_pago = $formulario->getPathComprobantePago();
+                $nuevoFormulario->comentarios = $formulario->getComentarios();
 
                 $participante->formulariosInscripcion()->save($nuevoFormulario);
 
