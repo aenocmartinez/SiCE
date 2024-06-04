@@ -15,9 +15,11 @@
 }
 </style>
 
+@if (session()->has('SESSION_UUID'))
+
 <div class="col-sm-8 col-xl-8">
     @if ($code == 201)
-    <a class="block block-rounded block-link-shadow text-center" href="{{ route('public.descargar-recibo-matricula', $participante) }}">
+    <a id="download-link" class="block block-rounded block-link-shadow text-center" href="{{ route('public.descargar-recibo-matricula', $participante) }}">
         <div class="block-content block-content-full">
             <div class="fs-2 fw-semibold text-success">
                 <i class="fa fa-check text-success"></i>
@@ -44,4 +46,24 @@
     @endif
     
 </div>
+
+@else
+    Su sesión ha finalizado
+@endif  
+
+<script type="text/javascript">
+    document.getElementById('download-link').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevenir la navegación por defecto
+
+        // Abrir el enlace de descarga en una nueva ventana
+        var downloadUrl = this.href;
+        var newWindow = window.open(downloadUrl, '_blank');
+
+        // Cerrar la ventana actual después de un breve retraso
+        setTimeout(function() {
+            window.close();
+        }, 1000); // Ajusta el tiempo según sea necesario
+    });
+</script>
+
 @endsection

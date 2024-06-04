@@ -41,3 +41,4 @@ Route::get('/public/inscripcion/{participanteId}/descargar-recibo-matricula', [I
 
 Route::get('/public/inscripcion/{participanteId}/selecionar-curso', [InscripcionPublicaController::class, 'seleccionarCursoMatricula'])->name('public.seleccionar-curso');
 
+Route::get('/public/inscripcion/salida-segura', [InscripcionPublicaController::class, 'salidaSegura'])->name('public.salidaSegura');

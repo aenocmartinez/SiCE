@@ -67,6 +67,9 @@
 
             <!-- Main Section -->
             <div class="hero-static col-lg-9 d-flex flex-column align-items-center bg-body-extra-light">
+
+            @yield('header')
+
               <div class="p-4 w-100 flex-grow-1 d-flex align-items-center">
                 <div class="w-100">                 
 

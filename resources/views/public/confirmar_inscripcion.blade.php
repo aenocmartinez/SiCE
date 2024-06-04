@@ -12,47 +12,79 @@
 
 @section('content')
 
-<div class="content content-full">
+@if (session()->has('SESSION_UUID'))
 
-  <div class="my-5">
+@section('header')
+        <header id="page-header">
+            <div class="content-header">
 
-    <form method="post" action="{{ route('public.confirmar-inscripcion') }}" enctype="multipart/form-data">
-      @csrf
+            <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-sm btn-alt-secondary me-2 d-lg-none" data-toggle="layout" data-action="sidebar_toggle">
+                <i class="fa fa-fw fa-bars"></i>
+                </button>
+            </div>
 
-      <input type="hidden" name="participanteId" value="{{ $participante->getId() }}">
-      <input type="hidden" name="total_a_pagar" value="{{ $totalPago }}">
-      <input type="hidden" name="valor_descuento" value="{{ $descuento }}">
-      <input type="hidden" name="convenioId" value="{{ $convenio->getId() }}">
-      <input type="hidden" name="grupoId" value="{{ $grupo->getId() }}">
-      <input type="hidden" name="costo_curso" value="{{ $grupo->getCosto() }}">
-      <input type="hidden" name="formularioId" value="{{ $formularioId }}">
-      
-      @include($formularioAMostrar)
+            <div class="d-flex align-items-center">
+                <div class="dropdown d-inline-block ms-2">
+                <a href="{{ route('public.salidaSegura') }}" type="button" class="btn btn-sm btn-alt-secondary d-flex align-items-center">
+                <img class="rounded-circle" src="{{asset('assets/media/avatars/avatar10.jpg')}}" alt="Header Avatar" style="width: 21px;">
+                
+                <span class="d-none d-sm-inline-block ms-2">Salida segura</span>
+                <i class="fa fa-fw fa-arrow-right-to-bracket d-none d-sm-inline-block opacity-50 ms-1 mt-1"></i>
+                </a>
+                </div>
+            </div>
 
-      </form>
+            </div>
+        </header>
+    @endsection
+
+  <div class="content content-full">
+
+    <div class="my-5">
+
+      <form method="post" action="{{ route('public.confirmar-inscripcion') }}" enctype="multipart/form-data">
+        @csrf
+
+        <input type="hidden" name="participanteId" value="{{ $participante->getId() }}">
+        <input type="hidden" name="total_a_pagar" value="{{ $totalPago }}">
+        <input type="hidden" name="valor_descuento" value="{{ $descuento }}">
+        <input type="hidden" name="convenioId" value="{{ $convenio->getId() }}">
+        <input type="hidden" name="grupoId" value="{{ $grupo->getId() }}">
+        <input type="hidden" name="costo_curso" value="{{ $grupo->getCosto() }}">
+        <input type="hidden" name="formularioId" value="{{ $formularioId }}">
+        
+        @include($formularioAMostrar)
+
+        </form>
+
+    </div>
 
   </div>
 
-</div>
+  <script>
+  function confirmEcollect() {
+      
+      Swal.fire({
+          title: 'Importante',
+          html: 'A partir de ahora serás redirigido a la plataforma de pago Ecollect en una nueva pestaña. Allí podrás completar el proceso de pago de manera segura y confiable.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, estoy seguro',
+          cancelButtonText: 'Cancelar'
+      }).then((result) => {
+          if (result.isConfirmed) {
+            var miRedirect = document.createElement('a');
+            miRedirect.setAttribute('href', 'https://www.e-collect.com/customers/pagosunicolmayor.htm');
+            miRedirect.setAttribute('target', '_blank');
+            miRedirect.click();          
+          }
+      });
+  }
+  </script>
 
-<script>
-function confirmEcollect() {
-    
-    Swal.fire({
-        title: 'Importante',
-        html: 'A partir de ahora serás redirigido a la plataforma de pago Ecollect en una nueva pestaña. Allí podrás completar el proceso de pago de manera segura y confiable.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, estoy seguro',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-          var miRedirect = document.createElement('a');
-          miRedirect.setAttribute('href', 'https://www.e-collect.com/customers/pagosunicolmayor.htm');
-          miRedirect.setAttribute('target', '_blank');
-          miRedirect.click();          
-        }
-    });
-}
-</script>
+@else
+    Su sesión ha finalizado
+@endif  
+
 @endsection

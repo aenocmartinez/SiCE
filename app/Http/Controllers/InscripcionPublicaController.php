@@ -25,27 +25,46 @@ use Src\usecase\participantes\GuardarParticipanteUseCase;
 use Src\view\dto\ConfirmarInscripcionDto;
 use Src\view\dto\ParticipanteDto;
 
+use Illuminate\Support\Str;
+
 
 class InscripcionPublicaController extends Controller
 {
     public function index() {            
-        return view('public.inicio');
+        return view('public.inicio', ['mostrarBoton']);
     }
 
     public function consultarExistencia(FormularioPublicoInscripionConsultarExistencia $req) {
         $datoFormulario = $req->validated();
         
         $participante = (new BuscarParticipantePorDocumentoUseCase)->ejecutar($datoFormulario['tipoDocumento'], $datoFormulario['documento']);
+        $participante->setTipoDocumento($datoFormulario['tipoDocumento']);        
+        $participante->setDocumento($datoFormulario['documento']);  
 
-        $participante->setTipoDocumento($datoFormulario['tipoDocumento']);
-        $participante->setDocumento($datoFormulario['documento']);
+        request()->session()->put('SESSION_UUID', (string) Str::uuid());
 
         request()->session()->put('participante', $participante);
 
         return redirect()->route('public.formulario-participante');
     }
 
+    public function salidaSegura() {
+
+        if (is_null(request()->session()->get('SESSION_UUID'))) {
+            return redirect()->route('public.inicio')->with('code', "404")->with('status', "Su sesión ha finalizado.");
+        }        
+
+        session()->forget('SESSION_UUID');
+
+        return redirect()->route('public.inicio');
+    }
+
     public function formularioParticipante(Request $request) {
+
+        if (is_null(request()->session()->get('SESSION_UUID'))) {
+            return redirect()->route('public.inicio')->with('code', "404")->with('status', "Su sesión ha finalizado.");
+        }
+
         $participante = $request->session()->get('participante');
 
         return view('public.actualizacion_datos', [
@@ -57,6 +76,10 @@ class InscripcionPublicaController extends Controller
     }
 
     public function guardarDatosParticipante(FormularioPublicoGuardarParticipante $req) {
+
+        if (is_null(request()->session()->get('SESSION_UUID'))) {
+            return redirect()->route('public.inicio')->with('code', "404")->with('status', "Su sesión ha finalizado.");
+        }        
 
         $participante = request()->session()->get('participante');
         $datosFormulario =  $req->validated();
@@ -95,6 +118,11 @@ class InscripcionPublicaController extends Controller
     }
 
     public function seleccionarCursoMatricula($participanteId) {
+
+        if (is_null(request()->session()->get('SESSION_UUID'))) {
+            return redirect()->route('public.inicio')->with('code', "404")->with('status', "Su sesión ha finalizado.");
+        }
+
         $calendarioVigente = Calendario::Vigente();
         if (!$calendarioVigente->existe()) {
             return redirect('public.inicio')->with('message', 'No hay calendarios vigentes')->with('code', 500);
@@ -155,6 +183,10 @@ class InscripcionPublicaController extends Controller
     }
 
     public function formularioInscripcion($participanteId, $grupoId, $formularioId=0) {
+
+        if (is_null(request()->session()->get('SESSION_UUID'))) {
+            return redirect()->route('public.inicio')->with('code', "404")->with('status', "Su sesión ha finalizado.");
+        }        
 
         $participante = (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId);
         if (!$participante->existe()) {
@@ -218,6 +250,10 @@ class InscripcionPublicaController extends Controller
 
     public function confirmarInscripcion(FormularioPublicoConfirmarInscripcion $req) {
 
+        if (is_null(request()->session()->get('SESSION_UUID'))) {
+            return redirect()->route('public.inicio')->with('code', "404")->with('status', "Su sesión ha finalizado.");
+        }        
+
         $formularioDto = $this->hydrateConfirmarInscripcionDto( $req->validated() );
         
         $formularioDto->pathComprobantePago = "";
@@ -248,6 +284,10 @@ class InscripcionPublicaController extends Controller
     }
 
     function descargarReciboMatricula($participanteId) {
+
+        if (is_null(request()->session()->get('SESSION_UUID'))) {
+            return redirect()->route('public.inicio')->with('code', "404")->with('status', "Su sesión ha finalizado.");
+        }
         
         if ($participanteId == 0) {
             return redirect()->route('public.inicio')->with('code', "404")->with('status', "Formulario no válido.");
@@ -258,6 +298,8 @@ class InscripcionPublicaController extends Controller
         if (!$resultado["exito"]) {
             return redirect()->route('public.inicio')->with('code', "404")->with('status', "Formulario no válido.");
         }
+        
+        session()->forget('SESSION_UUID');
 
         $nombre_archivo = $resultado["nombre_archivo"];
                 
@@ -268,7 +310,7 @@ class InscripcionPublicaController extends Controller
             'Content-Disposition' => 'attachment; filename="' . $nombre_archivo . '"',
         ];
         
-        return response()->download($ruta_archivo, $nombre_archivo, $headers)->deleteFileAfterSend(true);        
+        return response()->download($ruta_archivo, $nombre_archivo, $headers)->deleteFileAfterSend(true);
     }       
 
     private function hydrateConfirmarInscripcionDto($datos): ConfirmarInscripcionDto {
