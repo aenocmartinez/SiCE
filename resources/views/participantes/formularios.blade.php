@@ -99,6 +99,13 @@
                                     title="Descargar recibo matrícula">
                                     Recibo
                             </a>
+
+                            <a href="{{ route('participantes.ver-detalle-inscripcion', $f->getNumero()) }}" 
+                                    class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-success-light text-success"
+                                    data-bs-toggle="tooltip" 
+                                    title="Detalle de la inscripción">
+                                    Ver
+                            </a>                             
                     </td>                    
                 </tr>
                 @empty

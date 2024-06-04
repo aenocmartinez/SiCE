@@ -115,6 +115,19 @@ class ParticipanteController extends Controller
                         ->with('status', $response->message);        
     }
 
+    public function verDetalleInscripcion($numeroFormulario) {
+        
+        $formulario = (new BuscarFormularioPorNumeroUseCase)->ejecutar($numeroFormulario);
+        if (!$formulario->existe()) {
+            return redirect()->route('formularios.index')->with('code', "404")->with('status', "El formulario no fue encontrado.");
+        }
+        
+        return view('participantes.detalle_inscripcion',[
+            'formulario' => $formulario,
+            'convenios' => (new ListarConveniosUseCase)->ejecutar(),
+        ]);
+    }    
+
     public function listarFormularios($participanteId) {
         $esValido = Validador::parametroId($participanteId);
         if (!$esValido) {
@@ -125,8 +138,6 @@ class ParticipanteController extends Controller
         if (!$participante->existe()) {
             return redirect()->route('participantes.index')->with('code', "404")->with('status', "El participante no fue encontrado.");
         }
-
-        
 
         return view('participantes.formularios', [
             'participante' => $participante,

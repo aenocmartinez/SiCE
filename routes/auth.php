@@ -171,6 +171,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/formularios/legalizar-inscripcion', [FormularioInscripcionController::class, 'legalizarInscripcion'])->name('formularios.legalizar-inscripcion');
     Route::patch('/formularios/{numeroFormulario}/participante/{participanteId}/anular', [FormularioInscripcionController::class, 'anularInscripcion'])->name('formularios.anular-inscripcion');
     Route::get('/formularios/p/{page}/periodo/{periodo}/estado/{estado?}', [FormularioInscripcionController::class, 'buscadorFormulariosPaginados'])->name('formularios.buscador-paginador');
+    Route::get('/formularios/detalle-inscripcion/{numeroFormulario}/formulario', [FormularioInscripcionController::class, 'verDetalleInscripcion'])->name('formularios.ver-detalle-inscripcion');
 
     Route::get('/participantes/{id}/editar', [ParticipanteController::class, 'edit'])->name('participantes.edit');
     Route::get('/participantes/crear', [ParticipanteController::class, 'create'])->name('participantes.create');
@@ -184,5 +185,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/participantes/legalizar-inscripcion', [ParticipanteController::class, 'legalizarInscripcion'])->name('participantes.legalizar-inscripcion');
     Route::get('/participantes/{page?}', [ParticipanteController::class, 'index'])->name('participantes.index');
     Route::get('/salones/{page}/q/{criteria}', [ParticipanteController::class, 'buscadorParticipantesPaginados'])->name('participantes.buscador-paginador');
+    Route::get('/participantes/formulario/{numeroFormulario}/detalle-inscripcion', [ParticipanteController::class, 'verDetalleInscripcion'])->name('participantes.ver-detalle-inscripcion');
 
 });

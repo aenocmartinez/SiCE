@@ -235,6 +235,19 @@ class FormularioInscripcionController extends Controller
     }    
 
 
+    public function verDetalleInscripcion($numeroFormulario) {
+        
+        $formulario = (new BuscarFormularioPorNumeroUseCase)->ejecutar($numeroFormulario);
+        if (!$formulario->existe()) {
+            return redirect()->route('formularios.index')->with('code', "404")->with('status', "El formulario no fue encontrado.");
+        }
+        
+        return view('formularios.detalle_inscripcion',[
+            'formulario' => $formulario,
+            'convenios' => (new ListarConveniosUseCase)->ejecutar(),
+        ]);
+    }
+
     public function editLegalizarInscripcion($numeroFormulario) {
         
         $formulario = (new BuscarFormularioPorNumeroUseCase)->ejecutar($numeroFormulario);
