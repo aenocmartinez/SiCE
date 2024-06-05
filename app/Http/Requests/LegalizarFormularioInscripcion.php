@@ -33,7 +33,8 @@ class LegalizarFormularioInscripcion extends FormRequest
             'valor_descuento' => 'nullable',
             'costo_curso' => 'required',
             'total_a_pagar' => 'required',
-            'medioPago' => 'required'
+            'medioPago' => 'required',
+            'comentarios' => 'nullable',
         ];                
     }
 

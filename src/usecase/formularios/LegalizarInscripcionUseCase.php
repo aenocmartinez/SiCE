@@ -27,6 +27,10 @@ class LegalizarInscripcionUseCase {
         $formulario->setTotalAPagar($datosLegalizacion['total_a_pagar']);
         $formulario->setValorDescuento($datosLegalizacion['valor_descuento']);
         $formulario->setEstado("Pagado");
+
+        if (strlen($datosLegalizacion['comentarios'])>0) {
+            $formulario->setComentarios($datosLegalizacion['comentarios']);
+        }        
         
         
         $convenio = new Convenio();

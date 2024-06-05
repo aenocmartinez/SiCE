@@ -151,7 +151,18 @@
                                     {{ $message }}
                                 </span>
                             @enderror                            
-                        </div>                        
+                        </div>    
+                        
+                        <div class="form-floating">
+                          <input type="text" 
+                                  class="form-control" 
+                                  id="comentarios" 
+                                  name="comentarios" 
+                                  value="{{ old('comentarios', 'Sin comentarios') }}"
+                                  placeholder="Comentarios">  
+                          <label class="form-label" for="comentarios">Comentarios</label>
+                        </div>
+
                     </div>
 
                     <div class="mb-4 text-center">

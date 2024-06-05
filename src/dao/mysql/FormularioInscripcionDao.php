@@ -178,6 +178,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formularioDao->valor_descuento = $formulario->getValorDescuento();
                 $formularioDao->total_a_pagar = $formulario->getTotalAPagar();
                 $formularioDao->estado = $formulario->getEstado();
+                $formularioDao->comentarios = $formulario->getComentarios();
                 
                 if ($formulario->getPathComprobantePago()) {
                     $formularioDao->path_comprobante_pago = $formulario->getPathComprobantePago();
@@ -277,7 +278,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
         try {
             $resultado = FormularioInscripcionDao::select('id','numero_formulario','estado','total_a_pagar','created_at', 'path_comprobante_pago', 
-                'valor_descuento','participante_id','grupo_id','convenio_id', 'fecha_max_legalizacion')    
+                'valor_descuento','participante_id','grupo_id','convenio_id', 'fecha_max_legalizacion', 'comentarios')    
                 ->where('formulario_inscripcion.numero_formulario', $numeroFormulario)
                 ->first();
 
@@ -291,6 +292,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formulario->setNumero($resultado->numero_formulario);
                 $formulario->setPathComprobantePago($resultado->path_comprobante_pago);
                 $formulario->setFechaMaxLegalizacion($resultado->fecha_max_legalizacion);
+                $formulario->setComentarios($resultado->comentarios);
 
                 $grupo = $grupoDao->buscarGrupoPorId($resultado->grupo_id);
                 $participante = $participanteDao->buscarParticipantePorId($resultado->participante_id);

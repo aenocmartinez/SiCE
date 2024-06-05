@@ -88,7 +88,6 @@ class ConfirmarInscripcionUseCase {
             }
 
         } else { 
-
             $exito = $formularioInscripcion->Crear();
             if (!$exito) {
                 return new Response("500", "Ha ocurrido al intentar confirmar la inscripción.");

@@ -19,7 +19,6 @@
 @section("subseccion", $titulo)
 
 @section("content")
-
     <form method="post" action="{{ route('formulario-inscripcion.paso-5') }}">
         @csrf        
         <input type="hidden" name="participanteId" value="{{ $participante->getId() }}">
