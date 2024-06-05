@@ -2,7 +2,7 @@
     $flag = true;
 @endphp
 
-<div class="bg-body-light mb-5">
+<div class="bg-body-light mb-1">
   <div class="content content-full">
     <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center py-2">
       <div class="flex-grow-1">
@@ -18,6 +18,80 @@
     </div>
   </div>
 </div>
+
+@php
+    $total_a_pagar = 0;
+    $numero_cursos = 0;
+    if (session()->has('cursos_a_matricular')) {
+        $numero_cursos = count(Session::get('cursos_a_matricular'));
+    }        
+@endphp
+
+<!-- Carrito de compra -->
+<div class="block-header">
+    <h3 class="block-title text-end">
+    <i class="fa fa-fw fa-shopping-cart text-muted me-1"></i> Cursos seleccionados ({{ $numero_cursos }})
+    </h3>
+</div>
+@if ($numero_cursos > 0)  
+<div class="block-content">
+  <table class="table table-bordered table-vcenter fs-sm">
+    <thead>
+      <tr class="text-center">
+        <th></th>
+        <th>Curso</th>
+        <th>Costo</th>
+        <th>Descuento</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (Session::get('cursos_a_matricular') as $curso)        
+      <tr>
+        <td class="text-center">
+          <a class="text-muted fs-sm" href="{{ route('public.quitar-curso', [$participante->getId(), $curso['grupoId'], $formularioId]) }}">
+            <i class="fa fa-trash-can"></i>
+          </a>
+        </td>
+        <td>
+          <a class=" text-info" href="#">
+            {{ 'G'.$curso['grupoId'] }} - {{ $curso['nombre_curso'] }}
+          </a>
+          <div class="text-muted">{{ $curso['dia'] . " / " . $curso['jornada'] }}</div>
+        </td>
+        <td class="text-center fs-sm"> {{ Src\infraestructure\util\FormatoMoneda::PesosColombianos($curso['costo_curso']) }} </td>
+        <td class="text-center fs-sm"> {{ Src\infraestructure\util\FormatoMoneda::PesosColombianos($curso['descuento']) }} </td>
+        <td class="text-end">
+          <div class="fw-semibold fs-sm">{{ $curso['totalPagoFormateado'] }}</div>
+        </td>
+      </tr>
+      @php
+        $total_a_pagar += $curso['totalPago']; 
+      @endphp
+      @endforeach
+      <tr>
+        <td class="text-end fw-bold h6" colspan="4">Total a pagar</td>
+        <td class="text-end">
+          <div class="fw-semibold text-end">{{ Src\infraestructure\util\FormatoMoneda::PesosColombianos($total_a_pagar) }}</div>
+        </td>
+      </tr>  
+      <tr>
+        <td class="text-end" colspan="5">
+          <a href="{{ route('public.pagar-matricula', [$participante->getId()]) }}" 
+                    class="btn fw-medium fw-semibold d-inline-block py-1 px-3 rounded-pill bg-success-light text-success"
+                    data-bs-toggle="tooltip" 
+                    data-toggle="click-ripple"
+                    title="Ir a pagar">
+                    Ir a pagar
+            </a>
+        </td>
+      </tr>            
+    </tbody>
+  </table>  
+</div>
+@endif
+
+<!-- Fin carrito de compra -->
 
 <div class="block block-rounded row g-0">
     <ul class="nav nav-tabs nav-tabs-block flex-md-column col-md-4 col-xxl-2" role="tablist">
@@ -58,12 +132,12 @@
                         <td class="text-center">{{ $grupo->cuposDisponibles }}</td>
                         <td class="d-none d-sm-table-cell text-center">
                         @if ($grupo->cuposDisponibles > 0)                          
-                          <a href="{{ route('public.inscribir-participante-a-grupo', [$participante->getId(), $grupo->grupoId, $formularioId]) }}" 
+                          <a href="{{ route('public.agregar_curso_a_matricula', [$participante->getId(), $grupo->grupoId, $formularioId]) }}" 
                                   class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-info-light text-info"
                                   data-bs-toggle="tooltip" 
                                   data-toggle="click-ripple"
                                   title="inscribirse">
-                                  Inscribirse
+                                  Agregar curso
                           </a>  
                         @endif
                         </td>

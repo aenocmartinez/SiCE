@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FormularioPublicoConfirmarInscripcion;
+use App\Http\Requests\FormularioPublicoConfirmarInscripcion2;
 use App\Http\Requests\FormularioPublicoGuardarParticipante;
 use App\Http\Requests\FormularioPublicoInscripionConsultarExistencia;
 use Illuminate\Http\Request;
@@ -30,20 +31,26 @@ use Illuminate\Support\Str;
 
 class InscripcionPublicaController extends Controller
 {
+    public $cursos_a_matricular = array();
+
     public function index() {            
         return view('public.inicio', ['mostrarBoton']);
     }
 
     public function consultarExistencia(FormularioPublicoInscripionConsultarExistencia $req) {
+        
         $datoFormulario = $req->validated();
         
         $participante = (new BuscarParticipantePorDocumentoUseCase)->ejecutar($datoFormulario['tipoDocumento'], $datoFormulario['documento']);
+        
         $participante->setTipoDocumento($datoFormulario['tipoDocumento']);        
         $participante->setDocumento($datoFormulario['documento']);  
 
+        session()->forget('SESSION_UUID');
+        session()->forget('cursos_a_matricular');
         request()->session()->put('SESSION_UUID', (string) Str::uuid());
-
         request()->session()->put('participante', $participante);
+
 
         return redirect()->route('public.formulario-participante');
     }
@@ -55,6 +62,7 @@ class InscripcionPublicaController extends Controller
         }        
 
         session()->forget('SESSION_UUID');
+        session()->forget('cursos_a_matricular');
 
         return redirect()->route('public.inicio');
     }
@@ -163,8 +171,7 @@ class InscripcionPublicaController extends Controller
             
             $totalPago = $grupo->getCosto();
             
-            if ($participante->totalFormulariosInscritosPeriodoActual() == 0) {
-                
+            if ($participante->totalFormulariosInscritosPeriodoActual() == 0 && !$this->tieneCursoConBeneficioUCMCEnCursosAMatricular()) {
                 $convenio = new Convenio(Convenio::UCMCActual()->getNombre());
                 $convenio->setId(Convenio::UCMCActual()->getId());
                 $totalPago = 0;
@@ -180,6 +187,143 @@ class InscripcionPublicaController extends Controller
             'totalAbono' => FormatoMoneda::PesosColombianos($totalAbono),
             'totalAPagarConAbono' => FormatoMoneda::PesosColombianos(($totalPago - $totalAbono)),
         ];
+    }
+
+    private function existeGrupoEnCursosAMatricular($grupoId=0) {
+        $cursos_a_matricular = [];        
+        if (!is_null(request()->session()->get('cursos_a_matricular'))) {
+            $cursos_a_matricular = request()->session()->get('cursos_a_matricular');
+        }
+
+        foreach ($cursos_a_matricular as $curso) {
+            if ($curso['grupoId'] == $grupoId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function tieneCursoConBeneficioUCMCEnCursosAMatricular() {
+        $cursos_a_matricular = [];        
+        if (!is_null(request()->session()->get('cursos_a_matricular'))) {
+            $cursos_a_matricular = request()->session()->get('cursos_a_matricular');
+        }
+
+        foreach ($cursos_a_matricular as $curso) {
+            if ($curso['esUCMC']) {
+                return true;
+            }
+        }
+        
+        return false;
+    }    
+
+    public function quitarCursoParaMatricular($participanteId, $grupoId, $formularioId=0) {
+        
+        $calendarioVigente = Calendario::Vigente();
+        if (!$calendarioVigente->existe()) {
+            return redirect('public.inicio')->with('message', 'No hay calendarios vigentes')->with('code', 500);
+        }
+
+        if (is_null(request()->session()->get('SESSION_UUID'))) {
+            return redirect()->route('public.inicio')->with('code', "404")->with('status', "Su sesión ha finalizado.");
+        } 
+        
+        $participante = (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId);
+        if (!$participante->existe()) {
+            return redirect('public.inicio')->with('message', 'El participante no existe')->with('code', 500);
+        }        
+        
+        $aux_cursos_a_matricular = [];
+        $cursos_a_matricular = [];
+        if (!is_null(request()->session()->get('cursos_a_matricular'))) {
+            $cursos_a_matricular = request()->session()->get('cursos_a_matricular');
+            session()->forget('cursos_a_matricular');
+        }   
+
+        foreach ($cursos_a_matricular as $curso) {
+            if ($curso['grupoId'] == $grupoId) {
+                continue;
+            }
+            $aux_cursos_a_matricular[] = $curso;
+        }
+
+        request()->session()->put('cursos_a_matricular', $aux_cursos_a_matricular);
+
+        $items = $calendarioVigente->listarGruposParaFormularioInscripcionPublico();
+       
+        return view('public.seleccion_de_cursos', [
+            'items' => $items,
+            'participante' => $participante,
+            'formularioId' => $formularioId,
+            'grupoId' => $grupoId,
+        ]);        
+    }
+
+    public function agregarCursoParaMatricular($participanteId, $grupoId, $formularioId=0) {
+
+        $calendarioVigente = Calendario::Vigente();
+        if (!$calendarioVigente->existe()) {
+            return redirect('public.inicio')->with('message', 'No hay calendarios vigentes')->with('code', 500);
+        }
+
+        if (is_null(request()->session()->get('SESSION_UUID'))) {
+            return redirect()->route('public.inicio')->with('code', "404")->with('status', "Su sesión ha finalizado.");
+        }        
+
+        $participante = (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId);
+        if (!$participante->existe()) {
+            return redirect('public.inicio')->with('message', 'El participante no existe')->with('code', 500);
+        }
+
+        $grupo = (new BuscarGrupoPorIdUseCase)->ejecutar($grupoId);
+        if (!$grupo->existe()){ 
+            return redirect('public.inicio')->with('message', 'El grupo seleccionado no existe')->with('code', 500);
+        }
+
+        $formulario = (new BuscarFormularioPorIdUseCase)->ejecutar($formularioId);
+        
+        if ($formulario->existe()) {
+
+            if ($formulario->Pagado() || $formulario->RevisarComprobanteDePago()) {
+                return redirect('public.inicio')->with('message', 'La inscripción al curso está en estado pagado o en revisión de comprobante de pago.')->with('code', 500);
+            }
+        }
+
+        $convenio = (new BuscarConvenioPorIdUseCase)->ejecutar($participante->getIdBeneficioConvenio());
+        if ($formulario->tieneConvenio()) {         
+            $convenio = $formulario->getConvenio();
+        }
+
+        $datosDePago = $this->calcularValorDescuentoYTotalAPagar($participante, $grupo, $convenio, $formulario);
+        $datosDePago['grupoId'] = $grupoId;
+        $datosDePago['nombre_curso'] = $grupo->getNombreCurso();
+        $datosDePago['costo_curso'] = $grupo->getCosto();
+        $datosDePago['jornada'] = $grupo->getJornada();
+        $datosDePago['dia'] = $grupo->getDia();
+        $datosDePago['esUCMC'] = $participante->vinculadoUnicolMayor();
+
+        $cursos_a_matricular = [];        
+        if (!is_null(request()->session()->get('cursos_a_matricular'))) {
+            $cursos_a_matricular = request()->session()->get('cursos_a_matricular');
+        }   
+        
+        if (!$this->existeGrupoEnCursosAMatricular($grupoId)) {
+            $cursos_a_matricular[] = $datosDePago;
+        }
+
+        request()->session()->put('cursos_a_matricular', $cursos_a_matricular);
+
+        $items = $calendarioVigente->listarGruposParaFormularioInscripcionPublico();
+       
+        return view('public.seleccion_de_cursos', [
+            'items' => $items,
+            'participante' => $participante,
+            'formularioId' => $formularioId,
+            'grupoId' => $grupoId,
+        ]);
+
     }
 
     public function formularioInscripcion($participanteId, $grupoId, $formularioId=0) {
@@ -248,11 +392,48 @@ class InscripcionPublicaController extends Controller
         ]);
     }
 
+    public function confirmarInscripcion2(FormularioPublicoConfirmarInscripcion2 $req) {
+        
+        $datos = $req->validated();
+
+        if (is_null(request()->session()->get('SESSION_UUID'))) {
+            return redirect()->route('public.inicio')->with('code', "404")->with('status', "Su sesión ha finalizado.");
+        }
+
+        $participante = (new BuscarParticipantePorIdUseCase)->ejecutar($datos['participanteId']);
+        if (!$participante->existe()) {
+            return redirect('public.inicio')->with('message', 'El participante no existe')->with('code', 500);
+        }        
+
+        $cursos_a_matricular = [];        
+        if (!is_null(request()->session()->get('cursos_a_matricular'))) {
+            $cursos_a_matricular = request()->session()->get('cursos_a_matricular');
+        } 
+        
+        foreach($cursos_a_matricular as $curso) {
+            // dd($curso);        
+            $confirmarInscripcionDto = $this->hydrateConfirmarInscripcionDto2($req, $curso);
+            $response = (new ConfirmarInscripcionUseCase)->ejecutar($confirmarInscripcionDto);
+            if ($response->code != "201") {                
+                break ;
+            }
+        }
+
+        $calendarioVigente = Calendario::Vigente();
+
+        return view('public.mensaje_respuesta', [
+            'mensaje' => $response->message,
+            'code' => $response->code,
+            'participante' => $datos['participanteId'],
+            'fec_ini_clase' => FormatoFecha::fechaFormateadaA5DeAgostoDe2024($calendarioVigente->getFechaInicioClase()),
+        ]);        
+    }
+
     public function confirmarInscripcion(FormularioPublicoConfirmarInscripcion $req) {
 
         if (is_null(request()->session()->get('SESSION_UUID'))) {
             return redirect()->route('public.inicio')->with('code', "404")->with('status', "Su sesión ha finalizado.");
-        }        
+        }
 
         $formularioDto = $this->hydrateConfirmarInscripcionDto( $req->validated() );
         
@@ -294,12 +475,12 @@ class InscripcionPublicaController extends Controller
         }    
 
         $resultado = (new GenerarReciboMatriculaUseCase)->ejecutar($participanteId);
-
         if (!$resultado["exito"]) {
             return redirect()->route('public.inicio')->with('code', "404")->with('status', "Formulario no válido.");
         }
         
         session()->forget('SESSION_UUID');
+        session()->forget('cursos_a_matricular');
 
         $nombre_archivo = $resultado["nombre_archivo"];
                 
@@ -311,7 +492,63 @@ class InscripcionPublicaController extends Controller
         ];
         
         return response()->download($ruta_archivo, $nombre_archivo, $headers)->deleteFileAfterSend(true);
-    }       
+    }
+
+    private function obtenerPathPDFComprobanteDePago(FormularioPublicoConfirmarInscripcion2 $req) {
+        $pdfPath = "";
+        if (!is_null(request()->pdf)) {
+            $pdfPath = $req->file('pdf')->store('public/pdfs');
+            if ($pdfPath) {
+                $pdfPath = url('/') . "/" . $pdfPath;                
+                $pdfPath = str_replace('/public/', '/storage/app/', $pdfPath);
+            }
+        }
+        return $pdfPath;
+    }
+    
+    private function hydrateConfirmarInscripcionDto2($datos, $curso): ConfirmarInscripcionDto {        
+        $confirmarInscripcionDto = new ConfirmarInscripcionDto();
+        $confirmarInscripcionDto->participanteId = $datos['participanteId'];
+        $confirmarInscripcionDto->grupoId = $curso['grupoId'];
+
+        $medioPago = "pagoDatafono";
+        if (isset($curso['medioPago'])) {
+            $medioPago = $curso['medioPago'];
+        }
+
+        $confirmarInscripcionDto->medioPago = $medioPago;
+        $confirmarInscripcionDto->convenioId = $curso['convenio']->getId();            
+        $confirmarInscripcionDto->costoCurso = $curso['costo_curso'];
+        $confirmarInscripcionDto->valorDescuento = $curso['descuento'];
+        $confirmarInscripcionDto->totalAPagar = $curso['totalPago'];
+        $confirmarInscripcionDto->formularioId = $datos['formularioId'];
+
+        $confirmarInscripcionDto->flagComprobante = false;
+        if (isset($datos['flagComprobante'])) {
+            $confirmarInscripcionDto->flagComprobante = true;
+        }        
+
+        $confirmarInscripcionDto->estado = "Revisar comprobante de pago";
+        if (isset($datos['estado'])) {
+            $confirmarInscripcionDto->estado = $datos['estado'];
+        }
+
+        $confirmarInscripcionDto->pathComprobantePago = $this->obtenerPathPDFComprobanteDePago($datos);
+
+        $voucher = 0;
+        if (isset($datos['voucher'])) {
+            $voucher = $datos['voucher'];
+        }
+        $confirmarInscripcionDto->voucher = $voucher;
+
+        $valorPago = 0;
+        if (isset($datos['valorPago'])) {
+            $valorPago = $datos['valorPago'];
+        }
+        $confirmarInscripcionDto->valorPagoParcial = $valorPago;    
+
+        return $confirmarInscripcionDto;
+    }
 
     private function hydrateConfirmarInscripcionDto($datos): ConfirmarInscripcionDto {
         $formularioDto = new ConfirmarInscripcionDto;
@@ -353,6 +590,34 @@ class InscripcionPublicaController extends Controller
         $formularioDto->valorPagoParcial = $valorPago;
 
         return $formularioDto;
+    }
+
+    public function pagarMatricula($participanteId=0) {
+        
+        if (is_null(request()->session()->get('SESSION_UUID'))) {
+            return redirect()->route('public.inicio')->with('code', "404")->with('status', "Su sesión ha finalizado.");
+        }
+
+        $participante = (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId);
+        if (!$participante->existe()) {
+            return redirect('public.inicio')->with('message', 'El participante no existe')->with('code', 500);
+        }        
+        
+        $formularioAMostrar = "public._form_confirmar_inscripcion_no_tiene_convenio_2";
+
+        
+        // if ($participante->vinculadoUnicolMayor()) {
+        //     $formularioAMostrar = "public._form_confirmar_inscripcion_no_tiene_convenio";
+        //     if ($participante->totalFormulariosInscritosPeriodoActual() == 0) {
+        //         $formularioAMostrar = "public._form_confirmar_inscripcion_ucmc";
+        //     }
+        // }
+        
+        return view('public.confirmar_inscripcion_2', [
+            'participante' => $participante,
+            'formularioAMostrar' => $formularioAMostrar,
+            'formularioId' => 0,
+        ]);
     }
     
     private function hydrateParticipanteDto($dato): ParticipanteDto {

@@ -155,7 +155,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formulario->setId($nuevoFormulario->id);
             }
         } catch(Exception $e) {
-            $exito = false;
+            $exito = false;       
             Sentry::captureException($e);
         }
 

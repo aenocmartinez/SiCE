@@ -43,7 +43,8 @@
                               <label class="form-check-label" for="convenio-{{ $convenio->getId() }}">
                                   <span class="d-block fw-normal p-1">
                                     <span class="d-block fw-semibold mb-1">{{ $convenio->getNombre() }}</span>
-                                    <span class="d-block fs-sm fw-medium text-muted"><span class="fw-semibold">{{ $convenio->getDescuento() }}%</span> de descuento</span>                                    
+                                    <span class="d-block fs-sm fw-medium text-muted"><span class="fw-semibold">{{ $convenio->getDescuento() }}%</span> de descuento</span>
+                                    <span class="d-block fs-sm fw-medium text-muted text-end">{{ Src\infraestructure\util\FormatoMoneda::PesosColombianos($formulario->getValorDescuento())}}</span>
                                   </span>
                               </label>
                           </div>                      
@@ -53,37 +54,37 @@
                   @endif                    
                   </td>
                 </tr>
-                <tr>
-                    <td class="ps-0">
-                      <a class="fw-semibold" href="javascript:void(0)">¿Tiene pagos paricales?</a>
-                    </td>
-                    <td class="ps-0 text-end">
-                      {{ $formulario->tienePagosParciales() ? 'SÍ' : 'NO' }}
-                    </td>
-                  </tr>
+
                 @if ($formulario->tienePagosParciales())
                   <tr>
                     <td class="ps-0" colspan="2">
-                      <a class="fw-semibold" href="javascript:void(0)">Abonos realizados</a>
+                      <a class="fw-semibold" href="javascript:void(0)">Pagos</a>
                     </td>
                   </tr>
                   @foreach ($formulario->PagosRealizados() as $pago)
-                    <tr>
-                      <td class="ps-0 fs-sm">
-                        {{ $pago->getFechaFormateada() }}<br><small>{{ "Voucher: " . $pago->getVoucher() }}</small>
-                    </td>
-                    <td class="pe-0 fs-sm text-end">{{ $pago->getValorFormateado() }}</td>
-                  </tr>                
+                    @if ($pago->getVoucher() != 0)
+                      <tr>
+                        <td class="ps-0 fs-sm">
+                          {{ $pago->getFechaFormateada() }}<br><small>{{ "Voucher: " . $pago->getVoucher() }}</small>
+                      </td>
+                      <td class="pe-0 fs-sm text-end">{{ $pago->getValorFormateado() }}</td>
+                    </tr>                
+                    @endif
                   @endforeach                                 
                 @endif
+
+                
                 <tr>
-                  <td class="ps-0 fs-medium fw-semibold">Valor a pagar</td>
+                  <td class="ps-0 fs-medium fw-semibold">
+                  {{ $formulario->Pagado() ? 'Valor pagado' : 'Valor a pagar' }}
+                  </td>
                   <td class="pe-0 fs-sm text-end">
                     <a class="fw-medium" href="javascript:void(0)" id="idPendientePorAPagar">
-                      {{ $formulario->totalAPagarConDescuentoDePagoParcialFormateado() }}
+                    {{ $formulario->Pagado() ? Src\infraestructure\util\FormatoMoneda::PesosColombianos($formulario->TotalPagoRealizado()) : $formulario->totalAPagarConDescuentoDePagoParcialFormateado() }}
                     </a>                    
                   </td>
-                </tr>                 
+                </tr>    
+                
               </tbody>
             </table>
           </div>
