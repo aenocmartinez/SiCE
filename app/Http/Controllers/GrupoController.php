@@ -11,6 +11,7 @@ use Src\infraestructure\util\Validador;
 use Src\usecase\areas\ListarOrientadoresPorCursoCalendarioUseCase;
 use Src\usecase\calendarios\ListarCalendariosUseCase;
 use Src\usecase\cursos\ListarCursosUseCase;
+use Src\usecase\dashboard\ListadoDeGruposConYSinCuposDisponiblesUseCase;
 use Src\usecase\grupos\ActualizarGrupoUseCase;
 use Src\usecase\grupos\BuscadorGruposUseCase;
 use Src\usecase\grupos\BuscarGrupoPorIdUseCase;
@@ -115,6 +116,23 @@ class GrupoController extends Controller
             'orientadores' => (new ListarOrientadoresPorCursoCalendarioUseCase)->ejecutar($cursoCalendarioId),
             'orientadorIdActual' => $orientadorIdActual,
         ]);        
+    }
+
+    public function listarCursosAbiertosOCerrados($tipo) {
+                
+        $index = 'con_cupos';
+        $title = 'Cursos abiertos';
+        if ($tipo == 'cerrado') {
+            $index = 'sin_cupos';
+            $title = 'Cursos cerrados';
+        }
+        
+        $cursos = (new ListadoDeGruposConYSinCuposDisponiblesUseCase)->ejecutar();        
+        return view('grupos.cursos_por_estado', [
+            'title' => $title,
+            'cursos' => $cursos[$index]
+        ]);
+        
     }
 
     public function buscadorGrupos(){        

@@ -168,4 +168,8 @@ class Calendario {
     public static function pasarANoDisponibleLosBeneficiosPorConvenioDeUnParticipante() {
         CalendarioDao::pasarANoDisponibleLosBeneficiosPorConvenioDeUnParticipante();
     }
+
+    public function listaDeGrupos(): array {
+        return CalendarioDao::listaDeGrupos($this->id);
+    }
 }

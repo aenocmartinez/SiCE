@@ -27,19 +27,21 @@ class DashboardUseCase {
             'totalCursosAbiertos' => 0,
             'totalOrientadores' => 0,
             'totalCursosCreados' => 0,
+            'totalCursosSinCupos' => 0,
+            'totalCursosConCupos' => 0,
         ];
 
+        $grupos = (new ListadoDeGruposConYSinCuposDisponiblesUseCase)->ejecutar();
+        
         $listaOrientadores = (new ListarOrientadoresUseCase)->ejecutar();        
         
-
-        $listaCursos = (new ListarCursosUseCase)->ejecutar();
-        
+        // $listaCursos = (new ListarCursosUseCase)->ejecutar();        
                 
         $calendarioVigente = Calendario::Vigente();
 
         if (!$calendarioVigente->existe()) {
             $datosDashboard['totalOrientadores'] = sizeof($listaOrientadores);
-            $datosDashboard['totalCursosCreados'] = sizeof($listaCursos);
+            // $datosDashboard['totalCursosCreados'] = sizeof($listaCursos);
             return $datosDashboard;
         }
 
@@ -53,7 +55,8 @@ class DashboardUseCase {
         $datosDashboard['totalCursosAbiertos'] = sizeof($listaCursosAbiertos);        
 
         $datosDashboard['totalOrientadores'] = sizeof($listaOrientadores);
-        $datosDashboard['totalCursosCreados'] = sizeof($listaCursos);
+        $datosDashboard['totalCursosSinCupos'] = sizeof($grupos['sin_cupos']);
+        $datosDashboard['totalCursosConCupos'] = sizeof($grupos['con_cupos']);
         
         return $datosDashboard;
     }

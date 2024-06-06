@@ -169,57 +169,50 @@
               </a>
             </div>
             <div class="col-md-6 mt-4">
-              <a class="block block-rounded block-link-shadow" href="javascript:void(0)">
+              <!-- <a class="block block-rounded block-link-shadow" href="{{ route('grupos.estado-cursos', ['tipo' => 'cerrado']) }}"> -->
+              <div class="block block-rounded block-link-shadow">
                 <div class="block-content block-content-full">
                   <div class="row text-center">
                     <div class="col-6 border-end">
                       <div class="py-3">
                         <div class="item item-circle bg-body-light mx-auto">
-                          <i class="fa fa-briefcase text-primary"></i>
+                          <i class="fa fa-clipboard-check text-primary"></i>
                         </div>
                         <dl class="mb-0">
                           <dt class="h3 fw-extrabold mt-3 mb-0">
-                          {{ $datosDashboard['totalCursosAbiertos'] }}
+                          {{ $datosDashboard['totalCursosSinCupos'] }}
                           </dt>
+                           
                           <dd class="fs-sm fw-medium text-muted mb-0">
-                            Cursos abiertos
+                            <a href="{{ route('grupos.estado-cursos', ['tipo' => 'cerrado']) }}">
+                              Cursos cerrados por cupo completo
+                            </a>
                           </dd>
                         </dl>
                       </div>
                     </div>
-                    <!-- <div class="col-4 border-end">
-                      <div class="py-3">
-                        <div class="item item-circle bg-body-light mx-auto">
-                          <i class="fa fa-chart-line text-primary"></i>
-                        </div>
-                        <dl class="mb-0">
-                          <dt class="h3 fw-extrabold mt-3 mb-0">
-                            5
-                          </dt>
-                          <dd class="fs-sm fw-medium text-muted mb-0">
-                            Cursos menos matriculados
-                          </dd>
-                        </dl>
-                      </div>
-                    </div> -->
+                    
                     <div class="col-6">
                       <div class="py-3">
                         <div class="item item-circle bg-body-light mx-auto">
-                          <i class="fa fa-users text-primary"></i>
+                        <i class="fa fa-chart-line text-primary"></i>
                         </div>
                         <dl class="mb-0">
                           <dt class="h3 fw-extrabold mt-3 mb-0">
-                            {{ $datosDashboard['totalOrientadores'] }}
+                            {{ $datosDashboard['totalCursosConCupos'] }}
                           </dt>
                           <dd class="fs-sm fw-medium text-muted mb-0">
-                            Orientadores
+                            <a href="{{ route('grupos.estado-cursos', ['tipo' => 'abierto']) }}">
+                              Cursos con cupos disponibles
+                            </a>
                           </dd>
                         </dl>
                       </div>
                     </div>
                   </div>
                 </div>
-              </a>
+              </div>
+              <!-- </a> -->
             </div>
             <div class="col-md-6 mt-4">
               <a class="block block-rounded bg-danger" href="javascript:void(0)">
@@ -232,10 +225,10 @@
                         </div>
                         <dl class="mb-0">
                           <dt class="text-white h3 fw-extrabold mt-3 mb-0">
-                            {{ $datosDashboard['totalCursosCreados'] }}
+                            {{ $datosDashboard['totalCursosSinCupos'] }}
                           </dt>
                           <dd class="text-white fs-sm fw-medium text-muted mb-0">
-                            Cursos creados
+                            Cursos sin cupos
                           </dd>
                         </dl>
                       </div>

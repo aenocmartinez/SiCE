@@ -15,6 +15,7 @@ use Sentry\Laravel\Facade as Sentry;
 use Src\domain\Convenio;
 use Src\domain\FormularioInscripcion;
 use Src\domain\Grupo;
+use Src\domain\Orientador;
 use Src\domain\Participante;
 use Src\infraestructure\util\FormatoMoneda;
 use Src\view\dto\AreaInscripcionDto;
@@ -475,5 +476,43 @@ class CalendarioDao extends Model implements CalendarioRepository {
         }
         
         return $participantes;        
-    }    
+    } 
+    
+    public static function listaDeGrupos($calendarioId): array {
+        $grupos = [];
+
+        $items = DB::table('grupos as g')
+                    ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 'g.bloqueado', 'o.nombre as nombre_orientador',
+                            'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id', 'c.nombre as nombre_curso', 'ca.nombre as calendario_nombre',
+                            DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
+                            )
+                    ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
+                    ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
+                    ->join('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
+                    ->join('cursos as c', 'c.id', '=', 'cc.curso_id')
+                    ->join('salones as s', 's.id', '=', 'g.salon_id')
+                    ->where('g.calendario_id', $calendarioId)
+                    // ->orderBy('c.nombre')
+                    ->orderBy('totalInscritos', 'desc')
+                    ->get();
+        
+        foreach($items as $item) {
+            $grupo = new Grupo();
+            $grupo->setId($item->id);
+            $grupo->setCupo($item->cupos);
+            $grupo->setNombre($item->nombre);
+            $grupo->setJornada($item->jornada);
+            $grupo->setDia($item->dia);
+            $grupo->setTotalInscritos($item->totalInscritos);
+            $grupo->setCursoCalendario(new CursoCalendario(new Calendario($item->calendario_nombre), new Curso($item->nombre_curso)));
+            
+            $orientador = new Orientador();
+            $orientador->setNombre($item->nombre_orientador);
+            $grupo->setOrientador($orientador);
+
+            $grupos[] = $grupo;
+        }
+
+        return $grupos;
+    }
 }
