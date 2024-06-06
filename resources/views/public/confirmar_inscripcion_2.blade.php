@@ -63,7 +63,7 @@
       
       Swal.fire({
           title: 'Importante',
-          html: 'A partir de ahora serás redirigido a la plataforma de pago Ecollect en una nueva pestaña. Allí podrás completar el proceso de pago de manera segura y confiable.',
+          html: 'A partir de ahora serás redirigido a la plataforma de pago Ecollect en una nueva pestaña. Recuerda subir el comprobante de pago en formato PDF para formalizar la inscripción una vez completes el pago.',
           icon: 'warning',
           showCancelButton: true,
           confirmButtonText: 'Sí, estoy seguro',

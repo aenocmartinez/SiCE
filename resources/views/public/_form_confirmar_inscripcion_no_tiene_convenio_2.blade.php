@@ -65,7 +65,7 @@
                     <h2 class="text-danger">¡Importante!</h2>
                     <h5 class="text-muted">Una vez que hayas realizado el pago, es imprescindible que cargues el comprobante de pago en formato PDF en nuestro sistema.</h5>
                     Esto nos permitirá registrar tu transacción de manera adecuada e iniciar el proceso de verificación de tu inscripción, 
-                    que tardará 3 días hábiles a partir de la fecha de carga del comprobante de pago.  Se te notificará al correo electrónico registrado en la inscripción.
+                    que tardará 3 días hábiles a partir de la fecha de carga del comprobante de pago.
                     <br><br>Recuerda que es responsabilidad del usuario asegurarse de que el comprobante de pago se cargue correctamente en el sistema.
                   </td>
                 </tr>                
