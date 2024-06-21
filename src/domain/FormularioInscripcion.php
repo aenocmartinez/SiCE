@@ -4,6 +4,7 @@ namespace Src\domain;
 
 use Carbon\Carbon;
 use Src\dao\mysql\FormularioInscripcionDao;
+use Src\dao\mysql\FormularioInscripcionPagoDao;
 use Src\domain\repositories\FormularioRepository;
 use Src\infraestructure\util\FormatoMoneda;
 
@@ -212,6 +213,10 @@ class FormularioInscripcion {
         return $this->grupo->getCostoFormateado();
     }
 
+    public function getGrupoCursoCostoSinFormato() {
+        return $this->grupo->getCosto();
+    }
+
     public function getGrupoCalendarioId(): int {
         return $this->grupo->getCalendarioId();
     }
@@ -353,6 +358,11 @@ class FormularioInscripcion {
     }
 
     public function TotalPagoRealizado() {
+
+        if ($this->Pagado()) {
+            return $this->totalAPagar;
+        }
+
         $totalPagado = 0;
         $pagos = $this->PagosRealizados();
         foreach($pagos as $pago) {
@@ -383,6 +393,14 @@ class FormularioInscripcion {
         return $estado;
     }
 
+    public function getParticipante(): Participante {
+        return $this->participante;
+    }
+
+    public function getGrupo(): Grupo {
+        return $this->grupo;
+    }
+
     public function RedimirBeneficioConvenio(): bool {                
         return $this->repository->redimirBeneficioConvenio($this->getParticipanteDocumento(), $this->getConvenioId());
     }
@@ -401,7 +419,8 @@ class FormularioInscripcion {
     }
 
     public function totalAPagarConDescuentoDePagoParcialFormateado() {        
-        return FormatoMoneda::PesosColombianos( ($this->totalAPagar - $this->TotalPagoRealizado()) );
+        // return FormatoMoneda::PesosColombianos( ($this->totalAPagar - $this->TotalPagoRealizado()) );
+        return FormatoMoneda::PesosColombianos( ($this->totalAPagar) );
     }
 
     public function totalPendientePorPagar() {
@@ -420,8 +439,107 @@ class FormularioInscripcion {
         return $this->repository->actualizarFormulario($this);
     }
 
+    public function CambiarGrupoYValoresDePago(Grupo $nuevoGrupo, $datosDePago=[]): bool {
+        return $this->repository->actualizarGrupoFormulario($this->id, $nuevoGrupo->getId(), $datosDePago);
+    }
+
     public function FacturarConvenio(): bool {
         $this->repository = new FormularioInscripcionDao();
         return $this->repository->actualizarFormularioPorFacturacionDeConvenio($this);
+    }
+
+    public function RecalcularDatosDePago(Grupo $grupo, $datosComplementarios = ['justificacion', 'accion', 'decision_sobre_pago']): array {
+
+        $totalPagoActual = $this->totalAPagar;
+        $descuento = 0;
+
+        $datosDePago = ['comentarios' => $datosComplementarios['justificacion'], 
+                    'costoCurso' => $grupo->getCosto(), 
+                    'totalAPagar' => $totalPagoActual, 
+                    'descuento' => $this->valorDescuento, 
+                    'estado' => $this->estado,
+                    'decision_sobre_pago' => $datosComplementarios['decision_sobre_pago'],
+                    'pago_decision_sobre_pago' => 0,
+                ];
+
+        if ($this->tieneConvenio()) {            
+            $descuento = $grupo->getCosto() * ($this->getConvenioDescuento() / 100);
+        }
+        
+        if ($this->participante->vinculadoUnicolMayor()) {            
+            if ($this->participante->totalFormulariosInscritosPeriodoActual() < 2) {
+                $datosDePago['totalAPagar'] = 0;
+                $datosDePago['descuento'] = $grupo->getCosto();        
+                $this->CambiarGrupoYValoresDePago($grupo, $datosDePago);
+                return $datosDePago;                
+            }
+        }        
+        
+        $saldo = $totalPagoActual - ($grupo->getCosto() - $descuento);
+        if ($saldo == 0) {
+            $this->CambiarGrupoYValoresDePago($grupo, $datosDePago);
+            return $datosDePago;
+        }
+
+        // Saldo a favor
+        if ($saldo > 0) {
+            $datosDePago['totalAPagar'] = ($grupo->getCosto() - $descuento);
+            $datosDePago['descuento'] = $descuento;
+            $datosDePago['estado'] = 'Pagado';
+            $datosDePago['valor_decision_sobre_pago'] = ($this->totalAPagar - $datosDePago['totalAPagar']);                    
+
+            if ($this->RevisarComprobanteDePago()) {
+                $abono = new FormularioInscripcionPago();
+                $abono->setValor($this->totalAPagar);                    
+                $abono->setVoucher(0);
+                $abono->setMedio($datosComplementarios['accion']);
+                $abono->setFecha(Carbon::now('America/Bogota')->format('Y-m-d H:i:s'));
+                $this->repository->realizarPagoFormularioInscripcion($this->id, $abono);
+                $datosDePago['estado'] = 'Revisar comprobante de pago';
+            }
+
+            if (!$this->PendienteDePago() && $datosDePago['decision_sobre_pago'] == 'devolución') {
+                $saldoAFavor = new FormularioInscripcionPago();                      
+                $saldoAFavor->setValor((($this->totalAPagar - $datosDePago['totalAPagar'])*-1));                    
+                $saldoAFavor->setVoucher(0);
+                $saldoAFavor->setMedio('Devolución saldo a favor por cambio de grupo');
+                $saldoAFavor->setFecha(Carbon::now('America/Bogota')->format('Y-m-d H:i:s'));
+                $this->repository->realizarPagoFormularioInscripcion($this->id, $saldoAFavor);            
+            }
+
+            if ($this->PendienteDePago()) {
+                $datosDePago['estado'] = 'Pendiente de pago';
+            }
+            
+            $this->CambiarGrupoYValoresDePago($grupo, $datosDePago);
+
+            return $datosDePago;            
+        }
+
+        // Saldo en contra
+        if ($saldo < 0) {
+            $datosDePago['estado'] = 'Pendiente de pago';
+            $datosDePago['totalAPagar'] = $grupo->getCosto() - $totalPagoActual;
+
+            if ($this->tieneConvenio()) {
+                $datosDePago['descuento'] = $descuento;
+                $datosDePago['totalAPagar'] = $datosDePago['totalAPagar'] - $descuento;
+            }
+
+            $this->CambiarGrupoYValoresDePago($grupo, $datosDePago);
+            
+            if ($this->RevisarComprobanteDePago()) {
+                $abono = new FormularioInscripcionPago();
+                $abono->setValor($this->totalAPagar);                    
+                $abono->setVoucher(0);
+                $abono->setMedio($datosComplementarios['accion']);
+                $abono->setFecha(Carbon::now('America/Bogota')->format('Y-m-d H:i:s'));
+                $this->repository->realizarPagoFormularioInscripcion($this->id, $abono);
+            }
+            
+            return $datosDePago;
+        }
+
+        return $datosDePago;
     }
 }

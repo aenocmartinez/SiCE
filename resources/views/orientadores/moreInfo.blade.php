@@ -84,20 +84,39 @@
                     <div class="block-content block-content-full d-flex align-items-center justify-content-between bg-primary-dark">
                     <div class="me-3">
                         <p class="fs-sm fw-medium text-white-75 mb-0">
-                        Últimos cursos dictados 
-                        </p>
+                        {{ count($orientador->misGrupos()) }} Cursos en el periodo vigente
+                        </p>                        
                     </div>
                     </div>
                     <div class="list-group push">
                         @forelse ($orientador->misGrupos() as $grupo)
-                        <a class="list-group-item list-group-item-action" href="javascript:void(0)">
-                        <small>
-                            {{ $grupo->getNombreCurso() }} <small>({{ $grupo->getModalidad() }})</small> / Periodo: {{ $grupo->getNombreCalendario() }}
-                            <span class="text-muted" style="font-size: 11px;">
-                                ({{ $grupo->getDia() }} en la {{ strtolower($grupo->getJornada()) }})
-                            </span>
-                        </small>
-                        </a>
+                        <div class="list-group-item list-group-item-action text-center">
+                            <small>
+                                <span class="fw-bold text-muted">{{ $grupo->getNombreCurso() }}</span>
+                                <span class="text-muted fs-xs">
+                                ({{ $grupo->getNombre() }} - {{ $grupo->getDia() }} en la {{ strtolower($grupo->getJornada()) }} )
+                                </span>
+                            </small>
+
+                            <div class="fs-xs fw-bold">
+
+                                <!-- Pie Chart Container -->
+                                <div class="js-pie-chart pie-chart fw-bold mb-1 mt-1" 
+                                     data-percent="{{ round(($grupo->getTotalInscritos() / $grupo->getCupo()) * 100) }}" 
+                                     data-line-width="3" 
+                                     data-size="60" 
+                                     data-bar-color="#82b54b" 
+                                     data-track-color="#e9e9e9">
+                                     <span>{{ $grupo->getTotalInscritos() }}/{{ $grupo->getCupo() }}</span>
+                                </div>
+                                <div class="text-center">
+                                    <a href="{{ route('grupos.descargar-planilla-asistencia', $grupo->getId()) }}" 
+                                        class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
+                                        <i class="fa fa-fw fa-download"></i> Planilla asistencia
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                         @empty
                         <a class="list-group-item list-group-item-action" href="javascript:void(0)">
                             <small>No tiene cursos asignados</small>

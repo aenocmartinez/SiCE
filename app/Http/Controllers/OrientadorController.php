@@ -149,7 +149,7 @@ class OrientadorController extends Controller
         }        
     }
 
-    public function show($id) {
+    public function show($id) {        
         $orientador = (new BuscarOrientadorPorIdUseCase)->ejecutar($id);
         if (!$orientador->existe()) {
             return redirect()->route('cursos.index')->with('code', "404")->with('status', "Orientador no encontrado");

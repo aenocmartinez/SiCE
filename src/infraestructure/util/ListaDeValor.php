@@ -96,4 +96,33 @@ class ListaDeValor {
             [ 'value' => 'Anulado', 'nombre' => 'Anulado'],
         ];        
     }
+
+    public static function tipoDocumentos(): array {
+        return [
+            [ 'value' => 'CC', 'nombre' => 'Cédula'],
+            [ 'value' => 'TI', 'nombre' => 'Tarjeta de identidad'],
+            [ 'value' => 'CE', 'nombre' => 'Cédula de extranjería'],
+            [ 'value' => 'PP', 'nombre' => 'Pasaporte'],
+        ];        
+    }
+
+    public static function motivosCambiosYTraslados(): array {
+        return [
+            [ 'value' => 'cambio', 'nombre' => 'Cambiar de curso o grupo'],
+            [ 'value' => 'traslado', 'nombre' => 'Trasladar'],
+            [ 'value' => 'aplazamiento', 'nombre' => 'Aplazar'],
+            [ 'value' => 'cancelacion', 'nombre' => 'Cancelar'],
+        ];
+    }
+
+    public static function tagMotivoCambioYTraslado($opcion='cambio'): string {
+        $motivos = [
+            'cambio' => 'Cambio de curso',
+            'traslado' => 'Trasladar',
+            'aplazamiento' => 'Aplazar',
+            'cancelacion' => 'Cancelar',
+        ];
+
+        return $motivos[$opcion];
+    }
 }

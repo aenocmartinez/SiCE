@@ -26,26 +26,12 @@
                         Periodo: {{ $formulario->getGrupoCalendarioNombre() }}
                     </div>
                   </td>
-                  <td class="pe-0 fw-medium text-end" id="idCosto">{{ $formulario->getGrupoCursoCosto() }}</td>
+                  <td class="pe-0 fw-medium text-end"></td>
                 </tr>
                 <tr>
                   <td class="ps-0" colspan="2">
                     <a class="fw-semibold" href="javascript:void(0)">Descuento convenio</a>                 
-                    <!-- <div class="fs-sm text-muted" id="idNombreDescuento">
-                        @if ($formulario->tieneConvenio())                            
-                            {{ $formulario->getConvenioNombre() }}
-                        @else
-                            No aplica
-                        @endif
-                    </div> -->
                   </td>                  
-                  <!-- <td class="pe-0 fw-medium text-end" id="idValorDescuento">
-                        @if ($formulario->tieneConvenio())                            
-                            {{ $formulario->getValorDescuentoFormateado() }}
-                        @else
-                            $ 0 COP
-                        @endif                                        
-                  </td> -->
                 </tr>
                 <tr>
                   <td class="ps-0" colspan="2">
@@ -75,27 +61,56 @@
                       @endforeach                       
                   </td>
                 </tr>
+                <tr>
+                  <td class="ps-0">
+                    <a class="fw-semibold" href="javascript:void(0)">Costo del curso</a>
+                  </td>
+                  <td class="pe-0 fw-medium text-end">{{ $formulario->getGrupoCursoCosto() }}</td>
+                </tr>   
+                <tr>
+                    <td class="ps-0">
+                      <a class="fw-semibold" href="javascript:void(0)">
+                        Descuento por convenio
+                      </a>
+                    </td>
+                    <td class="pe-0 fw-medium text-end" id="idDescuentoNuevo"></td>
+                </tr>
+                <tr>
+                    <td class="ps-0">
+                      <a class="fw-semibold" href="javascript:void(0)">
+                        Costo real del curso
+                      </a>
+                    </td>
+                    <td class="pe-0 fw-medium text-end">
+                      <h5 class="mt-3" id="idCosto"></h5>
+                    </td>
+                </tr>   
+                                           
                 @if ($formulario->tienePagosParciales())
                   <tr>
-                    <td class="ps-0" colspan="2">
-                      <a class="fw-semibold" href="javascript:void(0)">Abonos realizados</a>
+                    <td class="ps-0 fw-semibold" colspan="2">
+                      <a href="javascript:void(0)">Abonos realizados</a>
                     </td>
                   </tr>
                   @foreach ($formulario->PagosRealizados() as $pago)
-                    <tr>
-                      <td class="ps-0 fs-sm">
-                        {{ $pago->getFechaFormateada() }}<br><small>{{ "Voucher: " . $pago->getVoucher() }}</small>
-                    </td>
-                    <td class="pe-0 fs-sm text-end">{{ $pago->getValorFormateado() }}</td>
-                  </tr>                
-                  @endforeach                                 
+                      @if ($pago->getValor() != 0)
+                        <tr>
+                          <td class="ps-0 fs-sm">
+                            {{ $pago->getFechaFormateada() }}<br><small>{{ "Voucher: " . $pago->getVoucher() }}</small>
+                        </td>
+                        <td class="pe-0 fs-sm text-end">{{ $pago->getValorFormateado() }}</td>
+                      </tr>                                    
+                      @endif
+                    @endforeach                                                                     
                 @endif
                 <tr>
-                  <td class="ps-0 fs-sm fw-semibold">Valor a pagar</td>
+                  <td class="ps-0 fs-sm fw-semibold"><h3>Valor a pagar</h3></td>
                   <td class="pe-0 fs-sm text-end">
+                    <h3 class="mt-3">
                     <a class="fw-semibold" href="javascript:void(0)" id="idPendientePorAPagar">
                       {{ $formulario->totalAPagarConDescuentoDePagoParcialFormateado() }}
-                    </a>                    
+                    </a>   
+                    </h3>                 
                   </td>
                 </tr>                 
               </tbody>
@@ -155,10 +170,10 @@
                         
                         <div class="form-floating">
                           <input type="text" 
-                                  class="form-control" 
+                                  class="form-control fs-sm" 
                                   id="comentarios" 
                                   name="comentarios" 
-                                  value="{{ old('comentarios', 'Sin comentarios') }}"
+                                  value="{{ old('comentarios', $formulario->getComentarios()) }}"
                                   placeholder="Comentarios">  
                           <label class="form-label" for="comentarios">Comentarios</label>
                         </div>
@@ -267,6 +282,8 @@
             
             $('#idValorTotalAPagar').text(formatoMoneda( valores[0] ));
             $("#total_a_pagar").val(valores[0]); 
+
+            $("#idDescuentoNuevo").text(formatoMoneda(valores[1]));
             $('#idCosto').text(formatoMoneda( valores[0] ));    
 
             var pendiente_por_pagar = valores[0] - $("#pago_parcial").val();

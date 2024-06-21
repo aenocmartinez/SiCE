@@ -22,4 +22,5 @@ interface FormularioRepository {
     public function actualizarFormularioPorFacturacionDeConvenio(FormularioInscripcion $formulario): bool;
     public static function listarFormulariosPorEstadoYCalendario($estado="", $calendarioId=0): array;
     public static function GenerarReciboDeMatricula($participanteId=0): array;
+    public function actualizarGrupoFormulario($formularioId, $grupoId, $datos = []): bool;
 }

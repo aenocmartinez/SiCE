@@ -141,7 +141,7 @@
                     @endif
 
                     @endif
-                    <a href="{{ route('formulario-inscripcion.descargar-recibo-matricula', $f->getParticipanteId()) }}" 
+                        <a href="{{ route('formulario-inscripcion.descargar-recibo-matricula', $f->getParticipanteId()) }}" 
                                     class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-info-light text-info"
                                     data-bs-toggle="tooltip" 
                                     title="Descargar recibo matrícula">
@@ -153,7 +153,7 @@
                                     data-bs-toggle="tooltip" 
                                     title="Detalle de la inscripción">
                                     Ver
-                            </a>                            
+                        </a>                            
                     </td>                    
                 </tr>
                 @empty

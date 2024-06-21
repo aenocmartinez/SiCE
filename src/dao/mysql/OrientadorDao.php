@@ -12,6 +12,7 @@ use Src\domain\Orientador;
 use Src\domain\repositories\OrientadorRepository;
 
 use Sentry\Laravel\Facade as Sentry;
+use Src\domain\Calendario;
 use Src\infraestructure\util\Paginate;
 
 class OrientadorDao extends Model implements OrientadorRepository {
@@ -35,15 +36,27 @@ class OrientadorDao extends Model implements OrientadorRepository {
     }
 
     public function grupos($idOrientador) {        
+
+        $calendario = Calendario::Vigente();
+        if (!$calendario->existe()) {
+            return [];
+        }
+
+        $calendarioId = $calendario->getId();
         return DB::table('grupos as g')
-                ->select('g.id', 'g.curso_calendario_id', 'g.salon_id', 'g.dia', 'g.jornada',
-                        'cc.curso_id', 'cc.calendario_id', 'cc.modalidad')
-                ->join('orientadores as o', 'g.orientador_id', '=', 'o.id')
-                ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
-                ->where('o.id', $idOrientador)
-                ->orderBy('g.curso_calendario_id', 'desc')
-                ->limit(10)
-                ->get();
+                    ->select(
+                        'g.id', 'g.curso_calendario_id', 'g.salon_id', 'g.dia', 'g.jornada', 'cc.curso_id', 'cc.calendario_id', 
+                        'cc.modalidad', 'g.cupos', 'g.nombre',
+                        DB::raw('(SELECT COUNT(*) FROM formulario_inscripcion fi WHERE fi.grupo_id = g.id AND fi.estado != "Anulado") as total_inscripciones_validas')
+                    )
+                    ->join('orientadores as o', 'g.orientador_id', '=', 'o.id')
+                    ->join('curso_calendario as cc', function($join) use ($calendarioId) {
+                        $join->on('cc.id', '=', 'g.curso_calendario_id')
+                            ->where('cc.calendario_id', $calendarioId);
+                    })
+                    ->where('o.id', $idOrientador)
+                    ->orderBy('g.curso_calendario_id', 'desc')
+                    ->get();
     }
 
     public function listarOrientadores(): array {
@@ -85,7 +98,6 @@ class OrientadorDao extends Model implements OrientadorRepository {
         $orientador = new Orientador();        
         $cursoDao = new CursoDao();
         $calendarioDao = new CalendarioDao();
-        $orientadorDao = new OrientadorDao();
         $salonDao = new SalonDao();
                 
         try {
@@ -115,9 +127,12 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 foreach($this->grupos($rs['id']) as $g) {
                     
                     $grupo = new Grupo();                
+                    $grupo->setNombre($g->nombre);
                     $grupo->setid($g->id);
                     $grupo->setDia($g->dia);
                     $grupo->setJornada($g->jornada);
+                    $grupo->setCupo($g->cupos);
+                    $grupo->setTotalInscritos($g->total_inscripciones_validas);
                     
                     $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);                    
 

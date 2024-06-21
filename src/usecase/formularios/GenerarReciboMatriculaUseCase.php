@@ -67,7 +67,9 @@ class GenerarReciboMatriculaUseCase {
                 $info_convenio = "<br><br><strong>Convenio:</strong> ".$item[self::CONVENIO];
             }
 
-            $TOTAL_FACTURA += $item[self::CURSO_TOTAL_PAGAR];
+            $SUBTOTAL = ($item[self::CURSO_COSTO] - $item[self::CURSO_VALOR_DESCUENTO]);
+            // $TOTAL_FACTURA += $item[self::CURSO_TOTAL_PAGAR];
+            $TOTAL_FACTURA += $SUBTOTAL;
             $cursos_matriculados .= "<tr>
                 <td>
                     <span class=\"course-name\">".$item[self::CURSO_NOMBRE]."</span><br>
@@ -75,7 +77,7 @@ class GenerarReciboMatriculaUseCase {
                 </td>
                 <td>". $formatter->formatCurrency($item[self::CURSO_COSTO], 'COP') ."</td>
                 <td>". $formatter->formatCurrency($item[self::CURSO_VALOR_DESCUENTO], 'COP') ."</td>
-                <td>". $formatter->formatCurrency($item[self::CURSO_TOTAL_PAGAR], 'COP') ."</td>
+                <td>". $formatter->formatCurrency($SUBTOTAL , 'COP') ."</td>
                 <td>". $item[self::FORMULARIO] ."</td>
                 <td>". $item[self::ESTADO]."</td>
                 <td>". $item[self::FEC_MAX_LEGALIZACION]."</td>

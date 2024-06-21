@@ -282,4 +282,8 @@ class Participante {
     public function tieneFormulariosPendientesDePago(): bool {
         return sizeof($this->listarFormulariosPendientesDePago()) > 0;
     }
+
+    public function formulariosParaCambiosYTramites(): array {
+        return $this->repository->listarFormulariosDeInscripcionParticipante($this->id);
+    }
 }

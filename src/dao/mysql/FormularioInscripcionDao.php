@@ -590,4 +590,24 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
         return $datosReciboMatricula;
     }
+
+    public function actualizarGrupoFormulario($formularioId, $grupoId, $datos = []): bool {
+        try {
+            $formularioDao = FormularioInscripcionDao::find($formularioId);
+            if ($formularioDao) {
+                $formularioDao->grupo_id = $grupoId;
+                $formularioDao->comentarios = $datos['comentarios'];
+                $formularioDao->valor_descuento = $datos['descuento'];
+                $formularioDao->total_a_pagar = $datos['totalAPagar'];
+                $formularioDao->costo_curso = $datos['costoCurso'];
+                $formularioDao->estado = $datos['estado'];
+                $formularioDao->save();
+            }
+        } catch (Exception $e) {
+            dd($e->getMessage());
+            // Sentry::captureException($e);
+            return false;
+        }
+        return true;
+    }
 }

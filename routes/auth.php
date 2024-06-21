@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\CalendarioController;
+use App\Http\Controllers\CambiosTrasladosController;
 use App\Http\Controllers\ConvenioController;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\DashboardController;
@@ -76,6 +77,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/areas/{id}', [AreaController::class, 'delete'])->name('areas.delete');
     Route::patch('/areas', [AreaController::class, 'update'])->name('areas.update');
     Route::get('/areas/{page?}', [AreaController::class, 'paginar'])->name('areas.index');
+
+    Route::get('/cambios-y-traslados/crear', [CambiosTrasladosController::class, 'create'])->name('cambios-traslados.create');
+    Route::get('/cambios-y-traslados/{page?}', [CambiosTrasladosController::class, 'paginar'])->name('cambios-traslados.index');
+    Route::post('/cambios-y-traslados/buscador', [CambiosTrasladosController::class, 'buscadorCambiosYTraslados'])->name('cambios-traslados.buscador');
+    Route::get('/cambios-y-traslados/{page}/q/{criteria}', [CambiosTrasladosController::class, 'buscadorCambiosYTrasladosPaginados'])->name('cambios-traslados.buscador-paginador');
+    Route::post('/cambios-y-traslados/buscar-participante', [CambiosTrasladosController::class, 'buscarParticipantePorDocumento'])->name('cambios-y-traslados.buscar_participante_por_documento');
+    Route::get('/cambios-y-traslados/{numero_formulario}/formulario-tramite', [CambiosTrasladosController::class, 'formularioDeTramite'])->name('cambios-traslados.form-tramite');
+    Route::get('/cambios-y-traslados/{area_id}/cursos-para-matricular', [CambiosTrasladosController::class, 'listarCursosParaMatricular'])->name('cambios-traslados.cursos-para-matricular');
+    Route::post('/cambios-y-traslados/guardar-tramite', [CambiosTrasladosController::class, 'guardarTramite'])->name('cambios-y-traslados.guardar-tramite');
 
     Route::get('/cursos/{id}/editar', [CursoController::class, 'buscarPorId'])->name('cursos.edit');
     Route::get('/cursos/crear', [CursoController::class, 'create'])->name('cursos.create');

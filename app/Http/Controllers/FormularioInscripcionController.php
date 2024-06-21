@@ -206,10 +206,6 @@ class FormularioInscripcionController extends Controller
                             ->with('nombre_archivo', $nombre_archivo);
     }
 
-    function descargarFormatoPagoInscripcion($formularioId) {
-
-    }
-
     function descargarReciboMatricula($participanteId) {
         
         if ($participanteId == 0) {

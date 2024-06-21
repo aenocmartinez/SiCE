@@ -57,14 +57,15 @@
                 @if ($formulario->tienePagosParciales())
                   <tr>
                     <td class="ps-0" colspan="2">
-                      <a class="fw-semibold" href="javascript:void(0)">Pagos</a>
+                      <a class="fw-semibold" href="javascript:void(0)">Abonos realizados</a>
                     </td>
                   </tr>
                   @foreach ($formulario->PagosRealizados() as $pago)                    
-                    @if ($pago->getVoucher() != 0)
+                    @if ($pago->getValor() != 0)
                       <tr>
                         <td class="ps-0 fs-sm">
-                          {{ $pago->getFechaFormateada() }}<br><small>{{ "Voucher: " . $pago->getVoucher() }}</small>
+                          {{ $pago->getFechaFormateada() }}
+                          <br><small>{{ $pago->getMedio() }}</small>
                       </td>
                       <td class="pe-0 fs-sm text-end">{{ $pago->getValorFormateado() }}</td>
                     </tr>   
@@ -75,11 +76,13 @@
 
                 <tr>
                   <td class="ps-0 fs-medium fw-semibold">
-                  {{ $formulario->Pagado() ? 'Valor pagado' : 'Valor a pagar' }}
+                  {{ $formulario->Pagado() ? 'Valor pagado' : 'Valor pendiente por pagar' }}
                   </td>
                   <td class="pe-0 fs-sm text-end">
-                    <a class="fw-medium" href="javascript:void(0)" id="idPendientePorAPagar">
-                    {{ $formulario->Pagado() ? Src\infraestructure\util\FormatoMoneda::PesosColombianos($formulario->TotalPagoRealizado()) : $formulario->totalAPagarConDescuentoDePagoParcialFormateado() }}
+                    <a href="javascript:void(0)" id="idPendientePorAPagar">
+                      <h3 class="mt-3">
+                      {{ $formulario->Pagado() ? Src\infraestructure\util\FormatoMoneda::PesosColombianos($formulario->TotalPagoRealizado()) : $formulario->totalAPagarConDescuentoDePagoParcialFormateado() }}
+                      </h3>
                     </a>                    
                   </td>
                 </tr>                 
