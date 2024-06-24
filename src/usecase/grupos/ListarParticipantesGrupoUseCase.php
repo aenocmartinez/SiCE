@@ -10,5 +10,5 @@ class ListarParticipantesGrupoUseCase {
 
         $grupoDao = new GrupoDao();
         return $grupoDao->listadoParticipantesGrupo($grupoId);
-    }    
+    }
 }

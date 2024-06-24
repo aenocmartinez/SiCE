@@ -20,6 +20,7 @@ use Src\usecase\grupos\EliminarGrupoUseCase;
 use Src\usecase\grupos\ListarCursosPorCalendarioUseCase;
 use Src\usecase\grupos\ListarGruposUseCase;
 use Src\usecase\grupos\ListarParticipantesGrupoUseCase as GruposListarParticipantesGrupoUseCase;
+use Src\usecase\grupos\ListarParticipantesPlanillaAsistenciaUseCase;
 use Src\usecase\orientadores\ListarOrientadoresUseCase;
 use Src\usecase\salones\ListarSalonesPorEstadoUseCase;
 use Src\view\dto\GrupoDto;
@@ -193,7 +194,8 @@ class GrupoController extends Controller
 
     public function descargarPlanillaAsistencia($grupoId=0) {    
 
-        $datos = (new GruposListarParticipantesGrupoUseCase)->ejecutar($grupoId);
+        // $datos = (new GruposListarParticipantesGrupoUseCase)->ejecutar($grupoId);
+        $datos = (new ListarParticipantesPlanillaAsistenciaUseCase)->ejecutar($grupoId);        
         if (sizeof($datos) == 1) {
             return redirect()->route('grupos.index')->with('code', "500")->with('status', "No tiene participantes inscritos");
         }    
@@ -206,12 +208,12 @@ class GrupoController extends Controller
         $participantes = "";
 
         foreach($datos as $index => $participante) {
+            
             if ($index == 0) {
                 continue;
-            }
-
+            }            
             $participantes .= "<tr>
-                <td class=\"student-name\">".$participante[5]."</td>
+                <td class=\"student-name\">".$participante[5]."<br>".$participante[6]."</td>
                 <td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td>
                 <td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td>
                 <td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td>

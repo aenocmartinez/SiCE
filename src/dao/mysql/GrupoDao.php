@@ -461,4 +461,74 @@ class GrupoDao extends Model implements GrupoRepository {
         
         return $participantes;        
     }
+
+    // ES ESTEEEEE
+    public static function listadoParticipantesPlanillaAsistencia($grupoId=0): array {
+        $participantes = [];
+
+        try {
+                    $items = DB::table('participantes as p')
+                    ->select([
+                        'fi.numero_formulario',
+                        DB::raw("CONCAT(p.primer_nombre, ' ', p.segundo_nombre, ' ', p.primer_apellido, ' ', p.segundo_apellido) AS nombre_participante"),
+                        DB::raw("CONCAT(p.tipo_documento, ' - ', p.documento) AS documento_participante"),
+                        'p.telefono',
+                        'p.email',
+                        DB::raw("IF(c.nombre IS NULL, 'N/A', c.nombre) as convenio"),
+                        DB::raw("IF(
+                            fi.convenio_id IS NULL, 
+                            IF(fi.estado = 'Pagado', 1, 0), 
+                            IF(
+                                c.es_cooperativa AND fi.estado = 'Pendiente de Pago', 
+                                1, 
+                                IF(fi.estado = 'Pagado', 1, 0)
+                            )
+                        ) as estadoInscripcion"),
+                        'g.nombre as grupo',
+                        'g.dia',
+                        'g.jornada',
+                        'cu.nombre as curso',
+                        'o.nombre as orientador',
+                        'ca.nombre as calendario'
+                    ])
+                    ->join('formulario_inscripcion as fi', function($join) use ($grupoId) {
+                        $join->on('fi.participante_id', '=', 'p.id')
+                             ->where('fi.grupo_id', '=', $grupoId);
+                    })
+                    ->join('grupos as g', 'g.id', '=', 'fi.grupo_id')
+                    ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
+                    ->join('calendarios as ca', 'ca.id', '=', 'g.calendario_id')
+                    ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
+                    ->join('cursos as cu', 'cu.id', '=', 'cc.curso_id')
+                    ->leftJoin('convenios as c', 'c.id', '=', 'fi.convenio_id')
+                    ->having('estadoInscripcion', '=', 1) 
+                    ->orderBy('p.primer_nombre')
+                    ->orderBy('p.primer_apellido')
+                    ->get();
+                
+            
+            $participantes[] = ['CURSO', 'ORIENTADOR', 'GRUPO', 'DIA', 'JORNADA', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO', 'PERIODO'];
+            foreach($items as $item) {                        
+                $participantes[] = [mb_strtoupper($item->curso, 'UTF-8'),
+                                    mb_strtoupper($item->orientador, 'UTF-8'),
+                                    $item->grupo, 
+                                    mb_strtoupper($item->dia, 'UTF-8'), 
+                                    mb_strtoupper($item->jornada, 'UTF-8'),                
+                                    mb_strtoupper($item->nombre_participante, 'UTF-8'), 
+                                    mb_strtoupper($item->documento_participante, 'UTF-8'), 
+                                    $item->telefono, 
+                                    mb_strtoupper($item->email, 'UTF-8'), 
+                                    mb_strtoupper($item->convenio, 'UTF-8'), 
+                                    mb_strtoupper($item->estadoInscripcion, 'UTF-8'),
+                                    mb_strtoupper($item->calendario, 'UTF-8')];
+            }
+
+
+        } catch(\Exception $e) {
+            dd($e->getMessage());
+            Sentry::captureException($e);
+        }
+        
+        return $participantes;   
+    }
 }

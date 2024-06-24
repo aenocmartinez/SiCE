@@ -43,20 +43,38 @@ class OrientadorDao extends Model implements OrientadorRepository {
         }
 
         $calendarioId = $calendario->getId();
+        
         return DB::table('grupos as g')
-                    ->select(
-                        'g.id', 'g.curso_calendario_id', 'g.salon_id', 'g.dia', 'g.jornada', 'cc.curso_id', 'cc.calendario_id', 
-                        'cc.modalidad', 'g.cupos', 'g.nombre',
-                        DB::raw('(SELECT COUNT(*) FROM formulario_inscripcion fi WHERE fi.grupo_id = g.id AND fi.estado != "Anulado") as total_inscripciones_validas')
-                    )
-                    ->join('orientadores as o', 'g.orientador_id', '=', 'o.id')
-                    ->join('curso_calendario as cc', function($join) use ($calendarioId) {
-                        $join->on('cc.id', '=', 'g.curso_calendario_id')
-                            ->where('cc.calendario_id', $calendarioId);
-                    })
-                    ->where('o.id', $idOrientador)
-                    ->orderBy('g.curso_calendario_id', 'desc')
-                    ->get();
+                ->select(
+                    'g.id', 'g.curso_calendario_id', 'g.salon_id', 'g.dia', 'g.jornada', 'cc.curso_id', 'cc.calendario_id', 
+                    'cc.modalidad', 'g.cupos', 'g.nombre',
+                    DB::raw('(
+                        SELECT COUNT(*)
+                        FROM formulario_inscripcion fi
+                        WHERE fi.grupo_id = g.id
+                        AND (
+                            fi.estado = "Pagado"
+                            OR (
+                            fi.estado = "Pendiente de Pago"
+                            AND fi.convenio_id IS NOT NULL
+                            AND EXISTS (
+                                SELECT 1
+                                FROM convenios c
+                                WHERE c.id = fi.convenio_id
+                                AND c.es_cooperativa = true
+                            )
+                            )
+                        )
+                    ) as total_inscripciones_validas')
+                )
+                ->join('orientadores as o', 'g.orientador_id', '=', 'o.id')
+                ->join('curso_calendario as cc', function($join) use ($calendarioId) {
+                    $join->on('cc.id', '=', 'g.curso_calendario_id')
+                        ->where('cc.calendario_id', $calendarioId);
+                })
+                ->where('o.id', $idOrientador)
+                ->orderBy('g.curso_calendario_id', 'desc')
+                ->get();
     }
 
     public function listarOrientadores(): array {
