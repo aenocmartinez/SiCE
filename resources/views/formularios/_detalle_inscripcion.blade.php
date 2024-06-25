@@ -66,7 +66,7 @@
                       <tr>
                         <td class="ps-0 fs-sm">
                           {{ $pago->getFechaFormateada() }}
-                          <br><small>{{ $pago->getMedio() }}</small>
+                          <br><small>{{ $pago->getMedio() }} / voucher: {{ $pago->getVoucher() }}</small>
                       </td>
                       <td class="pe-0 fs-sm text-end">{{ $pago->getValorFormateado() }}</td>
                     </tr>   
