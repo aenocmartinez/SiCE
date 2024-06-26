@@ -32,11 +32,17 @@ class CambiosTrasladosDao extends Model {
     ];
 
     public function crearCambioTraslado(CambioTraslado $cambioTraslado) {
-
         try {
+            // Iniciar transacción
+            DB::beginTransaction();
+    
             $idUsuarioSesion = Auth::id();
-            DB::statement("SET @usuario = $idUsuarioSesion");
-                        
+            if (!$idUsuarioSesion) {
+                throw new \Exception("Usuario no autenticado.");
+            }
+            
+            DB::statement("SET @usuario = ?", [$idUsuarioSesion]);
+    
             CambiosTrasladosDao::create([
                 'formulario_id' => $cambioTraslado->getFormulario()->getId(), 
                 'periodo' => $cambioTraslado->getPeriodo(), 
@@ -50,14 +56,20 @@ class CambiosTrasladosDao extends Model {
                 'nuevo_valor_a_pagar' => $cambioTraslado->getNuevoValorAPagar(),
                 'justificacion' => $cambioTraslado->getJustificacion(),
             ]);
-
-        } catch (Exception $e) {
-            Sentry::captureEvent($e);
+    
+            DB::commit();
+    
+            return true;
+    
+        } catch (\Exception $e) {
+            DB::rollback();
+            Sentry::captureException($e);
+            dd($e->getMessage());
             return false;
         }
-
-        return true;
     }
+    
+    
 
     public static function listarCambios($page=1): Paginate {
         $paginate = new Paginate($page);

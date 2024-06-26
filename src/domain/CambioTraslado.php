@@ -129,7 +129,8 @@ class CambioTraslado {
     }
 
     public function getDecisionDePago(): string {
-        return $this->decisionDePago;
+        return 'devolucion';
+        // return $this->decisionDePago;
     }
 
     public function getCreatedAt(): string {
