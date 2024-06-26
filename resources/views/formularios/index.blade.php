@@ -141,13 +141,14 @@
                     @endif
 
                     @endif
+                        @if (!$f->Anulado())
                         <a href="{{ route('formulario-inscripcion.descargar-recibo-matricula', $f->getParticipanteId()) }}" 
                                     class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-info-light text-info"
                                     data-bs-toggle="tooltip" 
                                     title="Descargar recibo matrícula">
                                     Recibo
                             </a>
-                            
+                            @endif
                         <a href="{{ route('formularios.ver-detalle-inscripcion', $f->getNumero()) }}" 
                                     class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-success-light text-success"
                                     data-bs-toggle="tooltip" 
