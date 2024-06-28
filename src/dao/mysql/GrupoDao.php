@@ -38,7 +38,7 @@ class GrupoDao extends Model implements GrupoRepository {
 
             $query = DB::table('grupos as g')
                         ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 'g.bloqueado', 
-                                'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id',
+                                'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id', 'cc.modalidad',
                                 DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
                                 )
                         ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
@@ -71,6 +71,7 @@ class GrupoDao extends Model implements GrupoRepository {
 
                 $cursoCalendario = new CursoCalendario($caledario, $curso);
                 $cursoCalendario->setId($g->curso_calendario_id);
+                $cursoCalendario->setModalidad($g->modalidad);
 
                 $grupo->setCursoCalendario($cursoCalendario);
                 $grupo->setOrientador($orientador);
@@ -328,8 +329,8 @@ class GrupoDao extends Model implements GrupoRepository {
 
             $query = DB::table('grupos as g')
                     ->select(
-                        'g.id', 'g.dia', 'g.jornada', 'g.nombre', 'g.curso_calendario_id', 'g.cupos',
-                        'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id',
+                        'g.id', 'g.dia', 'g.jornada', 'g.nombre', 'g.curso_calendario_id', 'g.cupos', 'g.bloqueado',
+                        'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id', 'cc.modalidad',
                         DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
                     )
                     ->leftJoin('salones as s', 's.id', '=', 'g.salon_id')
@@ -355,6 +356,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setJornada($g->jornada);
                 $grupo->setCupo($g->cupos);
                 $grupo->setNombre($g->nombre);
+                $grupo->setBloqueado($g->bloqueado);
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);
@@ -363,6 +365,7 @@ class GrupoDao extends Model implements GrupoRepository {
 
                 $cursoCalendario = new CursoCalendario($caledario, $curso);
                 $cursoCalendario->setId($g->curso_calendario_id);
+                $cursoCalendario->setModalidad($g->modalidad);
 
                 $grupo->setCursoCalendario($cursoCalendario);
                 $grupo->setOrientador($orientador);
