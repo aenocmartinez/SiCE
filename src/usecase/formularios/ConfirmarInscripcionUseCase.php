@@ -56,6 +56,7 @@ class ConfirmarInscripcionUseCase {
         $formularioInscripcion->setValorDescuento($confirmarInscripcionDto->valorDescuento);
         $formularioInscripcion->setTotalAPagar($totalAPagar);
         $formularioInscripcion->setFechaCreacion($fechaActual);
+        $formularioInscripcion->setMedioInscripcion($confirmarInscripcionDto->medioInscripcion);
         
         $formularioInscripcion->setFechaMaxLegalizacion(Calendario::fechaSiguienteDiaHabil($fechaActual, $diasFestivos));
         if (strlen($confirmarInscripcionDto->fec_max_legalizacion)>0) {

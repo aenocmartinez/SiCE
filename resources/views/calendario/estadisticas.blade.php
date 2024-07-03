@@ -65,6 +65,18 @@
               </div>
             </div>
 
+            <div class="block-content bg-body-light text-center">
+              <div class="row items-push text-uppercase">         
+                <div class="col-6 col-md-6">
+                  <div class="fw-semibold text-dark mb-1">Inscripciones en oficina</div>
+                  <a class="link-fx fs-3 text-primary" href="javascript:void(0)">{{ $data["totalFormularioInscritosEnOficina"] }}</a>
+                </div>
+                <div class="col-6 col-md-6">
+                  <div class="fw-semibold text-dark mb-1">Inscripciones formulario público</div>
+                  <a class="link-fx fs-3 text-primary" href="javascript:void(0)">{{ $data['totalFormularioInscritosEnLinea'] }}</a>
+                </div>
+              </div>
+            </div>            
 
           </div>  
           

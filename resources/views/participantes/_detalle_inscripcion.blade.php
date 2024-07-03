@@ -118,6 +118,12 @@
                         </div>                    
                     </div> 
 
+                    <a class="fw-semibold" href="javascript:void(0)">Medio inscripción</a>
+                        <div class="form-floating fs-sm">
+                              {{ $formulario->getMedioInscripcion() }}
+                        </div>                    
+                    </div>                     
+
                     <div class="mb-3">
                     <a class="fw-semibold" href="javascript:void(0)">Comentarios</a>
                         <div class="form-floating fs-sm">

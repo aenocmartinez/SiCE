@@ -20,4 +20,5 @@ class ConfirmarInscripcionDto {
     public $comentarios;
     public $fec_max_legalizacion;
     public $flagComprobante;    
+    public $medioInscripcion;
 }

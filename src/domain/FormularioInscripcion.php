@@ -4,7 +4,6 @@ namespace Src\domain;
 
 use Carbon\Carbon;
 use Src\dao\mysql\FormularioInscripcionDao;
-use Src\dao\mysql\FormularioInscripcionPagoDao;
 use Src\domain\repositories\FormularioRepository;
 use Src\infraestructure\util\FormatoMoneda;
 
@@ -23,6 +22,7 @@ class FormularioInscripcion {
     private $valorPago;
     private $pathComprobantePago;
     private $comentarios;
+    private string $medioInscripcion;
     private FormularioRepository $repository;
 
     public function __construct() {
@@ -33,6 +33,7 @@ class FormularioInscripcion {
         $this->valorPago = 0;
         $this->pathComprobantePago = "";
         $this->comentarios = "Sin comentarios";
+        $this->medioInscripcion = 'en oficina';
         $this->convenio = new Convenio();
         $this->repository = new FormularioInscripcionDao();
     }
@@ -52,6 +53,14 @@ class FormularioInscripcion {
     public function getId(): int {
         return $this->id;
     }
+
+    public function setMedioInscripcion(string $medioInscripcion): void {
+        $this->medioInscripcion = $medioInscripcion;
+    }
+
+    public function getMedioInscripcion(): string {
+        return $this->medioInscripcion;
+    }    
 
     public function setPathComprobantePago($pathComprobantePago): void {
         $this->pathComprobantePago = $pathComprobantePago;
@@ -541,5 +550,9 @@ class FormularioInscripcion {
         }
 
         return $datosDePago;
+    }
+
+    public static function contadorInscripcionesSegunMedio(string $medio = 'en oficina'): int {
+        return FormularioInscripcionDao::contadorInscripcionesSegunMedio($medio);
     }
 }

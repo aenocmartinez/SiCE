@@ -28,7 +28,8 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                             'total_a_pagar',
                             'fecha_max_legalizacion',
                             'path_comprobante_pago',
-                            'comentarios'
+                            'comentarios',
+                            'medio_inscripcion'
                         ];
     
     public function grupo() {
@@ -145,6 +146,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $nuevoFormulario->updated_at =  $formulario->getFechaCreacion();
                 $nuevoFormulario->fecha_max_legalizacion = $formulario->getFechaMaxLegalizacion();
                 $nuevoFormulario->estado = $formulario->getEstado();
+                $nuevoFormulario->medio_inscripcion = $formulario->getMedioInscripcion();
 
                 $nuevoFormulario->numero_formulario = $formulario->getNumero();
                 $nuevoFormulario->path_comprobante_pago = $formulario->getPathComprobantePago();
@@ -278,7 +280,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
         try {
             $resultado = FormularioInscripcionDao::select('id','numero_formulario','estado','total_a_pagar','created_at', 'path_comprobante_pago', 
-                'valor_descuento','participante_id','grupo_id','convenio_id', 'fecha_max_legalizacion', 'comentarios')    
+                'valor_descuento','participante_id','grupo_id','convenio_id', 'fecha_max_legalizacion', 'comentarios', 'medio_inscripcion')    
                 ->where('formulario_inscripcion.numero_formulario', $numeroFormulario)
                 ->first();
 
@@ -293,6 +295,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formulario->setPathComprobantePago($resultado->path_comprobante_pago);
                 $formulario->setFechaMaxLegalizacion($resultado->fecha_max_legalizacion);
                 $formulario->setComentarios($resultado->comentarios);
+                $formulario->setMedioInscripcion($resultado->medio_inscripcion);
 
                 $grupo = $grupoDao->buscarGrupoPorId($resultado->grupo_id);
                 $participante = $participanteDao->buscarParticipantePorId($resultado->participante_id);
@@ -321,7 +324,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
         try {
             $resultado = FormularioInscripcionDao::select('id','numero_formulario','estado','total_a_pagar','created_at', 'path_comprobante_pago', 
-                'valor_descuento','participante_id','grupo_id','convenio_id')    
+                'valor_descuento','participante_id','grupo_id','convenio_id', 'medio_inscripcion')
                 ->where('formulario_inscripcion.id', $id)
                 ->first();
 
@@ -609,5 +612,18 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             return false;
         }
         return true;
+    }
+
+    public static function contadorInscripcionesSegunMedio(string $medio = 'en oficina'): int {
+        $calendario = Calendario::Vigente();
+        if (!$calendario->existe()) {
+            return 0;
+        }
+        
+        return  DB::table('formulario_inscripcion as f')
+                    ->join('grupos as g', 'g.id', '=', 'f.grupo_id')
+                    ->where('f.medio_inscripcion', $medio)
+                    ->where('g.calendario_id', $calendario->getId())
+                    ->count();
     }
 }

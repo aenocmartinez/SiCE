@@ -4,8 +4,10 @@ namespace Src\usecase\calendarios;
 
 use Src\dao\mysql\CalendarioDao;
 use Src\dao\mysql\CursoDao;
+use Src\dao\mysql\FormularioInscripcionDao;
 use Src\dao\mysql\ParticipanteDao;
 use Src\domain\Calendario;
+use Src\domain\FormularioInscripcion;
 use Src\usecase\dashboard\TotalesInscripcionesUseCase;
 
 class EstadisticasCalendarioUseCase {
@@ -56,7 +58,8 @@ class EstadisticasCalendarioUseCase {
         // $data["numeroParticipantesUnicos"] = ParticipanteDao::numeroParticipantesUnicosPorCalendario($calendario->getId());
         $data["numeroParticipantesUnicos"] = ParticipanteDao::count();
         
-        
+        $data["totalFormularioInscritosEnOficina"] = FormularioInscripcion::contadorInscripcionesSegunMedio('en oficina');
+        $data["totalFormularioInscritosEnLinea"] = FormularioInscripcion::contadorInscripcionesSegunMedio('formulario publico');
                 
         $data["existe"] = true;
         $data["nombre"] = $calendario->getNombre();

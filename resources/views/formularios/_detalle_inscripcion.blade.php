@@ -112,12 +112,19 @@
 
                 <div class="form-check form-block">
 
-                <div class="mb-3">
+                    <div class="mb-3">
                     <a class="fw-semibold" href="javascript:void(0)">Estado</a>
                         <div class="form-floating fs-sm">
                               {{ $formulario->getEstado() }}
                         </div>                    
                     </div> 
+
+                    <div class="mb-3">
+                    <a class="fw-semibold" href="javascript:void(0)">Medio de inscripción</a>
+                        <div class="form-floating fs-sm">
+                              {{ $formulario->getMedioInscripcion() }}
+                        </div>                    
+                    </div>                     
 
                     <div class="mb-3">
                     <a class="fw-semibold" href="javascript:void(0)">Comentarios</a>

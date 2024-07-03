@@ -281,6 +281,7 @@ class FormularioInscripcionController extends Controller
         $formularioDto->totalAPagar = $datos['total_a_pagar'];
         $formularioDto->voucher = $datos['voucher'];
         $formularioDto->valorPagoParcial = $datos['valorPago'];
+        $formularioDto->medioInscripcion = 'en oficina';
         
         if (isset($datos['fec_max_legalizacion'])) {
             $formularioDto->fec_max_legalizacion = $datos['fec_max_legalizacion'];

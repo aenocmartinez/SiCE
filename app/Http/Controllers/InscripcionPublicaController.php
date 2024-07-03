@@ -522,6 +522,7 @@ class InscripcionPublicaController extends Controller
         $confirmarInscripcionDto->valorDescuento = $curso['descuento'];
         $confirmarInscripcionDto->totalAPagar = $curso['totalPago'];
         $confirmarInscripcionDto->formularioId = $datos['formularioId'];
+        $confirmarInscripcionDto->medioInscripcion = 'formulario publico';
 
         $confirmarInscripcionDto->flagComprobante = false;
         if (isset($datos['flagComprobante'])) {
