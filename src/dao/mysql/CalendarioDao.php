@@ -351,7 +351,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
         $areas = [];
         try {            
             $items = DB::table('grupos as g')
-                        ->select('a.id as areaId', 'a.nombre as areaNombre', 'g.id as grupoId', 'g.nombre as grupoNombre', 'g.dia', 'g.jornada', 
+                        ->select('a.id as areaId', 'a.nombre as areaNombre', 'g.id as grupoId', 'g.nombre as grupoNombre', 'g.dia', 'g.jornada',
                                  'ca.nombre as periodo', 'c.nombre as cursoNombre', 'cc.costo', 'cc.modalidad', 'o.nombre as orientadorNombre',
                                  DB::raw('(g.cupos - (select count(*) from formulario_inscripcion f where f.grupo_id = g.id and (f.estado = \'Pagado\' or f.estado = \'Pendiente de pago\' or f.estado = \'Revisar comprobante de pago\'))) as cuposDisponibles'))
                         ->join('curso_calendario as cc', function ($join) use ($calendarioId) {

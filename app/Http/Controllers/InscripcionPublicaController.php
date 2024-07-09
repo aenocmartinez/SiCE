@@ -117,7 +117,7 @@ class InscripcionPublicaController extends Controller
  
 
         $items = $calendarioVigente->listarGruposParaFormularioInscripcionPublico();
-        
+                
         return view('public.seleccion_de_cursos', [
             'items' => $items,
             'participante' => $participante,
@@ -126,7 +126,7 @@ class InscripcionPublicaController extends Controller
     }
 
     public function seleccionarCursoMatricula($participanteId) {
-
+        
         if (is_null(request()->session()->get('SESSION_UUID'))) {
             return redirect()->route('public.inicio')->with('code', "404")->with('status', "Su sesión ha finalizado.");
         }
@@ -301,6 +301,7 @@ class InscripcionPublicaController extends Controller
         $datosDePago['nombre_curso'] = $grupo->getNombreCurso();
         $datosDePago['costo_curso'] = $grupo->getCosto();
         $datosDePago['jornada'] = $grupo->getJornada();
+        $datosDePago['modalidad'] = $grupo->getModalidad();
         $datosDePago['dia'] = $grupo->getDia();
         $datosDePago['esUCMC'] = $participante->vinculadoUnicolMayor();
 

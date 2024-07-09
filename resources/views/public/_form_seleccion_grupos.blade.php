@@ -57,7 +57,9 @@
           <a class=" text-info" href="#">
             {{ 'G'.$curso['grupoId'] }} - {{ $curso['nombre_curso'] }}
           </a>
-          <div class="text-muted">{{ $curso['dia'] . " / " . $curso['jornada'] }}</div>
+          <div class="text-muted">{{ $curso['dia'] . " / " . $curso['jornada']}} <br> 
+            <span class="fs-xs">({{ $curso['modalidad'] }})</span>
+          </div>
         </td>
         <td class="text-center fs-sm"> {{ Src\infraestructure\util\FormatoMoneda::PesosColombianos($curso['costo_curso']) }} </td>
         <td class="text-center fs-sm"> {{ Src\infraestructure\util\FormatoMoneda::PesosColombianos($curso['descuento']) }} </td>
@@ -127,7 +129,10 @@
                           {{ $grupo->grupoNombre . ": " . $grupo->cursoNombre }} <br>
                           <span style="font-size: 12px;" class="text-dark">Orientador: {{ $grupo->nombreOrientador }}</span>
                         </td>
-                        <td class="text-center">{{ $grupo->dia . " / " . $grupo->jornada }}</td>
+                        <td class="text-center">
+                          {{ $grupo->dia . " / " . $grupo->jornada}} <br>
+                          <span class="fs-xs">({{ $grupo->modalidad }})</span>                          
+                        </td>
                         <td class="text-center">{{ $grupo->costo }}</td>                        
                         <td class="text-center">{{ $grupo->cuposDisponibles }}</td>
                         <td class="d-none d-sm-table-cell text-center">
