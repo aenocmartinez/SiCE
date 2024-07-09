@@ -143,6 +143,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/grupos/{id}/mas-informacion', [GrupoController::class, 'masInformacion'])->name('grupos.mas-info');
     Route::get('/grupos/{id}/descargar-listado-participantes', [GrupoController::class, 'descargarListadoParticipantes'])->name('grupos.descargar-listado-participantes');
     Route::get('/grupos/{id}/descargar-planilla-asistencia', [GrupoController::class, 'descargarPlanillaAsistencia'])->name('grupos.descargar-planilla-asistencia');
+    Route::get('/grupos/{id}/descargar-estado-legalizacion-participantes', [GrupoController::class, 'descargarReporteEstadoDeLegalizaciónDeParticipantes'])->name('grupos.descargar-estado-legalizacion-participantes');
     Route::get('/grupos/estado-cursos/{tipo}', [GrupoController::class, 'listarCursosAbiertosOCerrados'])->name('grupos.estado-cursos');
 
     Route::get('/tipo-salones/{id}/editar', [TipoSalonController::class, 'edit'])->name('tipo-salones.edit');

@@ -114,6 +114,10 @@
                                         class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
                                         <i class="fa fa-fw fa-download"></i> Planilla asistencia
                                     </a>
+                                    <a href="{{ route('grupos.descargar-estado-legalizacion-participantes', $grupo->getId()) }}" 
+                                        class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
+                                        <i class="fa fa-fw fa-download"></i> Legalización participantes
+                                    </a>                                    
                                 </div>
                             </div>
                         </div>

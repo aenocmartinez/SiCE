@@ -257,6 +257,70 @@ class GrupoController extends Controller
         return response()->download($ruta_archivo, $nombre_archivo, $headers)->deleteFileAfterSend(true);    
     }
 
+    public function descargarReporteEstadoDeLegalizaciónDeParticipantes($grupoId=0) {    
+
+        $datos = (new GruposListarParticipantesGrupoUseCase)->ejecutar($grupoId);
+        if (sizeof($datos) == 1) {
+            return redirect()->route('grupos.index')->with('code', "500")->with('status', "No tiene participantes inscritos");
+        }    
+
+        $curso = $datos[1][0];
+        $orientador = $datos[1][1];
+        $horario = $datos[1][3] . ", " . $datos[1][4];
+        $periodo = $datos[1][11];
+        $numero_participantes = sizeof($datos) - 1;
+        $participantes = "";
+
+        foreach($datos as $index => $participante) {
+            
+            if ($index == 0) {
+                continue;
+            }            
+            
+            $participantes .= "<tr>
+                                <td>".$participante[5]."</td>
+                                <td>".$participante[6]."</td>
+                                <td>".$participante[7]."</td>
+                                <td>".$participante[8]."</td>
+                                <td>".$participante[10]."</td>
+                                <td>".$participante[12]."</td>
+                            </tr>";
+        }
+
+        $path_css1 = __DIR__ . "/../../../src/infraestructure/legalizacionParticipantes/template/style.css"; 
+        $path_template  = __DIR__ . "/../../../src/infraestructure/legalizacionParticipantes/template/plantilla_legalizacion.html";
+
+        $html = file_get_contents($path_template);
+        $html = str_replace('{{CURSO}}', $curso, $html);
+        $html = str_replace('{{GRUPO}}', "G".$grupoId, $html);
+        $html = str_replace('{{HORARIO}}', $horario, $html);
+        $html = str_replace('{{ORIENTADOR}}', $orientador, $html);
+        $html = str_replace('{{PERIODO}}', $periodo, $html);
+        $html = str_replace('{{NUMERO_PARTICIPANTES}}', $numero_participantes, $html);        
+        $html = str_replace('{{PARTICIPANTES}}', $participantes, $html);
+        
+
+        $nombre_archivo = "ESTADO_LEGALIZACION_DE_PARTICIPANTES_G" . $grupoId . ".pdf";
+
+        $dataPdf = new DataPDF($nombre_archivo);
+        $dataPdf->setData([
+            'path_css1' => $path_css1,
+            'html' => $html,
+            'format' => 'Letter',
+            'orientation' => 'L',
+        ]);
+
+        SicePDF::generarPDFEstadoLegalizacionParticipantes($dataPdf);
+                
+        $ruta_archivo = storage_path() . '/' . $nombre_archivo;
+        $headers = [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $nombre_archivo . '"',
+        ];
+        
+        return response()->download($ruta_archivo, $nombre_archivo, $headers)->deleteFileAfterSend(true);    
+    }
+
     private function hydrateDto($data): GrupoDto {            
         $grupoDto = new GrupoDto();
         $grupoDto->dia = $data['dia'];

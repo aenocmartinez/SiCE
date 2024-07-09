@@ -63,39 +63,50 @@ class SicePDF {
         return $exito;
     }
 
-    // public static function generarReciboMatricula(DataPDF $dataPDF): bool {
+    public static function generarPDFEstadoLegalizacionParticipantes(DataPDF $dataPDF): bool {
 
-    //     $exito = true;
-    //     try {
+        $exito = true;
+        try {
 
-    //         $data = $dataPDF->getData();
-    //         // $html = file_get_contents($data['path_template']);
-    //         $html = $data['html'];
+            $data = $dataPDF->getData();
 
-    //         $mpdf = new Mpdf([
-    //             'format' => $data['format'],
-    //             'orientation' => $data['orientation'],
-    //         ]);
+            // $html = file_get_contents($data['path_template']);
+            $html = $data['html'];
 
-    //         $stylesheet1 = file_get_contents($data['path_css1']);
+            $mpdf = new Mpdf([
+                'format' => $data['format'],
+                'orientation' => $data['orientation'],
+            ]);
+
+            $stylesheet1 = file_get_contents($data['path_css1']);
+            // $stylesheet2 = file_get_contents($data['path_css2']);
             
-    //         $mpdf->WriteHTML($stylesheet1, \Mpdf\HTMLParserMode::HEADER_CSS);      
+            $mpdf->WriteHTML($stylesheet1, \Mpdf\HTMLParserMode::HEADER_CSS);
+            // $mpdf->WriteHTML($stylesheet2, \Mpdf\HTMLParserMode::HEADER_CSS);
 
-    //         $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
+            date_default_timezone_set('America/Bogota');
+            
+            // Añadir pie de página con la fecha y hora de Colombia
+            $footerText = 'Vicerrectoría de Investigación, Innovación y Extensión Subdirección de Proyección y Extensión';
+            $date = date('Y-m-d H:i:s'); // Obtener la fecha y hora actuales en la zona horaria de Colombia
+            $footerHTML = '<div style="font-size: 10px; font-weight: normal;">' . $footerText . ' - Página {PAGENO} - Generado el ' . $date . '</div>';
+            $mpdf->SetFooter($footerHTML);           
 
-    //         $nombreArchivoPDF = $dataPDF->getFileName();
+            $mpdf->WriteHTML($html, \Mpdf\HTMLParserMode::HTML_BODY);
 
-    //         $pdfPath = storage_path() . '/' . $nombreArchivoPDF;
+            $nombreArchivoPDF = $dataPDF->getFileName();
 
-    //         $mpdf->Output($pdfPath, 'F');            
+            $pdfPath = storage_path() . '/' . $nombreArchivoPDF;
 
-    //     } catch (Exception $e) {
-    //         $exito = false;
-    //         dd($e->getMessage());
-    //     } 
+            $mpdf->Output($pdfPath, 'F');            
 
-    //     return $exito;
-    // }
+        } catch (Exception $e) {
+            $exito = false;
+            dd($e->getMessage());
+        } 
+
+        return $exito;
+    }    
            
     public static function generarReciboMatricula(DataPDF $dataPDF): bool {
 

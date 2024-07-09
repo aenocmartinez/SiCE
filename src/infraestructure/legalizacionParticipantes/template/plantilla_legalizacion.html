@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Estado de Legalización de Participantes</h1>
+        </div>
+        <table class="info-table">
+            <tr>
+                <td class="label">Curso:</td>
+                <td><span id="nombre-curso">{{CURSO}}</span></td>
+            </tr>
+            <tr>
+                <td class="label">Grupo:</td>
+                <td><span id="grupo-curso">{{GRUPO}}</span></td>
+            </tr>                
+            <tr>
+                <td class="label">Horario:</td>
+                <td><span id="horario-curso">{{HORARIO}}</span></td>
+            </tr>
+            <tr>
+                <td class="label">Orientador:</td>
+                <td><span id="nombre-orientador">{{ORIENTADOR}}</span></td>
+            </tr>
+            <tr>
+                <td class="label">Periodo:</td>
+                <td><span id="periodo">{{PERIODO}}</span></td>
+            </tr>
+        </table>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre Completo</th>
+                    <th>Número de Cédula</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Estado</th>
+                    <th>Valor a Pagar/Pagado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{PARTICIPANTES}}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

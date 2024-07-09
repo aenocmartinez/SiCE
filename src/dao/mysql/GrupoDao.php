@@ -13,6 +13,7 @@ use Src\domain\repositories\GrupoRepository;
 
 use Sentry\Laravel\Facade as Sentry;
 use Src\domain\Orientador;
+use Src\infraestructure\util\FormatoMoneda;
 use Src\infraestructure\util\Paginate;
 
 class GrupoDao extends Model implements GrupoRepository {
@@ -422,7 +423,8 @@ class GrupoDao extends Model implements GrupoRepository {
                 'g.jornada',
                 'cu.nombre as curso',
                 'o.nombre as orientador',
-                'ca.nombre as calendario'
+                'ca.nombre as calendario',
+                'fi.total_a_pagar',
             ])
             ->join('formulario_inscripcion as fi', function($join) use ($grupoId) {
                 $join->on('fi.participante_id', '=', 'p.id')
@@ -440,7 +442,7 @@ class GrupoDao extends Model implements GrupoRepository {
     
 
             
-            $participantes[] = ['CURSO', 'ORIENTADOR', 'GRUPO', 'DIA', 'JORNADA', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO', 'PERIODO'];
+            $participantes[] = ['CURSO', 'ORIENTADOR', 'GRUPO', 'DIA', 'JORNADA', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO', 'PERIODO', 'TOTAL_A_PAGAR'];
             foreach($items as $item) {                        
                 $participantes[] = [mb_strtoupper($item->curso, 'UTF-8'),
                                     mb_strtoupper($item->orientador, 'UTF-8'),
@@ -450,10 +452,11 @@ class GrupoDao extends Model implements GrupoRepository {
                                     mb_strtoupper($item->nombre_participante, 'UTF-8'), 
                                     mb_strtoupper($item->documento_participante, 'UTF-8'), 
                                     $item->telefono, 
-                                    mb_strtoupper($item->email, 'UTF-8'), 
+                                    mb_strtolower($item->email, 'UTF-8') , 
                                     mb_strtoupper($item->convenio, 'UTF-8'), 
                                     mb_strtoupper($item->estadoInscripcion, 'UTF-8'),
-                                    mb_strtoupper($item->calendario, 'UTF-8')];
+                                    mb_strtoupper($item->calendario, 'UTF-8'),
+                                    FormatoMoneda::PesosColombianos($item->total_a_pagar)];
             }
 
 
