@@ -425,24 +425,27 @@ class GrupoDao extends Model implements GrupoRepository {
                 'o.nombre as orientador',
                 'ca.nombre as calendario',
                 'fi.total_a_pagar',
+                's.nombre as salon_nombre',
             ])
             ->join('formulario_inscripcion as fi', function($join) use ($grupoId) {
                 $join->on('fi.participante_id', '=', 'p.id')
                      ->where('fi.grupo_id', '=', $grupoId);
             })
             ->join('grupos as g', 'g.id', '=', 'fi.grupo_id')
+            ->join('salones as s', 's.id', '=', 'g.salon_id')
             ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
             ->join('calendarios as ca', 'ca.id', '=', 'g.calendario_id')
             ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
             ->join('cursos as cu', 'cu.id', '=', 'cc.curso_id')
             ->leftJoin('convenios as c', 'c.id', '=', 'fi.convenio_id')
+            ->where('fi.estado', '<>', 'Anulado')
             ->orderBy('p.primer_nombre')
-            ->orderBy('p.primer_apellido')
+            ->orderBy('p.primer_apellido')            
             ->get();
     
 
             
-            $participantes[] = ['CURSO', 'ORIENTADOR', 'GRUPO', 'DIA', 'JORNADA', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO', 'PERIODO', 'TOTAL_A_PAGAR'];
+            $participantes[] = ['CURSO', 'ORIENTADOR', 'GRUPO', 'DIA', 'JORNADA', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO', 'PERIODO', 'TOTAL_A_PAGAR', 'SALON'];
             foreach($items as $item) {                        
                 $participantes[] = [mb_strtoupper($item->curso, 'UTF-8'),
                                     mb_strtoupper($item->orientador, 'UTF-8'),
@@ -456,7 +459,9 @@ class GrupoDao extends Model implements GrupoRepository {
                                     mb_strtoupper($item->convenio, 'UTF-8'), 
                                     mb_strtoupper($item->estadoInscripcion, 'UTF-8'),
                                     mb_strtoupper($item->calendario, 'UTF-8'),
-                                    FormatoMoneda::PesosColombianos($item->total_a_pagar)];
+                                    FormatoMoneda::PesosColombianos($item->total_a_pagar),
+                                    mb_strtoupper($item->salon_nombre, 'UTF-8'),
+                                ];
             }
 
 

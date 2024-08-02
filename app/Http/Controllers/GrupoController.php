@@ -263,12 +263,13 @@ class GrupoController extends Controller
         if (sizeof($datos) == 1) {
             return redirect()->route('grupos.index')->with('code', "500")->with('status', "No tiene participantes inscritos");
         }    
-
+        
         $curso = $datos[1][0];
+        $salon = $datos[1][13];
         $orientador = $datos[1][1];
         $horario = $datos[1][3] . ", " . $datos[1][4];
-        $periodo = $datos[1][11];
-        $numero_participantes = sizeof($datos) - 1;
+        $periodo = $datos[1][11];        
+        $numero_participantes = sizeof($datos) - 1;        
         $participantes = "";
 
         foreach($datos as $index => $participante) {
@@ -293,6 +294,7 @@ class GrupoController extends Controller
         $html = file_get_contents($path_template);
         $html = str_replace('{{CURSO}}', $curso, $html);
         $html = str_replace('{{GRUPO}}', "G".$grupoId, $html);
+        $html = str_replace('{{SALON}}', $salon , $html);
         $html = str_replace('{{HORARIO}}', $horario, $html);
         $html = str_replace('{{ORIENTADOR}}', $orientador, $html);
         $html = str_replace('{{PERIODO}}', $periodo, $html);
