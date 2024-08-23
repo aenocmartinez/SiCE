@@ -447,18 +447,33 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 'cu.nombre as curso',
                 'o.nombre as orientador',
                 'ca.nombre as calendario',
-                'fi.total_a_pagar'
+                'fi.total_a_pagar',
+                'p.sexo',
+                'p.estado_civil',
+                'p.direccion',
+                'p.eps',
+                'p.contacto_emergencia',
+                'p.telefono_emergencia',
+                'p.vinculado_a_unicolmayor',
             )
             ->orderBy('p.primer_nombre')
             ->orderBy('p.primer_apellido')
             ->get();
 
-            $participantes[] = ['PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CURSO', 'GRUPO', 'DIA', 'JORNADA', 'CONVENIO', 'PAGO', 'ESTADO', 'PERIODO'];
-            foreach($items as $item) {                        
+            $participantes[] = ['PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'GENERO', 'ESTADO_CIVIL', 'DIRECCION', 'EPS', 'CONTACTO_EMERGENCIA', 'TELEFONO_EMERGENCIA', 'VINCULADO_UNICOLMAYOR', 'CURSO', 'GRUPO', 'DIA', 'JORNADA', 'CONVENIO', 'PAGO', 'ESTADO', 'PERIODO'];
+            foreach($items as $item) {            
+                $tieneVinculoUnicolMayor = ($item->vinculado_a_unicolmayor ? 'SI' : 'NO');            
                 $participantes[] = [mb_strtoupper($item->nombre_participante, 'UTF-8'),
                                     mb_strtoupper($item->documento_participante, 'UTF-8'), 
                                     $item->telefono, 
                                     mb_strtoupper($item->email, 'UTF-8'),
+                                    mb_strtoupper($item->sexo, 'UTF-8'),
+                                    mb_strtoupper($item->estado_civil, 'UTF-8'),
+                                    mb_strtoupper($item->direccion, 'UTF-8'),
+                                    mb_strtoupper($item->eps, 'UTF-8'),
+                                    mb_strtoupper($item->contacto_emergencia, 'UTF-8'),
+                                    mb_strtoupper($item->telefono_emergencia, 'UTF-8'),
+                                    mb_strtoupper($tieneVinculoUnicolMayor, 'UTF-8'),
                                     mb_strtoupper($item->curso, 'UTF-8'),                                    
                                     $item->grupo, 
                                     mb_strtoupper($item->dia, 'UTF-8'), 
@@ -471,7 +486,6 @@ class CalendarioDao extends Model implements CalendarioRepository {
 
 
         } catch(\Exception $e) {
-            dd($e->getMessage());
             Sentry::captureException($e);
         }
         
