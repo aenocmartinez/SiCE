@@ -3,38 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Planilla de asistencia</h1>
-            <h3>Universidad Colegio Mayor de Cundinamarca</h3>
+            <h3>Universidad Colegio Mayor de Cundinamarca - Cursos de Extensión - Planilla de asistencia</h3>
             <table class="info-table">
                 <tr>
                     <td class="label">Curso:</td>
                     <td><span id="nombre-curso">{{CURSO}}</span></td>
+                    <td class="label">Grupo:</td>
+                    <td><span id="nombre-grupo">{{GRUPO}}</span></td>
                 </tr>
                 <tr>
-                    <td class="label">Grupo:</td>
-                    <td><span id="nombre-curso">{{GRUPO}}</span></td>
-                </tr>                
+                    <td class="label">Área:</td>
+                    <td><span id="area">{{AREA}}</span></td>
+                    <td class="label">Salón:</td>
+                    <td><span id="salon-curso">{{SALON}}</span></td>
+                </tr>
                 <tr>
                     <td class="label">Horario:</td>
                     <td><span id="horario-curso">{{HORARIO}}</span></td>
-                </tr>
-                <tr>
-                    <td class="label">Orientador:</td>
-                    <td><span id="nombre-docente">{{ORIENTADOR}}</span></td>
-                </tr>
-                <tr>
                     <td class="label">Periodo:</td>
                     <td><span id="periodo">{{PERIODO}}</span></td>
                 </tr>
                 <tr>
+                    <td class="label">Orientador:</td>
+                    <td><span id="nombre-docente">{{ORIENTADOR}}</span></td>
                     <td class="label">Número participantes:</td>
                     <td><span id="num-participantes">{{NUMERO_PARTICIPANTES}}</span></td>
-                </tr>                
+                </tr>
             </table>
         </div>
         <table>
@@ -57,6 +55,7 @@
                     <th class="day-cell">14</th>
                     <th class="day-cell">15</th>
                     <th class="day-cell">16</th>
+                    <th class="convenio-cell">Convenio</th>
                     <th class="certification-cell">Se certifica</th>
                     <th class="certification-cell">Recibido certificado</th>
                 </tr>
@@ -65,9 +64,7 @@
                 {{PARTICIPANTES}}
             </tbody>
         </table>
-        <div class="signature">
-            <span>&nbsp;</span>
-        </div>
+        <div class="signature"></div>
     </div>
 </body>
 </html>

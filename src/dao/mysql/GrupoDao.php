@@ -500,17 +500,22 @@ class GrupoDao extends Model implements GrupoRepository {
                         'g.jornada',
                         'cu.nombre as curso',
                         'o.nombre as orientador',
-                        'ca.nombre as calendario'
+                        'ca.nombre as calendario',
+                        'c.nombre as nombre_convenio',
+                        's.nombre as nombre_salon',
+                        'a.nombre as nombre_area',
                     ])
                     ->join('formulario_inscripcion as fi', function($join) use ($grupoId) {
                         $join->on('fi.participante_id', '=', 'p.id')
                              ->where('fi.grupo_id', '=', $grupoId);
                     })
                     ->join('grupos as g', 'g.id', '=', 'fi.grupo_id')
+                    ->join('salones as s', 's.id', '=', 'g.salon_id')
                     ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
                     ->join('calendarios as ca', 'ca.id', '=', 'g.calendario_id')
                     ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
                     ->join('cursos as cu', 'cu.id', '=', 'cc.curso_id')
+                    ->join('areas as a', 'a.id', '=', 'cu.area_id')
                     ->leftJoin('convenios as c', 'c.id', '=', 'fi.convenio_id')
                     ->having('estadoInscripcion', '=', 1) 
                     ->orderBy('p.primer_nombre')
@@ -518,8 +523,13 @@ class GrupoDao extends Model implements GrupoRepository {
                     ->get();
                 
             
-            $participantes[] = ['CURSO', 'ORIENTADOR', 'GRUPO', 'DIA', 'JORNADA', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO', 'PERIODO'];
-            foreach($items as $item) {                        
+            $participantes[] = ['CURSO', 'ORIENTADOR', 'GRUPO', 'DIA', 'JORNADA', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO', 'PERIODO', 'CONVENIO', 'SALON', 'AREA'];
+            foreach($items as $item) {
+                $nombreConvenio = mb_strtoupper($item->nombre_convenio, 'UTF-8');                  
+                if ($item->nombre_convenio == "Convenio empleados y contratistas UnicolMayor") {
+                    $nombreConvenio = "UCMC";
+                }
+                
                 $participantes[] = [mb_strtoupper($item->curso, 'UTF-8'),
                                     mb_strtoupper($item->orientador, 'UTF-8'),
                                     $item->grupo, 
@@ -531,9 +541,12 @@ class GrupoDao extends Model implements GrupoRepository {
                                     mb_strtoupper($item->email, 'UTF-8'), 
                                     mb_strtoupper($item->convenio, 'UTF-8'), 
                                     mb_strtoupper($item->estadoInscripcion, 'UTF-8'),
-                                    mb_strtoupper($item->calendario, 'UTF-8')];
+                                    mb_strtoupper($item->calendario, 'UTF-8'),                                    
+                                    $nombreConvenio,
+                                    mb_strtoupper($item->nombre_salon, 'UTF-8'),
+                                    mb_strtoupper($item->nombre_area, 'UTF-8')                                    
+                                ];
             }
-
 
         } catch(\Exception $e) {
             dd($e->getMessage());

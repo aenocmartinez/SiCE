@@ -194,16 +194,17 @@ class GrupoController extends Controller
 
     public function descargarPlanillaAsistencia($grupoId=0) {    
 
-        // $datos = (new GruposListarParticipantesGrupoUseCase)->ejecutar($grupoId);
         $datos = (new ListarParticipantesPlanillaAsistenciaUseCase)->ejecutar($grupoId);        
         if (sizeof($datos) == 1) {
             return redirect()->route('grupos.index')->with('code', "500")->with('status', "No tiene participantes inscritos");
-        }    
-
+        }            
+        
         $curso = $datos[1][0];
         $orientador = $datos[1][1];
         $horario = $datos[1][3] . ", " . $datos[1][4];
         $periodo = $datos[1][11];
+        $salon = $datos[1][13];
+        $area = $datos[1][14];
         $numero_participantes = sizeof($datos) - 1;
         $participantes = "";
 
@@ -211,7 +212,7 @@ class GrupoController extends Controller
             
             if ($index == 0) {
                 continue;
-            }            
+            }     
             $participantes .= "<tr>
                 <td class=\"student-name\">".$participante[5]."<br>".$participante[6]."</td>
                 <td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td>
@@ -219,7 +220,8 @@ class GrupoController extends Controller
                 <td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td>
                 <td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td><td class=\"day-cell\"></td>
                 <td class=\"certification-cell\"></td>
-                <td class=\"certification-cell\"></td>                
+                <td class=\"certification-cell\"></td>
+                <td class=\"certification-cell\">".$participante[12]."</td>                
             </tr>";
         }
 
@@ -228,11 +230,13 @@ class GrupoController extends Controller
 
         $html = file_get_contents($path_template);
         $html = str_replace('{{CURSO}}', $curso, $html);
+        $html = str_replace('{{AREA}}', $area, $html);
         $html = str_replace('{{GRUPO}}', "G".$grupoId, $html);
         $html = str_replace('{{HORARIO}}', $horario, $html);
         $html = str_replace('{{ORIENTADOR}}', $orientador, $html);
         $html = str_replace('{{PERIODO}}', $periodo, $html);
         $html = str_replace('{{NUMERO_PARTICIPANTES}}', $numero_participantes, $html);        
+        $html = str_replace('{{SALON}}', $salon, $html);        
         $html = str_replace('{{PARTICIPANTES}}', $participantes, $html);
         
 

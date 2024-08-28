@@ -13,34 +13,27 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 .header {
-    margin-bottom: 20px;
-}
-.header h1, .header h2, .header h3 {
-    text-align: left;
-    margin: 0;
-    font-weight: normal;
-}
-.header h1 {
-    font-size: 24px;
-}
-.header h2 {
-    font-size: 20px;
-    margin-top: 10px;
+    margin-bottom: 10px;
 }
 .header h3 {
+    margin-top: 5px; /* Reducir el espacio superior para subir el contenido */
+    margin-bottom: 5px; /* Reducir el espacio inferior si es necesario */
+    text-align: left;
     font-size: 16px;
-    margin-top: 5px;
+    font-weight: normal;
 }
 .info-table {
-    width: 60%;
+    width: 100%;
     margin-bottom: 2px;
     font-size: 12px;
     table-layout: auto;
+    margin-bottom: 5px; /* Reducir el espacio inferior de la primera tabla */
 }
 .info-table td {
     padding: 5px;
     vertical-align: top;
     text-align: left;
+    width: 25%;
 }
 .info-table td.label {
     font-weight: 100;
@@ -48,8 +41,8 @@ body {
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    font-size: 11px;
+    margin-top: 5px; /* Reducir el margen superior de la segunda tabla */
+    font-size: 10px; /* Reducir un poco el tamaño de la letra en la tabla de participantes */
 }
 th, td {
     padding: 4px;
@@ -59,38 +52,43 @@ th, td {
 th {
     background-color: #f4f4f4;
     font-weight: normal;
-    font-size: 11px;
+    font-size: 10px; /* Reducir un poco el tamaño de la letra en las cabeceras */
 }
 td {
-    font-size: 11px;
+    font-size: 10px; /* Reducir un poco el tamaño de la letra en las celdas */
+    border: 1px solid #ddd; /* Asegurarse de que todas las celdas tengan un borde visible */
 }
 .student-name {
-    width: 25%;
+    width: 20%;
     text-align: left;
 }
 .day-cell {
-    width: 4.375%;
+    width: 3%;
+}
+.convenio-cell {
+    width: 8%;
 }
 .certification-cell {
     width: 8%;
+    border: 1px solid #ddd; /* Asegurarse de que las líneas de la tabla se vean en esta columna */
 }
 .footer {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 20px;
     font-size: 12px;
-    line-height: 0.5; /* Reduce el espacio entre las líneas del pie de página */
+    line-height: 0.5;
 }
 .signature {
-    margin-top: 60px;
-    font-size: 12px;
+    margin-top: 10px; /* Reducir el margen superior para acercar la firma a la tabla */
+    font-size: 10px; /* Reducir el tamaño de la letra de la firma del docente */
     text-align: left;
 }
 .signature span {
     display: block;
     border-top: 1px solid #000;
-    width: 80%; /* Adjust the width as needed */
+    width: 80%;
     padding-top: 5px;
-    margin-left: 0; /* Align to the left */
+    margin-left: 0;
 }
 @media print {
     body, .container {
