@@ -102,10 +102,6 @@ class FormularioInscripcionController extends Controller
         ]);
     }
 
-    public function show($id) {
-        //
-    }
-
     public function edit($tipoDocumento, $documento) {   
 
         if (!Calendario::existeCalendarioVigente()) {
@@ -122,14 +118,6 @@ class FormularioInscripcionController extends Controller
             'areaId' => '',
             'grupos' => array(),
         ]);
-    }
-
-    public function update(Request $request, $id) {
-        //
-    }
-
-    public function destroy($id) {
-        //
     }
 
     public function buscarParticipantePorDocumento(BuscarParticipantePorDocumento $req) {
@@ -167,6 +155,7 @@ class FormularioInscripcionController extends Controller
     }    
 
     public function buscarGruposDisponiblesParaInscripcion2($participanteId, $calendarioId, $areaId) {
+
         return view('formularios.select_grupo_inscripcion', [
             'participante' => (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId),
             'calendarios' => (new ListarCalendariosUseCase)->ejecutar(),

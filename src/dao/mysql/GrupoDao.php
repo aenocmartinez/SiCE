@@ -18,7 +18,7 @@ use Src\infraestructure\util\Paginate;
 
 class GrupoDao extends Model implements GrupoRepository {
     protected $table = 'grupos';
-    protected $fillable = ['curso_calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada', 'cupos', 'nombre', 'calendario_id', 'bloqueado'];
+    protected $fillable = ['curso_calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada', 'cupos', 'nombre', 'calendario_id', 'bloqueado', 'cancelado'];
 
 
     public function formulariosInscripcion() {
@@ -38,7 +38,7 @@ class GrupoDao extends Model implements GrupoRepository {
         try {
 
             $query = DB::table('grupos as g')
-                        ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 'g.bloqueado', 
+                        ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 'g.bloqueado', 'g.cancelado',
                                 'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id', 'cc.modalidad',
                                 DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
                                 )
@@ -60,6 +60,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setCupo($g->cupos);
                 $grupo->setNombre($g->nombre);
                 $grupo->setBloqueado($g->bloqueado);
+                $grupo->setCancelado($g->cancelado);
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 if (!$caledario->esVigente()) {
@@ -100,7 +101,7 @@ class GrupoDao extends Model implements GrupoRepository {
 
         try {
             $g = DB::table('grupos as g')
-                    ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 'g.bloqueado', 
+                    ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 'g.bloqueado', 'g.cancelado',
                             'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id', 'cc.costo', 'cc.modalidad',
                             DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')                          
                             )
@@ -121,6 +122,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setNombre($g->nombre);
                 $grupo->setTotalInscritos($g->totalInscritos);
                 $grupo->setBloqueado($g->bloqueado);
+                $grupo->setCancelado($g->cancelado);
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);
@@ -260,7 +262,7 @@ class GrupoDao extends Model implements GrupoRepository {
             $resultados =DB::table('grupos as g')
                         ->select(
                             'g.id as grupoId', 'c.id as cursoId', 'ca.id as calendarioId', 'ca.nombre as calendarioNombre',
-                            'c.nombre as nombreCurso', 'g.dia', 'g.jornada', 'g.cupos', 'cc.costo', 'g.bloqueado',
+                            'c.nombre as nombreCurso', 'g.dia', 'g.jornada', 'g.cupos', 'cc.costo', 'g.bloqueado', 'g.cancelado',
                             'cc.modalidad', 'g.nombre', 'o.nombre as orientadorNombre',
                             DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
                         )
@@ -305,6 +307,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $orientador->setNombre($r->orientadorNombre);
                 $grupo->setOrientador($orientador);
                 $grupo->setBloqueado($r->bloqueado);
+                $grupo->setCancelado($r->cancelado);
 
                 array_push($grupos, $grupo);
             }
@@ -330,7 +333,7 @@ class GrupoDao extends Model implements GrupoRepository {
 
             $query = DB::table('grupos as g')
                     ->select(
-                        'g.id', 'g.dia', 'g.jornada', 'g.nombre', 'g.curso_calendario_id', 'g.cupos', 'g.bloqueado',
+                        'g.id', 'g.dia', 'g.jornada', 'g.nombre', 'g.curso_calendario_id', 'g.cupos', 'g.bloqueado', 'g.cancelado',
                         'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id', 'cc.modalidad',
                         DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
                     )
@@ -358,6 +361,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setCupo($g->cupos);
                 $grupo->setNombre($g->nombre);
                 $grupo->setBloqueado($g->bloqueado);
+                $grupo->setCancelado($g->cancelado);
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);
@@ -555,4 +559,23 @@ class GrupoDao extends Model implements GrupoRepository {
         
         return $participantes;   
     }
+
+    public function cancelarGrupo($grupoId=0): bool {
+        try {            
+            $grupo = GrupoDao::find($grupoId);
+
+            if ($grupo) {                            
+                $idUsuarioSesion = Auth::id();
+                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+                                
+                $grupo->update(['cancelado' => true]);                
+            }
+
+        } catch (\Exception $e) {     
+            Sentry::captureException($e);
+            return false;
+        } 
+
+        return true; 
+    }    
 }

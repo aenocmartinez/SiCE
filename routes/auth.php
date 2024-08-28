@@ -114,6 +114,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orientadores/{page?}', [OrientadorController::class, 'listarPaginado'])->name('orientadores.index');
     Route::get('/orientadores/{page}/q/{criteria}', [OrientadorController::class, 'paginadorBuscador'])->name('orientadores.buscador-paginador');
     Route::get('/orientadores/{id}/mas-informacion', [OrientadorController::class, 'show'])->name('orientadores.moreInfo');    
+    Route::patch('/orientadores/{orientadorId}/grupo/{grupoId}/cancelar', [OrientadorController::class, 'cancelar'])->name('orientador.cancelar-grupo');
 
     Route::get('/calendario',[CalendarioController::class, 'index'])->name('calendario.index');
     Route::get('/calendario/{id}/editar', [CalendarioController::class, 'edit'])->name('calendario.edit');

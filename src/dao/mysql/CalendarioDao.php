@@ -363,6 +363,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                         ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
                         ->join('areas as a', 'a.id', '=', 'c.area_id')
                         ->where('g.bloqueado', 0)
+                        ->where('g.cancelado', 0)
                         ->orderBy('areaNombre')
                         ->orderBy('cursoNombre')
                         ->get();

@@ -637,7 +637,7 @@ class FormularioInscripcion {
     }
     
     public static function listadoDeRecaudoPorAreas($calendarioId=0) {
-   
+        
         $results = FormularioInscripcionDao::join('grupos as g', 'g.id', '=', 'formulario_inscripcion.grupo_id')
                     ->join('curso_calendario as cc', function($join) use ($calendarioId) {
                         $join->on('cc.id', '=', 'g.curso_calendario_id')

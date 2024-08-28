@@ -9,6 +9,7 @@ use Src\domain\Orientador;
 use Src\infraestructure\util\ListaDeValor;
 use Src\infraestructure\util\Validador;
 use Src\usecase\areas\ListarAreasUseCase;
+use Src\usecase\grupos\CancelarGrupoUseCase;
 use Src\usecase\orientadores\ActualizarOrientadorUseCase;
 use Src\usecase\orientadores\BuscadorOrientadorUseCase;
 use Src\usecase\orientadores\BuscarOrientadorPorIdUseCase;
@@ -189,5 +190,10 @@ class OrientadorController extends Controller
             "paginate" => (new BuscadorOrientadorUseCase)->ejecutar($criterio),
             "criterio" => $criterio,
         ]); 
+    }   
+    
+    public function cancelar($orientadorId, $grupoId) {        
+        $response = (new CancelarGrupoUseCase)->ejecutar($grupoId);
+        return redirect()->route('orientadores.moreInfo', $orientadorId)->with('code', $response->code)->with('status', $response->message);        
     }    
 }

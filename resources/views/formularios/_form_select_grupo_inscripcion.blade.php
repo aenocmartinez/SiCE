@@ -55,6 +55,11 @@
         <div class="row push">
             <table class="table table-vcenter mt-4">
                 @forelse ($grupos as $grupo)
+                @if ($grupo->estaCancelado())
+                    @php
+                        continue;
+                    @endphp
+                @endif
                 <tr>
                     <td class="fs-sm" style="width: 40%;">
                         <p class="fw-normal mb-0">

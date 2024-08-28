@@ -47,7 +47,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
         return DB::table('grupos as g')
                 ->select(
                     'g.id', 'g.curso_calendario_id', 'g.salon_id', 'g.dia', 'g.jornada', 'cc.curso_id', 'cc.calendario_id', 
-                    'cc.modalidad', 'g.cupos', 'g.nombre',
+                    'cc.modalidad', 'g.cupos', 'g.nombre', 'g.cancelado',
                     DB::raw('(
                         SELECT COUNT(*)
                         FROM formulario_inscripcion fi
@@ -151,6 +151,7 @@ class OrientadorDao extends Model implements OrientadorRepository {
                     $grupo->setJornada($g->jornada);
                     $grupo->setCupo($g->cupos);
                     $grupo->setTotalInscritos($g->total_inscripciones_validas);
+                    $grupo->setCancelado($g->cancelado);
                     
                     $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);                    
 

@@ -95,6 +95,7 @@
                             <option value=""></option>
                             <option value="Abierto">Abierto</option>
                             <option value="Cerrado">Cerrado</option>
+                            <option value="Cancelado">Cancelado</option>
                         </select>
 
                         <label for="f_nombre_curso" class="mt-4">Nombre del Curso</label>
@@ -129,19 +130,23 @@
                         @forelse ($orientador->misGrupos() as $grupo)
                         <div class="list-group-item list-group-item-action text-center">
                             <small>
-                                <span class="fw-bold text-muted" id="nombre_curso">{{ $grupo->getNombreCurso() }}</span>
-                                <br>
-                                <span class="fw-bold text-muted" id="nombre_area">{{ $grupo->getNombreArea() }}</span>
-                                <br>                                                                
-                                <span class="text-muted fs-xs">
+                                <h3 class="fw-light text-muted mb-0" id="nombre_curso">
+                                    {{ $grupo->getNombreCurso() }}
+                                </h3>
+                                <h4 id="nombre_area" class="fs-sm mt-1">{{ $grupo->getNombreArea() }}</h4>
+                                <!-- <span class="text-muted fs-xs"> -->
                                 <span id="nombre_grupo">{{ $grupo->getNombre() }}</span>
-                                <span id="dia">{{ $grupo->getDia() }}</span> en la <span id="jornada">{{ strtolower($grupo->getJornada()) }}</span>
-                                <br>
-                                </span>
-                                <span class="fw-bold text-muted fs-xs" id="estado">
-                                {{ $grupo->tieneCuposDisponibles() ? 'Abierto' : 'Cerrado' }}
-                                <br>
-                                </span>                                
+                                <span id="dia" class="fs-xl">{{ $grupo->getDia() }}</span> en la <span class="fs-xl" id="jornada">{{ strtolower($grupo->getJornada()) }}</span>
+                                <!-- </span> -->
+                                <h6 id="estado">
+                                    @if ($grupo->estaCancelado())
+                                        Cancelado
+                                    @elseif ($grupo->tieneCuposDisponibles())
+                                        Abierto
+                                    @else
+                                        Cerrado
+                                    @endif                                
+                                </h6>
                             </small>
 
                             <div class="fs-xs fw-bold">
@@ -150,21 +155,41 @@
                                 <div class="js-pie-chart pie-chart fw-bold mb-1 mt-1" 
                                      data-percent="{{ round(($grupo->getTotalInscritos() / $grupo->getCupo()) * 100) }}" 
                                      data-line-width="3" 
-                                     data-size="60" 
+                                     data-size="80" 
                                      data-bar-color="#82b54b" 
                                      data-track-color="#e9e9e9">
                                      <span>{{ $grupo->getTotalInscritos() }}/{{ $grupo->getCupo() }}</span>
                                 </div>
-                                <div class="text-center">
+
+                                <div class="text-center d-flex justify-content-center align-items-center">
+                                    @if (!$grupo->estaCancelado())
                                     <a href="{{ route('grupos.descargar-planilla-asistencia', $grupo->getId()) }}" 
-                                        class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
+                                        class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info me-2">
                                         <i class="fa fa-fw fa-download"></i> Planilla asistencia
                                     </a>
                                     <a href="{{ route('grupos.descargar-estado-legalizacion-participantes', $grupo->getId()) }}" 
-                                        class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
+                                        class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info me-2">
                                         <i class="fa fa-fw fa-download"></i> Legalización participantes
-                                    </a>                                    
+                                    </a>
+                                    @endif
+
+                                    <!-- botón para cancelar un grupo -->                                    
+                                     @if (!$grupo->estaCancelado() && $grupo->tieneCuposDisponibles())                                         
+                                        <form method="POST" action="{{ route('orientador.cancelar-grupo', [$orientador->getId(), $grupo->getId()]) }}" id="form-cancelar-{{$grupo->getId()}}">
+                                            @csrf @method('patch')
+                                            <button class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-warning-light text-warning"
+                                                    data-bs-toggle="tooltip" 
+                                                    title="Cancelar Grupo" 
+                                                    type="button"
+                                                    data-id="{{ $grupo->getId() }}"
+                                                    onclick="confirmCancelar(this)">
+                                                Cancelar Grupo
+                                            </button>
+                                        </form>  
+                                     @endif
+                                    <!-- Fin cancelar un grupo -->
                                 </div>
+
                             </div>
                         </div>
                         @empty
@@ -210,55 +235,56 @@ $(document).ready(function() {
         return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     }
 
-    // Función para filtrar y ordenar los grupos
-    function filtrarYOrdenarGrupos() {
-        var areaSeleccionada = normalizeString($('#f_area').val());
-        var diaSeleccionado = normalizeString($('#f_dia').val());
-        var jornadaSeleccionada = normalizeString($('#f_jornada').val());
-        var estadoSeleccionado = normalizeString($('#f_estado').val());
-        var cursoSeleccionado = normalizeString($('#f_nombre_curso').val());
-        var gruposVisibles = 0;
+// Función para filtrar y ordenar los grupos
+function filtrarYOrdenarGrupos() {
+    var areaSeleccionada = normalizeString($('#f_area').val());
+    var diaSeleccionado = normalizeString($('#f_dia').val());
+    var jornadaSeleccionada = normalizeString($('#f_jornada').val());
+    var estadoSeleccionado = normalizeString($('#f_estado').val());
+    var cursoSeleccionado = normalizeString($('#f_nombre_curso').val());
+    var gruposVisibles = 0;
 
-        // Crear un array con los grupos para filtrar y ordenar
-        var grupos = [];
+    // Crear un array con los grupos para filtrar y ordenar
+    var grupos = [];
 
-        $('.list-group-item').each(function() {
-            var grupoArea = normalizeString($(this).find('#nombre_area').text());
-            var grupoDia = normalizeString($(this).find('#dia').text());
-            var grupoJornada = normalizeString($(this).find('#jornada').text());
-            var grupoEstado = normalizeString($(this).find('#estado').text());
-            var grupoCurso = normalizeString($(this).find('#nombre_curso').text());
+    $('.list-group-item').each(function() {
+        var grupoArea = normalizeString($(this).find('#nombre_area').text());
+        var grupoDia = normalizeString($(this).find('#dia').text());
+        var grupoJornada = normalizeString($(this).find('#jornada').text());
+        var grupoEstado = normalizeString($(this).find('#estado').text());
+        var grupoCurso = normalizeString($(this).find('#nombre_curso').text());
 
-            if ((areaSeleccionada === '' || grupoArea.includes(areaSeleccionada)) &&
-                (diaSeleccionado === '' || grupoDia.includes(diaSeleccionado)) &&
-                (jornadaSeleccionada === '' || grupoJornada.includes(jornadaSeleccionada)) &&
-                (estadoSeleccionado === '' || grupoEstado.includes(estadoSeleccionado)) &&
-                (cursoSeleccionado === '' || grupoCurso === cursoSeleccionado)) {  // Uso de === para comparación exacta
-                grupos.push($(this));
-                gruposVisibles++;
-            } else {
-                $(this).hide();
-            }
-        });
-
-        // Ordenar los grupos por jornada
-        grupos = ordenarPorJornada(grupos);
-
-        // Mostrar los grupos ordenados
-        $.each(grupos, function(index, grupo) {
-            grupo.show();
-        });
-
-        // Mostrar u ocultar el mensaje de "No se encontraron registros"
-        if (gruposVisibles === 0) {
-            $('#mensaje-sin-registros').show();
+        if ((areaSeleccionada === '' || grupoArea.includes(areaSeleccionada)) &&
+            (diaSeleccionado === '' || grupoDia.includes(diaSeleccionado)) &&
+            (jornadaSeleccionada === '' || grupoJornada.includes(jornadaSeleccionada)) &&
+            (estadoSeleccionado === '' || grupoEstado.includes(estadoSeleccionado)) &&
+            (cursoSeleccionado === '' || grupoCurso.includes(cursoSeleccionado))) {  // Uso de includes para comparación parcial
+            grupos.push($(this));
+            gruposVisibles++;
         } else {
-            $('#mensaje-sin-registros').hide();
+            $(this).hide();
         }
+    });
 
-        // Actualizar el número de registros encontrados
-        $('#numero-registros').text(gruposVisibles + ' registro(s) encontrado(s)');
+    // Ordenar los grupos por jornada
+    grupos = ordenarPorJornada(grupos);
+
+    // Mostrar los grupos ordenados
+    $.each(grupos, function(index, grupo) {
+        grupo.show();
+    });
+
+    // Mostrar u ocultar el mensaje de "No se encontraron registros"
+    if (gruposVisibles === 0) {
+        $('#mensaje-sin-registros').show();
+    } else {
+        $('#mensaje-sin-registros').hide();
     }
+
+    // Actualizar el número de registros encontrados
+    $('#numero-registros').text(gruposVisibles + ' registro(s) encontrado(s)');
+}
+
 
     // Escuchar los cambios en los selectores de filtros
     $('#f_area, #f_dia, #f_jornada, #f_estado, #f_nombre_curso').change(function() {
@@ -269,6 +295,25 @@ $(document).ready(function() {
     filtrarYOrdenarGrupos();
 });
 
+
+function confirmCancelar(button) {
+    const id = button.getAttribute('data-id'); 
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Esta acción no se puede deshacer',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, estoy seguro',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.getElementById(`form-cancelar-${id}`);
+            if (form) {                
+                form.submit();
+            }
+        }
+    });
+}
 </script>
 
 @endsection

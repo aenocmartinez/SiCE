@@ -16,6 +16,7 @@ class Grupo {
     private Orientador $orientador;
     private CursoCalendario $cursoCalendario;
     private $bloqueado;
+    private $cancelado;
     private $repository;
 
     public function __construct($cursoCalendarioId=0, $salonId=0, $orientadorId=0) {
@@ -24,6 +25,7 @@ class Grupo {
         $this->jornada = "";
         $this->nombre = "";
         $this->bloqueado = false;
+        $this->cancelado = false;
         $this->totalInscritos = 0;
         $this->cupo = 0;
 
@@ -42,6 +44,14 @@ class Grupo {
 
     public function setRepository($repository): void {
         $this->repository = $repository;
+    }
+
+    public function setCancelado(bool $cancelado): void {
+        $this->cancelado = $cancelado;
+    }
+
+    public function estaCancelado(): bool {
+        return $this->cancelado;
     }
 
     public function setBloqueado(bool $bloqueado): void {
@@ -215,5 +225,9 @@ class Grupo {
 
     public function tieneCuposDisponibles(): bool {
         return $this->repository->tieneCuposDisponibles($this->id);
+    }
+
+    public function cancelar(): bool {
+        return $this->repository->cancelarGrupo($this->id);
     }
 }
