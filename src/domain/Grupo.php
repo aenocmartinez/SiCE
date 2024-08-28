@@ -209,6 +209,10 @@ class Grupo {
         return $this->nombre;
     }
 
+    public function getNombreArea() {
+        return $this->cursoCalendario->getNombreArea();
+    }
+
     public function tieneCuposDisponibles(): bool {
         return $this->repository->tieneCuposDisponibles($this->id);
     }

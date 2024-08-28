@@ -157,6 +157,9 @@ class OrientadorController extends Controller
 
         return view('orientadores.moreInfo', [
             'orientador' => $orientador, 
+            'dias' => ListaDeValor::diasSemana(),
+            'jornadas' => ListaDeValor::jornadas(),
+            'areas' => (new ListarAreasUseCase)->ejecutar(),
         ]);
     }
 

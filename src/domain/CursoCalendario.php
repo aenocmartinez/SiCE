@@ -44,10 +44,6 @@ class CursoCalendario {
         $this->costo = $costo;
     }
 
-    // public function setCupo(int $cupo): void {
-    //     $this->cupo = $cupo;
-    // }
-
     public function getModalidad(): string {
         return $this->modalidad;
     }
@@ -55,10 +51,6 @@ class CursoCalendario {
     public function getCosto(): float {
         return $this->costo;
     }
-
-    // public function getCupo(): int {
-    //     return $this->cupo;
-    // }
 
     public function getCalendario(): Calendario {
         return $this->calendario;
@@ -78,6 +70,10 @@ class CursoCalendario {
 
     public function getNombreCurso(): string {
         return $this->curso->getNombre();
+    }
+
+    public function getNombreArea(): string {
+        return $this->curso->getNombreArea();
     }
 
     public function getId(): int {
