@@ -272,7 +272,9 @@ class ConvenioDao extends Model implements ConvenioRepository {
                     WHEN convenios.descuento = 0 THEN curso_calendario.costo
                     ELSE (curso_calendario.costo - (curso_calendario.costo * convenios.descuento / 100))
                 END as total_a_pagar"),
-                'convenios.nombre as convenio'
+                DB::raw("(curso_calendario.costo * convenios.descuento / 100) as valor_descuento"),
+                'convenios.nombre as convenio',
+                'curso_calendario.costo as costo_curso'
             )
             ->join('formulario_inscripcion', 'formulario_inscripcion.participante_id', '=', 'participantes.id')
             ->join('convenios', 'convenios.id', '=', 'formulario_inscripcion.convenio_id')
@@ -287,7 +289,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
             ->get();
             
         
-            $participantes[] = ['NOMBRE', 'TIPO_DOCUMENTO', 'DOCUMENTO', 'CURSO', 'GRUPO', 'HORARIO', 'DESCUENTO' ,'VALOR_A_PAGAR', 'CONVENIO' ,'PERIODO'];
+            $participantes[] = ['NOMBRE', 'TIPO_DOCUMENTO', 'DOCUMENTO', 'CURSO', 'GRUPO', 'HORARIO', 'COSTO_CURSO', 'PORCENTAJE_DESCUENTO', 'VALOR_DESCUENTO' ,'VALOR_A_PAGAR', 'CONVENIO' ,'PERIODO'];
             foreach($items as $item) {
                 
                 $nombreCompleto = $item->primer_nombre . " " . $item->segundo_nombre . " " . $item->primer_apellido . " " . $item->segundo_apellido;
@@ -298,7 +300,9 @@ class ConvenioDao extends Model implements ConvenioRepository {
                                     mb_strtoupper($item->nombre_curso, 'UTF-8'), 
                                     $item->grupo, 
                                     mb_strtoupper($item->dia."/".$item->jornada, 'UTF-8'), 
+                                    $item->costo_curso,
                                     $item->descuento, 
+                                    $item->valor_descuento,
                                     $item->total_a_pagar,
                                     // '$' . number_format($item->total_a_pagar, 2, ',', '.'),
                                     mb_strtoupper($item->convenio, 'UTF-8'),                                    
