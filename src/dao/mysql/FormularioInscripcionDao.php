@@ -620,10 +620,13 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             return 0;
         }
         
-        return  DB::table('formulario_inscripcion as f')
-                    ->join('grupos as g', 'g.id', '=', 'f.grupo_id')
-                    ->where('f.medio_inscripcion', $medio)
-                    ->where('g.calendario_id', $calendario->getId())
-                    ->count();
+        return DB::table('formulario_inscripcion as f')
+                ->where('f.medio_inscripcion', $medio)
+                ->where(function($query) {
+                    $query->where('f.estado', 'Pagado')
+                        ->orWhere('f.estado', 'Pendiente de pago');
+                })
+                ->whereNotNull('f.convenio_id')
+                ->count();
     }
 }

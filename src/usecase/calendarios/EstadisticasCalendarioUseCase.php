@@ -38,38 +38,27 @@ class EstadisticasCalendarioUseCase {
 
         $calendario->setRepository(new CalendarioDao());
 
-        $inscripciones = $calendario->formulariosInscritos();
-
-        $totales = (new TotalesInscripcionesUseCase)->ejecutar($inscripciones);
+        $data["participantesHombres"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('M', $calendario->getId());
+        $data["participantesMujeres"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('F', $calendario->getId());
+        $data["participantesOtrosGeneros"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('Otro', $calendario->getId());
         
-        // $lista = (new ListarCursosPorCalendarioUseCase)->ejecutar($calendario->getId());
+        $data["totalInscripcionesLegalizadas"] = FormularioInscripcion::totalInscripcionesLegalizadas($calendario->getId());
+        $data["totalInscripcionesLegalizadasPorConvenio"] = FormularioInscripcion::totalInscripcionesLegalizadasPorConvenio($calendario->getId());
+        $data["totalInscripcionesLegalizadasRegulares"] = FormularioInscripcion::totalInscripcionesLegalizadasRegulares($calendario->getId());
+        $data["totalFormularioInscritosEnOficina"] = FormularioInscripcion::contadorInscripcionesSegunMedio('en oficina', $calendario->getId());
+        $data["totalFormularioInscritosEnLinea"] = FormularioInscripcion::contadorInscripcionesSegunMedio('formulario publico', $calendario->getId());
+        $data["listaRecaudoPorAreas"] = FormularioInscripcion::listadoDeRecaudoPorAreas($calendario->getId());
+        $recaudos = FormularioInscripcion::totalDeDineroRecaudado($calendario->getId());
 
-        // $data["participantesHombres"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('M', $calendario->getId());
-        $data["participantesHombres"] = ParticipanteDao::where('sexo','M')->count();
-
-        // $data["participantesMujeres"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('F', $calendario->getId());
-        $data["participantesMujeres"] = ParticipanteDao::where('sexo','F')->count();
-
-        // $data["participantesOtrosGeneros"] = ParticipanteDao::numeroParticipantesPorGeneroYCalendario('Otro', $calendario->getId());
-        $data["participantesOtrosGeneros"] = ParticipanteDao::where('sexo','Otros')->count();
-
-        $data["participantesConvenio"] = ParticipanteDao::numeroParticipantesPorConvenioYCalendario($calendario->getId());
-        $data["topCursosInscritos"] = CursoDao::top5CursosMasInscritosPorCalendario($calendario->getId());
-        // $data["numeroParticipantesUnicos"] = ParticipanteDao::numeroParticipantesUnicosPorCalendario($calendario->getId());
-        $data["numeroParticipantesUnicos"] = ParticipanteDao::count();
-        
-        $data["totalFormularioInscritosEnOficina"] = FormularioInscripcion::contadorInscripcionesSegunMedio('en oficina');
-        $data["totalFormularioInscritosEnLinea"] = FormularioInscripcion::contadorInscripcionesSegunMedio('formulario publico');
+        $data["total_recaudo"] =  '$' . number_format($recaudos["RECAUDO_TOTAL"], 0, ',', '.'). ' COP';
+        $data["total_por_convenio"] = '$' . number_format($recaudos["RECAUDO_POR_CONVENIO"], 0, ',', '.') . ' COP';
+        $data["total_sin_convenio"] = '$' . number_format($recaudos["RECAUDO_SIN_CONVENIO"], 0, ',', '.') . ' COP';
                 
         $data["existe"] = true;
         $data["nombre"] = $calendario->getNombre();
         $data["fechaInicio"] = $calendario->getFechaInicioFormateada();
         $data["fechaFin"] = $calendario->getFechaFinalFormateada();
         $data["estado"] = $calendario->estado();
-        $data["ingresosConvenio"] = $totales["pagoPorConvenio"];
-        $data["totalIngresos"] = $totales["pagoTotal"];
-        $data["totalParticipantes"] = $totales["totalMatriculados"];
-                
 
         return $data;
     }

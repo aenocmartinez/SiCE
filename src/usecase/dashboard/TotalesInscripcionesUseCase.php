@@ -2,71 +2,28 @@
 
 namespace Src\usecase\dashboard;
 
+use Src\domain\FormularioInscripcion;
+
 class TotalesInscripcionesUseCase {
 
-    public function ejecutar($inscripciones=array()): array{
+    public function ejecutar($calendarioId=0): array{
         $totales = array();
 
-        $totalInscripciones = sizeof($inscripciones);
-        $totalMatriculados = 0;
+        // $totalInscripciones = sizeof($inscripciones);
         $totalPorConvenio = 0;
-        $totalPendintesDePago = 0;
-        $totalAnulados = 0;
-        $totalRevisarComprobantesPago = 0;
 
-        $pagoSinDescuento = 0;
-        $pagoPorConvenio = 0;
-        $pagoPendientes = 0;
-        $pagoRevisarComprobantePago = 0;
-        $recaudoTotal = 0;
-
-        foreach($inscripciones as $inscripcion) {
-            
-            if ($inscripcion->Pagado()) {
-                $totalMatriculados++;
-                $recaudoTotal += $inscripcion->getTotalAPagar();
-            }
-
-            if ($inscripcion->RevisarComprobanteDePago()) {
-                $recaudoTotal += $inscripcion->getTotalAPagar();
-            }            
-
-            if ($inscripcion->tieneConvenio()) {
-                $totalPorConvenio++;         
-                if ($inscripcion->Pagado()) {
-                    $pagoPorConvenio += $inscripcion->getTotalAPagar();
-                }   
-            } else if ($inscripcion->Pagado()) {
-                $pagoSinDescuento += $inscripcion->getTotalAPagar();
-            }           
-
-            if ($inscripcion->PendienteDePago()) {
-                $totalPendintesDePago++;
-                $pagoPendientes += $inscripcion->getTotalAPagar();
-            }  
-
-            if ($inscripcion->RevisarComprobanteDePago()) {
-                $totalRevisarComprobantesPago++;
-                $pagoRevisarComprobantePago += $inscripcion->getTotalAPagar();
-            }              
-
-            if ($inscripcion->Anulado()) {
-                $totalAnulados++;                
-            }
-            
-        }
-
-        $totales['totalInscripciones'] = $totalInscripciones;
-        $totales['totalMatriculados'] = $totalMatriculados;
+        $recaudos = FormularioInscripcion::totalDeDineroRecaudado($calendarioId);
+        
+        // $totales['totalInscripciones'] = $totalInscripciones;
+        $totales['totalMatriculados'] = FormularioInscripcion::totalInscripcionesLegalizadas($calendarioId);
         $totales['totalPorConvenio'] = $totalPorConvenio;
-        $totales['totalPendintesDePago'] = $totalPendintesDePago;
-        $totales['totalRevisionesPago'] = $totalRevisarComprobantesPago;
-        $totales['totalAnulados'] = $totalAnulados;
-        $totales['pagoSinDescuento'] = number_format($pagoSinDescuento, 0, '.', ',');
-        $totales['pagoPorConvenio'] = number_format($pagoPorConvenio, 0, '.', ',');
-        $totales['pagoPendientes'] = number_format($pagoPendientes, 0, '.', ',');
-        $totales['pagoRevisiones'] = number_format($pagoRevisarComprobantePago, 0, '.', ',');
-        $totales['pagoTotal'] = number_format(($recaudoTotal), 0, '.', ',');
+        $totales['totalPendintesDePago'] = FormularioInscripcion::totalPorEstadoYCalendario('Pendiente de pago', $calendarioId);
+        $totales['totalRevisionesPago'] = FormularioInscripcion::totalPorEstadoYCalendario('Revisar comprobante de pago', $calendarioId);
+        $totales['totalAnulados'] = FormularioInscripcion::totalPorEstadoYCalendario('Anulado', $calendarioId);
+        $totales['pagoSinDescuento'] = '$' . number_format($recaudos["RECAUDO_SIN_CONVENIO"], 0, ',', '.') . ' COP';
+        $totales['pagoPorConvenio'] = '$' . number_format($recaudos["RECAUDO_POR_CONVENIO"], 0, ',', '.') . ' COP';
+        $totales['pagoPendientes'] = number_format(FormularioInscripcion::totalDeDineroPendienteDePago($calendarioId), 0, '.', ',');
+        $totales['pagoTotal'] = '$' . number_format($recaudos["RECAUDO_TOTAL"], 0, ',', '.'). ' COP';
 
         return $totales;
     }

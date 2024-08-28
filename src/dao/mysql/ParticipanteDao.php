@@ -489,16 +489,15 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
 
     public static function numeroParticipantesPorGeneroYCalendario($sexo='M', $calendario_id): int {
        
-        $conteo = ParticipanteDao::where('sexo', $sexo)
-            ->whereHas('formulariosInscripcion', function ($query) use ($calendario_id) {
-                $query->whereHas('grupo', function ($query) use ($calendario_id) {
-                    $query->where('calendario_id', $calendario_id);
-                });
+        return FormularioInscripcionDao::join('grupos as g', 'g.id', '=', 'formulario_inscripcion.grupo_id')
+            ->where(function($query) {
+                $query->where('formulario_inscripcion.estado', 'Pagado')
+                    ->orWhere('formulario_inscripcion.estado', 'Pendiente de pago');
             })
-            ->count();
-        
-
-        return $conteo;        
+            ->leftJoin('participantes', 'formulario_inscripcion.participante_id', '=', 'participantes.id')
+            ->where('g.calendario_id', $calendario_id)
+            ->where('participantes.sexo', '=', $sexo)
+            ->count();               
     }
 
     public static function numeroParticipantesPorConvenioYCalendario($calendarioId): int {

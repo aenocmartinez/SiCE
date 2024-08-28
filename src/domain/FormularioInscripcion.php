@@ -3,6 +3,7 @@
 namespace Src\domain;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Src\dao\mysql\FormularioInscripcionDao;
 use Src\domain\repositories\FormularioRepository;
 use Src\infraestructure\util\FormatoMoneda;
@@ -552,7 +553,119 @@ class FormularioInscripcion {
         return $datosDePago;
     }
 
-    public static function contadorInscripcionesSegunMedio(string $medio = 'en oficina'): int {
-        return FormularioInscripcionDao::contadorInscripcionesSegunMedio($medio);
+    public static function totalPorEstadoYCalendario($estado, $calendarioId=0) {
+        return  FormularioInscripcionDao::join('grupos as g', 'g.id', '=', 'formulario_inscripcion.grupo_id')
+                ->where('formulario_inscripcion.estado', $estado)
+                ->where('g.calendario_id', $calendarioId)
+                ->count();
+    }
+
+    public static function contadorInscripcionesSegunMedio(string $medio, int $calendarioId=0): int {
+        return FormularioInscripcionDao::join('grupos as g', 'g.id', '=', 'formulario_inscripcion.grupo_id')
+                ->where('formulario_inscripcion.medio_inscripcion', $medio)
+                ->where(function($query) {
+                    $query->where('formulario_inscripcion.estado', 'Pagado')
+                        ->orWhere('formulario_inscripcion.estado', 'Pendiente de pago');
+                })
+                ->where('g.calendario_id', $calendarioId)
+                ->count();
+    }
+
+    public static function totalInscripcionesLegalizadas($calendarioId=0): int {
+
+        return FormularioInscripcionDao::join('grupos as g', 'g.id', '=', 'formulario_inscripcion.grupo_id')
+                ->where(function($query) {
+                    $query->where('formulario_inscripcion.estado', 'Pagado')
+                        ->orWhere('formulario_inscripcion.estado', 'Pendiente de pago');
+                })
+                ->where('g.calendario_id', $calendarioId)
+                ->count();
+    }   
+
+    public static function totalInscripcionesLegalizadasPorConvenio($calendarioId=0): int {
+
+        return FormularioInscripcionDao::join('grupos as g', 'g.id', '=', 'formulario_inscripcion.grupo_id')
+                ->where(function($query) {
+                    $query->where('formulario_inscripcion.estado', 'Pagado')
+                        ->orWhere('formulario_inscripcion.estado', 'Pendiente de pago');
+                })
+                ->whereNotNull('formulario_inscripcion.convenio_id')
+                ->where('g.calendario_id', $calendarioId)
+                ->count();
+    }
+    
+    public static function totalInscripcionesLegalizadasRegulares($calendarioId=0): int {
+        
+        return FormularioInscripcionDao::join('grupos as g', 'g.id', '=', 'formulario_inscripcion.grupo_id')
+                ->where(function($query) {
+                    $query->where('formulario_inscripcion.estado', 'Pagado')
+                        ->orWhere('formulario_inscripcion.estado', 'Pendiente de pago');
+                })
+                ->whereNull('formulario_inscripcion.convenio_id')
+                ->where('g.calendario_id', $calendarioId)
+                ->count();
+    }    
+    
+    public static function totalDeDineroRecaudado($calendarioId=0): array {
+
+        $sumaTotal = FormularioInscripcionDao::join('grupos as g', 'g.id', '=', 'formulario_inscripcion.grupo_id')
+        ->where(function($query) {
+            $query->where('formulario_inscripcion.estado', 'Pagado')
+                  ->orWhere('formulario_inscripcion.estado', 'Pendiente de pago');
+        })
+        ->where('g.calendario_id', $calendarioId)
+        ->selectRaw('
+            SUM(formulario_inscripcion.total_a_pagar) as RECAUDO_TOTAL,
+            SUM(CASE WHEN formulario_inscripcion.convenio_id IS NOT NULL THEN formulario_inscripcion.total_a_pagar ELSE 0 END) as RECAUDO_POR_CONVENIO,
+            SUM(CASE WHEN formulario_inscripcion.convenio_id IS NULL THEN formulario_inscripcion.total_a_pagar ELSE 0 END) as RECAUDO_SIN_CONVENIO
+        ')
+        ->first();
+
+        return [
+            "RECAUDO_TOTAL" => $sumaTotal->RECAUDO_TOTAL,
+            "RECAUDO_POR_CONVENIO" => $sumaTotal->RECAUDO_POR_CONVENIO,
+            "RECAUDO_SIN_CONVENIO" => $sumaTotal->RECAUDO_SIN_CONVENIO,
+        ];
+    }   
+    
+    public static function totalDeDineroPendienteDePago($calendarioId=0) {
+        return FormularioInscripcionDao::join('grupos as g', 'g.id', '=', 'formulario_inscripcion.grupo_id')
+                ->where('formulario_inscripcion.estado', 'Pendiente de Pago')
+                ->where('g.calendario_id', $calendarioId)
+                ->sum('formulario_inscripcion.total_a_pagar');
+    
+    }
+    
+    public static function listadoDeRecaudoPorAreas($calendarioId=0) {
+   
+        $results = FormularioInscripcionDao::join('grupos as g', 'g.id', '=', 'formulario_inscripcion.grupo_id')
+                    ->join('curso_calendario as cc', function($join) use ($calendarioId) {
+                        $join->on('cc.id', '=', 'g.curso_calendario_id')
+                            ->where('g.calendario_id', '=', $calendarioId);
+                    })
+                    ->join('cursos as c', 'c.id', '=', 'cc.curso_id')
+                    ->join('areas as a', 'a.id', '=', 'c.area_id')
+                    ->where(function($query) {
+                        $query->where('formulario_inscripcion.estado', 'Pagado')
+                            ->orWhere('formulario_inscripcion.estado', 'Pendiente de pago');
+                    })
+                    ->groupBy('a.nombre')
+                    ->select('a.nombre', 
+                            DB::raw("REPLACE(FORMAT(SUM(formulario_inscripcion.total_a_pagar), 0), ',', '.') as TOTAL_RECAUDO"))
+                    ->orderBy('a.nombre')
+                    ->get();
+                
+            
+            $totalRecaudo = $results->sum(function ($result) {
+                return (float)str_replace('.', '', $result->TOTAL_RECAUDO); // Convertir a número
+            });
+            
+            $totalRecaudoFormatted = number_format($totalRecaudo, 0, ',', '.'); 
+
+            return [
+                'areas' => $results,
+                'total_recaudo' => $totalRecaudoFormatted
+            ];
+    
     }
 }

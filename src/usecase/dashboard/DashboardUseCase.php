@@ -4,7 +4,6 @@ namespace Src\usecase\dashboard;
 
 use Src\dao\mysql\CalendarioDao;
 use Src\domain\Calendario;
-use Src\usecase\cursos\ListarCursosUseCase;
 use Src\usecase\grupos\ListarCursosPorCalendarioUseCase;
 use Src\usecase\orientadores\ListarOrientadoresUseCase;
 
@@ -34,22 +33,17 @@ class DashboardUseCase {
         $grupos = (new ListadoDeGruposConYSinCuposDisponiblesUseCase)->ejecutar();
         
         $listaOrientadores = (new ListarOrientadoresUseCase)->ejecutar();        
-        
-        // $listaCursos = (new ListarCursosUseCase)->ejecutar();        
                 
         $calendarioVigente = Calendario::Vigente();
 
         if (!$calendarioVigente->existe()) {
             $datosDashboard['totalOrientadores'] = sizeof($listaOrientadores);
-            // $datosDashboard['totalCursosCreados'] = sizeof($listaCursos);
             return $datosDashboard;
         }
 
         $calendarioVigente->setRepository(new CalendarioDao);
 
-        $inscripciones = $calendarioVigente->formulariosInscritos();
-
-        $datosDashboard = (new TotalesInscripcionesUseCase)->ejecutar($inscripciones);              
+        $datosDashboard = (new TotalesInscripcionesUseCase)->ejecutar($calendarioVigente->getId());              
         
         $listaCursosAbiertos = (new ListarCursosPorCalendarioUseCase)->ejecutar($calendarioVigente->getId());
         $datosDashboard['totalCursosAbiertos'] = sizeof($listaCursosAbiertos);        
