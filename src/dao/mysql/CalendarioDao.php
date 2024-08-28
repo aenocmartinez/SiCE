@@ -414,7 +414,6 @@ class CalendarioDao extends Model implements CalendarioRepository {
         $participantes = [];
 
         try {
-            
             $items = DB::table('participantes as p')
             ->join('formulario_inscripcion as fi', 'fi.participante_id', '=', 'p.id')
             ->join('grupos as g', function($join) use ($calendarioId) {
@@ -425,6 +424,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
             ->join('calendarios as ca', 'ca.id', '=', 'g.calendario_id')
             ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
             ->join('cursos as cu', 'cu.id', '=', 'cc.curso_id')
+            ->join('areas as a', 'a.id', '=', 'cu.area_id')
             ->leftJoin('convenios as c', 'c.id', '=', 'fi.convenio_id')
             ->select(
                 'fi.numero_formulario',
@@ -444,6 +444,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 'g.nombre as grupo',
                 'g.dia',
                 'g.jornada',
+                'a.nombre as nombre_area',
                 'cu.nombre as curso',
                 'o.nombre as orientador',
                 'ca.nombre as calendario',
@@ -460,7 +461,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
             ->orderBy('p.primer_apellido')
             ->get();
 
-            $participantes[] = ['PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'GENERO', 'ESTADO_CIVIL', 'DIRECCION', 'EPS', 'CONTACTO_EMERGENCIA', 'TELEFONO_EMERGENCIA', 'VINCULADO_UNICOLMAYOR', 'CURSO', 'GRUPO', 'DIA', 'JORNADA', 'CONVENIO', 'PAGO', 'ESTADO', 'PERIODO'];
+            $participantes[] = ['PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'GENERO', 'ESTADO_CIVIL', 'DIRECCION', 'EPS', 'CONTACTO_EMERGENCIA', 'TELEFONO_EMERGENCIA', 'VINCULADO_UNICOLMAYOR', 'AREA', 'CURSO', 'GRUPO', 'DIA', 'JORNADA', 'CONVENIO', 'PAGO', 'ESTADO', 'PERIODO'];
             foreach($items as $item) {            
                 $tieneVinculoUnicolMayor = ($item->vinculado_a_unicolmayor ? 'SI' : 'NO');            
                 $participantes[] = [mb_strtoupper($item->nombre_participante, 'UTF-8'),
@@ -474,6 +475,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                                     mb_strtoupper($item->contacto_emergencia, 'UTF-8'),
                                     mb_strtoupper($item->telefono_emergencia, 'UTF-8'),
                                     mb_strtoupper($tieneVinculoUnicolMayor, 'UTF-8'),
+                                    mb_strtoupper($item->nombre_area, 'UTF-8'),  
                                     mb_strtoupper($item->curso, 'UTF-8'),                                    
                                     $item->grupo, 
                                     mb_strtoupper($item->dia, 'UTF-8'), 
