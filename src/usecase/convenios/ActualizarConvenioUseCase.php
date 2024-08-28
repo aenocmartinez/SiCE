@@ -24,6 +24,7 @@ class ActualizarConvenioUseCase {
         $convenio->setFecFin($convenioDto->fechaFinal);
         $convenio->setDescuento($convenioDto->descuento);
         $convenio->setEsCooperativa($convenioDto->esCooperativa);
+        $convenio->setComentarios($convenioDto->comentarios);
 
         $calendario = new Calendario();
         $calendario->setId($convenioDto->calendarioId);

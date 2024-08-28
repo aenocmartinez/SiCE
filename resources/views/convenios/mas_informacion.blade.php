@@ -63,13 +63,15 @@
                         <tr class="fs-sm">
                             <td>Fechas</td>
                             <td>{{ $convenio->getFecInicio() }} / {{ $convenio->getFecFin() }}</td>
-                        </tr>
-                        @if ($convenio->esCooperativa())
+                        </tr>                        
                         <tr class="fs-sm">
                             <td>Total a pagar</td>
                             <td>{{ $convenio->getTotalAPagarFormatoMoneda() }}</td>
-                        </tr>
-                        @endif
+                        </tr>                        
+                        <tr class="fs-sm">
+                            <td>Comentarios</td>
+                            <td>{{ $convenio->getComentarios() }}</td>
+                        </tr>                           
                   </tbody>
                 </table>
               </div>

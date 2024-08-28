@@ -67,28 +67,33 @@
                             {{ $message }}
                         </span>
                     @enderror
-                    
-                    <br>
-                    
-                    <label class="form-label" for="descuento">Descuento</label>
-                    <input type="number" min="0" step="1"
-                        class="form-control @error('descuento') is-invalid @enderror" 
-                        id="descuento" 
-                        name="descuento" 
-                        placeholder="descuento" 
-                        value="{{ old('descuento', $convenio->getDescuento()) }}"
-                        >
-                        @error('descuento')
-                            <span class="invalid-feedback" role="alert">
-                                {{ $message }}
-                            </span>
-                        @enderror  
+            </div>
+
+            <!-- Columna 2 -->
+            <div class="col-6">
+                <label class="form-label" for="comentarios">Comentarios</label>
+                <textarea class="form-control fs-xs" id="comentarios" name="comentarios" style="height: 130px">{{ old('comentarios', $convenio->getComentarios()) }}</textarea>
+                <br>           
+
+                <label class="form-label" for="descuento">Descuento</label>
+                <input type="number" min="0" step="1"
+                    class="form-control @error('descuento') is-invalid @enderror" 
+                    id="descuento" 
+                    name="descuento" 
+                    placeholder="descuento" 
+                    value="{{ old('descuento', $convenio->getDescuento()) }}"
+                    >
+                    @error('descuento')
+                        <span class="invalid-feedback" role="alert">
+                            {{ $message }}
+                        </span>
+                    @enderror  
                         
-                        <br>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="esCooperativa" name="esCooperativa" {{ $checked }}>
-                            <label class="form-check-label" for="disponible">Es una cooperativa</label>
-                        </div> 
+                    <br>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="esCooperativa" name="esCooperativa" {{ $checked }}>
+                        <label class="form-check-label" for="disponible">Es una cooperativa</label>
+                    </div> 
             </div>
             
             <div class="col-12 mt-4">
@@ -96,7 +101,7 @@
                 <button class="btn btn-large btn-info">{{ $btnText }}</button>        
                 @endif
                 <a href="{{ route('convenios.index') }}" class="btn btn-large btn-light"> Cancelar</a>
-            </div>
+            </div>            
 
         </div>
     

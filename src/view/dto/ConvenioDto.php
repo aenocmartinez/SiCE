@@ -11,5 +11,5 @@ class ConvenioDto {
     public $fechaFinal;
     public $descuento;
     public $esCooperativa;
-
+    public $comentarios;
 }

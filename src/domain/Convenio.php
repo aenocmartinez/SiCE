@@ -20,6 +20,7 @@ class Convenio {
     private $esCooperativa;
     private $esUCMC;
     private $totalPagar;
+    private $comentarios;
 
     public function __construct(string $nombre="")
     {
@@ -34,12 +35,21 @@ class Convenio {
         $this->esCooperativa = false;
         $this->esUCMC = false;
         $this->totalPagar = 0;
+        $this->comentarios = "";
         $this->repository = new ConvenioDao();
     }
 
     public function setRepository($repository): void {
         $this->repository = $repository;
     }
+
+    public function setComentarios($comentarios=""): void {
+        $this->comentarios = $comentarios;
+    }
+
+    public function getComentarios() {
+        return $this->comentarios;
+    }    
 
     public function setTotalAPagar($totalPagar=0): void {
         $this->totalPagar = $totalPagar;

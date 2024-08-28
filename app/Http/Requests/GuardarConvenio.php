@@ -30,7 +30,8 @@ class GuardarConvenio extends FormRequest
             'fec_fin' => 'required|ae_date_format',            
             'id' => 'numeric|nullable',
             'descuento' => 'required|integer|max:100',
-            'esCooperativa' => 'nullable'
+            'esCooperativa' => 'nullable',
+            'comentarios' => 'nullable'
         ];
     }
 

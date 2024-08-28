@@ -14,7 +14,7 @@ use Sentry\Laravel\Facade as Sentry;
 class ConvenioDao extends Model implements ConvenioRepository {
     
     protected $table = 'convenios';
-    protected $fillable = ['nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento', 'es_cooperativa', 'es_ucmc_actual'];
+    protected $fillable = ['nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento', 'es_cooperativa', 'es_ucmc_actual', 'comentarios'];
 
     public function beneficiarios() {
         $this->belongsToMany(ParticipanteDao::class,'convenio_id', 'participante_id', 'convenio_participante');
@@ -64,20 +64,37 @@ class ConvenioDao extends Model implements ConvenioRepository {
         try {
             
             $c = DB::table('convenios as c')
-                ->select(
-                    'c.id',
-                    'c.nombre',
-                    'c.calendario_id',
-                    'c.es_cooperativa',
-                    'c.fec_ini',
-                    'c.fec_fin',
-                    'c.descuento',
-                    'c.total_a_pagar',
-                    DB::raw('(select count(*) from formulario_inscripcion where convenio_id = c.id and estado <> \'Anulado\') as numeroInscritos'),
-                    DB::raw('(select count(*) from convenio_participante where convenio_id = c.id) as numeroBeneficiados')
-                )
-                ->where('c.id', $id)
-                ->first();
+            ->select(
+                'c.id',
+                'c.nombre',
+                'c.calendario_id',
+                'c.es_cooperativa',
+                'c.fec_ini',
+                'c.fec_fin',
+                'c.descuento',
+                'c.comentarios',
+                DB::raw('(select count(*) from formulario_inscripcion where convenio_id = c.id and estado <> \'Anulado\') as numeroInscritos'),
+                DB::raw('(select count(*) from convenio_participante where convenio_id = c.id) as numeroBeneficiados'),
+                DB::raw('IFNULL(SUM(
+                    CASE 
+                        WHEN c.descuento = 0 THEN formulario_inscripcion.costo_curso
+                        ELSE (formulario_inscripcion.costo_curso - (formulario_inscripcion.costo_curso * c.descuento / 100))
+                    END
+                ), 0) as total_a_pagar')
+            )
+            ->leftJoin('formulario_inscripcion', 'formulario_inscripcion.convenio_id', '=', 'c.id')
+            ->where('c.id', $id)
+            ->groupBy(
+                'c.id',
+                'c.nombre',
+                'c.calendario_id',
+                'c.es_cooperativa',
+                'c.fec_ini',
+                'c.fec_fin',
+                'c.descuento',
+                'c.comentarios'
+            )
+            ->first();        
 
 
             if ($c) {
@@ -91,6 +108,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenio->setNumeroBeneficiados($c->numeroBeneficiados);
                 $convenio->setEsCooperativa($c->es_cooperativa);
                 $convenio->setTotalAPagar($c->total_a_pagar);
+                $convenio->setComentarios($c->comentarios);
             
                 $calendarioDao = new CalendarioDao();
                 $calendario = $calendarioDao->buscarCalendarioPorId($c->calendario_id);
@@ -99,6 +117,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
 
             
         } catch (Exception $e) {
+            dd($e->getMessage());
             Sentry::captureException($e);
         }
 
@@ -118,6 +137,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenio->setFecFin($c->fec_fin);
                 $convenio->setDescuento($c->descuento);
                 $convenio->setEsCooperativa($c->es_cooperativa);
+                $convenio->setComentarios($c->comentarios);
     
                 $calendario = $calendarioDao->buscarCalendarioPorId($c->calendario_id);
                 $convenio->setCalendario($calendario);
@@ -146,12 +166,12 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 'descuento' => $convenio->getDescuento(),
                 'es_cooperativa' => $convenio->esCooperativa(),
                 'es_ucmc_actual' => $convenio->esUCMC(),
+                'comentarios' => $convenio->getComentarios(),
             ]);
             
             $exito = true;
 
-        } catch(Exception $e) {   
-            dd($e->getMessage());         
+        } catch(Exception $e) {          
             Sentry::captureException($e);
         }
 
@@ -174,6 +194,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenioEncontrado->fec_fin = $convenio->getFecFin();
                 $convenioEncontrado->descuento = $convenio->getDescuento();
                 $convenioEncontrado->es_cooperativa = $convenio->esCooperativa();
+                $convenioEncontrado->comentarios = $convenio->getComentarios();
                 $convenioEncontrado->save();
             }
 
@@ -233,6 +254,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
         $participantes = [];
 
         try {
+           
             $items = ParticipanteDao::select(
                 'participantes.primer_nombre',
                 'participantes.segundo_nombre',
@@ -245,27 +267,27 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 'grupos.nombre as grupo',
                 'grupos.dia',
                 'grupos.jornada',
-                'formulario_inscripcion.total_a_pagar',
+                'convenios.descuento',
+                DB::raw("CASE 
+                    WHEN convenios.descuento = 0 THEN curso_calendario.costo
+                    ELSE (curso_calendario.costo - (curso_calendario.costo * convenios.descuento / 100))
+                END as total_a_pagar"),
                 'convenios.nombre as convenio'
             )
-            ->join('convenio_participante', 'participantes.documento', '=', 'convenio_participante.cedula')
-            ->join('formulario_inscripcion', function ($join) {
-                $join->on('formulario_inscripcion.convenio_id', '=', 'convenio_participante.convenio_id')
-                    ->on('formulario_inscripcion.participante_id', '=', 'participantes.id');
-            })
+            ->join('formulario_inscripcion', 'formulario_inscripcion.participante_id', '=', 'participantes.id')
             ->join('convenios', 'convenios.id', '=', 'formulario_inscripcion.convenio_id')
             ->join('grupos', 'grupos.id', '=', 'formulario_inscripcion.grupo_id')
             ->join('curso_calendario', 'curso_calendario.id', '=', 'grupos.curso_calendario_id')
             ->join('cursos', 'cursos.id', '=', 'curso_calendario.curso_id')
             ->join('calendarios', 'calendarios.id', '=', 'curso_calendario.calendario_id')
-            ->where('convenio_participante.convenio_id', $convenioId)
+            ->where('convenios.id', $convenioId)
             ->where('calendarios.id', $calendarioId)
             ->orderBy('participantes.primer_nombre')
             ->orderBy('participantes.primer_apellido')
             ->get();
-
             
-            $participantes[] = ['NOMBRE', 'TIPO_DOCUMENTO', 'DOCUMENTO', 'CURSO', 'GRUPO', 'HORARIO', 'VALOR_A_PAGAR', 'CONVENIO' ,'PERIODO'];
+        
+            $participantes[] = ['NOMBRE', 'TIPO_DOCUMENTO', 'DOCUMENTO', 'CURSO', 'GRUPO', 'HORARIO', 'DESCUENTO' ,'VALOR_A_PAGAR', 'CONVENIO' ,'PERIODO'];
             foreach($items as $item) {
                 
                 $nombreCompleto = $item->primer_nombre . " " . $item->segundo_nombre . " " . $item->primer_apellido . " " . $item->segundo_apellido;
@@ -276,7 +298,9 @@ class ConvenioDao extends Model implements ConvenioRepository {
                                     mb_strtoupper($item->nombre_curso, 'UTF-8'), 
                                     $item->grupo, 
                                     mb_strtoupper($item->dia."/".$item->jornada, 'UTF-8'), 
-                                    '$' . number_format($item->total_a_pagar, 2, ',', '.'),
+                                    $item->descuento, 
+                                    $item->total_a_pagar,
+                                    // '$' . number_format($item->total_a_pagar, 2, ',', '.'),
                                     mb_strtoupper($item->convenio, 'UTF-8'),                                    
                                     mb_strtoupper($item->periodo, 'UTF-8')];
             }

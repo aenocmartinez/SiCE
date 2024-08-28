@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GuardarConvenio;
-use EliminarConvenioUseCase;
 use Illuminate\Http\Request;
 use Src\domain\Convenio;
 use Src\infraestructure\util\Validador;
@@ -31,7 +30,6 @@ class ConvenioController extends Controller
     {        
         return view('convenios.create', [
             'convenio' => new Convenio(),
-            // 'calendarios' => (new ListarCalendariosUseCase)->ejecutar(),
         ]);
     }
 
@@ -65,7 +63,7 @@ class ConvenioController extends Controller
 
     public function update(GuardarConvenio $req)
     {
-        $convenioDto = $this->hydrateDto($req->validated());    
+        $convenioDto = $this->hydrateDto($req->validated()); 
         $response = (new ActualizarConvenioUseCase)->ejecutar($convenioDto);
         return redirect()->route('convenios.index')->with('code', $response->code)->with('status', $response->message);
     }
@@ -138,6 +136,7 @@ class ConvenioController extends Controller
         $convenioDto->fechaInicial = $req['fec_ini'];
         $convenioDto->fechaFinal = $req['fec_fin'];
         $convenioDto->descuento = $req['descuento'];  
+        $convenioDto->comentarios = $req['comentarios'];
 
         $convenioDto->esCooperativa = true;
         if (is_null(request()->esCooperativa)) {
