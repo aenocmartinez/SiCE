@@ -500,7 +500,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
         $grupos = [];
 
         $items = DB::table('grupos as g')
-                    ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 'g.bloqueado', 'o.nombre as nombre_orientador',
+                    ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 'g.bloqueado', 'g.cancelado', 'o.nombre as nombre_orientador',
                             'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id', 'c.nombre as nombre_curso', 'ca.nombre as calendario_nombre',
                             DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
                             )
@@ -521,6 +521,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
             $grupo->setNombre($item->nombre);
             $grupo->setJornada($item->jornada);
             $grupo->setDia($item->dia);
+            $grupo->setCancelado($item->cancelado);
             $grupo->setTotalInscritos($item->totalInscritos);
             $grupo->setCursoCalendario(new CursoCalendario(new Calendario($item->calendario_nombre), new Curso($item->nombre_curso)));
             

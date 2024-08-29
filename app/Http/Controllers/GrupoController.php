@@ -127,6 +127,11 @@ class GrupoController extends Controller
             $index = 'sin_cupos';
             $title = 'Cursos cerrados';
         }
+
+        if ($tipo == 'cancelados') {
+            $index = 'cancelados';
+            $title = 'cancelados';
+        }        
         
         $cursos = (new ListadoDeGruposConYSinCuposDisponiblesUseCase)->ejecutar();        
         return view('grupos.cursos_por_estado', [

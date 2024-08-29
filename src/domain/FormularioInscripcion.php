@@ -632,9 +632,15 @@ class FormularioInscripcion {
         return FormularioInscripcionDao::join('grupos as g', 'g.id', '=', 'formulario_inscripcion.grupo_id')
                 ->where('formulario_inscripcion.estado', 'Pendiente de Pago')
                 ->where('g.calendario_id', $calendarioId)
-                ->sum('formulario_inscripcion.total_a_pagar');
-    
+                ->sum('formulario_inscripcion.total_a_pagar');    
     }
+
+    public static function totalDeGruposCancelados($calendarioId=0) {
+        return FormularioInscripcionDao::join('grupos as g', 'g.id', '=', 'formulario_inscripcion.grupo_id')
+                ->where('formulario_inscripcion.estado', 'Pendiente de Pago')
+                ->where('g.calendario_id', $calendarioId)
+                ->sum('formulario_inscripcion.total_a_pagar');    
+    }    
     
     public static function listadoDeRecaudoPorAreas($calendarioId=0) {
         

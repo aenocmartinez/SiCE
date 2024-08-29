@@ -29,10 +29,10 @@
                   </a>
                 </div>
               </div>
-              <!-- END New Customers -->
+              
             </div>
             <div class="col-sm-6 col-xxl-3">
-              <!-- Pending Orders -->
+              
               <div class="block block-rounded d-flex flex-column h-100 mb-0">
                 <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
                   <dl class="mb-0">
@@ -50,10 +50,10 @@
                   </a>
                 </div>
               </div>
-              <!-- END Pending Orders -->
+             
             </div>
             <div class="col-sm-6 col-xxl-3">
-              <!-- Conversion Rate -->
+              
               <div class="block block-rounded d-flex flex-column h-100 mb-0">
                 <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
                   <dl class="mb-0">
@@ -71,10 +71,10 @@
                   </a>
                 </div>
               </div>
-              <!-- END Conversion Rate-->
+              
             </div>                        
             <div class="col-sm-6 col-xxl-3">
-              <!-- Messages -->
+
               <div class="block block-rounded d-flex flex-column h-100 mb-0">
                 <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
                   <dl class="mb-0">
@@ -92,8 +92,56 @@
                   </a>
                 </div>
               </div>
-              <!-- END Messages -->
+              
             </div>
+
+            <!-- Tarjeta de cerrados -->
+            <div class="col-sm-6 col-xxl-3">
+
+              <div class="block block-rounded d-flex flex-column h-100 mb-0">
+                <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
+                  <dl class="mb-0">
+                    <dt class="fs-3 fw-bold">{{ $datosDashboard['totalCursosSinCupos'] }}</dt>
+                    <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Cerrados</dd>
+                  </dl>
+                  <div class="item item-rounded-lg bg-body-light">
+                    <i class="far fa-bell-slash fs-3 text-primary"></i>
+                  </div>
+                </div>
+                <div class="bg-body-light rounded-bottom">
+                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('grupos.estado-cursos', ['tipo' => 'cerrado']) }}">
+                    <span>Ver cerrados</span>
+                    <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
+                  </a>
+                </div>
+              </div>
+              
+            </div>             
+             <!-- Fin tarjeta de cerrados -->
+
+            <!-- Tarjeta de cancelados -->
+            <div class="col-sm-6 col-xxl-3">
+
+              <div class="block block-rounded d-flex flex-column h-100 mb-0">
+                <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
+                  <dl class="mb-0">
+                    <dt class="fs-3 fw-bold">{{ $datosDashboard['totalCancelados'] }}</dt>
+                    <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Cancelados</dd>
+                  </dl>
+                  <div class="item item-rounded-lg bg-body-light">
+                    <i class="far fa-calendar-xmark fs-3 text-primary"></i>
+                  </div>
+                </div>
+                <div class="bg-body-light rounded-bottom">
+                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('grupos.estado-cursos', ['tipo' => 'cancelados']) }}">
+                    <span>Ver cancelados</span>
+                    <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
+                  </a>
+                </div>
+              </div>
+              
+            </div>             
+             <!-- Fin tarjeta de cancelados -->             
           </div>
           
           
@@ -169,104 +217,9 @@
               </a>
             </div>
             <div class="col-md-6 mt-4">
-              <!-- <a class="block block-rounded block-link-shadow" href="{{ route('grupos.estado-cursos', ['tipo' => 'cerrado']) }}"> -->
-              <div class="block block-rounded block-link-shadow">
-                <div class="block-content block-content-full">
-                  <div class="row text-center">
-                    <div class="col-6 border-end">
-                      <div class="py-3">
-                        <div class="item item-circle bg-body-light mx-auto">
-                          <i class="fa fa-clipboard-check text-primary"></i>
-                        </div>
-                        <dl class="mb-0">
-                          <dt class="h3 fw-extrabold mt-3 mb-0">
-                          {{ $datosDashboard['totalCursosSinCupos'] }}
-                          </dt>
-                           
-                          <dd class="fs-sm fw-medium text-muted mb-0">
-                            <a href="{{ route('grupos.estado-cursos', ['tipo' => 'cerrado']) }}">
-                              Cursos cerrados por cupo completo
-                            </a>
-                          </dd>
-                        </dl>
-                      </div>
-                    </div>
-                    
-                    <div class="col-6">
-                      <div class="py-3">
-                        <div class="item item-circle bg-body-light mx-auto">
-                        <i class="fa fa-chart-line text-primary"></i>
-                        </div>
-                        <dl class="mb-0">
-                          <dt class="h3 fw-extrabold mt-3 mb-0">
-                            {{ $datosDashboard['totalCursosConCupos'] }}
-                          </dt>
-                          <dd class="fs-sm fw-medium text-muted mb-0">
-                            <a href="{{ route('grupos.estado-cursos', ['tipo' => 'abierto']) }}">
-                              Cursos con cupos disponibles
-                            </a>
-                          </dd>
-                        </dl>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- </a> -->
+
             </div>
-            <div class="col-md-6 mt-4">
-              <a class="block block-rounded bg-danger" href="javascript:void(0)">
-                <div class="block-content block-content-full">
-                  <div class="row text-center">
-                    <div class="col-4 border-end border-black-op">
-                      <div class="py-3">
-                        <div class="item item-circle bg-black-25 mx-auto">
-                          <i class="fa fa-briefcase text-white"></i>
-                        </div>
-                        <dl class="mb-0">
-                          <dt class="text-white h3 fw-extrabold mt-3 mb-0">
-                            {{ $datosDashboard['totalCursosSinCupos'] }}
-                          </dt>
-                          <dd class="text-white fs-sm fw-medium text-muted mb-0">
-                            Cursos sin cupos
-                          </dd>
-                        </dl>
-                      </div>
-                    </div>
-                    <div class="col-4 border-end border-black-op">
-                      <div class="py-3">
-                        <div class="item item-circle bg-black-25 mx-auto">
-                          <i class="fa fa-chart-line text-white"></i>
-                        </div>
-                        <dl class="mb-0">
-                          <dt class="text-white h3 fw-extrabold mt-3 mb-0">
-                            10
-                          </dt>
-                          <dd class="text-white fs-sm fw-medium text-muted mb-0">
-                            Más matriculados
-                          </dd>
-                        </dl>
-                      </div>
-                    </div>
-                    <div class="col-4">
-                      <div class="py-3">
-                        <div class="item item-circle bg-black-25 mx-auto">
-                          <i class="fa fa-users text-white"></i>
-                        </div>
-                        <dl class="mb-0">
-                          <dt class="text-white h3 fw-extrabold mt-3 mb-0">
-                            96
-                          </dt>
-                          <dd class="text-white fs-sm fw-medium text-muted mb-0">
-                            Orientadores
-                          </dd>
-                        </dl>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
+
           </div>          
 
 @endsection

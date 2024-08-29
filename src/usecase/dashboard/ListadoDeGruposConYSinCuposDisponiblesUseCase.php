@@ -10,6 +10,7 @@ class ListadoDeGruposConYSinCuposDisponiblesUseCase {
         $grupos = [];
         $grupos_sin_cupos = [];
         $grupos_con_cupos = [];
+        $grupos_cancelados = [];
 
         $periodo = Calendario::Vigente();
         if (!$periodo->existe()) {
@@ -29,6 +30,11 @@ class ListadoDeGruposConYSinCuposDisponiblesUseCase {
                 'total_inscritos' => $grupo->getTotalInscritos(),
                 'cupos' => $grupo->getCupo(),
             ];
+
+            if ($grupo->estaCancelado()) {
+                $grupos_cancelados[] = $item;
+                continue;                
+            }
             
             if ($grupo->tieneCuposDisponibles()) {                
                 $grupos_con_cupos[] = $item;
@@ -39,7 +45,8 @@ class ListadoDeGruposConYSinCuposDisponiblesUseCase {
         }
 
         $grupos['sin_cupos'] = $grupos_sin_cupos; 
-        $grupos['con_cupos'] = $grupos_con_cupos; 
+        $grupos['con_cupos'] = $grupos_con_cupos;
+        $grupos['cancelados'] = $grupos_cancelados; 
 
         return $grupos;
     }
