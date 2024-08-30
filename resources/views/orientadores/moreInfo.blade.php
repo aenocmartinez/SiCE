@@ -19,7 +19,7 @@
 <div class="block block-rounded">
     <div class="block-content">
         <div class="row push">
-            <div class="col-6">
+            <div class="col-md-6">
                 <h4 class="fw-light">
                     {{ $orientador->getNombre() }} <br>
                     <small>
@@ -40,78 +40,97 @@
                 </h5>
 
             </div>
-            <div class="col-6">
+            <div class="col-md-6">
                 <h5 class="fw-light">
-                        <small>                                                
-                            <i class="fa fa-fw fa-user-graduate"></i> 
-                                {{ $orientador->getNivelEducativo() }} 
-                            <br>
-                            <i class="fa fa-fw fa-money-check-dollar"></i> Rango salarial: {{ $orientador->getRangoSalarial() }} <br><br>
-                            <i class="fa fa-fw fa-chalkboard-user"></i> <br>
-                            <p>
+                    <small>                                                
+                        <i class="fa fa-fw fa-user-graduate"></i> 
+                            {{ $orientador->getNivelEducativo() }} 
+                        <br>
+                        <i class="fa fa-fw fa-money-check-dollar"></i> Rango salarial: {{ $orientador->getRangoSalarial() }} <br><br>
+                        <i class="fa fa-fw fa-chalkboard-user"></i> <br>
+                        <p>
                             {{ $orientador->getObservacion() }}
-                            </p>
-                        </small>                    
-                    </h5>                
+                        </p>
+                    </small>                    
+                </h5>                
             </div>
         </div>
         <div class="row">
             <div class="col-md-4 col-xl-4 mt-4">
                 <div class="block block-rounded h-100 mb-0">
                     <div class="block-content block-content-full d-flex align-items-center justify-content-between bg-info">
-                    <div class="me-3">
-                        <p class="fs-sm fw-medium text-white-75 mb-0">
-                        Aplicar Filtros
-                        </p>
-                    </div>
+                        <div class="me-3">
+                            <p class="fs-sm fw-medium text-white-75 mb-0">
+                                Filtros
+                            </p>
+                        </div>
                     </div>
                     <div class="list-group push">
-                        <label for="f_area" class="mt-4">Área</label>
-                        <select name="f_area" id="f_area" class="form-control fs-sm">
-                            <option value=""></option>
-                            @foreach ($areas as $area)                                
-                                <option value="{{ $area->getNombre() }}">{{ $area->getNombre() }}</option>
-                            @endforeach
-                        </select>
+                        <div class="form-group">
+                            <label for="f_area" class="mt-4 fs-sm">Área</label>
+                            <select name="f_area" id="f_area" class="form-control fs-sm">
+                                <option value="">Seleccionar Área</option>
+                                @foreach ($areas as $area)                                
+                                    <option value="{{ $area->getNombre() }}">{{ $area->getNombre() }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                        <label for="f_dia" class="mt-4">Día</label>
-                        <select name="f_dia" id="f_dia" class="form-control fs-sm">
-                            <option value=""></option>
-                            @foreach ($dias as $dia)                                
-                                <option value="{{ $dia }}">{{ $dia }}</option>
-                            @endforeach
-                        </select> 
-                        
-                        <label for="f_jornada" class="mt-4">Jornada</label>
-                        <select name="f_jornada" id="f_jornada" class="form-control fs-sm">
-                            <option value=""></option>
-                            @foreach ($jornadas as $jornada)                                
-                                <option value="{{ $jornada }}">{{ $jornada }}</option>
-                            @endforeach
-                        </select>
+                        <div class="form-group">
+                            <label for="f_dia" class="mt-4 fs-sm">Día</label>
+                            <select name="f_dia" id="f_dia" class="form-control fs-sm">
+                                <option value="">Seleccionar Día</option>
+                                @foreach ($dias as $dia)                                
+                                    <option value="{{ $dia }}">{{ $dia }}</option>
+                                @endforeach
+                            </select> 
+                        </div>
 
-                        <label for="f_estado" class="mt-4">Estado</label>
-                        <select name="f_estado" id="f_estado" class="form-control fs-sm">
-                            <option value=""></option>
-                            <option value="Abierto">Abierto</option>
-                            <option value="Cerrado">Cerrado</option>
-                            <option value="Cancelado">Cancelado</option>
-                        </select>
+                        <div class="form-group">
+                            <label for="f_jornada" class="mt-4 fs-sm">Jornada</label>
+                            <select name="f_jornada" id="f_jornada" class="form-control fs-sm">
+                                <option value="">Seleccionar Jornada</option>
+                                @foreach ($jornadas as $jornada)                                
+                                    <option value="{{ $jornada }}">{{ $jornada }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                        <label for="f_nombre_curso" class="mt-4">Nombre del Curso</label>
-                        <select name="f_nombre_curso" id="f_nombre_curso" class="form-control fs-sm">
-                            <option value=""></option>
-                            @php
-                                $cursos = array_unique(array_map(function($grupo) {
-                                    return $grupo->getNombreCurso();
-                                }, $orientador->misGrupos()));
-                            @endphp
-                            @foreach ($cursos as $curso)                                
-                                <option value="{{ $curso }}">{{ $curso }}</option>
-                            @endforeach
-                        </select>
+                        <div class="form-group">
+                            <label for="f_estado" class="mt-4 fs-sm">Estado</label>
+                            <select name="f_estado" id="f_estado" class="form-control fs-sm">
+                                <option value="">Seleccionar Estado</option>
+                                <option value="Abierto">Abierto</option>
+                                <option value="Cerrado">Cerrado</option>
+                                <option value="Cancelado">Cancelado</option>
+                            </select>
+                        </div>
 
-                        <!-- Aquí se agrega el elemento para mostrar el número de registros encontrados -->
+                        <div class="form-group">
+                            <label for="f_nombre_curso" class="mt-4 fs-sm">Nombre del Curso</label>
+                            <select name="f_nombre_curso" id="f_nombre_curso" class="form-control fs-sm">
+                                <option value="">Seleccionar Curso</option>
+                                @php
+                                    $cursos = array_unique(array_map(function($grupo) {
+                                        return $grupo->getNombreCurso();
+                                    }, $orientador->misGrupos()));
+                                @endphp
+                                @foreach ($cursos as $curso)                                
+                                    <option value="{{ $curso }}">{{ $curso }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="f_color" class="mt-4 fs-sm">Estado por colores</label>
+                            <select name="f_color" id="f_color" class="form-control fs-sm">
+                                <option value="">Seleccionar Color</option>
+                                <option value="rojo">Rojo - Cancelado</option>
+                                <option value="verde">Verde - Abierto</option>
+                                <option value="gris">Gris - Cerrado</option>
+                            </select>
+                        </div>
+
                         <div id="numero-registros" class="mt-3 text-muted fs-sm"></div>                     
                     </div>
                 </div>
@@ -120,38 +139,38 @@
             <div class="col-md-8 col-xl-8 mt-4">
                 <div class="block block-rounded h-100 mb-0">
                     <div class="block-content block-content-full d-flex align-items-center justify-content-between bg-primary-dark">
-                    <div class="me-3">
-                        <p class="fs-sm fw-medium text-white-75 mb-0">
-                        {{ count($orientador->misGrupos()) }} Cursos en el periodo vigente
-                        </p>                        
-                    </div>
+                        <div class="me-3">
+                            <p class="fs-sm fw-medium text-white-75 mb-0">
+                                {{ count($orientador->misGrupos()) }} Cursos en el periodo vigente
+                            </p>                        
+                        </div>
                     </div>
                     <div class="list-group push">
                         @forelse ($orientador->misGrupos() as $grupo)
-                        <div class="list-group-item list-group-item-action text-center">
+                        <div class="list-group-item list-group-item-action text-center" 
+                             data-color="{{ strtolower(
+                                 $grupo->estaCancelado() ? 'rojo' : 
+                                 ($grupo->tieneCuposDisponibles() ? 'verde' : 'gris')
+                             ) }}">
                             <small>
                                 <h3 class="fw-light text-muted mb-0" id="nombre_curso">
                                     {{ $grupo->getNombreCurso() }}
                                 </h3>
                                 <h4 id="nombre_area" class="fs-sm mt-1">{{ $grupo->getNombreArea() }}</h4>
-                                <!-- <span class="text-muted fs-xs"> -->
                                 <span id="nombre_grupo">{{ $grupo->getNombre() }}</span>
                                 <span id="dia" class="fs-xl">{{ $grupo->getDia() }}</span> en la <span class="fs-xl" id="jornada">{{ strtolower($grupo->getJornada()) }}</span>
-                                <!-- </span> -->
                                 <h6 id="estado">
                                     @if ($grupo->estaCancelado())
-                                        Cancelado
+                                        <span class="badge bg-danger">Cancelado</span>
                                     @elseif ($grupo->tieneCuposDisponibles())
-                                        Abierto
+                                        <span class="badge bg-success">Abierto</span>
                                     @else
-                                        Cerrado
+                                        <span class="badge bg-secondary">Cerrado</span>
                                     @endif                                
                                 </h6>
                             </small>
 
                             <div class="fs-xs fw-bold">
-
-                                <!-- Pie Chart Container -->
                                 <div class="js-pie-chart pie-chart fw-bold mb-1 mt-1" 
                                      data-percent="{{ round(($grupo->getTotalInscritos() / $grupo->getCupo()) * 100) }}" 
                                      data-line-width="3" 
@@ -173,8 +192,7 @@
                                     </a>
                                     @endif
 
-                                    <!-- botón para cancelar un grupo -->                                    
-                                     @if (!$grupo->estaCancelado() && $grupo->tieneCuposDisponibles())                                         
+                                    @if (!$grupo->estaCancelado() && $grupo->tieneCuposDisponibles())                                         
                                         <form method="POST" action="{{ route('orientador.cancelar-grupo', [$orientador->getId(), $grupo->getId()]) }}" id="form-cancelar-{{$grupo->getId()}}">
                                             @csrf @method('patch')
                                             <button class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-warning-light text-warning"
@@ -187,7 +205,6 @@
                                             </button>
                                         </form>  
                                      @endif
-                                    <!-- Fin cancelar un grupo -->
                                 </div>
 
                             </div>
@@ -213,7 +230,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-    // Función para definir el orden de las jornadas
     function ordenarPorJornada(grupos) {
         var ordenJornada = {
             'mañana': 1,
@@ -230,68 +246,61 @@ $(document).ready(function() {
         return grupos;
     }
 
-    // Función para normalizar cadenas eliminando acentos y caracteres especiales
     function normalizeString(str) {
-        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
     }
 
-// Función para filtrar y ordenar los grupos
-function filtrarYOrdenarGrupos() {
-    var areaSeleccionada = normalizeString($('#f_area').val());
-    var diaSeleccionado = normalizeString($('#f_dia').val());
-    var jornadaSeleccionada = normalizeString($('#f_jornada').val());
-    var estadoSeleccionado = normalizeString($('#f_estado').val());
-    var cursoSeleccionado = normalizeString($('#f_nombre_curso').val());
-    var gruposVisibles = 0;
+    function filtrarYOrdenarGrupos() {
+        var areaSeleccionada = normalizeString($('#f_area').val());
+        var diaSeleccionado = normalizeString($('#f_dia').val());
+        var jornadaSeleccionada = normalizeString($('#f_jornada').val());
+        var estadoSeleccionado = normalizeString($('#f_estado').val());
+        var cursoSeleccionado = normalizeString($('#f_nombre_curso').val());
+        var colorSeleccionado = normalizeString($('#f_color').val());
+        var gruposVisibles = 0;
 
-    // Crear un array con los grupos para filtrar y ordenar
-    var grupos = [];
+        var grupos = [];
 
-    $('.list-group-item').each(function() {
-        var grupoArea = normalizeString($(this).find('#nombre_area').text());
-        var grupoDia = normalizeString($(this).find('#dia').text());
-        var grupoJornada = normalizeString($(this).find('#jornada').text());
-        var grupoEstado = normalizeString($(this).find('#estado').text());
-        var grupoCurso = normalizeString($(this).find('#nombre_curso').text());
+        $('.list-group-item').each(function() {
+            var grupoArea = normalizeString($(this).find('#nombre_area').text());
+            var grupoDia = normalizeString($(this).find('#dia').text());
+            var grupoJornada = normalizeString($(this).find('#jornada').text());
+            var grupoEstado = normalizeString($(this).find('#estado').text());
+            var grupoCurso = normalizeString($(this).find('#nombre_curso').text());
+            var grupoColor = normalizeString($(this).data('color'));
 
-        if ((areaSeleccionada === '' || grupoArea.includes(areaSeleccionada)) &&
-            (diaSeleccionado === '' || grupoDia.includes(diaSeleccionado)) &&
-            (jornadaSeleccionada === '' || grupoJornada.includes(jornadaSeleccionada)) &&
-            (estadoSeleccionado === '' || grupoEstado.includes(estadoSeleccionado)) &&
-            (cursoSeleccionado === '' || grupoCurso.includes(cursoSeleccionado))) {  // Uso de includes para comparación parcial
-            grupos.push($(this));
-            gruposVisibles++;
+            if ((areaSeleccionada === '' || grupoArea.includes(areaSeleccionada)) &&
+                (diaSeleccionado === '' || grupoDia.includes(diaSeleccionado)) &&
+                (jornadaSeleccionada === '' || grupoJornada.includes(jornadaSeleccionada)) &&
+                (estadoSeleccionado === '' || grupoEstado.includes(estadoSeleccionado)) &&
+                (cursoSeleccionado === '' || grupoCurso === cursoSeleccionado) &&  // Comparación exacta
+                (colorSeleccionado === '' || grupoColor === colorSeleccionado)) {
+                grupos.push($(this));
+                gruposVisibles++;
+            } else {
+                $(this).hide();
+            }
+        });
+
+        grupos = ordenarPorJornada(grupos);
+
+        $.each(grupos, function(index, grupo) {
+            grupo.show();
+        });
+
+        if (gruposVisibles === 0) {
+            $('#mensaje-sin-registros').show();
         } else {
-            $(this).hide();
+            $('#mensaje-sin-registros').hide();
         }
-    });
 
-    // Ordenar los grupos por jornada
-    grupos = ordenarPorJornada(grupos);
-
-    // Mostrar los grupos ordenados
-    $.each(grupos, function(index, grupo) {
-        grupo.show();
-    });
-
-    // Mostrar u ocultar el mensaje de "No se encontraron registros"
-    if (gruposVisibles === 0) {
-        $('#mensaje-sin-registros').show();
-    } else {
-        $('#mensaje-sin-registros').hide();
+        $('#numero-registros').text(gruposVisibles + ' registro(s) encontrado(s)');
     }
 
-    // Actualizar el número de registros encontrados
-    $('#numero-registros').text(gruposVisibles + ' registro(s) encontrado(s)');
-}
-
-
-    // Escuchar los cambios en los selectores de filtros
-    $('#f_area, #f_dia, #f_jornada, #f_estado, #f_nombre_curso').change(function() {
+    $('#f_area, #f_dia, #f_jornada, #f_estado, #f_nombre_curso, #f_color').change(function() {
         filtrarYOrdenarGrupos();
     });
 
-    // Filtrar y ordenar inicialmente en caso de que haya valores predeterminados
     filtrarYOrdenarGrupos();
 });
 
