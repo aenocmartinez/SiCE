@@ -8,7 +8,6 @@ use App\Http\Requests\BuscarParticipantePorDocumento;
 use App\Http\Requests\ConfirmarInscription;
 use App\Http\Requests\GuardarParticipante;
 use App\Http\Requests\LegalizarFormularioInscripcion;
-use Illuminate\Http\Request;
 use Src\domain\Calendario;
 use Src\infraestructure\util\ListaDeValor;
 use Src\usecase\areas\ListarAreasUseCase;
