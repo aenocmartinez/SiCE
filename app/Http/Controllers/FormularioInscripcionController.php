@@ -102,9 +102,10 @@ class FormularioInscripcionController extends Controller
         ]);
     }
 
-    public function edit($tipoDocumento, $documento) {   
+    public function edit($tipoDocumento, $documento) {
 
-        if (!Calendario::existeCalendarioVigente()) {
+        $calendarioActual = Calendario::Vigente();
+        if (!$calendarioActual->existe()) {
             return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "No existe periodo académica vigente.");
         }        
         
@@ -112,7 +113,7 @@ class FormularioInscripcionController extends Controller
         
         return view('formularios.select_grupo_inscripcion', [
             'participante' => $participante,
-            'calendarios' => (new ListarCalendariosUseCase)->ejecutar(),
+            'calendario' => $calendarioActual,
             'areas' => (new ListarAreasUseCase)->ejecutar(),
             'calendarioId' => '',
             'areaId' => '',
@@ -155,10 +156,14 @@ class FormularioInscripcionController extends Controller
     }    
 
     public function buscarGruposDisponiblesParaInscripcion2($participanteId, $calendarioId, $areaId) {
+        $calendarioActual = Calendario::Vigente();
+        if (!$calendarioActual->existe()) {
+            return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "No existe periodo académica vigente.");
+        }
 
         return view('formularios.select_grupo_inscripcion', [
             'participante' => (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId),
-            'calendarios' => (new ListarCalendariosUseCase)->ejecutar(),
+            'calendario' => $calendarioActual,
             'areas' => (new ListarAreasUseCase)->ejecutar(),
             'grupos' => (new ListarGruposDisponiblesParaMatriculaUseCase)->ejecutar($calendarioId, $areaId),
             'calendarioId' => $calendarioId,
