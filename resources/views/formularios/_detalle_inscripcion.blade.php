@@ -1,170 +1,145 @@
 <div class="row push">
-
-    <!-- Resumen de los costos de matrícula -->
-    <div class="col-xl-6">
-
-      <div class="block block-rounded">
-          <div class="block-content block-content-full">
-            <span class="fw-100 text-muted">
-              {{ $formulario->getParticipanteNombreCompleto() }} <br>
-              {{ $formulario->getParticipanteTipoYDocumento() }}
-            </span>
-            <table class="table table-vcenter">
-              <tbody>
-                <tr>
-                  <td class="ps-0">
-                    <a class="fw-semibold" href="javascript:void(0)">{{ $formulario->getGrupoNombreCurso() }}</a>
-                    <div class="fs-sm text-muted">
-                        G: {{ $formulario->getGrupoId() }} <br> 
-                        {{ $formulario->getGrupoDia() }} / {{ $formulario->getGrupoJornada() }} <br>
-                        {{ $formulario->getGrupoModalidad() }} <br>
-                        Periodo: {{ $formulario->getGrupoCalendarioNombre() }}
-                    </div>
-                  </td>
-                  <td class="pe-0 fw-medium text-end" id="idCosto">{{ $formulario->getGrupoCursoCosto() }}</td>
-                </tr>
-
-                <tr>
-                  <td class="ps-0" colspan="2">
-                    <a class="fw-semibold" href="javascript:void(0)">Descuento por convenio</a>
-                    @if (!$formulario->tieneConvenio())
-                    <div class="form-check form-block">                        
-                          <label class="form-check-label" for="convenio-0">
-                              <span class="d-block fw-normal p-1">
-                              <span class="d-block fw-semibold mb-1">No aplica</span>
-                              </span>
-                          </label>
-                      </div>      
-                  @else
-                    @foreach ($convenios as $convenio)     
-
-                        @if ($convenio->getId() == $formulario->getParticipanteIdBeneficioConvenio())    
-                          <div class="form-check form-block">                        
-                              <label class="form-check-label" for="convenio-{{ $convenio->getId() }}">
-                                  <span class="d-block fw-normal p-1">
-                                    <span class="d-block fw-semibold mb-1">{{ $convenio->getNombre() }}</span>
-                                    <span class="d-block fs-sm fw-medium text-muted"><span class="fw-semibold">{{ $convenio->getDescuento() }}%</span> de descuento</span>
-                                    <span class="d-block fs-sm fw-medium text-muted text-end">{{ Src\infraestructure\util\FormatoMoneda::PesosColombianos($formulario->getValorDescuento())}}</span>
-                                  </span>
-                              </label>
-                          </div>                      
-                        @endif
-                  
-                    @endforeach   
-                  @endif                    
-                  </td>
-                </tr>
-
-                @if ($formulario->tienePagosParciales())
-                  <tr>
-                    <td class="ps-0" colspan="2">
-                      <a class="fw-semibold" href="javascript:void(0)">Abonos</a>
-                    </td>
-                  </tr>
-                  @foreach ($formulario->PagosRealizados() as $pago)
-                    @if ($pago->getValor() != 0)
-                      <tr>
-                        <td class="ps-0 fs-sm">
-                          {{ $pago->getFechaFormateada() }}
-                          <br><small>{{ $pago->getMedio() }} / voucher: {{ $pago->getVoucher() }}</small>
-                      </td>
-                      <td class="pe-0 fs-sm text-end">{{ $pago->getValorFormateado() }}</td>
-                    </tr>   
-                    @endif
-                  @endforeach                                 
-                @endif
-
-                
-                <tr>
-                  <td class="ps-0 fs-medium fw-semibold">
-                  {{ $formulario->Pagado() ? 'Valor pagado' : 'Valor a pagar' }}
-                  </td>
-                  <td class="pe-0 fs-sm text-end">
-                    <a class="fw-medium" href="javascript:void(0)" id="idPendientePorAPagar">
-                    <h3 class="mt-3">
-                    {{ $formulario->Pagado() ? Src\infraestructure\util\FormatoMoneda::PesosColombianos($formulario->TotalPagoRealizado()) : $formulario->totalAPagarConDescuentoDePagoParcialFormateado() }}
-                    </h3>
-                    </a>                    
-                  </td>
-                </tr>    
-                
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-    </div>
-
-
-    <!-- Fin resumen costos de matrícula -->
-    
-
-    <div class="col-xl-6 order-xl-last">
-
-        <div class="block block-rounded">
-            <div class="block-header">
-                <h3 class="block-title">
-                    Más información
-                </h3>
+    <!-- Tarjeta: Resumen de los costos de matrícula -->
+    <div class="col-xl-6 mb-4">
+        <div class="block block-rounded shadow-sm">
+            <div class="block-header bg-primary text-white">
+                <h3 class="block-title fs-sm">Resumen de Matrícula</h3>
             </div>
-
-            <div class="block-content block-content-full space-y-3">
-
-                <div class="form-check form-block">
-
-                    <div class="mb-3">
-                    <a class="fw-semibold" href="javascript:void(0)">Estado</a>
-                        <div class="form-floating fs-sm">
-                              {{ $formulario->getEstado() }}
-                        </div>                    
-                    </div> 
-
-                    <div class="mb-3">
-                    <a class="fw-semibold" href="javascript:void(0)">Medio de inscripción</a>
-                        <div class="form-floating fs-sm">
-                              {{ $formulario->getMedioInscripcion() }}
-                        </div>                    
-                    </div>                     
-
-                    <div class="mb-3">
-                    <a class="fw-semibold" href="javascript:void(0)">Comentarios</a>
-                        <div class="form-floating fs-sm">
-                              {{ $formulario->getComentarios() }}                              
-                        </div>                    
+            <div class="block-content block-content-full">
+                <!-- Datos del Participante -->
+                <div class="d-flex align-items-center mb-4">
+                    <div class="me-3">
+                        <i class="fa fa-user-circle fa-3x text-primary"></i>
                     </div>
+                    <div>
+                        <h4 class="mb-0 fw-semibold">{{ $formulario->getParticipanteNombreCompleto() }}</h4>
+                        <span class="text-muted fs-sm">{{ $formulario->getParticipanteTipoYDocumento() }}</span>
+                    </div>
+                </div>
 
-                    <div class="mb-3">
-                    <a class="fw-semibold" href="javascript:void(0)">Fec. Max. Legalización</a>
-                        <div class="form-floating fs-sm">
-                              {{ Src\infraestructure\util\FormatoFecha::fechaFormateadaA5DeAgostoDe2024($formulario->getFechaMaxLegalizacion()) }}
-                        </div>                    
-                    </div>                    
-
-                    @if ($formulario->tieneComprobanteDePago())
-                    <div class="mb-1">
-                    <a class="fw-semibold " href="javascript:void(0)">Comprobante de pago</a>
-                        <div class="form-floating fs-sm text-center">
-                        <a href="{{ $formulario->getPathComprobantePago() }}" class="btn btn-lg rounded-pill btn-alt-info px-4 me-1 mb-3 mt-2" target="_blank">
-                          <i class="fa fa-download me-1"></i> Ver comprobante de pago
-                      </a>   
-                        </div>                    
-                    </div>   
-                    @endif                 
-
-
-                  <div>
-                    
-
-
-                                      
-                    </div>                    
-
-                </div>                        
-
-            </div>  
-            
+                <!-- Detalles del Curso -->
+                <table class="table table-borderless fs-sm mb-0">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <strong>{{ $formulario->getGrupoNombreCurso() }}</strong>
+                                <div class="text-muted">
+                                    <span>G: {{ $formulario->getGrupoId() }}</span><br>
+                                    <span>{{ $formulario->getGrupoDia() }} / {{ $formulario->getGrupoJornada() }}</span><br>
+                                    <span>{{ $formulario->getGrupoModalidad() }}</span><br>
+                                    <span>Periodo: {{ $formulario->getGrupoCalendarioNombre() }}</span>
+                                </div>
+                            </td>
+                            <td class="text-end fw-bold text-primary fs-md" id="idCosto">{{ $formulario->getGrupoCursoCosto() }}</td>
+                        </tr>
+                        <!-- Descuento por Convenio -->
+                        <tr>
+                            <td colspan="2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-semibold">Descuento por Convenio</span>
+                                    @if (!$formulario->tieneConvenio())
+                                        <span class="text-muted">No aplica</span>
+                                    @else
+                                        @foreach ($convenios as $convenio)
+                                            @if ($convenio->getId() == $formulario->getParticipanteIdBeneficioConvenio())
+                                                <div>
+                                                    <span class="badge bg-success">{{ $convenio->getDescuento() }}%</span>
+                                                    <span class="text-muted">{{ $convenio->getNombre() }}</span>
+                                                </div>
+                                                <div class="text-end text-muted">
+                                                    {{ Src\infraestructure\util\FormatoMoneda::PesosColombianos($formulario->getValorDescuento()) }}
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Abonos Realizados -->
+                        @if ($formulario->tienePagosParciales())
+                            <tr>
+                                <td colspan="2">
+                                    <div class="fw-semibold mb-2">Abonos Realizados</div>
+                                    <div class="list-group">
+                                        @foreach ($formulario->PagosRealizados() as $pago)
+                                            @if ($pago->getValor() != 0)
+                                                <div class="list-group-item d-flex justify-content-between align-items-center p-2">
+                                                    <div>
+                                                        <span class="text-muted">{{ $pago->getFechaFormateada() }}</span><br>
+                                                        <small class="text-muted">{{ $pago->getMedio() }} / voucher: {{ $pago->getVoucher() }}</small>
+                                                    </div>
+                                                    <div class="text-end fw-semibold">{{ $pago->getValorFormateado() }}</div>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                </td>
+                            </tr>
+                        @endif
+                        <!-- Valor a Pagar -->
+                        <tr class="border-top">
+                            <td class="fs-md fw-semibold">{{ $formulario->Pagado() ? 'Valor Pagado' : 'Valor a Pagar' }}</td>
+                            <td class="text-end">
+                                <h3 class="fw-bold text-success" id="idPendientePorAPagar">
+                                    {{ $formulario->Pagado() ? Src\infraestructure\util\FormatoMoneda::PesosColombianos($formulario->TotalPagoRealizado()) : $formulario->totalAPagarConDescuentoDePagoParcialFormateado() }}
+                                </h3>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    <!-- Fin listado de convenios -->
     </div>
-
+    <!-- Fin Tarjeta: Resumen de los costos de matrícula -->
+    
+    <!-- Tarjeta: Más Información -->
+    <div class="col-xl-6 order-xl-last mb-4">
+        <div class="block block-rounded shadow-sm">
+            <div class="block-header bg-primary text-white">
+                <h3 class="block-title fs-sm">Más Información</h3>
+            </div>
+            <div class="block-content block-content-full">
+                <!-- Información Adicional -->
+                <div class="mb-3">
+                    <h4 class="fw-semibold">Detalles Adicionales</h4>
+                    <!-- Estado -->
+                    <div class="mb-3">
+                        <span class="fw-semibold">Estado:</span>
+                        <div class="fs-sm text-muted">{{ $formulario->getEstado() }}</div>
+                    </div>
+                    <!-- Medio de Inscripción -->
+                    <div class="mb-3">
+                        <span class="fw-semibold">Medio de inscripción:</span>
+                        <div class="fs-sm text-muted">{{ $formulario->getMedioInscripcion() }}</div>
+                    </div>
+                    <!-- Comentarios -->
+                    <div class="mb-3">
+                        <span class="fw-semibold">Comentarios:</span>
+                        <div class="fs-sm text-muted">{{ $formulario->getComentarios() }}</div>
+                    </div>
+                    <!-- Fecha de Creación -->
+                    <div class="mb-3">
+                        <span class="fw-semibold">Fecha de Creación:</span>
+                        <div class="fs-sm text-muted">{{ \Carbon\Carbon::parse($formulario->getFechaCreacion())->locale('es')->isoFormat('D [de] MMMM [de] YYYY') }}</div>
+                    </div>
+                    <!-- Fecha Máxima de Legalización -->
+                    <div class="mb-3">
+                        <span class="fw-semibold">Fecha Máxima de Legalización:</span>
+                        <div class="fs-sm text-muted">{{ \Carbon\Carbon::parse($formulario->getFechaMaxLegalizacion())->locale('es')->isoFormat('D [de] MMMM [de] YYYY') }}</div>
+                    </div>
+                    <!-- Comprobante de Pago -->
+                    @if ($formulario->tieneComprobanteDePago())
+                        <div class="text-center mt-4">
+                            <a href="{{ $formulario->getPathComprobantePago() }}" class="btn btn-lg rounded-pill btn-alt-info px-4" target="_blank">
+                                <i class="fa fa-download me-1"></i> Ver comprobante de pago
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fin Tarjeta: Más Información -->
 </div>
+
+<script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
