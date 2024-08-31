@@ -2,109 +2,174 @@
 <input type="hidden" name="medioPago" value="pagoEcollect">
 <input type="hidden" name="flagComprobante" value="flagComprobante">
 
-    <div class="block block-rounded">
-          <div class="block-header">
-            <h3 class="block-title text-center">
-              Resumen inscripción
-            </h3>
-          </div>
-          <div class="block-content block-content-full">
-            <span class="fw-100 text-muted">
-              {{ $participante->getNombreCompleto() }} <br>
-              {{ $participante->getDocumentoCompleto() }}
-            </span>
-            <table class="table table-bordered table-vcenter fs-sm mt-3">
-              @php
-                  $total_a_pagar = 0;
-                  $numero_cursos = 0;
-                  if (session()->has('cursos_a_matricular')) {
-                      $numero_cursos = count(Session::get('cursos_a_matricular'));
-                  }        
-              @endphp
-              <thead>
-                <tr class="text-center fs-sm">
-                  <th>Curso</th>
-                  <th>Costo</th>
-                  <th>Descuento</th>
-                  <th>Subtotal</th>
-                </tr>
-                <tbody>
-                @foreach (Session::get('cursos_a_matricular') as $curso)   
-                  <tr class="fs-sm">
-                    <td>
-                      <a class="text-info" href="#">
-                        {{ 'G'.$curso['grupoId'] }} - {{ $curso['nombre_curso'] }}
-                      </a>
-                      <div class="fs-sm text-muted">{{ $curso['dia'] . " / " . $curso['jornada'] }}</div>                      
-                    </td>
-                    <td class="text-center">{{ Src\infraestructure\util\FormatoMoneda::PesosColombianos($curso['costo_curso']) }}</td>
-                    <td class="text-center">{{ Src\infraestructure\util\FormatoMoneda::PesosColombianos($curso['descuento']) }}</td>
-                    <td class="text-center">{{ $curso['totalPagoFormateado'] }}</td>
-                  </tr>
+<div class="container pt-0 pb-5">
+    <!-- Encabezado del Resumen -->
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1 class="fw-bold text-primary fs-4 mb-0">Resumen de tu Compra</h1>
+            <p class="text-muted fs-xs">{{ $participante->getNombreCompleto() }} | {{ $participante->getDocumentoCompleto() }}</p>
+        </div>
+    </div>
 
-                  @php
-                    $total_a_pagar += $curso['totalPago']; 
-                  @endphp
+    <div class="row">
+        <!-- Resumen de Cursos -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm border-0" style="border-radius: 20px;">
+                <div class="card-header bg-white text-primary fs-xs" style="border-radius: 20px 20px 0 0;">
+                    Detalles de los Cursos
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle fs-xs mb-0" style="border-radius: 0 0 20px 20px;">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="fw-semibold">Curso</th>
+                                <th class="fw-semibold text-center">Costo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php
+                                $total_a_pagar = 0;
+                            @endphp
 
-                @endforeach
-                </tbody>
-              </thead>
+                            @foreach (Session::get('cursos_a_matricular') as $curso)   
+                            <tr>
+                                <td class="p-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center me-3" style="width: 35px; height: 35px;">
+                                            <i class="fa fa-book"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-dark">{{ 'G'.$curso['grupoId'] }} - {{ $curso['nombre_curso'] }}</div>
+                                            <span class="text-muted fs-xs">{{ $curso['dia'] }} / {{ $curso['jornada'] }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center text-success p-3">{{ $curso['totalPagoFormateado'] }}</td>
+                            </tr>
 
-              <tbody>
-                <tr>
-                  <td class="ps-0 fw-bold h6">Total a pagar</td>
-                  <td class="pe-3 fw-bold text-end" id="idValorTotalAPagar" colspan="3">
-                    <a class="fw-semibold fs-sm" href="javascript:void(0)">
-                      <h3>{{ Src\infraestructure\util\FormatoMoneda::PesosColombianos($total_a_pagar) }}</h3>
-                    </a>
-                </td>
-                </tr>
+                            @php
+                                $total_a_pagar += $curso['totalPago']; 
+                            @endphp
 
-                <tr>
-                  <td class="ps-0 fw-sm text-center" colspan="10" style="font-size:14px; padding-top:30px;">
-                    <h2 class="text-danger">¡Importante!</h2>
-                    <h5 class="text-muted">Una vez que hayas realizado el pago, es imprescindible que cargues el comprobante de pago en formato PDF en nuestro sistema.</h5>
-                    Esto nos permitirá registrar tu transacción de manera adecuada e iniciar el proceso de verificación de tu inscripción, 
-                    que tardará 3 días hábiles a partir de la fecha de carga del comprobante de pago.
-                    <br><br>Recuerda que es responsabilidad del usuario asegurarse de que el comprobante de pago se cargue correctamente en el sistema.
-                  </td>
-                </tr>                
-
-                <tr>
-                  <td class="ps-0 fw-sm text-center" colspan="10">
-                    <button type="button" class="btn btn-success me-1 mb-1" onclick="confirmEcollect();">
-                    <i class="fa fa-circle-dollar-to-slot me-1"></i>
-                        Realizar pago en línea
-                    </button>
-                    <br>
-                    <a href="{{asset('biblioteca/Instructivo_pago_en_linea_2.pdf')}}" target="_blank" style="font-size:14px;">
-                        <i class="fa fa-download me-1"></i>
-                        Consulta aquí el instructivo para pagos en línea por medio de la plataforma Ecollect
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="col-8 container">
-            <div class="input-group mb-5">
-              <input class="form-control @error('pdf') is-invalid @enderror fs-sm" type="file" name="pdf" id="pdf" accept=".pdf">  
-              <button type="submit" class="btn btn-alt-primary fs-sm">
-                  <i class="fa fa-fw fa-upload"></i> Cargar comprobante y finalizar
-              </button>                        
-              @error('pdf')
-                  <span class="invalid-feedback" role="alert">
-                      {{ $message }}
-                  </span>
-              @enderror              
+                            @endforeach
+                            <!-- Total Row -->
+                            <tr class="bg-light">
+                                <td class="text-end fw-bold fs-sm p-3">Total a pagar</td>
+                                <td class="text-center text-success fw-bold fs-sm p-3">
+                                    {{ Src\infraestructure\util\FormatoMoneda::PesosColombianos($total_a_pagar) }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+        </div>
 
-          </div>
-          <br>
+        <!-- Sección de Pago y Carga de Comprobante -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm border-0" style="border-radius: 20px;">
+                <div class="card-body d-flex flex-column justify-content-between position-relative">
+                    <!-- Ícono de Ayuda centrado -->
+                    <div class="text-center mb-2">
+                        <button class="btn btn-outline-danger rounded-circle fs-xs p-2 animate-bounce" id="helpButton" title="Ayuda para el pago" type="button">
+                            <i class="fa fa-question-circle" style="font-size: 1.5rem;"></i>
+                        </button>
+                    </div>
 
-        </div>   
-    
-      </div>
-    
+                    <!-- Paso 1: Realizar Pago en Línea -->
+                    <div class="text-center mb-3">
+                        <h4 class="fs-5 text-primary mb-2">Paso 1: Realiza tu pago en línea</h4>
+                        <button type="button" class="btn btn-success btn-lg rounded-pill fs-xs px-4 w-100" onclick="confirmEcollect();">
+                            <i class="fa fa-credit-card me-2"></i> Realizar pago en línea
+                        </button>
+                        <div class="mt-2">
+                            <a href="{{ asset('biblioteca/Instructivo_pago_en_linea_2.pdf') }}" target="_blank" class="text-info fs-xs">
+                                <i class="fa fa-download me-1"></i> Consulta el instructivo para pagos en línea
+                            </a>
+                        </div>
+                    </div>
 
+                    <!-- Separador Visual -->
+                    <div class="my-2 text-center position-relative">
+                        <hr class="my-2">
+                    </div>
+
+                    <!-- Paso 2: Cargar Comprobante -->
+                    <div class="text-center mt-3">
+                        <h4 class="fs-5 text-primary mb-2">Paso 2: Carga tu comprobante de pago</h4>
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <label class="input-group-text rounded-start fs-xs" for="pdf">
+                                    <i class="fa fa-upload me-2"></i> PDF
+                                </label>
+                                <input type="file" name="pdf" class="form-control rounded-end fs-xs @error('pdf') is-invalid @enderror" id="pdf" accept=".pdf">
+                            </div>
+                            @error('pdf')
+                                <span class="invalid-feedback d-block mt-2 fs-xs" role="alert">
+                                    {{ $message }}
+                                </span>
+                            @enderror
+                        </div>
+
+                        <!-- Botón Confirmar Inscripción -->
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill fs-xs px-4 w-100 mt-3">
+                            <i class="fa fa-check-circle me-2"></i> Confirmar inscripción
+                        </button>
+                    </div>
+
+                    <!-- Tooltip de Ayuda -->
+                    <div id="helpTooltip" class="d-none position-absolute bg-white border shadow-sm p-3 rounded fs-xs text-start" style="top: -200px; right: 50%; transform: translateX(50%); z-index: 1000; width: 250px;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="fw-bold text-danger mb-0">¡Importante!</h6>
+                            <button class="btn btn-link p-0 text-dark" id="closeTooltip" type="button">
+                                <i class="fa fa-times"></i>
+                            </button>
+                        </div>
+                        <p class="mb-3 text-dark">Para completar tu inscripción, sigue estos pasos:</p>
+                        <ol class="text-start ps-3 mb-1 text-dark">
+                            <li>Realiza el pago en línea.</li>
+                            <li>Regresa a esta página y sube el comprobante de pago en formato PDF.</li>
+                            <li>Haz clic en el botón Confirmar inscripción.</li>
+                        </ol>
+                        <p class="mb-1 mt-3 text-dark">La verificación de tu inscripción comenzará una vez que hayas cargado el comprobante y tomará 3 días hábiles.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Añadir animación al ícono de ayuda
+        setInterval(function() {
+            $('#helpButton').toggleClass('animate-bounce');
+        }, 1500);
+
+        // Mostrar/Ocultar el tooltip
+        $('#helpButton').on('click', function() {
+            $('#helpTooltip').toggleClass('d-none');
+        });
+
+        // Cerrar el tooltip
+        $('#closeTooltip').on('click', function() {
+            $('#helpTooltip').addClass('d-none');
+        });
+    });
+</script>
+
+<style>
+    .animate-bounce {
+        animation: bounce 1s infinite;
+    }
+
+    @keyframes bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+</style>

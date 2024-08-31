@@ -49,7 +49,6 @@
         <input type="hidden" name="participanteId" value="{{ $participante->getId() }}">
         <input type="hidden" name="formularioId" value="{{ $formularioId }}">
 
-        
         @include($formularioAMostrar)
 
         </form>
