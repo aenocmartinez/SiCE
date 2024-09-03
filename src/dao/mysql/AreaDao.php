@@ -20,15 +20,16 @@ class AreaDao extends Model implements AreaRepository {
     public function listarAreas(): array {
         $areas = [];
         try {
-
             $rs = AreaDao::all();
             foreach($rs as $r) {
                 array_push($areas, new Area($r['id'], $r['nombre']));
             }            
 
         } catch (\Exception $e) {
-            Sentry::captureException($e);
+            dd($e->getMessage());
+            // Sentry::captureException($e);
         }
+        dd($areas);
         return $areas;
     }
 
