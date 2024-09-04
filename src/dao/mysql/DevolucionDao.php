@@ -3,19 +3,17 @@
 namespace Src\dao\mysql;
 
 use Illuminate\Database\Eloquent\Model;
-use Src\dao\mysql\ParticipanteDao;
 
-class AplazamientoDao extends Model
+class DevolucionDao extends Model
 {
-    protected $table = 'participante_aplazamientos';
+    protected $table = 'participante_devoluciones';
 
     protected $fillable = [
         'participante_id',
-        'saldo_a_favor',
-        'redimido',
-        'caducado',
-        'fecha_caducidad',
         'calendario_id',
+        'total_devuelto',
+        'origen',
+        'porcentaje',
         'comentarios'
     ];
 
@@ -23,4 +21,9 @@ class AplazamientoDao extends Model
     {
         return $this->belongsTo(ParticipanteDao::class, 'participante_id');
     }
+
+    public function calendario()
+    {
+        return $this->belongsTo(CalendarioDao::class, 'calendario_id');
+    }    
 }

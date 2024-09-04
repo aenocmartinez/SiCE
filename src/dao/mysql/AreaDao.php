@@ -26,10 +26,8 @@ class AreaDao extends Model implements AreaRepository {
             }            
 
         } catch (\Exception $e) {
-            dd($e->getMessage());
-            // Sentry::captureException($e);
+            Sentry::captureException($e);
         }
-        dd($areas);
         return $areas;
     }
 

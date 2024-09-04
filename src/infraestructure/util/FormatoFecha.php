@@ -66,4 +66,9 @@ class FormatoFecha {
 
         return $formato_deseado;
     }
+
+    public static function sumarMesesAUnaFecha($fechaActual, $numeroMeses) {
+
+        return (new DateTime($fechaActual))->modify('+'.$numeroMeses.' months')->format('Y-m-d');
+    }
 }

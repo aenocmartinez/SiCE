@@ -20,7 +20,7 @@ class CambiarCursoOGrupoUseCase {
                                                 'accion' => 'cambio', 
                                                 'decisionPago' => $datosComplementarios['decision_sobre_pago'], 
                                                 'nuevoValorAPagar' => $datosDePago['totalAPagar'],
-                                                'justificacion' => $datosComplementarios['justificacion'],
+                                                'justificacion' => $datosComplementarios['justificacion']
                                              ]);
     }
 }

@@ -131,7 +131,7 @@ class GrupoController extends Controller
         if ($tipo == 'cancelados') {
             $index = 'cancelados';
             $title = 'cancelados';
-        }        
+        }
         
         $cursos = (new ListadoDeGruposConYSinCuposDisponiblesUseCase)->ejecutar();        
         return view('grupos.cursos_por_estado', [

@@ -17,7 +17,8 @@ class CambiosTrasladosDao extends Model {
 
     protected $table = 'cambios_traslados';
     protected $fillable = [
-        'formulario_id', 
+        'formulario_id',
+        'calendario_id', 
         'periodo', 
         'accion', 
         'participante_id_inicial', 
@@ -118,7 +119,8 @@ class CambiosTrasladosDao extends Model {
 
             $totalItems = CambiosTrasladosDao::join('formulario_inscripcion', function($join) {
                 $join->on('formulario_inscripcion.id', '=', 'cambios_traslados.formulario_id')
-                        ->where('formulario_inscripcion.estado', '<>', 'Anulado');
+                        ->where('formulario_inscripcion.estado', '<>', 'Anulado')
+                        ->where('formulario_inscripcion.estado', '<>', 'Aplazado');
             })->count();                
 
         foreach ($items as $item) {
@@ -150,6 +152,9 @@ class CambiosTrasladosDao extends Model {
             $cambio->setId($item->id);
             $cambio->setPeriodo($item->periodo);
             $cambio->setAccion($item->accion);
+            if ($item->estado == 'Aplazado') {
+                $cambio->setAccion('aplazamiento');
+            }
             $cambio->setParticipanteInicial($participante);
             $cambio->setFormulario($formulario);
             $cambio->setGrupoInicial($grupoInicial);
@@ -249,14 +254,18 @@ class CambiosTrasladosDao extends Model {
             $grupoInicial->setDia($item->dia_inicial);
 
             $nuevoGrupo = new Grupo();
-            $nuevoGrupo->setNombre($item->nuevo_grupo_nombre);
+            $nuevoGrupo->setNombre($item->grupo_nombre_nuevo);
             $nuevoGrupo->setJornada($item->nuevo_grupo_jornada);
             $nuevoGrupo->setDia($item->nuevo_grupo_dia);            
 
             $cambio = new CambioTraslado();
             $cambio->setId($item->id);
             $cambio->setPeriodo($item->periodo);
+            
             $cambio->setAccion($item->accion);
+            if ($item->estado == 'Aplazado') {
+                $cambio->setAccion('aplazamiento');
+            }
             $cambio->setParticipanteInicial($participante);
             $cambio->setFormulario($formulario);
             $cambio->setGrupoInicial($grupoInicial);

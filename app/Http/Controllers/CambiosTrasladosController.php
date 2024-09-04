@@ -2,20 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AplazarInscripcion;
 use App\Http\Requests\BuscarParticipantePorDocumento;
-use App\Http\Requests\FormularioTramite;
+use App\Http\Requests\HacerDevolucionDeUnInscripion;
 use App\Http\Requests\RealizarCambioDeCursoOGrupo;
 use Src\domain\Calendario;
+use Src\infraestructure\util\FormatoFecha;
 use Src\infraestructure\util\ListaDeValor;
 use Src\usecase\areas\ListarAreasUseCase;
 use Src\usecase\cambios_traslados\BuscadorCambiosYTrasladosUseCase;
 use Src\usecase\cambios_traslados\CambiarCursoOGrupoUseCase;
 use Src\usecase\cambios_traslados\ListarCambiosYTrasladosUseCase;
+use Src\usecase\formularios\AplazarInscripcionUseCase;
 use Src\usecase\formularios\BuscarFormularioPorNumeroUseCase;
+use Src\usecase\formularios\DevolucionInscripcionUseCase;
 use Src\usecase\grupos\BuscarGrupoPorIdUseCase;
 use Src\usecase\grupos\ListarGruposDisponiblesParaMatriculaUseCase;
 use Src\usecase\participantes\BuscadorParticipantesUseCase;
 use Src\usecase\participantes\BuscarParticipantePorDocumentoUseCase;
+use Src\view\dto\AplazarInscripcionDto;
+use Src\view\dto\DevolucionInscripcionDto;
 
 class CambiosTrasladosController extends Controller
 {
@@ -79,41 +85,6 @@ class CambiosTrasladosController extends Controller
         ]);
     } 
 
-    public function formularioDeTramite($numero_formulario) {
-
-        // $req = $req->validated();    
-
-        $formulario = (new BuscarFormularioPorNumeroUseCase)->ejecutar($numero_formulario);
-        if (!$formulario->existe()) {
-            return redirect()->route('cambios-traslados.index')->with('code', "404")->with('status', "Formulario no encontrado.");
-        }
-
-        $areas = [];
-        $vista_segun_motivo = '_form_cambio_de_curso_grupo';
-        // if ($req['motivo'] == "traslado") {
-        //     $vista_segun_motivo = '_form_traslado';
-
-        // } else if ($req['motivo'] == "aplazamiento") { 
-        //     $vista_segun_motivo = '_form_aplazamiento';
-
-        // } else if ($req['motivo'] == "cancelacion") { 
-        //     $vista_segun_motivo = '_form_cancelacion';
-
-        // } else if ($req['motivo'] == "cambio") { 
-        //     $areas = (new ListarAreasUseCase)->ejecutar();
-        // }
-        $areas = (new ListarAreasUseCase)->ejecutar();
-
-
-        return view('cambios-traslados.form-tramite', [
-            'formulario' => $formulario,
-            'labelMotivo' => ListaDeValor::tagMotivoCambioYTraslado('cambio'),
-            'motivo' => 'cambio',
-            'vista_segun_motivo' => $vista_segun_motivo,
-            'areas' => $areas,
-        ]);
-    }
-
     public function listarCursosParaMatricular($area_id) {
 
         $periodo = Calendario::Vigente();
@@ -128,9 +99,45 @@ class CambiosTrasladosController extends Controller
         ]);
     }
 
-    public function guardarTramite(RealizarCambioDeCursoOGrupo $req) {
+    public function formularioDeTramite($numero_formulario, $motivo) {    
 
-        $data = $req->validated();
+        $mapa_vista_por_motivo["aplazamiento"] = "form_aplazamiento";
+        $mapa_vista_por_motivo["cambio"] = "form_cambio_de_curso_grupo";
+        $mapa_vista_por_motivo["devolucion"] = "form_devolucion";
+        
+        $formulario = (new BuscarFormularioPorNumeroUseCase)->ejecutar($numero_formulario);
+        if (!$formulario->existe()) {
+            return redirect()->route('cambios-traslados.index')->with('code', "404")->with('status', "Formulario no encontrado.");
+        }
+         
+        $periodo = Calendario::Vigente();
+        if (!$periodo->existe()) {                
+            return redirect()->route('cambios-traslados.index')->with('code', "404")->with('status', "Periodo no válido.");
+        }
+
+        $params['formulario'] = $formulario;
+        $params['periodo'] = $periodo;
+
+        if ($motivo == "cambio") {
+
+            $params['labelMotivo'] = ListaDeValor::tagMotivoCambioYTraslado('cambio');
+            $params['motivo'] = 'cambio';
+            $params['areas'] = (new ListarAreasUseCase)->ejecutar();  
+
+        } else if ($motivo == "aplazamiento") {
+
+            $params['fec_caducidad'] = FormatoFecha::sumarMesesAUnaFecha($periodo->getFechaFinal(), 10);
+        } else if ($motivo == "devolucion") {
+
+            $params['posibles_causas_devolucion'] = ListaDeValor::origenDevoluciones();            
+        }
+
+        return view('cambios-traslados.'.$mapa_vista_por_motivo[$motivo], $params);
+    }
+
+    public function realizarCambioDeGrupo(RealizarCambioDeCursoOGrupo $req) 
+    {   
+        $data = $req->validated();  
         
         $formulario = (new BuscarFormularioPorNumeroUseCase)->ejecutar($data['numero_formulario']);
         if (!$formulario->existe()) {
@@ -150,7 +157,7 @@ class CambiosTrasladosController extends Controller
         $datosComplementarios = [
             'justificacion' => $data['justificacion'], 
             'accion' => 'Cambio de grupo', 
-            'decision_sobre_pago' => $decisionSobrePago,
+            'decision_sobre_pago' => $decisionSobrePago
         ];
 
         $resultado = (new CambiarCursoOGrupoUseCase)->ejecutar($formulario, $nuevoGrupo, $datosComplementarios);
@@ -163,5 +170,53 @@ class CambiosTrasladosController extends Controller
         }
 
         return redirect()->route('cambios-traslados.index')->with('code', $code)->with('status', $status);
+    }
+
+    public function aplazarUnaInscripcion(AplazarInscripcion $req) {
+
+        $data = $req->validated();
+
+        $dataDto = new AplazarInscripcionDto();
+        $dataDto->formularioId = $data['formulario_id'];
+        $dataDto->numeroFormulario = $data['numero_formulario'];
+        $dataDto->participanteId = $data['participante_id'];
+        $dataDto->justifiacion = $data['justificacion'];
+        $dataDto->fechaCaducidad = $data['fec_caducidad'];
+        $dataDto->saldoAFavor = $data['saldo_a_favor'];
+        $dataDto->calendarioId = $data['calendario_id'];
+
+        $existoso = (new AplazarInscripcionUseCase)->ejecutar($dataDto);
+
+        $code = 200;
+        $status = "Proceso realizado con éxito";
+        if (!$existoso) {
+            $code = 500;
+            $status = "Ha ocurrido un error en el sistema, inténtelo más tarde.";
+        }
+
+        return redirect()->route('cambios-traslados.index')->with('code', $code)->with('status', $status);       
+    }
+
+    public function hacerDevolucionAUnaInscripcion(HacerDevolucionDeUnInscripion $req) {
+        $data = $req->validated();
+        $dataDto = new DevolucionInscripcionDto();
+        $dataDto->formularioId = $data['formulario_id'];
+        $dataDto->numeroFormulario = $data['numero_formulario'];
+        $dataDto->participanteId = $data['participante_id'];
+        $dataDto->justifiacion = $data['justificacion'];
+        $dataDto->origen = $data['origen'];
+        $dataDto->valorDevolucion = $data['valor_devolucion'];
+        $dataDto->porcentaje = $data['porcentaje'];
+        $dataDto->calendarioId = $data['calendario_id'];
+
+        $existoso = (new DevolucionInscripcionUseCase)->ejecutar($dataDto);
+        $code = 200;
+        $status = "Proceso realizado con éxito";
+        if (!$existoso) {
+            $code = 500;
+            $status = "Ha ocurrido un error en el sistema, inténtelo más tarde.";
+        }
+
+        return redirect()->route('cambios-traslados.index')->with('code', $code)->with('status', $status);          
     }
 }

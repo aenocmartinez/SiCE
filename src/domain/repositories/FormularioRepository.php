@@ -10,7 +10,7 @@ use Src\infraestructure\util\Paginate;
 interface FormularioRepository {
     public function listarFormulariosPorPeriodo(int $calendarioId, $estado, $documento, $page=1): Paginate;
     public function crearFormulario(FormularioInscripcion &$formulario): bool;
-    public function anularInscripcion($numeroFormulario): bool;
+    public function anularInscripcion($numeroFormulario, $comentario=""): bool;
     public function buscarFormularioPorNumero($numeroFormulario): FormularioInscripcion;
     public static function buscarFormularioPorId(int $id): FormularioInscripcion;
     public function legalizarFormulario(FormularioInscripcion $formulario): bool;

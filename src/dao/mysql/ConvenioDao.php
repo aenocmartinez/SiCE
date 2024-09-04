@@ -73,7 +73,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 'c.fec_fin',
                 'c.descuento',
                 'c.comentarios',
-                DB::raw('(select count(*) from formulario_inscripcion where convenio_id = c.id and estado <> \'Anulado\') as numeroInscritos'),
+                DB::raw('(select count(*) from formulario_inscripcion where convenio_id = c.id and estado <> \'Anulado\' and estado <> \'Aplazado\') as numeroInscritos'),
                 DB::raw('(select count(*) from convenio_participante where convenio_id = c.id) as numeroBeneficiados'),
                 DB::raw('IFNULL(SUM(
                     CASE 

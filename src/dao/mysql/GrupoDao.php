@@ -103,7 +103,7 @@ class GrupoDao extends Model implements GrupoRepository {
             $g = DB::table('grupos as g')
                     ->select('g.id', 'g.dia', 'g.jornada', 'g.curso_calendario_id', 'g.cupos', 'g.nombre', 'g.bloqueado', 'g.cancelado',
                             'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id', 'cc.costo', 'cc.modalidad',
-                            DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')                          
+                            DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado" and fi.estado <> "Aplazado") as totalInscritos')                          
                             )
                     ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
                     ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
@@ -264,7 +264,7 @@ class GrupoDao extends Model implements GrupoRepository {
                             'g.id as grupoId', 'c.id as cursoId', 'ca.id as calendarioId', 'ca.nombre as calendarioNombre',
                             'c.nombre as nombreCurso', 'g.dia', 'g.jornada', 'g.cupos', 'cc.costo', 'g.bloqueado', 'g.cancelado',
                             'cc.modalidad', 'g.nombre', 'o.nombre as orientadorNombre',
-                            DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
+                            DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado" and fi.estado <> "Aplazado") as totalInscritos')
                         )
                         ->join('curso_calendario as cc', function ($join) use ($calendarioId) {
                             $join->on('cc.id', '=', 'g.curso_calendario_id')
@@ -335,7 +335,7 @@ class GrupoDao extends Model implements GrupoRepository {
                     ->select(
                         'g.id', 'g.dia', 'g.jornada', 'g.nombre', 'g.curso_calendario_id', 'g.cupos', 'g.bloqueado', 'g.cancelado',
                         'o.id as orientador_id', 'c.id as curso_id', 's.id as salon_id', 'ca.id as calendario_id', 'cc.modalidad',
-                        DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado") as totalInscritos')
+                        DB::raw('(select count(fi.grupo_id) from formulario_inscripcion fi where fi.grupo_id = g.id and fi.estado <> "Anulado" and fi.estado <> "Aplazado") as totalInscritos')
                     )
                     ->leftJoin('salones as s', 's.id', '=', 'g.salon_id')
                     ->leftJoin('orientadores as o', 'o.id', '=', 'g.orientador_id')
@@ -393,7 +393,7 @@ class GrupoDao extends Model implements GrupoRepository {
 
         $result = GrupoDao::select(
             DB::raw("
-                IF((cupos - (SELECT count(*) AS totalInscritos FROM formulario_inscripcion WHERE grupo_id = grupos.id AND estado <> 'Anulado')) > 0, 'SI', 'NO') as tieneCuposDisponibles
+                IF((cupos - (SELECT count(*) AS totalInscritos FROM formulario_inscripcion WHERE grupo_id = grupos.id AND estado <> 'Anulado' AND estado <> 'Aplazado')) > 0, 'SI', 'NO') as tieneCuposDisponibles
             ")
         )
         ->where('id', $grupoId)
@@ -406,7 +406,7 @@ class GrupoDao extends Model implements GrupoRepository {
         return GrupoDao::select(
             DB::raw("
                 grupos.id,
-                (cupos - (SELECT count(*) FROM formulario_inscripcion WHERE grupo_id = grupos.id AND estado <> 'Anulado')) as cuposDisponibles
+                (cupos - (SELECT count(*) FROM formulario_inscripcion WHERE grupo_id = grupos.id AND estado <> 'Anulado' AND estado <> 'Aplazado')) as cuposDisponibles
             ")
         )
         ->having('cuposDisponibles', '<=', 0)
@@ -455,6 +455,7 @@ class GrupoDao extends Model implements GrupoRepository {
             ->join('cursos as cu', 'cu.id', '=', 'cc.curso_id')
             ->leftJoin('convenios as c', 'c.id', '=', 'fi.convenio_id')
             ->where('fi.estado', '<>', 'Anulado')
+            ->where('fi.estado', '<>', 'Aplazado')
             ->orderBy('p.primer_nombre')
             ->orderBy('p.primer_apellido')            
             ->get();

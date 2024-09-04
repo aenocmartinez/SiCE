@@ -34,7 +34,7 @@ class ListadoDeGruposConYSinCuposDisponiblesUseCase {
             if ($grupo->estaCancelado()) {
                 $grupos_cancelados[] = $item;
                 continue;                
-            }
+            }   
             
             if ($grupo->tieneCuposDisponibles()) {                
                 $grupos_con_cupos[] = $item;

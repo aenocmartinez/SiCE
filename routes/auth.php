@@ -83,9 +83,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/cambios-y-traslados/buscador', [CambiosTrasladosController::class, 'buscadorCambiosYTraslados'])->name('cambios-traslados.buscador');
     Route::get('/cambios-y-traslados/{page}/q/{criteria}', [CambiosTrasladosController::class, 'buscadorCambiosYTrasladosPaginados'])->name('cambios-traslados.buscador-paginador');
     Route::post('/cambios-y-traslados/buscar-participante', [CambiosTrasladosController::class, 'buscarParticipantePorDocumento'])->name('cambios-y-traslados.buscar_participante_por_documento');
-    Route::get('/cambios-y-traslados/{numero_formulario}/formulario-tramite', [CambiosTrasladosController::class, 'formularioDeTramite'])->name('cambios-traslados.form-tramite');
+    Route::get('/cambios-y-traslados/formulario/{formulario}/motivo/{motivo}', [CambiosTrasladosController::class, 'formularioDeTramite'])->name('cambios-traslados.form-tramite');
     Route::get('/cambios-y-traslados/{area_id}/cursos-para-matricular', [CambiosTrasladosController::class, 'listarCursosParaMatricular'])->name('cambios-traslados.cursos-para-matricular');
-    Route::post('/cambios-y-traslados/guardar-tramite', [CambiosTrasladosController::class, 'guardarTramite'])->name('cambios-y-traslados.guardar-tramite');
+    Route::post('/cambios-traslados/realizar-cambio-de-curso', [CambiosTrasladosController::class, 'realizarCambioDeGrupo'])->name('cambios_traslados.realizar_cambio_de_grupo');
+    Route::post('/cambios-traslados/aplazar-inscripcion', [CambiosTrasladosController::class, 'aplazarUnaInscripcion'])->name('cambios_traslados.aplazar_inscripcion');
+    Route::post('/cambios-traslados/aplazar-inscripcion', [CambiosTrasladosController::class, 'hacerDevolucionAUnaInscripcion'])->name('cambios_traslados.hacer_devolucion');
 
     Route::get('/cursos/{id}/editar', [CursoController::class, 'buscarPorId'])->name('cursos.edit');
     Route::get('/cursos/crear', [CursoController::class, 'create'])->name('cursos.create');

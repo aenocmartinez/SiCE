@@ -355,6 +355,10 @@ class FormularioInscripcion {
         return $this->estado == "Anulado";
     }
 
+    public function Aplazado(): bool {
+        return $this->estado == "Aplazado";
+    }    
+
     public function PendienteDePago(): bool {
         return $this->estado == "Pendiente de pago";
     }

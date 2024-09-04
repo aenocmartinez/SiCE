@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RealizarCambioDeCursoOGrupo extends FormRequest
@@ -18,6 +20,7 @@ class RealizarCambioDeCursoOGrupo extends FormRequest
 
     public function rules()
     {
+        // dd($this->all());
         return [
             'numero_formulario' => 'required',
             'area_id' => 'required',
@@ -26,8 +29,9 @@ class RealizarCambioDeCursoOGrupo extends FormRequest
             'nuevo_curso' => 'required',
             'accion' => 'required',
             'nuevo_valor_a_pagar' => 'nullable',
-            'decision_sobre_pago' => 'nullable'
-        ];     
+            'decision_sobre_pago' => 'nullable',
+            'calendario_id' => 'required',
+        ];    
     }
 
     public function messages()
@@ -37,7 +41,8 @@ class RealizarCambioDeCursoOGrupo extends FormRequest
             'justificacion.required' => 'Por favor ingrese la justificación del cambio.',
             'grupoId.required' => 'El campo grupo es obligatorio',   
             'area_id.required' => 'Debe seleccionar el área.',    
-            'nuevo_curso.required' => 'Debe seleccionar el grupo',        
+            'nuevo_curso.required' => 'Debe seleccionar el grupo',  
+            'calendario_id.required' => 'Por favor ingrese el calendario_id.',      
         ];
     } 
 }

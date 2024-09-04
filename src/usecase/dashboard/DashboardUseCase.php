@@ -21,6 +21,8 @@ class DashboardUseCase {
             'pagoTotal' => 0,
             'totalCursosSinCupos' => 0,
             'totalCancelados' => 0,
+            'totalAplazados' => 0,
+            'totalDevolucion' => 0,
         ];
                 
         $calendarioVigente = Calendario::Vigente();
@@ -30,9 +32,11 @@ class DashboardUseCase {
 
         $recaudos = FormularioInscripcion::totalDeDineroRecaudado($calendarioVigente->getId());        
         $datosDashboard['totalMatriculados'] = FormularioInscripcion::totalInscripcionesLegalizadas($calendarioVigente->getId());
+        $datosDashboard['totalAplazados'] = FormularioInscripcion::totalPorEstadoYCalendario('Aplazado', $calendarioVigente->getId());
         $datosDashboard['totalPendintesDePago'] = FormularioInscripcion::totalPorEstadoYCalendario('Pendiente de pago', $calendarioVigente->getId());
         $datosDashboard['totalRevisionesPago'] = FormularioInscripcion::totalPorEstadoYCalendario('Revisar comprobante de pago', $calendarioVigente->getId());
         $datosDashboard['totalAnulados'] = FormularioInscripcion::totalPorEstadoYCalendario('Anulado', $calendarioVigente->getId());
+        $datosDashboard['totalDevolucion'] = FormularioInscripcion::totalPorEstadoYCalendario('Devuelto', $calendarioVigente->getId());
         $datosDashboard['pagoSinDescuento'] = '$' . number_format($recaudos["RECAUDO_SIN_CONVENIO"], 0, ',', '.') . ' COP';
         $datosDashboard['pagoPorConvenio'] = '$' . number_format($recaudos["RECAUDO_POR_CONVENIO"], 0, ',', '.') . ' COP';
         $datosDashboard['pagoPendientes'] = number_format(FormularioInscripcion::totalDeDineroPendienteDePago($calendarioVigente->getId()), 0, '.', ',');

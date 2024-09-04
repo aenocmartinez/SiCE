@@ -4,8 +4,6 @@ namespace Src\dao\mysql;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -32,7 +30,8 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                             'fecha_max_legalizacion',
                             'path_comprobante_pago',
                             'comentarios',
-                            'medio_inscripcion'
+                            'medio_inscripcion',
+                            'estado'
                         ];
     
     public function grupo() {
@@ -203,7 +202,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         return $exito;
     }
     
-    public function anularInscripcion($numeroFormulario): bool {
+    public function anularInscripcion($numeroFormulario, $comentario=""): bool {
         $exito = true;
         try {
             $formulario = FormularioInscripcionDao::where('numero_formulario', $numeroFormulario)->first();
@@ -216,6 +215,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 DB::statement("SET @usuario_sesion = $idUsuarioSesion");
 
                 $formulario->estado = 'Anulado';
+                $formulario->comentarios = $comentario;
                 $formulario->save();
             }
 
@@ -225,6 +225,55 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         }
         return $exito;
     }
+
+    public function aplazarInscripcion($numeroFormulario, $comentario=""): bool {
+        $exito = true;
+        try {
+            $formulario = FormularioInscripcionDao::where('numero_formulario', $numeroFormulario)->first();
+            if ($formulario) {
+                
+                $idUsuarioSesion = Auth::id();
+                if (strlen($idUsuarioSesion)==0) {
+                    $idUsuarioSesion = env('SYSTEM_USER');
+                }
+                DB::statement("SET @usuario_sesion = ?", [$idUsuarioSesion]);
+
+                $formulario->estado = 'Aplazado';
+                $formulario->comentarios = $comentario;
+                $formulario->save();
+            }
+
+        } catch(Exception $e) {
+            $exito = false;
+            Sentry::captureException($e);
+        }
+        return $exito;
+    }
+
+    public function devolucionInscripcion($numeroFormulario, $comentario=""): bool {
+        $exito = true;
+        try {
+            $formulario = FormularioInscripcionDao::where('numero_formulario', $numeroFormulario)->first();
+            if ($formulario) {
+                
+                $idUsuarioSesion = Auth::id();
+                if (strlen($idUsuarioSesion)==0) {
+                    $idUsuarioSesion = env('SYSTEM_USER');
+                }
+                DB::statement("SET @usuario_sesion = ?", [$idUsuarioSesion]);
+
+                $formulario->estado = 'Devuelto';
+                $formulario->comentarios = $comentario;
+                $formulario->save();
+            }
+
+        } catch(Exception $e) {
+            $exito = false;
+            Sentry::captureException($e);
+        }
+        return $exito;
+    }    
+
     public function cambiarEstadoDePagoDeUnFormulario($formularioId, $estado="Pendiente de pago"): bool {
         $exito = true;
         try {
@@ -563,31 +612,30 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             ->join('participantes', 'participantes.id', '=', 'formulario_inscripcion.participante_id')
             ->leftJoin('convenios', 'convenios.id', '=', 'formulario_inscripcion.convenio_id') 
             ->where('formulario_inscripcion.estado', '<>', 'Anulado')
+            ->where('formulario_inscripcion.estado', '<>', 'Aplazado')
             ->get();
             
-
-                foreach($items as $item) {                    
-                    $datosReciboMatricula[] = [
-                        $item->numero_formulario,
-                        $item->PERIODO,
-                        $item->estado,
-                        mb_strtoupper($item->PARTICIPANTE_NOMBRE, 'utf8'),
-                        $item->DOCUMENTO,
-                        $item->telefono,
-                        $item->email,
-                        $item->direccion,
-                        $item->CURSO_NOMBRE,
-                        $item->costo_curso,
-                        $item->valor_descuento,
-                        $item->total_a_pagar,
-                        $item->fecha_max_legalizacion,
-                        $item->jornada,
-                        $item->dia,
-                        $item->CONVENIO_NOMBRE,
-                        FormatoFecha::fechaFormateadaA5DeAgostoDe2024($calendario->getFechaInicioClase()),
-                    ];
-                }
-
+            foreach($items as $item) {                    
+                $datosReciboMatricula[] = [
+                    $item->numero_formulario,
+                    $item->PERIODO,
+                    $item->estado,
+                    mb_strtoupper($item->PARTICIPANTE_NOMBRE, 'utf8'),
+                    $item->DOCUMENTO,
+                    $item->telefono,
+                    $item->email,
+                    $item->direccion,
+                    $item->CURSO_NOMBRE,
+                    $item->costo_curso,
+                    $item->valor_descuento,
+                    $item->total_a_pagar,
+                    $item->fecha_max_legalizacion,
+                    $item->jornada,
+                    $item->dia,
+                    $item->CONVENIO_NOMBRE,
+                    FormatoFecha::fechaFormateadaA5DeAgostoDe2024($calendario->getFechaInicioClase()),
+                ];
+            }
             
         } catch (Exception $e) {
             dd($e->getMessage());

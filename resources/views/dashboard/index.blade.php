@@ -142,6 +142,51 @@
               
             </div>             
              <!-- Fin tarjeta de cancelados -->             
+
+             <!-- Tarjeta Aplazados -->
+             <div class="col-sm-6 col-xxl-3">
+                <div class="block block-rounded d-flex flex-column h-100 mb-0">
+                  <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
+                    <dl class="mb-0">
+                      <dt class="fs-3 fw-bold">{{ $datosDashboard['totalAplazados'] }}</dt>
+                      <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Aplazados</dd>
+                    </dl>
+                    <div class="item item-rounded-lg bg-body-light">
+                    <i class="fas fa-history fs-3 text-primary"></i>
+                    </div>
+                  </div>
+                  <div class="bg-body-light rounded-bottom">
+                    <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Aplazado') }}">
+                      <span>Ver aplazados</span>
+                      <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>                           
+              <!-- Fin tarjeta Aplazados -->
+
+             <!-- Tarjeta Devolución -->
+             <div class="col-sm-6 col-xxl-3">
+                <div class="block block-rounded d-flex flex-column h-100 mb-0">
+                  <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
+                    <dl class="mb-0">
+                      <dt class="fs-3 fw-bold">{{ $datosDashboard['totalDevolucion'] }}</dt>
+                      <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Devolución</dd>
+                    </dl>
+                    <div class="item item-rounded-lg bg-body-light">
+                    <i class="fas fa-history fs-3 text-primary"></i>
+                    </div>
+                  </div>
+                  <div class="bg-body-light rounded-bottom">
+                    <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Devuelto') }}">
+                      <span>Ver devueltos</span>
+                      <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>                           
+              <!-- Fin tarjeta Devolución -->
+
           </div>
           
           

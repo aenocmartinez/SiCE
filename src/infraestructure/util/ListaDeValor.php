@@ -94,6 +94,7 @@ class ListaDeValor {
             [ 'value' => 'Revisar comprobante de pago', 'nombre' => 'Revisar comprobante de pago'],
             [ 'value' => 'Pagado', 'nombre' => 'Pagado'],
             [ 'value' => 'Anulado', 'nombre' => 'Anulado'],
+            [ 'value' => 'Aplazado', 'nombre' => 'Aplazado'],
         ];        
     }
 
@@ -109,20 +110,27 @@ class ListaDeValor {
     public static function motivosCambiosYTraslados(): array {
         return [
             [ 'value' => 'cambio', 'nombre' => 'Cambiar de curso o grupo'],
-            [ 'value' => 'traslado', 'nombre' => 'Trasladar'],
-            [ 'value' => 'aplazamiento', 'nombre' => 'Aplazar'],
-            [ 'value' => 'cancelacion', 'nombre' => 'Cancelar'],
+            // [ 'value' => 'traslado', 'nombre' => 'Trasladar'],
+            [ 'value' => 'aplazamiento', 'nombre' => 'Aplazar inscripción'],
+            [ 'value' => 'devolucion', 'nombre' => 'Devolución'],
         ];
     }
 
     public static function tagMotivoCambioYTraslado($opcion='cambio'): string {
         $motivos = [
             'cambio' => 'Cambio de curso',
-            'traslado' => 'Trasladar',
-            'aplazamiento' => 'Aplazar',
-            'cancelacion' => 'Cancelar',
+            // 'traslado' => 'Trasladar',
+            'aplazamiento' => 'Aplazar inscripción',
+            'devolucion' => 'Devolución',
         ];
 
         return $motivos[$opcion];
+    }
+
+    public static function origenDevoluciones(): array {
+        return [
+            [ 'value' => 'UnicolMayor', 'nombre' => 'Universidad Colegio Mayor de Cundinamarca'],
+            [ 'value' => 'Participante', 'nombre' => 'Participante'],
+        ];
     }
 }

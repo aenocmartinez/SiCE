@@ -106,8 +106,8 @@
                   <span class="nav-main-link-name">Listado de inscritos</span>
                 </a>
                 <a class="nav-main-link {{ setActive(['cambios-traslados.index', 'cambios-traslados.*']) }}" href="{{ route('cambios-traslados.index') }}">
-                  <!-- <span class="nav-main-link-name">Cambios, traslados, aplazamientos y cancelaciones</span> -->
-                  <span class="nav-main-link-name">Cambios de cursos</span>
+                  <span class="nav-main-link-name">Cambios, aplazamientos y devoluciones</span>
+                  <!-- <span class="nav-main-link-name">Cambios de cursos</span> -->
                 </a>                
 
 
