@@ -457,14 +457,16 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 'p.contacto_emergencia',
                 'p.telefono_emergencia',
                 'p.vinculado_a_unicolmayor',
+                'fi.created_at as fecha_inscripcion',
             )
             ->orderBy('p.primer_nombre')
             ->orderBy('p.primer_apellido')
             ->get();
 
-            $participantes[] = ['PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'GENERO', 'ESTADO_CIVIL', 'DIRECCION', 'EPS', 'CONTACTO_EMERGENCIA', 'TELEFONO_EMERGENCIA', 'VINCULADO_UNICOLMAYOR', 'AREA', 'CURSO', 'GRUPO', 'DIA', 'JORNADA', 'CONVENIO', 'TOTAL_PAGO', 'ESTADO', 'PERIODO'];
+            $participantes[] = ['PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'GENERO', 'ESTADO_CIVIL', 'DIRECCION', 'EPS', 'CONTACTO_EMERGENCIA', 'TELEFONO_EMERGENCIA', 'VINCULADO_UNICOLMAYOR', 'AREA', 'CURSO', 'GRUPO', 'DIA', 'JORNADA', 'CONVENIO', 'TOTAL_PAGO', 'ESTADO', 'PERIODO', 'FECHA_INSCRIPCION'];
             foreach($items as $item) {            
-                $tieneVinculoUnicolMayor = ($item->vinculado_a_unicolmayor ? 'SI' : 'NO');            
+                $tieneVinculoUnicolMayor = ($item->vinculado_a_unicolmayor ? 'SI' : 'NO');    
+                $fechaInscripcion = new \DateTime($item->fecha_inscripcion);        
                 $participantes[] = [mb_strtoupper($item->nombre_participante, 'UTF-8'),
                                     mb_strtoupper($item->documento_participante, 'UTF-8'), 
                                     $item->telefono, 
@@ -485,7 +487,9 @@ class CalendarioDao extends Model implements CalendarioRepository {
                                     // number_format($item->total_a_pagar, 0, ',', '.'),
                                     number_format($item->total_a_pagar, 0, '', ''),
                                     mb_strtoupper($item->estadoInscripcion, 'UTF-8'),
-                                    mb_strtoupper($item->calendario, 'UTF-8')];
+                                    mb_strtoupper($item->calendario, 'UTF-8'),
+                                    $fechaInscripcion->format('Y-m-d')
+                                ];
             }
 
 

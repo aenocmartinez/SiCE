@@ -274,7 +274,8 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 END as total_a_pagar"),
                 DB::raw("(curso_calendario.costo * convenios.descuento / 100) as valor_descuento"),
                 'convenios.nombre as convenio',
-                'curso_calendario.costo as costo_curso'
+                'curso_calendario.costo as costo_curso',
+                'formulario_inscripcion.created_at as fecha_inscripcion'
             )
             ->join('formulario_inscripcion', 'formulario_inscripcion.participante_id', '=', 'participantes.id')
             ->join('convenios', 'convenios.id', '=', 'formulario_inscripcion.convenio_id')
@@ -289,10 +290,11 @@ class ConvenioDao extends Model implements ConvenioRepository {
             ->get();
             
         
-            $participantes[] = ['NOMBRE', 'TIPO_DOCUMENTO', 'DOCUMENTO', 'CURSO', 'GRUPO', 'HORARIO', 'COSTO_CURSO', 'PORCENTAJE_DESCUENTO', 'VALOR_DESCUENTO' ,'VALOR_A_PAGAR', 'CONVENIO' ,'PERIODO'];
+            $participantes[] = ['NOMBRE', 'TIPO_DOCUMENTO', 'DOCUMENTO', 'CURSO', 'GRUPO', 'HORARIO', 'COSTO_CURSO', 'PORCENTAJE_DESCUENTO', 'VALOR_DESCUENTO' ,'VALOR_A_PAGAR', 'CONVENIO' ,'PERIODO', 'FECHA_INSCRIPCION'];
             foreach($items as $item) {
                 
                 $nombreCompleto = $item->primer_nombre . " " . $item->segundo_nombre . " " . $item->primer_apellido . " " . $item->segundo_apellido;
+                $fechaInscripcion = new \DateTime($item->fecha_inscripcion);
 
                 $participantes[] = [mb_strtoupper($nombreCompleto, 'UTF-8'), 
                                     $item->tipo_documento, 
@@ -306,7 +308,9 @@ class ConvenioDao extends Model implements ConvenioRepository {
                                     $item->total_a_pagar,
                                     // '$' . number_format($item->total_a_pagar, 2, ',', '.'),
                                     mb_strtoupper($item->convenio, 'UTF-8'),                                    
-                                    mb_strtoupper($item->periodo, 'UTF-8')];
+                                    mb_strtoupper($item->periodo, 'UTF-8'),
+                                    $fechaInscripcion->format('Y-m-d')
+                                ];
             }
 
 
