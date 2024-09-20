@@ -17,6 +17,7 @@ class Grupo {
     private CursoCalendario $cursoCalendario;
     private $bloqueado;
     private $cancelado;
+    private $cerrado_para_inscripcion;
     private $repository;
 
     public function __construct($cursoCalendarioId=0, $salonId=0, $orientadorId=0) {
@@ -26,6 +27,7 @@ class Grupo {
         $this->nombre = "";
         $this->bloqueado = false;
         $this->cancelado = false;
+        $this->cerrado_para_inscripcion = false;
         $this->totalInscritos = 0;
         $this->cupo = 0;
 
@@ -44,6 +46,14 @@ class Grupo {
 
     public function setRepository($repository): void {
         $this->repository = $repository;
+    }
+
+    public function setCerradoParaInscripcion(bool $cerrado_para_inscripcion): void {
+        $this->cerrado_para_inscripcion = $cerrado_para_inscripcion;
+    }
+
+    public function estaCerradoParaInscripcion(): bool {
+        return $this->cerrado_para_inscripcion;
     }
 
     public function setCancelado(bool $cancelado): void {
