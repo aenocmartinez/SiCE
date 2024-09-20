@@ -254,40 +254,6 @@ class ConvenioDao extends Model implements ConvenioRepository {
         $participantes = [];
 
         try {
-           
-            // $items = ParticipanteDao::select(
-            //     'participantes.primer_nombre',
-            //     'participantes.segundo_nombre',
-            //     'participantes.primer_apellido',
-            //     'participantes.segundo_apellido',
-            //     'participantes.tipo_documento',
-            //     'participantes.documento',
-            //     'cursos.nombre as nombre_curso',
-            //     'calendarios.nombre as periodo',
-            //     'grupos.nombre as grupo',
-            //     'grupos.dia',
-            //     'grupos.jornada',
-            //     'convenios.descuento',
-            //     DB::raw("CASE 
-            //         WHEN convenios.descuento = 0 THEN curso_calendario.costo
-            //         ELSE (curso_calendario.costo - (curso_calendario.costo * convenios.descuento / 100))
-            //     END as total_a_pagar"),
-            //     DB::raw("(curso_calendario.costo * convenios.descuento / 100) as valor_descuento"),
-            //     'convenios.nombre as convenio',
-            //     'curso_calendario.costo as costo_curso',
-            //     'formulario_inscripcion.created_at as fecha_inscripcion'
-            // )
-            // ->join('formulario_inscripcion', 'formulario_inscripcion.participante_id', '=', 'participantes.id')
-            // ->join('convenios', 'convenios.id', '=', 'formulario_inscripcion.convenio_id')
-            // ->join('grupos', 'grupos.id', '=', 'formulario_inscripcion.grupo_id')
-            // ->join('curso_calendario', 'curso_calendario.id', '=', 'grupos.curso_calendario_id')
-            // ->join('cursos', 'cursos.id', '=', 'curso_calendario.curso_id')
-            // ->join('calendarios', 'calendarios.id', '=', 'curso_calendario.calendario_id')
-            // ->where('convenios.id', $convenioId)
-            // ->where('calendarios.id', $calendarioId)            
-            // ->orderBy('participantes.primer_nombre')
-            // ->orderBy('participantes.primer_apellido')
-            // ->get();
             $items = ParticipanteDao::select(
                 'participantes.primer_nombre',
                 'participantes.segundo_nombre',
