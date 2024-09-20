@@ -24,6 +24,7 @@ class Participante {
     private string $contactoEmergencia;
     private string $telefonoEmergencia;
     private $beneficio;
+    private $aplazamientos;
     private bool $vinculadoUnicolMayor;
     private ParticipanteRepository $repository;
 
@@ -45,6 +46,7 @@ class Participante {
         $this->eps = "";
         $this->contactoEmergencia = "";
         $this->telefonoEmergencia = ""; 
+        $this->aplazamientos = array();
         $this->beneficio = new Convenio();
         $this->vinculadoUnicolMayor = false;
         $this->repository = new ParticipanteDao();       
@@ -285,5 +287,13 @@ class Participante {
 
     public function formulariosParaCambiosYTramites(): array {
         return $this->repository->listarFormulariosDeInscripcionParticipante($this->id);
+    }
+
+    public function setAplazamientos($aplazamientos): void {
+        $this->aplazamientos = $aplazamientos;        
+    }
+
+    public function getAplazamientos() {
+        return $this->aplazamientos;
     }
 }

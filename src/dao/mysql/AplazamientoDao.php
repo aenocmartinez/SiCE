@@ -23,4 +23,5 @@ class AplazamientoDao extends Model
     {
         return $this->belongsTo(ParticipanteDao::class, 'participante_id');
     }
+    
 }

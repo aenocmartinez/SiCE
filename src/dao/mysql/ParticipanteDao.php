@@ -16,6 +16,7 @@ use Src\domain\Participante;
 use Src\domain\repositories\ParticipanteRepository;
 
 use Sentry\Laravel\Facade as Sentry;
+use Src\domain\Aplazamiento;
 use Src\infraestructure\util\Paginate;
 
 class ParticipanteDao extends Model implements ParticipanteRepository {
@@ -38,6 +39,10 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                             'telefono_emergencia',
                             'vinculado_a_unicolmayor'
                         ];
+
+    public function aplazamientos() {
+        return $this->hasMany(AplazamientoDao::class, 'participante_id');
+    } 
     
     public function formulariosInscripcion() {
         return $this->hasMany(FormularioInscripcionDao::class, 'participante_id');
@@ -178,6 +183,20 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                 $participante->setContactoEmergencia($participanteDao->contacto_emergencia);
                 $participante->setTelefonoEmergencia($participanteDao->telefono_emergencia);
                 $participante->setVinculadoUnicolMayor($participanteDao->vinculado_a_unicolmayor);
+
+                $aplazamientos = [];
+                foreach($participanteDao->aplazamientos()->get() as $item) {
+                    $aplazamiento = new Aplazamiento();
+                    $aplazamiento->setId($item->id);
+                    $aplazamiento->setFechaCaducidad($item->fecha_caducidad);
+                    $aplazamiento->setComentarios($item->comentarios);
+                    $aplazamiento->setRedimido($item->redimido);
+                    $aplazamiento->setSaldo($item->saldo_a_favor);
+        
+                    $aplazamientos[] = $aplazamiento;
+                }      
+                
+                $participante->setAplazamientos($aplazamientos);
             }
 
         } catch (Exception $e) {

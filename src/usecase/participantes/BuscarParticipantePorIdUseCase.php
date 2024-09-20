@@ -17,7 +17,7 @@ class BuscarParticipantePorIdUseCase {
 
         $participante->setRepository($participanteRepository);
         $participante->buscarBeneficioVigentePorConvenio();
-    
+        
         return $participante;
     }
 

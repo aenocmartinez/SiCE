@@ -9,7 +9,7 @@
                 <div class="row g-3">
                     <!-- Opción "No aplica" siempre primera -->
                     <div class="col-6">
-                        <div class="form-check form-block border p-2">
+                        <div class="form-check form-block">
                             <input type="radio" class="form-check-input" id="convenio-0" value="0@0@No aplica" name="convenio" checked>
                             <label class="form-check-label" for="convenio-0">
                                 <span class="d-block fw-normal p-1 fs-xs text-truncate">
@@ -31,7 +31,7 @@
                                 }
                             @endphp
                             <div class="col-6">
-                                <div class="form-check form-block border p-2">
+                                <div class="form-check form-block">
                                     <input type="radio" class="form-check-input" id="convenio-{{ $convenio->getId() }}" value="{{ $convenio->getId().'@'.$descuento.'@'.$convenio->getNombre() }}" name="convenio">
                                     <label class="form-check-label" for="convenio-{{ $convenio->getId() }}">
                                         <span class="d-block fw-normal p-1 fs-xs text-truncate">
@@ -94,6 +94,41 @@
                 </table>
             </div>
         </div>
+
+        <!-- Nueva tarjeta de Saldos por aplazamientos -->
+        <div class="block block-rounded mt-4">
+            <div class="block-header">
+                <h3 class="block-title fs-xs">Saldos por aplazamientos</h3>
+            </div>
+            <div class="block-content block-content-full">
+                <div class="row g-3">
+                    @forelse ($participante->getAplazamientos() as $ap)
+                        <div class="col-12">
+                            <input type="checkbox" class="form-check-input me-2" id="saldo-{{ $loop->index }}" name="saldo[]" value="{{ $ap->getId() }}">
+                            <label class="form-check-label" for="saldo-{{ $loop->index }}">
+                                <span class="fw-semibold fs-xs">
+                                {{ Src\infraestructure\util\FormatoMoneda::PesosColombianos($ap->getSaldo()) }}
+                                </span> 
+                                -                                                                 
+                                <span class="fs-xs">Caduca el {{ Src\infraestructure\util\FormatoFecha::fechaFormateadaA5DeAgostoDe2024($ap->getFechaCaducidad()) }}</span>
+                            </label>
+                            <div class="mt-2">
+                                <a href="javascript:void(0)" class="fs-xs text-primary toggle-comment" data-target="#comentario-{{ $loop->index }}">Mostrar comentario</a>
+                                <div id="comentario-{{ $loop->index }}" class="comentario fs-xs text-muted d-none mt-1">
+                                    {{ $ap->getComentarios() }}
+                                </div>
+                            </div>
+                        </div>                        
+                    @empty
+                        <div class="col-12">                            
+                            <label class="form-check-label" for="saldo-no">
+                                <span class="fs-xs">No cuenta con saldos por aplazamientos</span>
+                            </label>
+                        </div>                        
+                    @endforelse
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Medios de Pago, Abono e Información Complementaria -->
@@ -105,20 +140,16 @@
             <div class="block-content block-content-full pt-0">
                 <div class="row g-3">
                     <div class="col-12">
-                        <div class="form-check form-block">
-                            <input type="radio" class="form-check-input" id="medioPago-2" name="medioPago" value="pagoDatafono" {{ old('medioPago') == 'pagoDatafono' ? 'checked' : '' }} checked>
-                            <label class="form-check-label bg-body-light text-center fs-xs" for="medioPago-2" title="Pagar con datáfono">
-                                <i class="fa fa-credit-card me-2"></i>Pago Datáfono
-                            </label>
-                        </div>
+                        <input type="radio" class="form-check-input" id="medioPago-2" name="medioPago" value="pagoDatafono" {{ old('medioPago') == 'pagoDatafono' ? 'checked' : '' }} checked>
+                        <label class="form-check-label bg-body-light text-center fs-xs" for="medioPago-2" title="Pagar con datáfono">
+                            <i class="fa fa-credit-card me-2"></i>Pago Datáfono
+                        </label>
                     </div>
                     <div class="col-12">
-                        <div class="form-check form-block">
-                            <input type="radio" class="form-check-input" id="medioPago-3" name="medioPago" value="pagoEcollect" {{ old('medioPago') == 'pagoEcollect' ? 'checked' : '' }}>
-                            <label class="form-check-label bg-body-light text-center fs-xs" for="medioPago-3" title="Pagar con ECollect">
-                                <i class="fa fa-globe me-2"></i>ECollect
-                            </label>
-                        </div>
+                        <input type="radio" class="form-check-input" id="medioPago-3" name="medioPago" value="pagoEcollect" {{ old('medioPago') == 'pagoEcollect' ? 'checked' : '' }}>
+                        <label class="form-check-label bg-body-light text-center fs-xs" for="medioPago-3" title="Pagar con ECollect">
+                            <i class="fa fa-globe me-2"></i>ECollect
+                        </label>
                     </div>
                     <div class="mb-4" id="s-voucher">
                         <div class="form-floating">
@@ -172,7 +203,7 @@
             </div>
         </div>
 
-        <div class="block block-rounded mt-4">
+        <div class="block block-rounded">
             <!-- Información complementaria -->
             <div class="block-header">
                 <h3 class="block-title fs-xs">Información complementaria</h3>                        
@@ -218,37 +249,38 @@ $(document).ready(function() {
     const valorPagoInput = document.getElementById('valorPago');
     const abonoInput = document.getElementById('abono');
 
-    // Formatear como moneda mientras el usuario escribe en el campo "abono"
+    // Mostrar y ocultar comentarios
+    $('.toggle-comment').click(function() {
+        const target = $(this).data('target');
+        $(target).toggleClass('d-none');
+        const text = $(this).text() === 'Mostrar comentario' ? 'Ocultar comentario' : 'Mostrar comentario';
+        $(this).text(text);
+    });
+
     abonoInput.addEventListener('input', function(event) {
         let value = event.target.value;
-        value = value.replace(/\D/g, ''); // Eliminar caracteres no numéricos
+        value = value.replace(/\D/g, ''); // Elimina caracteres no numéricos
         value = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
         event.target.value = value;
-
-        // Mantener el campo "Valor a pagar" vacío en la vista
         valorPagoInput.value = '';
     });
 
-    // Formatear como moneda mientras el usuario escribe en el campo "valorPago"
     valorPagoInput.addEventListener('input', function(event) {
         let value = event.target.value;
-        value = value.replace(/\D/g, ''); // Eliminar caracteres no numéricos
+        value = value.replace(/\D/g, ''); // Elimina caracteres no numéricos
         value = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
         event.target.value = value;
     });
 
-    // Eliminar formato de moneda antes de enviar el formulario y trasladar el abono a "valorPago"
     valorPagoInput.form.addEventListener('submit', function() {
         abonoInput.value = abonoInput.value.replace(/[^0-9]/g, '');
         valorPagoInput.value = valorPagoInput.value.replace(/[^0-9]/g, '');
     });
 
-    // Manejar selección de convenio
     $('input[name="convenio"]').change(function(){
         checkearConvenio();
     });
 
-    // Función para calcular y mostrar los valores de descuento y abono
     function checkearConvenio() {
         const valor = $('input[name="convenio"]:checked').val();            
         const datosConvenio = valor.split('@');
@@ -288,5 +320,4 @@ $(document).ready(function() {
         return '$' + numero.toLocaleString('es-CO', {minimumFractionDigits: 0}) + ' COP';
     }
 });
-
 </script>

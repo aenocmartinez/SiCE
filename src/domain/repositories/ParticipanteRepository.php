@@ -24,4 +24,5 @@ interface ParticipanteRepository {
     public function buscarFormularioInscripcionPorParticipanteYConvenioPendienteDepago($participanteId=0, $convenioId=0):FormularioInscripcion;
     public static function numeroParticipantesUnicosPorCalendario($calendarioId): int;
     public function listarFormulariosPendientesDePago(int $participanteId): array;
+    public function aplazamientos();
 }
