@@ -42,6 +42,8 @@ class ActualizarGrupoUseCase {
         $grupo->setSalon($salon);
         $grupo->setDia($grupoDto->dia);
         $grupo->setJornada($grupoDto->jornada);
+        $grupo->setObservaciones($grupoDto->observaciones);
+        $grupo->setCerradoParaInscripcion($grupoDto->cerradoParaInscripcion);
         $grupo->setCupo($grupoDto->cupo);
         $grupo->setBloqueado($grupoDto->bloqueado);
         $grupo->setRepository($grupoRepository);
@@ -49,7 +51,7 @@ class ActualizarGrupoUseCase {
         // $salonDisponible = Grupo::validarSalonDisponible($grupo, $grupoRepository);
         // if (!$salonDisponible) {
         //     return new Response('401', 'El salón está ocupado en el día y jornada indicado.');
-        // }        
+        // }                
         
         $exito = $grupo->actualizar();
         if (!$exito) {
