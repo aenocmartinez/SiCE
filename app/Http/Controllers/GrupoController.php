@@ -340,11 +340,17 @@ class GrupoController extends Controller
         $grupoDto->jornada = $data['jornada'];
         $grupoDto->calendarioId = $data['calendario'];
         $grupoDto->orientadorId = $data['orientador'];
+        $grupoDto->observaciones = $data['observaciones'];
         $grupoDto->cupo = $data['cupo'];
         
         $grupoDto->bloqueado = true;
         if (is_null(request()->bloqueado)) {
             $grupoDto->bloqueado = false;
+        }
+        
+        $grupoDto->cerradoParaInscripcion = true;
+        if (is_null(request()->cerradoParaInscripcion)) {
+            $grupoDto->cerradoParaInscripcion = false;
         }        
 
         if (isset(request()->id)) {

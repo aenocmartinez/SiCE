@@ -1,5 +1,6 @@
 @php
     $checked = $grupo->estaBloqueado() ? 'checked' : '';
+    $checkedCerradoParaInscripcion = $grupo->estaCerradoParaInscripcion() ? 'checked' : '';
 @endphp
 
 <input type="hidden" id="curso_calendario_id_actual" value="{{ $grupo->getCursoCalendarioId()}}">
@@ -84,7 +85,13 @@
                             <span class="invalid-feedback" role="alert">
                                 {{ $message }}
                             </span>
-                        @enderror                
+                        @enderror      
+                <br>
+                <label class="form-label" for="observaciones">Observaciones</label>
+                <textarea class="form-control fs-xs" 
+                          id="observaciones" 
+                          name="observaciones" 
+                          style="height: 130px">{{ old('observaciones', $grupo->getObservaciones()) }}</textarea>                        
 
             </div>
 
@@ -133,6 +140,12 @@
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="bloqueado" name="bloqueado" {{ $checked }}>
                     <label class="form-check-label" for="bloqueado">Bloqueado</label>
+                </div> 
+
+                <br>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="cerradoParaInscripcion" name="cerradoParaInscripcion" {{ $checkedCerradoParaInscripcion }}>
+                    <label class="form-check-label" for="cerradoParaInscripcion">Cerrar grupo <small>(no permite recibir inscripciones a este grupo)</small></label>
                 </div> 
 
             </div>

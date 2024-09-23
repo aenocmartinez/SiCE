@@ -18,6 +18,7 @@ class Grupo {
     private $bloqueado;
     private $cancelado;
     private $cerrado_para_inscripcion;
+    private $observaciones;
     private $repository;
 
     public function __construct($cursoCalendarioId=0, $salonId=0, $orientadorId=0) {
@@ -28,6 +29,7 @@ class Grupo {
         $this->bloqueado = false;
         $this->cancelado = false;
         $this->cerrado_para_inscripcion = false;
+        $this->observaciones = "";
         $this->totalInscritos = 0;
         $this->cupo = 0;
 
@@ -55,6 +57,14 @@ class Grupo {
     public function estaCerradoParaInscripcion(): bool {
         return $this->cerrado_para_inscripcion;
     }
+
+    public function setObservaciones($observaciones): void {
+        $this->observaciones = $observaciones;
+    }
+
+    public function getObservaciones() {
+        return $this->observaciones;
+    }    
 
     public function setCancelado(bool $cancelado): void {
         $this->cancelado = $cancelado;
@@ -182,6 +192,10 @@ class Grupo {
 
     public static function validarSalonDisponible(Grupo $grupo, $repository): bool {
         return $repository->salonDisponible($grupo);
+    }
+
+    public static function restriccionesParaCrearOActualizarUnGrupo(Grupo $grupo, $repository) {
+        return $repository->restriccionesParaCrearOActualizarUnGrupo($grupo);
     }
 
     public function setCupo(int $cupo): void {

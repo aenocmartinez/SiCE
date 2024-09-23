@@ -102,6 +102,12 @@
                                 <div class="card-body d-flex flex-column justify-content-between">
                                     <div>
                                         <h5 class="card-title text-primary fs-sm mb-2" id="b_nombre_curso">{{ $grupo->cursoNombre }}</h5>
+                                        @if (strlen($grupo->observaciones) > 0)                                            
+                                        <span class="d-block fs-xs">
+                                            <!-- <strong style="color:red;">¡Importante!</strong> <br> -->
+                                            <span style="color:red;">{{ $grupo->observaciones }}</span>
+                                        </span>
+                                        @endif
                                         <p class="card-text fs-xs text-secondary mb-3">
                                             <strong class="d-block text-dark">{{ $item->areaNombre }}</strong>
                                             <span class="d-block text-muted" id="b_orientador">Orientador: {{ $grupo->nombreOrientador }}</span>

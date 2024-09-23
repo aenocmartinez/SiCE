@@ -41,17 +41,25 @@ class CrearGrupoUseCase {
         $grupo->setJornada($grupoDto->jornada);
         $grupo->setCupo($grupoDto->cupo);
         $grupo->setBloqueado($grupoDto->bloqueado);
+        $grupo->setCerradoParaInscripcion($grupoDto->cerradoParaInscripcion);
+        $grupo->setObservaciones($grupoDto->observaciones);
         $grupo->setRepository($grupoRepository);
 
-        $existe = Grupo::validarExistencia($grupo, $grupoRepository);
-        if ($existe) {
-            return new Response('200', 'Ya existe un grupo con los datos ingresados.');
-        }
+        // $existe = Grupo::validarExistencia($grupo, $grupoRepository);
+        // if ($existe) {
+        //     return new Response('200', 'Ya existe un grupo con los datos ingresados.');
+        // }
 
-        $salonDisponible = Grupo::validarSalonDisponible($grupo, $grupoRepository);
-        if (!$salonDisponible) {
-            return new Response('401', 'El salón indicado está ocupado con otra clase el día '.$grupoDto->dia.' en la jornada '.$grupoDto->jornada);
+        $disponible = Grupo::restriccionesParaCrearOActualizarUnGrupo($grupo, $grupoRepository);
+        if ($disponible != "OK") {
+            return new Response('401', $disponible);
         }
+        
+
+        // $salonDisponible = Grupo::validarSalonDisponible($grupo, $grupoRepository);
+        // if (!$salonDisponible) {
+        //     return new Response('401', 'El salón indicado está ocupado con otra clase el día '.$grupoDto->dia.' en la jornada '.$grupoDto->jornada);
+        // }
 
         $exito = $grupo->crear();
         if (!$exito){

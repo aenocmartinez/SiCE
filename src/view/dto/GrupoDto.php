@@ -12,4 +12,6 @@ class GrupoDto {
     public $jornada;
     public $cupo;
     public $bloqueado;
+    public $cerradoParaInscripcion;
+    public $observaciones;
 }

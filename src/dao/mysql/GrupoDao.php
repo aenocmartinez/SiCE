@@ -18,7 +18,20 @@ use Src\infraestructure\util\Paginate;
 
 class GrupoDao extends Model implements GrupoRepository {
     protected $table = 'grupos';
-    protected $fillable = ['curso_calendario_id', 'salon_id', 'orientador_id', 'dia', 'jornada', 'cupos', 'nombre', 'calendario_id', 'bloqueado', 'cancelado'];
+    protected $fillable = [
+        'curso_calendario_id', 
+        'salon_id', 
+        'orientador_id', 
+        'dia', 
+        'jornada', 
+        'cupos', 
+        'nombre', 
+        'calendario_id', 
+        'bloqueado', 
+        'cancelado', 
+        'cerrado_para_inscripcion',
+        'observaciones'
+    ];
 
 
     public function formulariosInscripcion() {
@@ -162,6 +175,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 'cupos' => $grupo->getCupo(),                
                 'calendario_id' => $grupo->getCalendarioId(),
                 'bloqueado' => $grupo->estaBloqueado(),
+                'observaciones' => $grupo->getObservaciones(),
             ]);
 
         } catch (\Exception $e) {               
@@ -210,6 +224,8 @@ class GrupoDao extends Model implements GrupoRepository {
                     'calendario_id' => $grupo->getCalendarioId(),
                     'bloqueado' => $grupo->estaBloqueado(),
                     'curso_calendario_id' => $grupo->getCursoCalendarioId(),
+                    'cerrado_para_inscripcion' => $grupo->estaCerradoParaInscripcion(),
+                    'observaciones' => $grupo->getObservaciones(),
                 ]);                
                 $exito = true;
             }
@@ -590,5 +606,30 @@ class GrupoDao extends Model implements GrupoRepository {
         } 
 
         return true; 
-    }    
+    }
+    
+    public static function restriccionesParaCrearOActualizarUnGrupo(Grupo $grupo): string {
+        
+        $cruce = GrupoDao::where('dia', $grupo->getDia())
+            ->where('jornada', $grupo->getJornada())
+            ->where('cerrado_para_inscripcion', false) 
+            ->where(function($query) use ($grupo) {
+                $query->where('salon_id', $grupo->getSalonId())
+                    ->orWhere('orientador_id', $grupo->getOrientadorId())
+                    ->orWhere('curso_calendario_id', $grupo->getCursoCalendarioId());
+            })
+            ->first();
+
+        if ($cruce) {
+            if ($cruce->salon_id == $grupo->getSalonId()) {
+                return 'Conflicto de salón';
+            } elseif ($cruce->orientador_id == $grupo->getOrientadorId()) {
+                return 'Conflicto de orientador';
+            } elseif ($cruce->curso_calendario_id == $grupo->getCursoCalendarioId()) {
+                return 'Conflicto de curso';
+            }
+        }
+
+        return 'OK';
+    }
 }
