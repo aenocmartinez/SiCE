@@ -1,6 +1,7 @@
 @php
     $checked = $grupo->estaBloqueado() ? 'checked' : '';
     $checkedCerradoParaInscripcion = $grupo->estaCerradoParaInscripcion() ? 'checked' : '';
+    $checkedHabilitadoParaPreInscripcion = $grupo->estaHabilitadoParaPreInscripcion() ? 'checked' : '';
 @endphp
 
 <input type="hidden" id="curso_calendario_id_actual" value="{{ $grupo->getCursoCalendarioId()}}">
@@ -146,7 +147,13 @@
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="cerradoParaInscripcion" name="cerradoParaInscripcion" {{ $checkedCerradoParaInscripcion }}>
                     <label class="form-check-label" for="cerradoParaInscripcion">Cerrar grupo <small>(no permite recibir inscripciones a este grupo)</small></label>
-                </div> 
+                </div>
+                
+                <br>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="habilitadoParaPreInscripcion" name="habilitadoParaPreInscripcion" {{ $checkedHabilitadoParaPreInscripcion }}>
+                    <label class="form-check-label" for="cerradoParaInscripcion">Habilitar solo para preinscripción</label>
+                </div>                
 
             </div>
 

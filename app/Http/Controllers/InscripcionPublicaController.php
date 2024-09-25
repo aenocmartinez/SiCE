@@ -27,7 +27,7 @@ use Src\view\dto\ConfirmarInscripcionDto;
 use Src\view\dto\ParticipanteDto;
 
 use Illuminate\Support\Str;
-
+use Src\usecase\formularios\RealizarPreInscripcionUseCase;
 
 class InscripcionPublicaController extends Controller
 {
@@ -505,6 +505,27 @@ class InscripcionPublicaController extends Controller
             }
         }
         return $pdfPath;
+    }
+
+    public function realizarPreinscripcion($participanteId, $grupoId) 
+    {
+        $participante = (new BuscarParticipantePorIdUseCase)->ejecutar($participanteId);
+        if (!$participante->existe()) 
+        {
+            return redirect()->route('public.inicio')->with('code', "404")->with('status', "El participante no existe.");
+        }
+
+        $grupo = (new BuscarGrupoPorIdUseCase)->ejecutar($grupoId);
+        if (!$grupo->existe())
+        {
+            return redirect()->route('public.inicio')->with('code', "404")->with('status', "El grupo no existe.");
+        }
+
+        $response = (new RealizarPreInscripcionUseCase)->ejecutar($participante, $grupo);
+        
+        return redirect()->route('public.seleccionar-curso', $participante->getId())
+                         ->with('code', $response->code)
+                         ->with('status', $response->message);
     }
     
     private function hydrateConfirmarInscripcionDto2($datos, $curso): ConfirmarInscripcionDto {        

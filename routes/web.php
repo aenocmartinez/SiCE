@@ -50,3 +50,5 @@ Route::get('/public/inscripcion/{participanteId}/participante/{grupoId}/grupo/{f
 Route::get('/public/inscripcion/{participanteId}/participante/{grupoId}/grupo/{formularioId}/quitar-curso', [InscripcionPublicaController::class, 'quitarCursoParaMatricular'])->name('public.quitar-curso');
 
 Route::get('/public/inscripcion/{participanteId}/participante/pagar-matricula', [InscripcionPublicaController::class, 'pagarMatricula'])->name('public.pagar-matricula');
+
+Route::get('/public/preinscripcion/{participanteId}/participante/{grupoId}/curso', [InscripcionPublicaController::class, 'realizarPreinscripcion'])->name('public.presinscribirse');

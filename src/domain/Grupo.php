@@ -18,6 +18,7 @@ class Grupo {
     private $bloqueado;
     private $cancelado;
     private $cerrado_para_inscripcion;
+    private $habilitado_para_preinscripcion;
     private $observaciones;
     private $repository;
 
@@ -29,6 +30,7 @@ class Grupo {
         $this->bloqueado = false;
         $this->cancelado = false;
         $this->cerrado_para_inscripcion = false;
+        $this->habilitado_para_preinscripcion = false;
         $this->observaciones = "";
         $this->totalInscritos = 0;
         $this->cupo = 0;
@@ -57,6 +59,14 @@ class Grupo {
     public function estaCerradoParaInscripcion(): bool {
         return $this->cerrado_para_inscripcion;
     }
+
+    public function setHabilitadoParaPreInscripcion(bool $habilitado_para_preinscripcion): void {
+        $this->habilitado_para_preinscripcion = $habilitado_para_preinscripcion;
+    }
+
+    public function estaHabilitadoParaPreInscripcion(): bool {
+        return $this->habilitado_para_preinscripcion;
+    }    
 
     public function setObservaciones($observaciones): void {
         $this->observaciones = $observaciones;

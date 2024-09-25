@@ -123,10 +123,19 @@
                                         </p>
                                     </div>
                                     @if ($grupo->cuposDisponibles > 0)
-                                    <a href="{{ route('public.agregar_curso_a_matricula', [$participante->getId(), $grupo->grupoId, $formularioId]) }}" 
-                                       class="btn btn-outline-success btn-sm fs-xs w-100 rounded-pill text-center">
-                                       <i class="fa fa-plus me-1"></i> Agregar curso
-                                    </a>  
+
+                                        @if ($grupo->habilitadoParaPreInscripcion)
+                                            <a href="{{ route('public.presinscribirse', [$participante->getId(), $grupo->grupoId]) }}" 
+                                                class="btn btn-outline-success btn-sm fs-xs w-100 rounded-pill text-center"
+                                                onclick="return confirm('¿Está seguro de que desea realizar la preinscripción?');">
+                                                <i class="fa fa-plus me-1"></i> Realizar Preinscripción
+                                            </a>                                            
+                                        @else                                            
+                                            <a href="{{ route('public.agregar_curso_a_matricula', [$participante->getId(), $grupo->grupoId, $formularioId]) }}" 
+                                            class="btn btn-outline-success btn-sm fs-xs w-100 rounded-pill text-center">
+                                            <i class="fa fa-plus me-1"></i> Agregar curso
+                                            </a>  
+                                        @endif
                                     @else
                                     <span class="badge bg-danger fs-xs w-100 text-center">Cupos agotados</span>
                                     @endif

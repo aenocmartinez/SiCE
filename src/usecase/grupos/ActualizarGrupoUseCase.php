@@ -44,6 +44,7 @@ class ActualizarGrupoUseCase {
         $grupo->setJornada($grupoDto->jornada);
         $grupo->setObservaciones($grupoDto->observaciones);
         $grupo->setCerradoParaInscripcion($grupoDto->cerradoParaInscripcion);
+        $grupo->setHabilitadoParaPreInscripcion($grupoDto->habilitadoParaPreInscripcion);
         $grupo->setCupo($grupoDto->cupo);
         $grupo->setBloqueado($grupoDto->bloqueado);
         $grupo->setRepository($grupoRepository);

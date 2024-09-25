@@ -351,6 +351,11 @@ class GrupoController extends Controller
         $grupoDto->cerradoParaInscripcion = true;
         if (is_null(request()->cerradoParaInscripcion)) {
             $grupoDto->cerradoParaInscripcion = false;
+        }
+        
+        $grupoDto->habilitadoParaPreInscripcion = true;
+        if (is_null(request()->habilitadoParaPreInscripcion)) {
+            $grupoDto->habilitadoParaPreInscripcion = false;
         }        
 
         if (isset(request()->id)) {

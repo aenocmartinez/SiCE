@@ -35,7 +35,8 @@ class GuardarGrupo extends FormRequest
             'id' => 'numeric|nullable',
             'bloqueado' => 'nullable',
             'observaciones' => 'nullable',
-            'cerradoParaInscripcion' => 'nullable'
+            'cerradoParaInscripcion' => 'nullable',
+            'habilitadoParaPreInscripcion' => 'nullable',
         ];
     }
 

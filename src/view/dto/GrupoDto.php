@@ -13,5 +13,6 @@ class GrupoDto {
     public $cupo;
     public $bloqueado;
     public $cerradoParaInscripcion;
+    public $habilitadoParaPreInscripcion;
     public $observaciones;
 }

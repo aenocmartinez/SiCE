@@ -42,6 +42,7 @@ class CrearGrupoUseCase {
         $grupo->setCupo($grupoDto->cupo);
         $grupo->setBloqueado($grupoDto->bloqueado);
         $grupo->setCerradoParaInscripcion($grupoDto->cerradoParaInscripcion);
+        $grupo->setHabilitadoParaPreInscripcion($grupoDto->habilitadoParaPreInscripcion);
         $grupo->setObservaciones($grupoDto->observaciones);
         $grupo->setRepository($grupoRepository);
 
