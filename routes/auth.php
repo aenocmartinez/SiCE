@@ -132,6 +132,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/calendario/{calendarioId}/curso/{cursoCalendarioId}/area/{areaId}', [CalendarioController::class, 'retirarCursoACalendario'])->name('calendario.retirar_curso');
     Route::get('/calendario/{id}/estadisticas',[CalendarioController::class, 'estadisticas'])->name('calendario.estadisticas');    
     Route::get('/calendario/{id}/descargar-participantes',[CalendarioController::class, 'descargarParticipantes'])->name('calendario.descargar-participantes');
+    Route::get('/calendario/{id}/descargar-cuadro-110',[CalendarioController::class, 'generarReporteNumeroCursosYParticipantesPorJornada'])->name('calendario.descargar-cuadro-110');
 
     Route::get('/grupos/{id}/editar', [GrupoController::class, 'edit'])->name('grupos.edit');
     Route::get('/grupos/crear', [GrupoController::class, 'create'])->name('grupos.create');

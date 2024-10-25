@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<body>
+
+    <!-- Sección del encabezado ajustado sin bordes y fondos -->
+    <table class="header-table">
+        <thead>
+            <tr>
+                <th>Cursos de Extensión número de cursos y participantes por Jornada</th>
+            </tr>
+            <tr>
+                <th>IP {{PERIODO}}</th>
+            </tr>
+            <tr>
+                <th class="left-align">Cuadro No. 110</th>
+            </tr>                        
+        </thead>
+    </table>
+    <!-- Fin sección del encabezado -->
+
+    <table>
+        <thead>
+            <tr>
+                <th rowspan="2">Áreas</th>
+                <th rowspan="2">Mañana</th>
+                <th colspan="2">Participantes</th>
+                <th rowspan="2">Tarde</th>
+                <th colspan="2">Participantes</th>
+                <th rowspan="2">Noche</th>
+                <th colspan="2">Participantes</th>
+                <th colspan="2">Total</th>
+                <th rowspan="2">No. Total grupos</th>
+                <th rowspan="2">No. Total participantes</th>
+            </tr>
+            <tr class="nested-header">
+                <th>H</th>
+                <th>M</th>
+                <th>H</th>
+                <th>M</th>
+                <th>H</th>
+                <th>M</th>
+                <th>H</th>
+                <th>M</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{TR_TBODY}}                     
+        </tbody>
+    </table>
+
+    <!-- Sección del pie de página ajustado -->
+    <table class="footer-table">
+        <tbody>
+            <tr>
+                <td class="footer-text-left" colspan="14">Fuente: Sistema de Cursos de Extensión - SiCE</td>
+            </tr>
+            <tr>
+                <td class="footer-text-small" colspan="14">proyectado por: {{PROYECTADO_POR}}</td>
+            </tr>
+            <tr>
+                <td class="footer-text-small" colspan="14">Fecha: {{FECHA_HORA_ACTUAL}}</td>
+            </tr>            
+        </tbody>
+    </table>
+    <!-- Fin sección del pie de página -->
+    
+</body>
+</html>

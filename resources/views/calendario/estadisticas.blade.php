@@ -152,11 +152,19 @@
 
           <div class="block-content block-content-full">
             <div class="row">
-              <div class="col-12">    
+              
+              <div class="col-6">    
                 <a href="{{ route('calendario.descargar-participantes', $calendarioId) }}" type="button" class="btn btn-lg rounded-pill btn-alt-success px-4 me-1 mb-3">
                   <i class="fa fa-download me-1"></i> Descargar los participantes del periodo
                 </a>
-            </div>
+              </div>
+
+              <div class="col-6">    
+                <a href="{{ route('calendario.descargar-cuadro-110', $calendarioId) }}" type="button" class="btn btn-lg rounded-pill btn-alt-info px-4 me-1 mb-3">
+                  <i class="fa fa-download me-1"></i> Número de cursos y participantes por jornada
+                </a>
+              </div>
+
             </div>
           </div>
 

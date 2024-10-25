@@ -506,15 +506,15 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         return $exito;
     }
 
-    public static function numeroParticipantesPorGeneroYCalendario($sexo='M', $calendario_id): int {
-       
+    public static function numeroParticipantesPorGeneroYCalendario($sexo='M', $calendarioId): int {   
+        
         return FormularioInscripcionDao::join('grupos as g', 'g.id', '=', 'formulario_inscripcion.grupo_id')
             ->where(function($query) {
                 $query->where('formulario_inscripcion.estado', 'Pagado')
                     ->orWhere('formulario_inscripcion.estado', 'Pendiente de pago');
             })
             ->leftJoin('participantes', 'formulario_inscripcion.participante_id', '=', 'participantes.id')
-            ->where('g.calendario_id', $calendario_id)
+            ->where('g.calendario_id', $calendarioId)
             ->where('participantes.sexo', '=', $sexo)
             ->count();               
     }

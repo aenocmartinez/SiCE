@@ -4,6 +4,8 @@ namespace Src\domain;
 
 use DateTime;
 use Src\dao\mysql\CalendarioDao;
+use Src\dao\mysql\ReporteNumeroCursoYParticipantePorJornadaDao;
+use Src\infraestructure\rptNumCursosYParticipanteXJornada\PlantillaCursosPorJornada;
 use Src\infraestructure\util\FormatoFecha;
 
 class Calendario {
@@ -171,5 +173,13 @@ class Calendario {
 
     public function listaDeGrupos(): array {
         return CalendarioDao::listaDeGrupos($this->id);
+    }
+
+    public function generarReporteNumeroCursoYParticipantePorJornada(): array
+    {
+        $dao = new ReporteNumeroCursoYParticipantePorJornadaDao();
+        $datos = $dao->obtenerReportePorJornada($this->id);
+
+        return PlantillaCursosPorJornada::procesarDatos($datos, $this->nombre);
     }
 }

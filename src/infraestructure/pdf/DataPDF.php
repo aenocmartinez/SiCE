@@ -6,6 +6,7 @@ class DataPDF {
 
     private string $fileName;
     private $data = [];
+    private $dataString = "";
 
     public function __construct($fileName="fileName"){
         $this->fileName = $fileName;
@@ -25,5 +26,13 @@ class DataPDF {
 
     public function getData(): array {
         return $this->data;
+    }
+
+    public function setDataString(string $dataString): void {
+        $this->dataString = $dataString;
+    }
+
+    public function getDataString(): string {
+        return $this->dataString;
     }
 }

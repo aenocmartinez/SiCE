@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\GuardarCalenadario;
 use Src\domain\Calendario;
+use Src\infraestructure\pdf\DataPDF;
+use Src\infraestructure\pdf\SicePDF;
 use Src\view\dto\CalendarioDto;
 use Src\view\dto\CursoCalendarioDto;
 use Src\infraestructure\util\Validador;
@@ -18,6 +20,7 @@ use Src\usecase\calendarios\AgregarCursoACalendarioUseCase;
 use Src\usecase\calendarios\EstadisticasCalendarioUseCase;
 use Src\usecase\calendarios\ListarCursosPorCalendarioUseCase;
 use Src\usecase\calendarios\ListarParticipantesPorCalendarioUseCase;
+use Src\usecase\calendarios\ReporteNumeroCursoYParticipantePorJornadaUseCase;
 use Src\usecase\calendarios\RetirarCursoACalendarioUseCase;
 
 class CalendarioController extends Controller
@@ -209,6 +212,35 @@ class CalendarioController extends Controller
         };
 
         return response()->stream($callback, 200, $headers); 
+    }
+
+    public function generarReporteNumeroCursosYParticipantesPorJornada($calendarioId) {
+        
+        $calendario = (new BuscarCalendarioPorIdUseCase)->ejecutar($calendarioId);
+        if (!$calendario->existe()) {
+            return redirect()->route('calendario.index')->with('code', 401)->with('status','Periodo no encontrado.');
+        }
+
+        $reporte = (new ReporteNumeroCursoYParticipantePorJornadaUseCase)->ejecutar($calendario->getId());
+
+        $nombre_archivo = "CUADRO_NO_110.pdf";
+        $dataPdf = new DataPDF($nombre_archivo);
+        $dataPdf->setData([
+            'path_css1' => $reporte["css"],
+            'html' => $reporte["content"],
+            'format' => 'Letter',
+            'orientation' => 'L',
+        ]);
+
+        SicePDF::generarPDFEstadoLegalizacionParticipantes($dataPdf);
+                
+        $ruta_archivo = storage_path() . '/' . $nombre_archivo;
+        $headers = [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $nombre_archivo . '"',
+        ];
+        
+        return response()->download($ruta_archivo, $nombre_archivo, $headers)->deleteFileAfterSend(true);   
     }
 
     private function hydrateCursoCalendarioDto(): CursoCalendarioDto{        

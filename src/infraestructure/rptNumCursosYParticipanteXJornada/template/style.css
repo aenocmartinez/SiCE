@@ -1,0 +1,59 @@
+body {
+    font-family: Arial, sans-serif;
+}
+table {
+    width: 80%; 
+    border-collapse: collapse;
+    margin: 20px auto; 
+}
+th, td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: center;
+    font-size: 12px; 
+    width: 40px; 
+}
+.header-table th {
+    border: none; 
+    font-size: 14px;
+    padding: 5px;
+}
+.nested-header th {
+    padding: 4px;
+    border: 1px solid #000;
+    text-align: center;
+    font-size: 12px; 
+}
+.group-header {
+    text-align: center;
+    font-weight: bold;
+    padding: 10px 0;
+    font-size: 12px; 
+    background-color: transparent; 
+}
+.nombre_curso {
+    width: 300px; 
+    text-align: left; 
+    font-size: 13px;
+}
+.footer-table {
+    width: 80%; 
+    margin: 0 auto;
+    text-align: left; 
+    font-size: 10px; 
+    border: none; 
+}
+.footer-table td {
+    border: none; 
+}
+.footer-text-small {
+    font-size: 10px; 
+    text-align: left;
+}
+.footer-text-left {
+    text-align: left;
+}    
+.bold-text {
+    font-weight: bold;
+    font-size: 13px;
+}    
