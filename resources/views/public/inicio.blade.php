@@ -11,13 +11,6 @@
 @endsection
 
 @section('content')
-<style>
-.captcha-img {
-    width: 200px; /* Se ajusta el tamaño de la imagen */
-    height: auto;
-    font-size: 20px; /* Se ajusta el tamaño de la fuente del texto */
-}
-</style>
 
 <div class="col-sm-8 col-xl-4">
     <form method="post" action="{{ route('public.consultar-existencia') }}">
@@ -43,7 +36,15 @@
             @enderror        
         </div>
 
-        <div class="text-center">
+        <!-- Agregar reCAPTCHA aquí -->
+        <div class="g-recaptcha" data-sitekey="{{ env('RECAPTCHA_SITE_KEY_V2') }}"></div>
+        @error('g-recaptcha-response')
+            <span class="invalid-feedback d-block" role="alert">
+                {{ $message }}
+            </span>
+        @enderror
+
+        <div class="text-center mt-4">
             <button type="submit" class="btn btn-outline-primary" data-toggle="click-ripple">
                 <i class="fa fa-fw fa-magnifying-glass me-1 opacity-50"></i>
                 Continuar
@@ -51,4 +52,7 @@
         </div>
     </form>
 </div>
+
+<!-- Script de reCAPTCHA -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 @endsection

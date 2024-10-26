@@ -27,21 +27,25 @@ class LoginRequest extends FormRequest
      * @return array
      */
     public function rules()
-    {
+    {        
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
-            'captcha' => ['required', 'captcha'],
+            'g-recaptcha-response' => ['required'], // Validar que el captcha sea obligatorio
         ];
     }
 
+    /**
+     * Get custom error messages for validation rules.
+     *
+     * @return array
+     */
     public function messages()
     {
         return [
-            'captcha.required' => 'Captcha es obligatorio',
-            'captcha.captcha' => 'Los caracteres de la imagen no corresponden.',         
+            'g-recaptcha-response.required' => 'Por favor, completa el reCAPTCHA para continuar.',
         ];
-    }      
+    }
 
     /**
      * Attempt to authenticate the request's credentials.
@@ -51,7 +55,7 @@ class LoginRequest extends FormRequest
      * @throws \Illuminate\Validation\ValidationException
      */
     public function authenticate()
-    {
+    {        
         $this->ensureIsNotRateLimited();
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {

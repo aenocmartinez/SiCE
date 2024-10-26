@@ -37,12 +37,23 @@ class InscripcionPublicaController extends Controller
         return view('public.inicio', ['mostrarBoton']);
     }
 
-    public function consultarExistencia(FormularioPublicoInscripionConsultarExistencia $req) {
+    public function consultarExistencia(FormularioPublicoInscripionConsultarExistencia $req) 
+    {   
+        $recaptchaResponse = $req->input('g-recaptcha-response');
+        $secretKey = env('RECAPTCHA_SECRET_KEY_V2');
+        $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
         
+        $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
+        $responseKeys = json_decode($response, true);
+    
+        if (!$responseKeys["success"]) {
+            return back()->withErrors(['g-recaptcha-response' => 'Verificación de reCAPTCHA fallida. Inténtelo de nuevo.']);
+        }
+
         $calendarioVigente = Calendario::Vigente();
         if (!$calendarioVigente->existe()) {
             return redirect()->route('public.inicio')->with('status', 'Actualmente, no hay calendarios disponibles para inscripción.')->with('code', 404);
-        }
+        }        
 
         $datoFormulario = $req->validated();
         
@@ -50,15 +61,14 @@ class InscripcionPublicaController extends Controller
         
         $participante->setTipoDocumento($datoFormulario['tipoDocumento']);        
         $participante->setDocumento($datoFormulario['documento']);  
-
+        
         session()->forget('SESSION_UUID');
         session()->forget('cursos_a_matricular');
         request()->session()->put('SESSION_UUID', (string) Str::uuid());
         request()->session()->put('participante', $participante);
-
-
+        
         return redirect()->route('public.formulario-participante');
-    }
+    }    
 
     public function salidaSegura() {
 
