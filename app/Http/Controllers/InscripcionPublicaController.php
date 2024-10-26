@@ -39,6 +39,11 @@ class InscripcionPublicaController extends Controller
 
     public function consultarExistencia(FormularioPublicoInscripionConsultarExistencia $req) {
         
+        $calendarioVigente = Calendario::Vigente();
+        if (!$calendarioVigente->existe()) {
+            return redirect()->route('public.inicio')->with('status', 'Actualmente, no hay calendarios disponibles para inscripción.')->with('code', 404);
+        }
+
         $datoFormulario = $req->validated();
         
         $participante = (new BuscarParticipantePorDocumentoUseCase)->ejecutar($datoFormulario['tipoDocumento'], $datoFormulario['documento']);
@@ -106,7 +111,7 @@ class InscripcionPublicaController extends Controller
         
         $calendarioVigente = Calendario::Vigente();
         if (!$calendarioVigente->existe()) {
-            return redirect('public.inicio')->with('message', 'No hay calendarios vigentes')->with('code', 500);
+            return redirect()->route('public.inicio')->with('status', 'Actualmente, no hay calendarios disponibles para inscripción.')->with('code', 500);
         }
 
         if ($participante->tieneFormulariosPendientesDePago()) {

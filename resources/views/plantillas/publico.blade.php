@@ -121,13 +121,23 @@
           }
         @endphp
         <script>
-          // One.helpers('jq-notify', {type: '{{ $type }}', icon: '{{ $icon }}', message: "{{ session('status') }}"});
+
           Swal.fire({
-              icon: '{{ $type }}',
-              title: "{{ session('status') }}",
-              text: "",
-              confirmButtonText: 'Aceptar'
-            });        
+            icon: "info",
+            title: "",
+            html: "<p style='font-size: 1.1em; margin-top: 10px;'>{{ session('status') }}</p>",
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#3085d6',
+            background: '#f4f6f8',
+            padding: '1.5rem',
+            showClass: {
+              popup: 'animate__animated animate__fadeIn'
+            },
+            hideClass: {
+              popup: 'animate__animated animate__fadeOut'
+            }
+          }); 
+          
         </script>            
       @endif
           
