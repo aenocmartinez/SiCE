@@ -1,12 +1,12 @@
 @extends("plantillas.principal")
 
 @php
-    $titulo = "Cursos del periodo";
+    $titulo = "Gestión de Cursos por Área";
 @endphp
 
 @section("title", $titulo)
 
-@section("description", "Haga la apertura de los cursos, además, asigne los costos, cupos y modalidad.")
+@section("description", "Seleccione cursos disponibles y asígnelos al periodo de forma rápida y elegante.")
 
 @section("seccion")
     <a class="link-fx" href="{{ route('calendario.index') }}">
@@ -29,75 +29,85 @@
 
     <div class="block-content">
 
-        <div class="row push">
-
-            <div class="col-5">
-
-                <label class="form-label" for="area">
-                    Área <br><small class="fw-light">seleccione el área para listar los cursos que desea asignar.</small>
-                </label>
-                <select class="form-select" id="area" name="area">
-                    <option value="">Selecciona un área</option>
-                    @foreach ($areas as $area)
-                        <option 
-                            value="{{ $area->getId() }}" 
-                            {{ $area->getId() == $areaId ? 'selected' : '' }}                           
-                            >{{ $area->getNombre() }}</option>
-                    @endforeach
-                </select>          
-
-            </div> 
-            
-            <div class="col-6">
-                <h5 class="fw-light text-end mt-5">Listado de cursos abiertos periodo {{ $calendario->getNombre() }}</h5>
+        <!-- Selección de Área -->
+        <div class="block-content mb-1">
+            <div class="row align-items-center mb-2">
+                <div class="col-auto">
+                    <label class="form-label block-title fw-light mb-0" for="area">
+                        Seleccione Área:
+                    </label>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-select fs-sm fw-light" id="area" name="area">
+                        <option value="">Selecciona un área</option>
+                        @foreach ($areas as $area)
+                            <option 
+                                value="{{ $area->getId() }}" 
+                                {{ $area->getId() == $areaId ? 'selected' : '' }}                           
+                                >{{ $area->getNombre() }}</option>
+                        @endforeach
+                    </select>          
+                </div>
             </div>
-
         </div>
 
-        <div class="row push">
-
-            <div class="col-6">
-
-                
-                <div id="cursos_por_area"></div>
-
-                <div id="loading_cursos" class="spinner-border spinner-border-sm text-secondary" style="display: none;">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-
-            </div>
-
-            <div class="col-6">
-                
+        <!-- Sección Superior: Cursos Asignados en el Periodo -->
+        <div class="block-content">
+            <h3 class="mb-3 block-title fw-light">Cursos Abiertos en el Periodo</h3>
+            <div class="panel-body p-3" style="height: 320px; overflow-y: auto; border: 1px solid #eaeaea; border-radius: 8px;">
                 <div id="cursos_abiertos_en_el_periodo"></div>
-
                 <div id="loading_cursos_abiertos_en_el_periodo" class="spinner-border spinner-border-sm text-secondary" style="display: none;">
                     <span class="visually-hidden">Loading...</span>
                 </div>
+            </div>
+        </div>        
 
-            </div>   
+        <!-- Sección Inferior: Cursos Disponibles -->
+        <div class="block-content mb-2">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h1 class="block-title fw-light">Listado de Cursos Para Abrir</h1>
+            </div>
+            <div class="panel-body p-3" style="height: 320px; overflow-y: auto; border: 1px solid #eaeaea; border-radius: 8px;">
+                <div id="cursos_por_area"></div>
+                <div id="loading_cursos" class="spinner-border spinner-border-sm text-secondary" style="display: none;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
         </div>
 
     </div>
-
 </div>
 
 <script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
 <script>
     $(document).ready(function(){
         $("#area").change(function() {
-
+            const areaId = $('#area').val();
             $("#cursos_por_area").html("");
             $("#cursos_abiertos_en_el_periodo").html("");
-            if ($("#area").val().length === 0) {                
-                return ;
+            
+            if (areaId.length === 0) {                
+                return;
             }
 
-            const areaId = $('#area').val();
             listarCursos(areaId);
             listarCursosDelPeriodo("{{ $calendario->getId() }}", areaId);
         });
 
+        // Asegura que siempre muestre cursos si el área está seleccionada
+        const areaId = $("#area").val();
+        if (areaId) {
+            listarCursos(areaId);
+            listarCursosDelPeriodo("{{ $calendario->getId() }}", areaId);
+        }
+
+        // Filtrar en tiempo real
+        $("#buscar-curso").on("keyup", function() {
+            const value = $(this).val().toLowerCase();
+            $("#cursos_por_area .curso-item").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
     });
 
     function listarCursos(areaId) {
@@ -134,15 +144,6 @@
                 $("#cursos_abiertos_en_el_periodo").html(resp);
             }            
         });        
-        
     }
-
-    const areaId = "{{  $areaId }}";
-    const calendarioId = "{{  $calendario->getid() }}";
-    if (areaId > 0){
-        listarCursos(areaId);
-        listarCursosDelPeriodo(calendarioId, areaId)
-    }
-    
 </script>
 @endsection

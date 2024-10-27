@@ -4,12 +4,12 @@ namespace Src\view\dto;
 
 class CursoCalendarioDto {
     
-    public int $id;
-    public int $calendarioId;
-    public int $cursoId;
-    public int $cupos;
-    public float $costo;
-    public string $modalidad;
+    public $id;
+    public $calendarioId;
+    public $cursoId;
+    public $cupos;
+    public $costo;
+    public $modalidad;
 
 
 }

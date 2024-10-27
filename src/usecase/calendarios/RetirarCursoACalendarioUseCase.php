@@ -2,6 +2,7 @@
 
 namespace Src\usecase\calendarios;
 
+use Illuminate\Support\Facades\Log;
 use Src\dao\mysql\CalendarioDao;
 use Src\domain\Calendario;
 use Src\domain\Curso;
@@ -20,11 +21,11 @@ class RetirarCursoACalendarioUseCase {
         $cursoCalendario = new CursoCalendario($calendario, new Curso());
         $cursoCalendario->setId($cursoCalendarioId);
     
-        $exito = $calendarioRepository->retirarCurso($cursoCalendario);
+        $calendarioRepository->retirarCurso($cursoCalendario);
 
-        if (!$exito) {
-            return new Response('500', 'No se puede eliminar el regitro porque tiene registros relacionados.');
-        }
+        // if (!$exito) {
+        //     return new Response('500', 'No se puede eliminar el regitro porque tiene registros relacionados.');
+        // }
 
         return new Response('200', 'El curso se ha retirado con éxito');        
     }

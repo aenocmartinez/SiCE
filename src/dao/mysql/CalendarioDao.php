@@ -11,6 +11,7 @@ use Src\domain\repositories\CalendarioRepository;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Sentry\Laravel\Facade as Sentry;
 use Src\domain\Convenio;
 use Src\domain\FormularioInscripcion;
@@ -175,16 +176,19 @@ class CalendarioDao extends Model implements CalendarioRepository {
     }
 
     public function retirarCurso(CursoCalendario $cursoCalendario): bool {
-        $resultado = false;
+
+        $resultado = true;
         try {
             $calendario = CalendarioDao::find($cursoCalendario->getCalendarioId());
             if ($calendario) {
                 $resultado = DB::table('curso_calendario')->where('id', $cursoCalendario->getId())->delete();
-            }
+            }            
 
         } catch(\Exception $e) {
-            Sentry::captureException($e);
+            $resultado = false;
+            // Sentry::captureException($e);
         }
+
         return $resultado;
     }
 

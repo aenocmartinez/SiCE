@@ -91,9 +91,13 @@
             $participantesMujeres = 0;
             $participantesOtrosGeneros = 0;
             
-            $participantesHombres = round(($data['participantesHombres'] /$data["totalInscripcionesLegalizadas"]) * 100);
-            $participantesMujeres = round(($data['participantesMujeres'] /$data["totalInscripcionesLegalizadas"]) * 100);;          
-            $participantesOtrosGeneros = round(($data['participantesOtrosGeneros'] /$data["totalInscripcionesLegalizadas"]) * 100);;
+            if ($data["totalInscripcionesLegalizadas"] == 0) {
+              $data["totalInscripcionesLegalizadas"] = 1;
+            }
+
+            $participantesHombres = round(($data['participantesHombres'] / $data["totalInscripcionesLegalizadas"]) * 100);
+            $participantesMujeres = round(($data['participantesMujeres'] / $data["totalInscripcionesLegalizadas"]) * 100);;          
+            $participantesOtrosGeneros = round(($data['participantesOtrosGeneros'] / $data["totalInscripcionesLegalizadas"]) * 100);;
 
             @endphp
               <div class="block block-rounded text-center">

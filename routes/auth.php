@@ -133,6 +133,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/calendario/{id}/estadisticas',[CalendarioController::class, 'estadisticas'])->name('calendario.estadisticas');    
     Route::get('/calendario/{id}/descargar-participantes',[CalendarioController::class, 'descargarParticipantes'])->name('calendario.descargar-participantes');
     Route::get('/calendario/{id}/descargar-cuadro-110',[CalendarioController::class, 'generarReporteNumeroCursosYParticipantesPorJornada'])->name('calendario.descargar-cuadro-110');
+    Route::post('/calendario/abrir-cursos',[CalendarioController::class, 'guardarTodosLosCursos'])->name('calendario.agregar_varios_cursos');
+    
 
     Route::get('/grupos/{id}/editar', [GrupoController::class, 'edit'])->name('grupos.edit');
     Route::get('/grupos/crear', [GrupoController::class, 'create'])->name('grupos.create');
