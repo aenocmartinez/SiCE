@@ -27,9 +27,12 @@ class PlantillaCursosPorJornada
         self::inicializarTotalAcumulados();     
         $consolidadoPorJornadaYSexo = self::inicializarConsolidadoPorJornadaYSexo();
 
+        $tamano = sizeof($datos);
 
-        foreach($datos as $dato) {
-                                  
+        foreach($datos as $index => $dato) {
+            
+            $es_la_ultima_area = ($index + 1 == $tamano);
+
             if (!$bandera_area) 
             {
                 $bandera_area = true;
@@ -57,7 +60,7 @@ class PlantillaCursosPorJornada
                 $registro = new RegistroDTO();
             }
 
-            if ($area_actual != $dato->getArea()) 
+            if ($area_actual != $dato->getArea() || $es_la_ultima_area) 
             {
                 $tr_tBody = $tr_tBody_Area . $tr_tBody . self::agregarAcumuladoPorArea($area_actual);
                 $html_array[] = $tr_tBody;
