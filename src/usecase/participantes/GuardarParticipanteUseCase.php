@@ -8,15 +8,17 @@ use Src\view\dto\Response;
 
 class GuardarParticipanteUseCase {
 
-    public function ejecutar(ParticipanteDto $participanteDto): Response {
+    public function ejecutar(ParticipanteDto $participanteDto): Response {        
         $exito = false;
         $code = "200";
         $message = "";
         
         $response = new Response();
         $participanteRepository = new ParticipanteDao();
+        
+        $participante =$participanteRepository->buscarParticipantePorId($participanteDto->id);
 
-        $participante = $participanteRepository->buscarParticipantePorDocumento($participanteDto->tipoDocumento, $participanteDto->documento);
+        // $participante = $participanteRepository->buscarParticipantePorDocumento($participanteDto->tipoDocumento, $participanteDto->documento);
 
         $participante->setPrimerNombre($participanteDto->primerNombre);
         $participante->setSegundoNombre($participanteDto->segundoNombre);
