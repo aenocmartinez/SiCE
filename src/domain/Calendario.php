@@ -4,6 +4,7 @@ namespace Src\domain;
 
 use DateTime;
 use Src\dao\mysql\CalendarioDao;
+use Src\dao\mysql\ConvenioDao;
 use Src\dao\mysql\ReporteNumeroCursoYParticipantePorJornadaDao;
 use Src\infraestructure\rptNumCursosYParticipanteXJornada\PlantillaCursosPorJornada;
 use Src\infraestructure\util\FormatoFecha;
@@ -114,7 +115,8 @@ class Calendario {
 
     public function esVigente(): bool {     
         $vigente = false;
-        $fechaActual = new DateTime(date("Y-m-d"));
+        //$fechaActual = new DateTime(date("Y-m-d"));
+        $fechaActual = new DateTime();
         $fechaInicio = new DateTime($this->fechaInicio);
         $fechaFin = new DateTime($this->fechaFinal);
 
@@ -181,5 +183,10 @@ class Calendario {
         $datos = $dao->obtenerReportePorJornada($this->id);
 
         return PlantillaCursosPorJornada::procesarDatos($datos, $this->nombre);
+    }
+
+    public function listarConvenios(): array
+    {
+        return (new CalendarioDao())->listarConveniosPorCalendario($this->id);
     }
 }

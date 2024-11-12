@@ -19,6 +19,7 @@ use Src\usecase\calendarios\EliminarCalendarioUseCase;
 use Src\usecase\calendarios\ActualizarCalendarioUseCase;
 use Src\usecase\calendarios\BuscarCalendarioPorIdUseCase;
 use Src\usecase\calendarios\AgregarCursoACalendarioUseCase;
+use Src\usecase\calendarios\CerrarCalendarioUseCase;
 use Src\usecase\calendarios\EstadisticasCalendarioUseCase;
 use Src\usecase\calendarios\ListarCursosPorCalendarioUseCase;
 use Src\usecase\calendarios\ListarParticipantesPorCalendarioUseCase;
@@ -297,6 +298,20 @@ class CalendarioController extends Controller
         ];
         
         return response()->download($ruta_archivo, $nombre_archivo, $headers)->deleteFileAfterSend(true);   
+    }
+
+    public function cerrarPeriodo($calendarioId=0) {
+
+        $periodo = (new BuscarCalendarioPorIdUseCase)->ejecutar($calendarioId);
+        if (!$periodo->existe()) 
+        {
+            return redirect()->route('calendario.index')->with('code', 401)->with('status','Periodo no encontrado.');
+        }
+
+        
+        (new CerrarCalendarioUseCase)->Ejecutar($periodo);
+
+        return redirect()->route('calendario.index')->with('code', 200)->with('status', "Periodo cerrado con éxito");
     }
 
     protected function hydrateCursoCalendarioDto2($cursoData) {

@@ -134,6 +134,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/calendario/{id}/descargar-participantes',[CalendarioController::class, 'descargarParticipantes'])->name('calendario.descargar-participantes');
     Route::get('/calendario/{id}/descargar-cuadro-110',[CalendarioController::class, 'generarReporteNumeroCursosYParticipantesPorJornada'])->name('calendario.descargar-cuadro-110');
     Route::post('/calendario/abrir-cursos',[CalendarioController::class, 'guardarTodosLosCursos'])->name('calendario.agregar_varios_cursos');
+    Route::get('/calendario/{id}/cerrar',[CalendarioController::class, 'cerrarPeriodo'])->name('calendario.cerrar');
     
 
     Route::get('/grupos/{id}/editar', [GrupoController::class, 'edit'])->name('grupos.edit');

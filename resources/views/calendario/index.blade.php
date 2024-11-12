@@ -22,7 +22,7 @@
             <table class="table table-vcenter">
                 @forelse ($calendarios as $calendario)
                 <tr>
-                    <td class="fs-sm" style="width: 52%;">                        
+                    <td class="fs-sm" style="width: 40%;">                        
                         <h4 class="fw-normal mb-0">{{ $calendario->getNombre() }}</h4>
                         <small class="fw-light">
                             {{ $calendario->getFechaInicio() }} al {{ $calendario->getFechaFinal()}} <br>
@@ -47,14 +47,17 @@
                             </form>
                             <a href="{{ route('calendario.cursos', $calendario->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-success">
                                 <i class="fa fa-fw fa-book-open"></i> Abrir curso
+                            </a>
+                            <a href="{{ route('calendario.cerrar', $calendario->getId()) }}" 
+                                class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-warning cerrar-periodo">
+                                <i class="fa fa-fw fa-calendar-check"></i> Cerrar Periodo
                             </a>                                                                              
                         @endif
 
                         <a href="{{ route('calendario.estadisticas', $calendario->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
                             <i class="fa fa-fw fa-chart-pie"></i> Estadísticas
-                        </a>                                        
+                        </a>
                         
-
                     </td>                    
                 </tr>
                 @empty
@@ -89,6 +92,37 @@ function confirmDelete(button) {
         }
     });
 }
+
+document.querySelector('.cerrar-periodo').addEventListener('click', function(event) {
+    event.preventDefault(); // Previene que se ejecute el enlace inmediatamente
+    const href = this.getAttribute('href'); // Obtiene el enlace del elemento actual
+
+    Swal.fire({
+        title: '¿Confirmas el cierre del periodo?',
+        html: `
+            <p>Al confirmar el cierre, se aplicarán los siguientes cambios en el sistema:</p>
+            <ul style="text-align: left;">
+                <li>Se facturarán los convenios aplicando el porcentaje de descuento correspondiente. <strong>Se recomienda revisar los datos antes de proceder.</strong></li>
+                <li>No se permitirán nuevas inscripciones.</li>
+                <li>No se podrán modificar los grupos existentes.</li>
+                <li>No será posible cambiar las fechas del periodo.</li>
+                <li>Los datos del dashboard no estarán disponibles para consulta; toda la información estará accesible desde el botón de estadísticas del calendario.</li>
+            </ul>
+            <p>¿Deseas continuar?</p>
+        `,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, cerrar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = href; // Redirige al enlace original
+        }
+    });
+});
+
 </script>
 
 @endsection

@@ -545,4 +545,35 @@ class CalendarioDao extends Model implements CalendarioRepository {
 
         return $grupos;
     }
+
+    public function listarConveniosPorCalendario($calendarioId): array
+    {
+        $convenios = [];
+
+        try 
+        {
+            $registros = ConvenioDao::where('calendario_id', $calendarioId)->get();
+            foreach($registros as $registro)
+            {
+                $convenio = new Convenio();
+                $convenio->setId($registro->id);
+                $convenio->setNombre($registro->nombre);
+                $convenio->setFecInicio($registro->fec_ini);
+                $convenio->setFecFin($registro->fec_fin);
+                $convenio->setDescuento($registro->descuento);
+                $convenio->setEsCooperativa($registro->es_cooperativa);
+                $convenio->setTotalAPagar($registro->total_a_pagar);
+                $convenio->setComentarios($registro->comentarios);
+                $convenio->setHaSidoFacturado($registro->ha_sido_facturado);
+
+                $convenios[] = $convenio;
+            }
+        } 
+        catch (\Exception $e) 
+        {
+            Sentry::captureException($e);
+        }
+
+        return $convenios;
+    }
 }
