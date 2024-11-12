@@ -11,18 +11,19 @@ class FacturarConvenioUseCase {
     
     const TIPO_DOCUMENTO = 1;
     const DOCUMENTO = 2;
+    const ENCABEZADO_DE_LA_LISTA = 0;
 
-    public function ejecutar($convenioId=0): Convenio {
+    public function ejecutar(Convenio $convenio): Convenio {
 
         $totalPagoFactura = 0;
 
         $convenioDao = new ConvenioDao();
         $participanteDao = new ParticipanteDao();
 
-        $convenio = $convenioDao->buscarConvenioPorId($convenioId);
+      /*   $convenio = $convenioDao->buscarConvenioPorId($convenioId);
         if (!$convenio->existe()) {
             return $convenio;
-        }
+        } */
 
         if ($convenio->getDescuento() == 0) {
             return $convenio;
@@ -30,7 +31,7 @@ class FacturarConvenioUseCase {
 
         foreach($convenio->listarParticipantes() as $index => $data) {
             
-            if ($index == 0) {
+            if ($index == self::ENCABEZADO_DE_LA_LISTA) {
                 continue;
             }
 
@@ -52,7 +53,8 @@ class FacturarConvenioUseCase {
             $formularioInscripcion->FacturarConvenio();
         }
 
-        $convenio->setTotalAPagar($totalPagoFactura);        
+        $convenio->setTotalAPagar($totalPagoFactura);
+        $convenio->setHaSidoFacturado(true);      
         $convenio->actualizarTotalAPagar();    
 
         

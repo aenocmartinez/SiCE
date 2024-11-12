@@ -14,7 +14,7 @@ use Sentry\Laravel\Facade as Sentry;
 class ConvenioDao extends Model implements ConvenioRepository {
     
     protected $table = 'convenios';
-    protected $fillable = ['nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento', 'es_cooperativa', 'es_ucmc_actual', 'comentarios'];
+    protected $fillable = ['nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento', 'es_cooperativa', 'es_ucmc_actual', 'comentarios', 'ha_sido_facturado'];
 
     public function beneficiarios() {
         $this->belongsToMany(ParticipanteDao::class,'convenio_id', 'participante_id', 'convenio_participante');
@@ -28,10 +28,10 @@ class ConvenioDao extends Model implements ConvenioRepository {
             $calendarioDao = new CalendarioDao();
             $convenios = ConvenioDao::all();
 
-            $convenios = ConvenioDao::select('convenios.id', 'nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento', 'es_cooperativa', 
+            $convenios = ConvenioDao::select('convenios.id', 'nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento', 'es_cooperativa', 'ha_sido_facturado',
                                         DB::raw('COUNT(convenio_participante.id) as numBeneficiados'))
                         ->leftJoin('convenio_participante', 'convenio_participante.convenio_id', '=', 'convenios.id')
-                        ->groupBy('convenios.id', 'nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento', 'es_cooperativa')
+                        ->groupBy('convenios.id', 'nombre', 'calendario_id', 'fec_ini', 'fec_fin', 'descuento', 'es_cooperativa', 'ha_sido_facturado')
                         ->orderBy('convenios.id', 'desc')
                         ->get();
 
@@ -44,6 +44,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenio->setDescuento($c->descuento);
                 $convenio->setNumeroBeneficiados($c->numBeneficiados);
                 $convenio->setEsCooperativa($c->es_cooperativa);
+                $convenio->setHaSidoFacturado($c->ha_sido_facturado);
     
                 $calendario = $calendarioDao->buscarCalendarioPorId($c->calendario_id);
                 $convenio->setCalendario($calendario);
@@ -73,6 +74,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 'c.fec_fin',
                 'c.descuento',
                 'c.comentarios',
+                'c.ha_sido_facturado',
                 DB::raw('(select count(*) from formulario_inscripcion where convenio_id = c.id and estado <> \'Anulado\' and estado <> \'Aplazado\') as numeroInscritos'),
                 DB::raw('(select count(*) from convenio_participante where convenio_id = c.id) as numeroBeneficiados'),
                 DB::raw('IFNULL(SUM(
@@ -92,7 +94,8 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 'c.fec_ini',
                 'c.fec_fin',
                 'c.descuento',
-                'c.comentarios'
+                'c.comentarios',
+                'c.ha_sido_facturado'
             )
             ->first();        
 
@@ -109,6 +112,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenio->setEsCooperativa($c->es_cooperativa);
                 $convenio->setTotalAPagar($c->total_a_pagar);
                 $convenio->setComentarios($c->comentarios);
+                $convenio->setHaSidoFacturado($c->ha_sido_facturado);
             
                 $calendarioDao = new CalendarioDao();
                 $calendario = $calendarioDao->buscarCalendarioPorId($c->calendario_id);
@@ -284,7 +288,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
             ->join('calendarios', 'calendarios.id', '=', 'curso_calendario.calendario_id')
             ->where('convenios.id', $convenioId)
             ->where('calendarios.id', $calendarioId)
-            ->whereNotIn('formulario_inscripcion.estado', ['Anulado', 'Aplazado', 'Devuelto', 'Pendiente de pago']) // Condición añadida
+            ->whereNotIn('formulario_inscripcion.estado', ['Anulado', 'Aplazado', 'Devuelto', 'Pendiente de pago'])
             ->orderBy('participantes.primer_nombre')
             ->orderBy('participantes.primer_apellido')
             ->get();
@@ -333,6 +337,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 DB::statement("SET @usuario_sesion = $idUsuarioSesion");
 
                 $convenioDao->total_a_pagar = $convenio->getTotalAPagar();
+                $convenioDao->ha_sido_facturado = $convenio->haSidoFacturado();
                 $convenioDao->save();
             }
 

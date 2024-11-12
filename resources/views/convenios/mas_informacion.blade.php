@@ -23,11 +23,7 @@
         <a href="{{ route('convenios.exportar-participantes', $convenio->getId()) }}" class="btn btn-outline-info me-1 mb-3">
             <i class="fa fa-fw fa-download me-1"></i> Descargar participantes
         </a>
-        @if ($convenio->esCooperativa() && $convenio->getTotalAPagar() == 0)
-        <a href="#" id="aplicar_descuento_facturacion" data-parametro="{{ $convenio->getId() }}" class="btn btn-outline-info me-1 mb-3">
-            <i class="fa fa-fw fa-circle-dollar-to-slot me-1"></i> Aplicar descuento y obtener datos de factura
-        </a>        
-        @endif
+        
     </div>
 </div>   
 
