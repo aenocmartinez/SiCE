@@ -116,15 +116,18 @@ class ConvenioController extends Controller
     }
 
     public function facturarConvenio($convenioId) {
-        $convenio = (new FacturarConvenioUseCase)->ejecutar($convenioId);
+        
+        $convenio = (new BuscarConvenioPorIdUseCase)->ejecutar($convenioId);        
         if (!$convenio->existe()) {
             return redirect()->route('convenios.index')->with('code', "404")->with('status', "convenio no encontrado");
         }
 
         if ($convenio->getDescuento() == 0) {
             return redirect()->route('convenios.index')->with('code', "500")->with('status', "No se puede facturar dado que el porcentaje de escuento es igual a 0");
-        }        
+        }
         
+        $convenio = (new FacturarConvenioUseCase)->ejecutar($convenio);
+
         return view('convenios.mas_informacion', ['convenio' => $convenio])->with('code', "200")->with('status', "Se ha aplicado el descuento a los participantes con éxito.");
     }
 

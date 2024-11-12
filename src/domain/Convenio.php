@@ -21,6 +21,7 @@ class Convenio {
     private $esUCMC;
     private $totalPagar;
     private $comentarios;
+    private $haSidoFacturado;
 
     public function __construct(string $nombre="")
     {
@@ -36,11 +37,20 @@ class Convenio {
         $this->esUCMC = false;
         $this->totalPagar = 0;
         $this->comentarios = "";
+        $this->haSidoFacturado = false;
         $this->repository = new ConvenioDao();
     }
 
     public function setRepository($repository): void {
         $this->repository = $repository;
+    }
+
+    public function setHaSidoFacturado($haSidoFacturado=false): void {
+        $this->haSidoFacturado = $haSidoFacturado;
+    }
+
+    public function haSidoFacturado(): bool {
+        return $this->haSidoFacturado;
     }
 
     public function setComentarios($comentarios=""): void {

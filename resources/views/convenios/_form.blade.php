@@ -97,7 +97,7 @@
             </div>
             
             <div class="col-12 mt-4">
-                @if ($convenio->esVigente())
+                @if (!$convenio->haSidoFacturado())
                 <button class="btn btn-large btn-info">{{ $btnText }}</button>        
                 @endif
                 <a href="{{ route('convenios.index') }}" class="btn btn-large btn-light"> Cancelar</a>

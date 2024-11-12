@@ -23,7 +23,7 @@
                     <td class="fs-sm" style="width: 49%;">
                     <h4 class="fw-normal mb-0">{{ $convenio->getNombre() }} - {{ $convenio->getNombreCalendario() }}</h4>
                         <small class="fw-light">
-                            {{ $convenio->getVigenciaEnTexto() }} <br>
+                         
                             @if ($convenio->esCooperativa())                                
                                 Es una cooperativa <br>
                             @endif
@@ -48,7 +48,7 @@
                             <a href="{{ route('convenios.mas-info', $convenio->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
                                 <i class="fa fa-fw fa-circle-info"></i> Más info
                             </a>   
-                            @if (!$convenio->tieneBeneficiariosPotenciales() && $convenio->esVigente())                                
+                            @if (!$convenio->tieneBeneficiariosPotenciales() && !$convenio->haSidoFacturado())                                
                             <a href="{{ route('convenios.beneficiarios', $convenio->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-warning">
                                 <i class="fa fa-fw fa-file-import"></i> Cargar beneficiados
                             </a>                                                                  
