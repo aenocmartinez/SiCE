@@ -270,7 +270,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
     public static function obtenerCalendarioActualVigente(): Calendario{
         $calendarioVigente = new Calendario();
 
-        $fechaActual = now()->toDateString();
+        $fechaActual = now()->toDateTimeString();
         
         $result = DB::table('calendarios')
             ->select('id', 'nombre', 'fec_ini', 'fec_fin', 'fec_ini_clase')

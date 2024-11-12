@@ -140,7 +140,7 @@ class FormularioInscripcionController extends Controller
         $participanteId = $datos['participante'];
 
         if (!Calendario::existeCalendarioVigente()) {
-            return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "No existe periodo académica vigente.");
+            return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "No existe periodo académico vigente.");
         }
 
         return redirect()->route('formulario-inscripcion.paso-3-1.buscar-grupos', [
