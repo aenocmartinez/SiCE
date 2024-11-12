@@ -6,9 +6,10 @@ use Src\dao\mysql\ParticipanteDao;
 use Src\view\dto\ParticipanteDto;
 use Src\view\dto\Response;
 
-class GuardarParticipanteUseCase {
-
-    public function ejecutar(ParticipanteDto $participanteDto): Response {        
+class GuardarParticipanteUseCase 
+{
+    public function ejecutar(ParticipanteDto $participanteDto): Response 
+    {     
         $exito = false;
         $code = "200";
         $message = "";

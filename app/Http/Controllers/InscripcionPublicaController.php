@@ -659,6 +659,7 @@ class InscripcionPublicaController extends Controller
     }
     
     private function hydrateParticipanteDto($dato): ParticipanteDto {
+        
         $participanteDto = new ParticipanteDto;
         $participanteDto->primerNombre = $dato['primerNombre'];
         

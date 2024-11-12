@@ -32,23 +32,25 @@
                     </td>
                     <td class="text-center">
                         <div class="d-sm-table-cell">
-                            <a href="{{ route('convenios.edit', $convenio->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-secondary">
-                                <i class="fa fa-fw fa-pencil-alt"></i> Editar
-                            </a>  
-                            <form method="POST" action="{{ route('convenios.delete', $convenio->getId()) }}" class="d-inline-block" id="form-del-convenio-{{$convenio->getId()}}">
-                                @csrf
-                                @method('delete')
-                                <button class="fs-xs fw-semibold py-1 px-3 btn rounded-pill btn-outline-danger" 
-                                        type="button"
-                                        data-id="{{ $convenio->getId() }}"
-                                        onclick="confirmDelete(this)">
-                                    <i class="fa fa-fw fa-trash-can"></i> Eliminar
-                                </button>
-                            </form> 
+                            @if ($convenio->esVigente())
+                                <a href="{{ route('convenios.edit', $convenio->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-secondary">
+                                    <i class="fa fa-fw fa-pencil-alt"></i> Editar
+                                </a>  
+                                <form method="POST" action="{{ route('convenios.delete', $convenio->getId()) }}" class="d-inline-block" id="form-del-convenio-{{$convenio->getId()}}">
+                                    @csrf
+                                    @method('delete')
+                                    <button class="fs-xs fw-semibold py-1 px-3 btn rounded-pill btn-outline-danger" 
+                                            type="button"
+                                            data-id="{{ $convenio->getId() }}"
+                                            onclick="confirmDelete(this)">
+                                        <i class="fa fa-fw fa-trash-can"></i> Eliminar
+                                    </button>
+                                </form> 
+                            @endif
                             <a href="{{ route('convenios.mas-info', $convenio->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
                                 <i class="fa fa-fw fa-circle-info"></i> Más info
                             </a>   
-                            @if (!$convenio->tieneBeneficiariosPotenciales() && !$convenio->haSidoFacturado())                                
+                            @if (!$convenio->tieneBeneficiariosPotenciales() && !$convenio->haSidoFacturado() && $convenio->esVigente())                                
                             <a href="{{ route('convenios.beneficiarios', $convenio->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-warning">
                                 <i class="fa fa-fw fa-file-import"></i> Cargar beneficiados
                             </a>                                                                  

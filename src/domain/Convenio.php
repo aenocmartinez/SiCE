@@ -182,9 +182,9 @@ class Convenio {
         if ($hoy->lte($fechaCaducidad))
             return true;
 
-        $diasRestantes = $hoy->diffInDays($fechaCaducidad, false);
+/*         $diasRestantes = $hoy->diffInDays($fechaCaducidad, false);
         if (($diasRestantes + 1 == 1))
-            return true;
+            return true; */
         
         return false;
     }

@@ -253,13 +253,11 @@ class CalendarioDao extends Model implements CalendarioRepository {
     }
 
     public static function existeCalendarioVigente(): bool {
-        $fechaActual = Carbon::now()->toDateString();
+        $fechaActual = Carbon::now()->toDateTimeString();
         $resultado = DB::table('calendarios')
             ->selectRaw("IF('$fechaActual' BETWEEN fec_ini AND fec_fin, 'true', 'false') AS esta_entre_fechas")
             ->orderBy('id', 'desc')
             ->first();
-            // ->toSql();
-            // dd($resultado);
         
         if (!$resultado)
             return false;
