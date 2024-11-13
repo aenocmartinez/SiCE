@@ -18,7 +18,8 @@ class PlantillaCursosPorJornada
         $tr_tBody_Area = "";
         $tr_tBody = "";
         $area_actual = "";
-        $bandera_area = false;
+        $curso_actual = "";
+        $ha_cambiado_de_area = false;
 
         $content = file_get_contents(__DIR__ . "/template/plantilla.html"); 
 
@@ -33,15 +34,16 @@ class PlantillaCursosPorJornada
             
             $es_la_ultima_area = ($index + 1 == $tamano);
 
-            if (!$bandera_area) 
+            if (!$ha_cambiado_de_area) 
             {
-                $bandera_area = true;
+                $ha_cambiado_de_area = true;
                 $tr_tBody_Area .= self::agregarTagArea($dato);
                 $area_actual = $dato->getArea();
             }
 
-            if (strlen($registro->getCursoActual()) == 0) 
+            if (strlen($curso_actual) == 0) 
             {
+                $curso_actual = $dato->getCurso();
                 $registro->setCursoActual($dato->getCurso());
                 $registro->setCursoActualTotalGrupos($dato->getTotalGrupos());
                 $registro->setCursoActualTotalGeneroFemenino($dato->getTotalFemeninos());
@@ -50,14 +52,20 @@ class PlantillaCursosPorJornada
                 $registro->setCursoActualTotalParticipantes($dato->getTotalParticipantes());
             }
                         
-            if ($registro->getCursoActual() != $dato->getCurso()) 
+            if ($curso_actual != $dato->getCurso()) 
             {          
                 $tr_tBody .= self::agregarTagRegistro($registro, $consolidadoPorJornadaYSexo);         
                 $registro->setCursoActual($dato->getCurso());
                 
                 // Reinicia datos para ciclo de siguiente curso
                 $consolidadoPorJornadaYSexo = self::inicializarConsolidadoPorJornadaYSexo();
-                $registro = new RegistroDTO();
+                $curso_actual = $dato->getCurso();
+                $registro->setCursoActual($dato->getCurso());
+                $registro->setCursoActualTotalGrupos($dato->getTotalGrupos());
+                $registro->setCursoActualTotalGeneroFemenino($dato->getTotalFemeninos());
+                $registro->setCursoActualTotalGeneroMasculino($dato->getTotalMasculinos());
+                $registro->setCursoActualTotalGeneroOtro($dato->getTotalOtro());
+                $registro->setCursoActualTotalParticipantes($dato->getTotalParticipantes());
             }
 
             if ($area_actual != $dato->getArea() || $es_la_ultima_area) 
@@ -67,7 +75,7 @@ class PlantillaCursosPorJornada
                 $area_actual = $dato->getArea();
                 $tr_tBody_Area = "";
                 $tr_tBody = "";
-                $bandera_area = false;
+                $ha_cambiado_de_area = false;
                 self::inicializarAcumuladosPorArea();
             }
 
@@ -168,6 +176,10 @@ class PlantillaCursosPorJornada
     private static function consolidadoPorJornadaYSexo($datoJornada = [], ReporteNumeroCursoYParticipantePorJornadaDto $dato): array {
         $jornada = $dato->getJornada();
         $sexo = (string) $dato->getSexo(); 
+
+        if ($sexo == "Otro") {
+            $sexo = "M";
+        }
         
         if (isset($datoJornada[$jornada]) && isset($datoJornada[$jornada][$sexo])) {
             $datoJornada[$jornada]["curso"] = $dato->getCurso(); 
@@ -193,7 +205,7 @@ class PlantillaCursosPorJornada
             <td>".$consolidadoPorJornadaYSexo["Noche"]["total_participantes"]."</td>
             <td>".$consolidadoPorJornadaYSexo["Noche"]["M"]["total"]."</td>
             <td>".$consolidadoPorJornadaYSexo["Noche"]["F"]["total"]."</td>
-            <td>".$registro->getCursoActualTotalGeneroMasculino()."</td>
+            <td>".$registro->getCursoActualTotalGeneroMasculino() +  $registro->getCursoActualTotalGeneroOtro()."</td>
             <td>".$registro->getCursoActualTotalGeneroFemenino()."</td>
             <td>".$registro->getCursoActualTotalGrupos()."</td>
             <td>".$registro->getCursoActualTotalParticipantes()."</td>
