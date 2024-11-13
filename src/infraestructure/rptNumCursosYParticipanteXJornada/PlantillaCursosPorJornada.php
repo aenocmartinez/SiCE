@@ -205,7 +205,7 @@ class PlantillaCursosPorJornada
             <td>".$consolidadoPorJornadaYSexo["Noche"]["total_participantes"]."</td>
             <td>".$consolidadoPorJornadaYSexo["Noche"]["M"]["total"]."</td>
             <td>".$consolidadoPorJornadaYSexo["Noche"]["F"]["total"]."</td>
-            <td>".$registro->getCursoActualTotalGeneroMasculino() +  $registro->getCursoActualTotalGeneroOtro()."</td>
+            <td>".((int) $registro->getCursoActualTotalGeneroMasculino() + (int) $registro->getCursoActualTotalGeneroOtro())."</td>
             <td>".$registro->getCursoActualTotalGeneroFemenino()."</td>
             <td>".$registro->getCursoActualTotalGrupos()."</td>
             <td>".$registro->getCursoActualTotalParticipantes()."</td>
