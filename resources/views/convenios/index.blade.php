@@ -6,12 +6,27 @@
 @section("content")
 
 <div class="row mb-3">
-    <div class="d-flex justify-content-end">
-        <a href="{{ route('convenios.create') }}" class="btn btn-lg btn-info">
-            <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear convenio
-        </a>
+    <div class="d-flex justify-content-between align-items-center">
+        <!-- Combobox para seleccionar periodo -->
+        <div>
+            <select class="form-select form-select-lg" id="select-periodo" onchange="filtrarPorPeriodo(this.value)">
+                <option value="">Seleccione un periodo</option>
+                @foreach ($periodos as $periodo)
+                    <option value="{{ $periodo->getId() }}" {{ isset($periodoSeleccionado) && $periodoSeleccionado == $periodo->getId() ? 'selected' : '' }}>
+                        {{ $periodo->getNombre() }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <!-- Botón Crear Convenio -->
+        <div>
+            <a href="{{ route('convenios.create') }}" class="btn btn-lg btn-info">
+                <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear convenio
+            </a>
+        </div>
     </div>
-</div>        
+</div>       
 
 <div class="row">
     <div class="block block-rounded">
@@ -28,6 +43,7 @@
                                 Es una cooperativa <br>
                             @endif
                             Descuento: {{ $convenio->getDescuento()."%" }}<br>
+                            {{ $convenio->getVigenciaEnTexto()}}
                         </small>                     
                     </td>
                     <td class="text-center">
@@ -69,8 +85,6 @@
     </div>
 </div>
 
-
-
 <script>
 function confirmDelete(button) {
     const convenioId = button.getAttribute('data-id'); 
@@ -90,6 +104,23 @@ function confirmDelete(button) {
         }
     });
 }
+
+function filtrarPorPeriodo(periodoId) 
+{
+
+    if (periodoId) 
+    {        
+        const url = `/periodos/${periodoId}/convenios`;
+        window.location.href = url;
+    } 
+    else 
+    {    
+        const url = '/convenios';
+        window.location.href = url;
+    }
+}
+
+
 </script>
 
 @endsection

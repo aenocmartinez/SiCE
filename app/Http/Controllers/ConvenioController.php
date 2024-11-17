@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\GuardarConvenio;
 use Illuminate\Http\Request;
+use Src\domain\Calendario;
 use Src\domain\Convenio;
 use Src\infraestructure\util\Validador;
 use Src\usecase\calendarios\ListarCalendariosUseCase;
@@ -13,6 +14,7 @@ use Src\usecase\convenios\CargarBeneficiariosConvenioUseCase;
 use Src\usecase\convenios\CrearConvenioUseCase;
 use Src\usecase\convenios\EliminarConvenioUseCase as ConveniosEliminarConvenioUseCase;
 use Src\usecase\convenios\FacturarConvenioUseCase;
+use Src\usecase\convenios\ListarConveniosPorPeriodoUseCase;
 use Src\usecase\convenios\ListarConveniosUseCase;
 use Src\view\dto\ConvenioDto;
 
@@ -21,8 +23,19 @@ class ConvenioController extends Controller
 
     public function index()
     {
+        $periodo = Calendario::Vigente();
+        $periodoSeleccionado = 0;
+
+        $convenios = (new ListarConveniosUseCase)->ejecutar();
+        if ($periodo->existe()) {
+            $periodoSeleccionado = $periodo->getId();
+            $convenios = (new ListarConveniosPorPeriodoUseCase)->ejecutar($periodo->getId());
+        }
+
         return view('convenios.index', [
-            'convenios' => (new ListarConveniosUseCase)->ejecutar(),
+            'convenios' => $convenios,
+            'periodos' => (new ListarCalendariosUseCase)->ejecutar(),
+            'periodoSeleccionado' => $periodoSeleccionado,
         ]);        
     }
 
@@ -38,11 +51,6 @@ class ConvenioController extends Controller
         $convenioDto = $this->hydrateDto($req->validated());
         $response = (new CrearConvenioUseCase)->ejecutar($convenioDto);                
         return redirect()->route('convenios.index')->with('code', $response->code)->with('status', $response->message);        
-    }
-
-    public function show($id)
-    {
-        //
     }
 
     public function edit($id)
@@ -129,6 +137,21 @@ class ConvenioController extends Controller
         $convenio = (new FacturarConvenioUseCase)->ejecutar($convenio);
 
         return view('convenios.mas_informacion', ['convenio' => $convenio])->with('code', "200")->with('status', "Se ha aplicado el descuento a los participantes con éxito.");
+    }
+
+    public function listarConveniosPorPeriodo($periodo)
+    {   
+
+        if (!Validador::parametroId($periodo))
+        {
+            return redirect()->route('convenios.index')->with('status','Periodo no válido.');
+        }
+
+        return view('convenios.index', [
+            'convenios' => (new ListarConveniosPorPeriodoUseCase)->Ejecutar($periodo),
+            'periodos' => (new ListarCalendariosUseCase)->ejecutar(),
+            'periodoSeleccionado' => $periodo,
+        ]);           
     }
 
     public function hydrateDto($req): ConvenioDto {

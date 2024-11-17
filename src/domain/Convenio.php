@@ -81,7 +81,7 @@ class Convenio {
         return $this->esCooperativa;
     }
 
-    public function setid(int $id): void{
+    public function setId(int $id): void{
         $this->id = $id;
     }
 
@@ -202,8 +202,7 @@ class Convenio {
             return "El convenio caduca hoy";
 
         return "El convenio ha caducado";
-
-    }
+    }    
 
     public function agregarParticipante(Participante $participante): bool {
                 
@@ -233,5 +232,10 @@ class Convenio {
     
     public static function UCMCActual(): Convenio {
         return ConvenioDao::obtenerConvenioUCMCActual();
+    }
+
+    public static function listadoDeConveniosPorPeriodo(Calendario $periodo): array {
+
+        return ConvenioDao::buscarConveniosPorPeriodo($periodo);
     }
 }

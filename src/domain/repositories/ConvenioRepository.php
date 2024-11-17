@@ -2,6 +2,7 @@
 
 namespace Src\domain\repositories;
 
+use Src\domain\Calendario;
 use Src\domain\Convenio;
 
 interface ConvenioRepository  {
@@ -16,4 +17,5 @@ interface ConvenioRepository  {
     public function actualizarValorAPagarConvenio(Convenio $convenio): bool;
     public static function cerrarElUltimoConveniosUCMC(): bool;
     public static function obtenerConvenioUCMCActual(): Convenio;
+    public static function buscarConveniosPorPeriodo(Calendario $periodo): array;
 }

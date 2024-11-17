@@ -10,6 +10,7 @@ use Src\domain\Convenio;
 use Src\domain\repositories\ConvenioRepository;
 
 use Sentry\Laravel\Facade as Sentry;
+use Src\domain\Calendario;
 
 class ConvenioDao extends Model implements ConvenioRepository {
     
@@ -379,5 +380,32 @@ class ConvenioDao extends Model implements ConvenioRepository {
             Sentry::captureException($e);
         }
         return $convenio;
+    }
+
+    public static function buscarConveniosPorPeriodo(Calendario $periodo): array
+    {
+        $convenios = [];
+        $registros = ConvenioDao::where('calendario_id', $periodo->getId())
+                    ->select('id', 'nombre', 'es_cooperativa', 'es_ucmc_actual', 'descuento', 'fec_ini', 'fec_fin')
+                    ->get();
+
+        foreach($registros as $registro)
+        {
+            $convenio = new Convenio();
+
+            $convenio->setId($registro->id);
+            $convenio->setNombre($registro->nombre);
+            $convenio->setEsCooperativa($registro->es_cooperativa);
+            $convenio->setEsUCMC($registro->es_ucmc_actual);            
+            $convenio->setDescuento($registro->descuento);
+            $convenio->setCalendario($periodo);
+            $convenio->setFecInicio($registro->fec_ini);
+            $convenio->setFecFin($registro->fec_fin);
+
+
+            $convenios[] = $convenio;
+        }
+
+        return $convenios;
     }
 }
