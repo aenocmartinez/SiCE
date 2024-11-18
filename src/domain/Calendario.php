@@ -15,6 +15,7 @@ class Calendario {
     private $fechaInicio;
     private $fechaFinal;
     private $fechaInicioClase;
+    private bool $estaElFormularioDeInscripcionAbierto;
     private $repository;
     private $cursos = [];
 
@@ -23,12 +24,23 @@ class Calendario {
         $this->nombre = $nombre;
         $this->fechaInicio = $fechaInicio;
         $this->fechaFinal = $fechaFinal;
+        $this->estaElFormularioDeInscripcionAbierto = false;
         $this->repository = new CalendarioDao();
     }
 
     public function setRepository($repository): void {
         $this->repository = $repository;
     }
+
+    public function setEstaFormularioInscripcionAbierto(bool $estaElFormularioDeInscripcionAbierto=false): void
+    {
+        $this->estaElFormularioDeInscripcionAbierto = $estaElFormularioDeInscripcionAbierto;
+    }
+
+    public function estaElFormularioInscripcionAbierto(): bool
+    {
+        return $this->estaElFormularioDeInscripcionAbierto;
+    }    
 
     public function setId(int $id): void {
         $this->id = $id;

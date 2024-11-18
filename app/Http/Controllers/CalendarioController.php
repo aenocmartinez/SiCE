@@ -45,8 +45,18 @@ class CalendarioController extends Controller
     public function store(GuardarCalenadario $request)
     {
         $data = $request->validated();
-        $calendarioDto = new CalendarioDto($data['nombre'], $data['fec_ini'], $data['fec_fin']);
-        $calendarioDto->fechaInicioClase = $data['fec_ini_clase'];        
+        
+        $calendarioDto = new CalendarioDto();
+        $calendarioDto->nombre = $data['nombre'];
+        $calendarioDto->fechaInicial = $data['fec_ini'];
+        $calendarioDto->fechaFinal = $data['fec_fin'];
+        $calendarioDto->fechaInicioClase = $data['fec_ini_clase'];
+        
+        $calendarioDto->estaFormularioInscripcionAbierto = false;
+        if (isset($data['esta_formulario_inscripcion_abierto'])) {
+            $calendarioDto->estaFormularioInscripcionAbierto = true;
+        }
+
         $response = (new CrearCalendarioUseCase())->ejecutar($calendarioDto);
         
         return redirect()->route('calendario.index')->with('code', $response->code)->with('status', $response->message);
@@ -76,9 +86,17 @@ class CalendarioController extends Controller
             return redirect()->route('calendario.index')->with('status','parámetro no válido');
         }
 
-        $calendarioDto = new CalendarioDto($data['nombre'], $data['fec_ini'], $data['fec_fin']);
+        $calendarioDto = new CalendarioDto();
+        $calendarioDto->nombre = $data['nombre'];
+        $calendarioDto->fechaInicial = $data['fec_ini'];
+        $calendarioDto->fechaFinal = $data['fec_fin'];
         $calendarioDto->fechaInicioClase = $data['fec_ini_clase'];
         $calendarioDto->id = $id;
+
+        $calendarioDto->estaFormularioInscripcionAbierto = false;
+        if (isset($data['esta_formulario_inscripcion_abierto'])) {
+            $calendarioDto->estaFormularioInscripcionAbierto = true;
+        }
 
         $casoUsoActualizar = new ActualizarCalendarioUseCase();
         $response = $casoUsoActualizar->ejecutar($calendarioDto);

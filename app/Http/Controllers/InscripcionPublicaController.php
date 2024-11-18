@@ -51,9 +51,9 @@ class InscripcionPublicaController extends Controller
         }
 
         $calendarioVigente = Calendario::Vigente();
-        if (!$calendarioVigente->existe()) {
+        if (!$calendarioVigente->existe() || !$calendarioVigente->estaElFormularioInscripcionAbierto()) {
             return redirect()->route('public.inicio')->with('status', 'Actualmente, no hay calendarios disponibles para inscripción.')->with('code', 404);
-        }        
+        } 
 
         $datoFormulario = $req->validated();
         

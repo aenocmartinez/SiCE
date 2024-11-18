@@ -26,6 +26,7 @@ class CerrarCalendarioUseCase
         }
 
         $periodo->setFechaFinal($fechaDeCierre);
+        $periodo->setEstaFormularioInscripcionAbierto(false);
         $periodo->actualizar();
         
     }

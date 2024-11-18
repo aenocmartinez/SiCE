@@ -15,13 +15,16 @@ class CrearCalendarioUseCase {
         $calendario = Calendario::buscarPorNombre($calendarioDto->nombre, $calendarioRepository);
 
         if ($calendario->existe()) 
+        {
             return new Response('200', 'El calendario ya existe');        
+        }
         
         $calendario->setNombre($calendarioDto->nombre);
         $calendario->setFechaInicio($calendarioDto->fechaInicial);
         $calendario->setFechaFinal($calendarioDto->fechaFinal);
         $calendario->setRepository($calendarioRepository);
         $calendario->setFechaInicioClase($calendarioDto->fechaInicioClase);
+        $calendario->setEstaFormularioInscripcionAbierto($calendarioDto->estaFormularioInscripcionAbierto);
 
         $exito = $calendario->crear();
         if (!$exito) {

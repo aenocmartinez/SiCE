@@ -28,6 +28,7 @@ class ActualizarCalendarioUseCase {
         $calendario->setFechaInicio($calendarioDto->fechaInicial);
         $calendario->setFechaFinal($calendarioDto->fechaFinal);
         $calendario->setFechaInicioClase($calendarioDto->fechaInicioClase);
+        $calendario->setEstaFormularioInscripcionAbierto($calendarioDto->estaFormularioInscripcionAbierto);
 
         $exito = $calendario->actualizar();
         if (!$exito) {
@@ -41,7 +42,7 @@ class ActualizarCalendarioUseCase {
             $convenioUCMC->actualizar();
         }
 
-        if ($fechaFinalActual != $calendarioDto->fechaInicial || 
+        if ($fechaInicioActual != $calendarioDto->fechaInicial || 
             $fechaFinalActual != $calendarioDto->fechaFinal
         ){
             $convenios = Convenio::listadoDeConveniosPorPeriodo($calendario);

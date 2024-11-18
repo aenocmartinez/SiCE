@@ -28,6 +28,7 @@ class GuardarCalenadario extends FormRequest
             'fec_ini' => 'required|ae_date_format',
             'fec_fin' => 'required|ae_date_format|after_or_equal:fec_ini',
             'fec_ini_clase' => 'required|ae_date_format',
+            'esta_formulario_inscripcion_abierto' => 'nullable',
             // 'fec_ini_clase' => 'required|ae_date_format|after_or_equal:fec_fin',
         ];
     }
