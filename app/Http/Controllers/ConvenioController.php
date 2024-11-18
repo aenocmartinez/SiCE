@@ -159,8 +159,8 @@ class ConvenioController extends Controller
 
         $convenioDto->calendarioId = $req['calendario'];
         $convenioDto->nombre = $req['nombre'];
-        $convenioDto->fechaInicial = $req['fec_ini'];
-        $convenioDto->fechaFinal = $req['fec_fin'];
+        // $convenioDto->fechaInicial = $req['fec_ini'];
+        // $convenioDto->fechaFinal = $req['fec_fin'];
         $convenioDto->descuento = $req['descuento'];  
         $convenioDto->comentarios = $req['comentarios'];
 

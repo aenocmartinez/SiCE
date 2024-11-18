@@ -37,9 +37,31 @@
                        disabled
                        value="{{ $convenio->existeCalendarioVigente() ? $convenio->getNombreCalendario() : 'No existe periodo académico vigente' }}">
 
-                <br>                      
+                <br> 
+                
+                <label class="form-label" for="descuento">Descuento</label>
+                <input type="number" min="0" step="1"
+                    class="form-control @error('descuento') is-invalid @enderror" 
+                    id="descuento" 
+                    name="descuento" 
+                    placeholder="descuento" 
+                    value="{{ old('descuento', $convenio->getDescuento()) }}"
+                    >
+                    @error('descuento')
+                        <span class="invalid-feedback" role="alert">
+                            {{ $message }}
+                        </span>
+                    @enderror  
+                        
+                    <br>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="esCooperativa" name="esCooperativa" {{ $checked }}>
+                        <label class="form-check-label" for="disponible">Es una cooperativa</label>
+                    </div> 
+                    
+                    <br>
 
-                <label class="form-label" for="fec_ini">Fecha inicial</label>
+                <!-- <label class="form-label" for="fec_ini">Fecha inicial</label>
                 <input type="text" 
                        class="js-flatpickr form-control @error('fec_ini') is-invalid @enderror" 
                        id="fec_ini" 
@@ -66,7 +88,7 @@
                         <span class="invalid-feedback" role="alert">
                             {{ $message }}
                         </span>
-                    @enderror
+                    @enderror -->
             </div>
 
             <!-- Columna 2 -->
@@ -74,30 +96,10 @@
                 <label class="form-label" for="comentarios">Comentarios</label>
                 <textarea class="form-control fs-xs" id="comentarios" name="comentarios" style="height: 130px">{{ old('comentarios', $convenio->getComentarios()) }}</textarea>
                 <br>           
-
-                <label class="form-label" for="descuento">Descuento</label>
-                <input type="number" min="0" step="1"
-                    class="form-control @error('descuento') is-invalid @enderror" 
-                    id="descuento" 
-                    name="descuento" 
-                    placeholder="descuento" 
-                    value="{{ old('descuento', $convenio->getDescuento()) }}"
-                    >
-                    @error('descuento')
-                        <span class="invalid-feedback" role="alert">
-                            {{ $message }}
-                        </span>
-                    @enderror  
-                        
-                    <br>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="esCooperativa" name="esCooperativa" {{ $checked }}>
-                        <label class="form-check-label" for="disponible">Es una cooperativa</label>
-                    </div> 
             </div>
             
             <div class="col-12 mt-4">
-                @if (!$convenio->haSidoFacturado() && $convenio->esVigente())
+                @if (!$convenio->haSidoFacturado() && !$convenio->esUCMC())
                 <button class="btn btn-large btn-info">{{ $btnText }}</button>        
                 @endif
                 <a href="{{ route('convenios.index') }}" class="btn btn-large btn-light"> Cancelar</a>

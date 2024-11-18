@@ -4,6 +4,7 @@ namespace Src\usecase\convenios;
 
 use Src\dao\mysql\ConvenioDao;
 use Src\domain\Calendario;
+use Src\domain\Convenio;
 use Src\view\dto\ConvenioDto;
 use Src\view\dto\Response;
 
@@ -17,18 +18,19 @@ class CrearConvenioUseCase {
             return new Response("500", "el convenio ya existe");
         }
 
+        $periodo = Calendario::buscarPorId($convenioDto->calendarioId);
+        if (!$periodo->existe()) {
+            return new Response("500", "El periodo no existe");
+        }
+        
         $convenio->setRepository($convenioRepository);
         $convenio->setNombre($convenioDto->nombre);
-        $convenio->setFecInicio($convenioDto->fechaInicial);
-        $convenio->setFecFin($convenioDto->fechaFinal);
+        $convenio->setFecInicio($periodo->getFechaInicio());
+        $convenio->setFecFin($periodo->getFechaFinal());        
         $convenio->setDescuento($convenioDto->descuento);
         $convenio->setEsCooperativa($convenioDto->esCooperativa);
         $convenio->setComentarios($convenioDto->comentarios);
-
-        $calendario = new Calendario();
-        $calendario->setId($convenioDto->calendarioId);
-
-        $convenio->setCalendario($calendario);
+        $convenio->setCalendario($periodo);
 
         $exito = $convenio->crear();
         if (!$exito) {

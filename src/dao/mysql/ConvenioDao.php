@@ -76,6 +76,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 'c.descuento',
                 'c.comentarios',
                 'c.ha_sido_facturado',
+                'c.es_ucmc_actual',
                 DB::raw('(select count(*) from formulario_inscripcion where convenio_id = c.id and estado <> \'Anulado\' and estado <> \'Aplazado\') as numeroInscritos'),
                 DB::raw('(select count(*) from convenio_participante where convenio_id = c.id) as numeroBeneficiados'),
                 DB::raw('IFNULL(SUM(
@@ -96,7 +97,8 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 'c.fec_fin',
                 'c.descuento',
                 'c.comentarios',
-                'c.ha_sido_facturado'
+                'c.ha_sido_facturado',
+                'c.es_ucmc_actual'
             )
             ->first();        
 
@@ -114,6 +116,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenio->setTotalAPagar($c->total_a_pagar);
                 $convenio->setComentarios($c->comentarios);
                 $convenio->setHaSidoFacturado($c->ha_sido_facturado);
+                $convenio->setEsUCMC($c->es_ucmc_actual);
             
                 $calendarioDao = new CalendarioDao();
                 $calendario = $calendarioDao->buscarCalendarioPorId($c->calendario_id);
