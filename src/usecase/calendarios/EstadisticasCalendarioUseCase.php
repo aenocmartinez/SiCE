@@ -8,6 +8,8 @@ use Src\dao\mysql\FormularioInscripcionDao;
 use Src\dao\mysql\ParticipanteDao;
 use Src\domain\Calendario;
 use Src\domain\FormularioInscripcion;
+use Src\domain\Grupo;
+use Src\usecase\dashboard\DashboardUseCase;
 use Src\usecase\dashboard\TotalesInscripcionesUseCase;
 
 class EstadisticasCalendarioUseCase {
@@ -59,6 +61,22 @@ class EstadisticasCalendarioUseCase {
         $data["fechaInicio"] = $calendario->getFechaInicioFormateada();
         $data["fechaFin"] = $calendario->getFechaFinalFormateada();
         $data["estado"] = $calendario->estado();
+
+
+        // Otros datos
+        // $recaudos = FormularioInscripcion::totalDeDineroRecaudado($calendarioVigente->getId());        
+        $data['totalMatriculados'] = FormularioInscripcion::totalInscripcionesLegalizadas($calendario->getId());
+        $data['totalAplazados'] = FormularioInscripcion::totalPorEstadoYCalendario('Aplazado', $calendario->getId());
+        $data['totalPendintesDePago'] = FormularioInscripcion::totalPorEstadoYCalendario('Pendiente de pago', $calendario->getId());
+        // $datosDashboard['totalRevisionesPago'] = FormularioInscripcion::totalPorEstadoYCalendario('Revisar comprobante de pago', $calendarioVigente->getId());
+        $data['totalAnulados'] = FormularioInscripcion::totalPorEstadoYCalendario('Anulado', $calendario->getId());
+        $data['totalDevolucion'] = FormularioInscripcion::totalPorEstadoYCalendario('Devuelto', $calendario->getId());
+        // $datosDashboard['pagoSinDescuento'] = '$' . number_format($recaudos["RECAUDO_SIN_CONVENIO"], 0, ',', '.') . ' COP';
+        // $datosDashboard['pagoPorConvenio'] = '$' . number_format($recaudos["RECAUDO_POR_CONVENIO"], 0, ',', '.') . ' COP';
+        // $datosDashboard['pagoPendientes'] = number_format(FormularioInscripcion::totalDeDineroPendienteDePago($calendarioVigente->getId()), 0, '.', ',');
+        // $datosDashboard['pagoTotal'] = '$' . number_format($recaudos["RECAUDO_TOTAL"], 0, ',', '.'). ' COP';
+        $data['totalCancelados'] = Grupo::totalGruposCancelados($calendario->getId());  
+        // $datosDashboard['totalCursosSinCupos'] = Grupo::totalSinCupoDisponible();
 
         return $data;
     }

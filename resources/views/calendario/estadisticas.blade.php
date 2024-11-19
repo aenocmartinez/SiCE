@@ -37,15 +37,15 @@
 
             <div class="block-content bg-body-light text-center">
               <div class="row items-push text-uppercase">
-                <div class="col-6 col-md-4">
+                <!-- <div class="col-6 col-md-4">
                   <div class="fw-semibold text-dark mb-1"># form. matriculados</div>
                   <a class="link-fx fs-5 text-primary" href="javascript:void(0)">{{ $data["totalInscripcionesLegalizadas"] }}</a>
-                </div>                
-                <div class="col-6 col-md-4">
+                </div>                 -->
+                <div class="col-6 col-md-6">
                   <div class="fw-semibold text-dark mb-1"># form. por convenio</div>
                   <a class="link-fx fs-5 text-primary" href="javascript:void(0)">{{ $data["totalInscripcionesLegalizadasPorConvenio"] }}</a>
                 </div>             
-                <div class="col-6 col-md-4">
+                <div class="col-6 col-md-6">
                   <div class="fw-semibold text-dark mb-1"># form. sin descuento</div>
                   <a class="link-fx fs-5 text-primary" href="javascript:void(0)">{{ $data["totalInscripcionesLegalizadasRegulares"] }}</a>
                 </div>                                
@@ -82,30 +82,206 @@
               </div>
             </div>            
 
-          </div>  
+          </div>
+
+
+          <div class="block-content block-content-full">
+
+            <div class="row text-center">
+              
+                <div class="col-6">    
+                  <a href="{{ route('calendario.descargar-participantes', $calendarioId) }}" type="button" class="btn btn-lg rounded-pill btn-alt-success px-4 me-1 mb-3">
+                    <i class="fa fa-download me-1"></i> Descargar los participantes del periodo
+                  </a>
+                </div>
+
+                <div class="col-6">    
+                  <a href="{{ route('calendario.descargar-cuadro-110', $calendarioId) }}" type="button" class="btn btn-lg rounded-pill btn-alt-info px-4 me-1 mb-3">
+                    <i class="fa fa-download me-1"></i> Número de cursos y participantes por jornada
+                  </a>
+                </div>
+
+            </div>
+
+          </div>
           
-        
-          <div class="col-xl-12">
-            @php
-            $participantesHombres = 0;
-            $participantesMujeres = 0;
-            $participantesOtrosGeneros = 0;
+
+          <div class="block block-rounded">
+           
+            <div class="block-content bg-body-light text-center">
+
+              <div class="row items-push">
+
+              <!-- Total Matriculados -->
+              <div class="col-sm-6 col-xxl-4">
+
+                  <div class="block block-rounded d-flex flex-column h-100 mb-0">
+                    <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
+                      <dl class="mb-0">
+                        <dt class="fs-3 fw-bold">{{ $data['totalMatriculados'] }}</dt>
+                        <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Formularios matriculados</dd>
+                      </dl>
+                      <div class="item item-rounded-lg bg-body-light">
+                        <i class="far fa-paper-plane fs-3 text-primary"></i>
+                      </div>
+                    </div>
+                    <!-- <div class="bg-body-light rounded-bottom">
+                      <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Anulado') }}">
+                        <span>Ver matriculados</span>
+                        <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
+                      </a>
+                    </div> -->
+                  </div>
+
+                </div>
+              <!-- Fin Total Matriculado -->
+
+                <!-- Tarjeta Total Anulados -->
+                <div class="col-sm-6 col-xxl-4">
+
+                  <div class="block block-rounded d-flex flex-column h-100 mb-0">
+                    <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
+                      <dl class="mb-0">
+                        <dt class="fs-3 fw-bold">{{ $data['totalAnulados'] }}</dt>
+                        <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Anulados</dd>
+                      </dl>
+                      <div class="item item-rounded-lg bg-body-light">
+                        <i class="far fa-paper-plane fs-3 text-primary"></i>
+                      </div>
+                    </div>
+                    <!-- <div class="bg-body-light rounded-bottom">
+                      <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Anulado') }}">
+                        <span>Ver anulados</span>
+                        <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
+                      </a>
+                    </div> -->
+                  </div>
+
+                </div>
+                <!-- Fin Tarjeta Total Anulados -->
+
+                <!-- Tarjeta pendiente de pago -->
+                <div class="col-sm-6 col-xxl-4">
+                  
+                  <div class="block block-rounded d-flex flex-column h-100 mb-0">
+                    <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
+                      <dl class="mb-0">
+                        <dt class="fs-3 fw-bold">{{ $data['totalPendintesDePago'] }}</dt>
+                        <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Pendientes por legalizar</dd>
+                      </dl>
+                      <div class="item item-rounded-lg bg-body-light">
+                        <i class="fa fa-chart-bar fs-3 text-primary"></i>
+                      </div>
+                    </div>
+                    <!-- <div class="bg-body-light rounded-bottom">
+                      <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Pendiente de pago') }}">
+                        <span>Ver pendientes</span>
+                        <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
+                      </a>
+                    </div> -->
+                  </div>
+                  
+                </div>    
+                <!-- Fin Tarjeta pendiente de pago -->
+
+            <!-- Tarjeta Devolución -->
+            <div class="col-sm-6 col-xxl-4">
+                <div class="block block-rounded d-flex flex-column h-100 mb-0">
+                  <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
+                    <dl class="mb-0">
+                      <dt class="fs-3 fw-bold">{{ $data['totalDevolucion'] }}</dt>
+                      <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Devolución</dd>
+                    </dl>
+                    <div class="item item-rounded-lg bg-body-light">
+                    <i class="fas fa-history fs-3 text-primary"></i>
+                    </div>
+                  </div>
+                  <!-- <div class="bg-body-light rounded-bottom">
+                    <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Devuelto') }}">
+                      <span>Ver devueltos</span>
+                      <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
+                    </a>
+                  </div> -->
+                </div>
+            </div>                           
+            <!-- Fin tarjeta Devolución -->            
+
+            <!-- Tarjeta de cancelados -->
+            <div class="col-sm-6 col-xxl-4">
+
+              <div class="block block-rounded d-flex flex-column h-100 mb-0">
+                <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
+                  <dl class="mb-0">
+                    <dt class="fs-3 fw-bold">{{ $data['totalCancelados'] }}</dt>
+                    <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Cancelados</dd>
+                  </dl>
+                  <div class="item item-rounded-lg bg-body-light">
+                    <i class="far fa-calendar-xmark fs-3 text-primary"></i>
+                  </div>
+                </div>
+                <!-- <div class="bg-body-light rounded-bottom">
+                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('grupos.estado-cursos', ['tipo' => 'cancelados']) }}">
+                    <span>Ver cancelados</span>
+                    <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
+                  </a>
+                </div> -->
+              </div>
+              
+            </div>             
+             <!-- Fin tarjeta de cancelados -->              
             
-            if ($data["totalInscripcionesLegalizadas"] == 0) {
-              $data["totalInscripcionesLegalizadas"] = 1;
-            }
+            
+            <!-- Tarjeta Aplazados -->
+              <div class="col-sm-6 col-xxl-4">
+                <div class="block block-rounded d-flex flex-column h-100 mb-0">
+                  <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
+                    <dl class="mb-0">
+                      <dt class="fs-3 fw-bold">{{ $data['totalAplazados'] }}</dt>
+                      <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Aplazados</dd>
+                    </dl>
+                    <div class="item item-rounded-lg bg-body-light">
+                    <i class="fas fa-history fs-3 text-primary"></i>
+                    </div>
+                  </div>
+                  <!-- <div class="bg-body-light rounded-bottom">
+                    <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Aplazado') }}">
+                      <span>Ver aplazados</span>
+                      <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
+                    </a>
+                  </div> -->
+                </div>
+              </div>                           
+              <!-- Fin tarjeta Aplazados -->
+              </div>
+            </div>
+        </div>  
+        
+        <div class="col-xl-12">
+          @php
 
-            $participantesHombres = round(($data['participantesHombres'] / $data["totalInscripcionesLegalizadas"]) * 100);
-            $participantesMujeres = round(($data['participantesMujeres'] / $data["totalInscripcionesLegalizadas"]) * 100);;          
-            $participantesOtrosGeneros = round(($data['participantesOtrosGeneros'] / $data["totalInscripcionesLegalizadas"]) * 100);;
+              $participantesHombres = 0;
+              $participantesMujeres = 0;
+              $participantesOtrosGeneros = 0;
+              
+              if ($data["totalInscripcionesLegalizadas"] == 0) 
+              {
+                $data["totalInscripcionesLegalizadas"] = 1;
+              }
 
-            @endphp
-              <div class="block block-rounded text-center">
+              $participantesHombres = round(($data['participantesHombres'] / $data["totalInscripcionesLegalizadas"]) * 100);
+              $participantesMujeres = round(($data['participantesMujeres'] / $data["totalInscripcionesLegalizadas"]) * 100);;          
+              $participantesOtrosGeneros = round(($data['participantesOtrosGeneros'] / $data["totalInscripcionesLegalizadas"]) * 100);
+
+              @endphp
+
+
+              <!-- Estadísticas Sexo -->
+              <!-- <div class="block block-rounded text-center">
 
                 <div class="block-content block-content-full">
                   <div class="row">
                     <div class="col-4">
-                      <!-- Pie Chart Container -->
+                      
                       <div class="js-pie-chart pie-chart fw-bold" 
                            data-percent="{{ $participantesHombres }}" 
                            data-line-width="3" 
@@ -119,7 +295,7 @@
                       </p>
                     </div>
                     <div class="col-4">
-                      <!-- Pie Chart Container -->
+                      
                       <div class="js-pie-chart pie-chart fw-bold" 
                            data-percent="{{ $participantesMujeres }}" 
                            data-line-width="3" 
@@ -133,7 +309,7 @@
                       </p>
                     </div>
                     <div class="col-4">
-                      <!-- Pie Chart Container -->
+                      
                       <div class="js-pie-chart pie-chart fw-bold" 
                             data-percent="{{ $participantesOtrosGeneros }}" 
                             data-line-width="3" 
@@ -148,29 +324,12 @@
                     </div>
                   </div>
                 </div>
-              </div>                 
-          </div>
+              </div>   -->
+              <!-- Fin Estadística Sexo -->
+        </div> 
 
 
           <div class="block block-rounded text-center">
-
-          <div class="block-content block-content-full">
-            <div class="row">
-              
-              <div class="col-6">    
-                <a href="{{ route('calendario.descargar-participantes', $calendarioId) }}" type="button" class="btn btn-lg rounded-pill btn-alt-success px-4 me-1 mb-3">
-                  <i class="fa fa-download me-1"></i> Descargar los participantes del periodo
-                </a>
-              </div>
-
-              <div class="col-6">    
-                <a href="{{ route('calendario.descargar-cuadro-110', $calendarioId) }}" type="button" class="btn btn-lg rounded-pill btn-alt-info px-4 me-1 mb-3">
-                  <i class="fa fa-download me-1"></i> Número de cursos y participantes por jornada
-                </a>
-              </div>
-
-            </div>
-          </div>
 
           <div class="block block-rounded">
             <div class="block-header block-header-default">
