@@ -5,6 +5,7 @@ namespace Src\domain;
 use DateTime;
 use Src\dao\mysql\CalendarioDao;
 use Src\dao\mysql\ConvenioDao;
+use Src\dao\mysql\FormularioInscripcionDao;
 use Src\dao\mysql\ReporteNumeroCursoYParticipantePorJornadaDao;
 use Src\infraestructure\rptNumCursosYParticipanteXJornada\PlantillaCursosPorJornada;
 use Src\infraestructure\util\FormatoFecha;
@@ -200,5 +201,9 @@ class Calendario {
     public function listarConvenios(): array
     {
         return (new CalendarioDao())->listarConveniosPorCalendario($this->id);
+    }
+
+    public static function cambiarFormulariosPendientesDePagoAAnulado(): bool {
+        return FormularioInscripcionDao::cambiarPendientesDePagoAAnulado();
     }
 }

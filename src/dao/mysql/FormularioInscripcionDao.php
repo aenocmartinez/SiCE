@@ -665,6 +665,17 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         return true;
     }
 
+    public static function cambiarPendientesDePagoAAnulado(): bool
+    {
+        try {
+            self::where('estado', 'Pendiente de pago')->update(['estado' => 'Anulado']);
+            return true;
+        } catch (\Exception $e) {
+
+            return false;
+        }
+    }
+
     public static function contadorInscripcionesSegunMedio(string $medio = 'en oficina'): int {
         $calendario = Calendario::Vigente();
         if (!$calendario->existe()) {

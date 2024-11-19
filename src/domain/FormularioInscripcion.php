@@ -578,10 +578,7 @@ class FormularioInscripcion {
     public static function totalInscripcionesLegalizadas($calendarioId=0): int {
 
         return FormularioInscripcionDao::join('grupos as g', 'g.id', '=', 'formulario_inscripcion.grupo_id')
-                ->where(function($query) {
-                    $query->where('formulario_inscripcion.estado', 'Pagado')
-                        ->orWhere('formulario_inscripcion.estado', 'Pendiente de pago');
-                })
+                ->where('formulario_inscripcion.estado', 'Pagado')
                 ->where('g.calendario_id', $calendarioId)
                 ->count();
     }   

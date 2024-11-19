@@ -53,7 +53,7 @@ class PlantillaCursosPorJornada
             }
                         
             if ($curso_actual != $dato->getCurso()) 
-            {          
+            {   
                 $tr_tBody .= self::agregarTagRegistro($registro, $consolidadoPorJornadaYSexo);         
                 $registro->setCursoActual($dato->getCurso());
                 
@@ -70,6 +70,19 @@ class PlantillaCursosPorJornada
 
             if ($area_actual != $dato->getArea() || $es_la_ultima_area) 
             {
+
+                if ($es_la_ultima_area)
+                {
+                    $registro->setCursoActual($dato->getCurso());
+                    $registro->setCursoActualTotalGrupos($dato->getTotalGrupos());
+                    $registro->setCursoActualTotalGeneroFemenino($dato->getTotalFemeninos());
+                    $registro->setCursoActualTotalGeneroMasculino($dato->getTotalMasculinos());
+                    $registro->setCursoActualTotalGeneroOtro($dato->getTotalOtro());
+                    $registro->setCursoActualTotalParticipantes($dato->getTotalParticipantes());  
+
+                    $tr_tBody .= self::agregarTagRegistro($registro, $consolidadoPorJornadaYSexo);                                            
+                }
+
                 $tr_tBody = $tr_tBody_Area . $tr_tBody . self::agregarAcumuladoPorArea($area_actual);
                 $html_array[] = $tr_tBody;
                 $area_actual = $dato->getArea();

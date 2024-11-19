@@ -4,6 +4,7 @@ namespace Src\usecase\calendarios;
 
 use Src\domain\Calendario;
 use Src\domain\Convenio;
+use Src\domain\FormularioInscripcion;
 use Src\usecase\convenios\FacturarConvenioUseCase;
 
 class CerrarCalendarioUseCase
@@ -11,7 +12,6 @@ class CerrarCalendarioUseCase
 
     public function Ejecutar(Calendario $periodo)
     {
-        //$fechaDeCierre = date('Y-m-d H:m:s', strtotime('-1 day'));
         $fechaDeCierre = date('Y-m-d H:m:s');
 
         foreach($periodo->listarConvenios() as $convenio) 
@@ -28,6 +28,8 @@ class CerrarCalendarioUseCase
         $periodo->setFechaFinal($fechaDeCierre);
         $periodo->setEstaFormularioInscripcionAbierto(false);
         $periodo->actualizar();
+
+        $periodo->cambiarFormulariosPendientesDePagoAAnulado();
         
     }
 }
