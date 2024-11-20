@@ -146,7 +146,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/grupos/calendario/{calendarioId}/cursos/{cursoCalendarioIdActual}',[GrupoController::class, 'listarCursosPorCalendario'])->name('grupos.cursos_calendario');
     Route::get('/grupos/lista-orientadores/{cursoCalendarioId}/{orientadorIdActual}',[GrupoController::class, 'listarOrientadoresPorCursoCalendario'])->name('grupos.orientadores_por_curso_calendario');
     Route::get('/grupos/{page?}',[GrupoController::class, 'index'])->name('grupos.index');
-    Route::get('/grupos/{page}/q/{criteria}', [GrupoController::class, 'buscadorGruposPaginados'])->name('grupos.buscador-paginador');
+    Route::get('grupos/{criterio}/q/{page?}', [GrupoController::class, 'buscadorGruposPaginados'])->name('grupos.buscador-paginador');
     Route::get('/grupos/{id}/mas-informacion', [GrupoController::class, 'masInformacion'])->name('grupos.mas-info');
     Route::get('/grupos/{id}/descargar-listado-participantes', [GrupoController::class, 'descargarListadoParticipantes'])->name('grupos.descargar-listado-participantes');
     Route::get('/grupos/{id}/descargar-planilla-asistencia', [GrupoController::class, 'descargarPlanillaAsistencia'])->name('grupos.descargar-planilla-asistencia');

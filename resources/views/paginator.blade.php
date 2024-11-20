@@ -18,39 +18,49 @@
         <div class="pagination pagination-sm justify-content-center">
 
           @if (!$paginate->IsFirst())   
-              <a class="page-link" href="{{ route($route, $dataPrevious) }}" aria-label="Previous">
-                <span aria-hidden="true">
+            <a class="page-link" 
+              href="{{ route($route, array_merge($dataPrevious, ['page' => $paginate->Previous(), 'criterio' => $criterio] + (isset($periodo) ? ['periodo' => $periodo->getId()] : []))) }}" 
+              aria-label="Previous">
+              <span aria-hidden="true">
                   <i class="fa fa-angle-left mb-2 mt-1 p-1 text-muted"></i>
-                </span>
-              </a>  
+              </span>
+            </a>
           @endif
 
           <span class="text-muted fs-sm mb-2 mt-1 p-1">Página</span>
           <div class="btn-toolbar mb-1" role="toolbar" aria-label="Paginador">
-            <select class="form-select fs-sm text-muted" id="page" name="page" onchange="paginate()">
-              @for($i=1; $i <= $paginate->NumberOfPages(); $i++)
-                @php                
-                  $data = [$i];
-                  if (is_array($criterio)) {                    
-                    $data = array_merge($data, $criterio);
-                  } else if (strlen($criterio)>0) {                    
-                    $data[] = $criterio;
-                  }                  
-                @endphp
+         
+          <select class="form-select fs-sm text-muted" id="page" name="page" onchange="paginate()">
+              @for($i = 1; $i <= $paginate->NumberOfPages(); $i++)
+                  @php
+                      $data = ['page' => $i];
 
-                <option value="{{ route($route, $data) }}" {{ ($i == $paginate->Page() ? 'selected' : '') }}>{{ $i }}</option>
+                      if (!empty($criterio)) {
+                          $data['criterio'] = $criterio;
+                      }
 
+                      if (!empty($periodo)) {
+                          $data['periodo'] = $periodo->getId();
+                      }
+                  @endphp
+
+                  <option value="{{ route($route, $data) }}" {{ $i == $paginate->Page() ? 'selected' : '' }}>
+                      {{ $i }}
+                  </option>
               @endfor
-            </select>          
+          </select>
+   
           </div>
           <span class="text-muted fs-sm mb-2 mt-1 p-1">de {{ $paginate->NumberOfPages() }} página(s)</span>
-
+               
           @if (!$paginate->IsLast())  
-              <a class="page-link" href="{{ route($route, $dataNext) }}" aria-label="Next">
-                <span aria-hidden="true">
+            <a class="page-link" 
+              href="{{ route($route, array_merge($dataNext, ['page' => $paginate->Next(), 'criterio' => $criterio] + (isset($periodo) ? ['periodo' => $periodo->getId()] : []))) }}" 
+              aria-label="Next">
+              <span aria-hidden="true">
                   <i class="fa fa-angle-right mb-2 mt-1 p-1 text-muted"></i>
-                </span>
-              </a>            
+              </span>
+            </a>
           @endif
           <!-- <div class="pagination pagination-sm justify-content-end text-muted fs-sm mb-2 mt-1 p-1"> {{ $paginate->TotalRecords() }} registros</div>         -->
         </div> 

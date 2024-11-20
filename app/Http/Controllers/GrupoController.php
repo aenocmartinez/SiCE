@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GuardarGrupo;
+use Src\domain\Calendario;
 use Src\domain\Grupo;
 use Src\infraestructure\pdf\DataPDF;
 use Src\infraestructure\pdf\SicePDF;
 use Src\infraestructure\util\ListaDeValor;
 use Src\infraestructure\util\Validador;
 use Src\usecase\areas\ListarOrientadoresPorCursoCalendarioUseCase;
+use Src\usecase\calendarios\BuscarCalendarioPorIdUseCase;
 use Src\usecase\calendarios\ListarCalendariosUseCase;
 use Src\usecase\cursos\ListarCursosUseCase;
 use Src\usecase\dashboard\ListadoDeGruposConYSinCuposDisponiblesUseCase;
@@ -27,9 +29,19 @@ use Src\view\dto\GrupoDto;
 
 class GrupoController extends Controller
 {
-    public function index($page=1)
+    public function index($pagina=1)
     {
-        return view('grupos.index', ['paginate' => (new ListarGruposUseCase)->ejecutar($page)]);
+        $periodo = Calendario::Vigente();
+        if (!is_null(request('periodo'))) {
+            $periodo = (new BuscarCalendarioPorIdUseCase)->ejecutar(request('periodo'));
+        }
+        $listaGruposPaginados = (new ListarGruposUseCase)->ejecutar($pagina, $periodo);
+
+        return view('grupos.index', [
+                    'paginate' => $listaGruposPaginados,
+                    'periodoActual' => $periodo,
+                    'periodos' => (new ListarCalendariosUseCase)->ejecutar(), 
+            ]);
     }
 
     public function create()
@@ -145,24 +157,40 @@ class GrupoController extends Controller
         $criterio = '';
         if (!is_null(request('criterio'))) {
             $criterio = request('criterio');
-        }        
-
-        return view("grupos.index", [
-            "paginate" => (new BuscadorGruposUseCase)->ejecutar($criterio),
-            "criterio" => $criterio,
-        ]);         
-    }
-
-    public function buscadorGruposPaginados($page=1, $criterio) {        
-        if (strlen($criterio) == 0) {
-            return redirect()->route('grupos.index');
+        }      
+        
+        $periodo = Calendario::Vigente();
+        if( !is_null(request('periodo')))
+        {
+            $periodo = (new BuscarCalendarioPorIdUseCase)->ejecutar(request('periodo'));
         }
 
         return view("grupos.index", [
-            "paginate" => (new BuscadorGruposUseCase)->ejecutar($criterio, $page),
+            "paginate" => (new BuscadorGruposUseCase)->ejecutar($criterio, $periodo),
             "criterio" => $criterio,
+            'periodoActual' => $periodo,
+            'periodos' => (new ListarCalendariosUseCase)->ejecutar(),             
         ]);         
     }
+
+    public function buscadorGruposPaginados($criterio, $page = 1) {   
+        if (strlen($criterio) == 0) {
+            return redirect()->route('grupos.index');
+        }
+    
+        $periodo = Calendario::Vigente();
+        if (!is_null(request('periodo'))) {
+            $periodo = (new BuscarCalendarioPorIdUseCase)->ejecutar(request('periodo'));
+        }
+    
+        return view("grupos.index", [
+            "paginate" => (new BuscadorGruposUseCase)->ejecutar($criterio, $periodo, $page),
+            "criterio" => $criterio,
+            'periodoActual' => $periodo,
+            'periodos' => (new ListarCalendariosUseCase)->ejecutar(),
+        ]);         
+    }
+    
 
     public function masInformacion($id) {
         $grupo = (new BuscarGrupoPorIdUseCase)->ejecutar($id);

@@ -39,7 +39,7 @@ class GrupoDao extends Model implements GrupoRepository {
         return $this->hasMany(FormularioInscripcionDao::class, 'grupo_id');
     }
 
-    public static function listarGrupos($page=1): Paginate {
+    public static function listarGrupos($page=1, Calendario $calendario): Paginate {
         
         $paginate = new Paginate($page, env('APP_PAGINADOR_NUM_ITEMS_GRUPOS'));
 
@@ -61,6 +61,7 @@ class GrupoDao extends Model implements GrupoRepository {
                         ->join('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
                         ->join('cursos as c', 'c.id', '=', 'cc.curso_id')
                         ->join('salones as s', 's.id', '=', 'g.salon_id')
+                        ->where('cc.calendario_id', $calendario->getId())
                         ->orderByDesc('g.id');
                 
             $totalRecords = $query->count();
@@ -77,16 +78,16 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setCancelado($g->cancelado);
                 $grupo->setHabilitadoParaPreInscripcion($g->habilitado_para_preinscripcion);
                 
-                $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
-                if (!$caledario->esVigente()) {
-                    continue;
-                }
+                // $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
+                // if (!$caledario->esVigente()) {
+                //     continue;
+                // }
                 
                 $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);
                 $curso = $cursoDao->buscarCursoPorId($g->curso_id);
                 $salon = $salonDao->buscarSalonPorId($g->salon_id);
 
-                $cursoCalendario = new CursoCalendario($caledario, $curso);
+                $cursoCalendario = new CursoCalendario($calendario, $curso);
                 $cursoCalendario->setId($g->curso_calendario_id);
                 $cursoCalendario->setModalidad($g->modalidad);
 
@@ -343,7 +344,7 @@ class GrupoDao extends Model implements GrupoRepository {
         return $grupos;
     }
 
-    public static function buscadorGrupos(string $criterio, $page=1): Paginate {
+    public static function buscadorGrupos(string $criterio, Calendario $calendario, $page=1): Paginate {
         
         $paginate = new Paginate($page, env('APP_PAGINADOR_NUM_ITEMS_GRUPOS'));
 
@@ -366,6 +367,7 @@ class GrupoDao extends Model implements GrupoRepository {
                     ->leftJoin('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
                     ->leftJoin('cursos as c', 'c.id', '=', 'cc.curso_id')
                     ->leftJoin('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
+                    ->where('ca.id', $calendario->getId())
                     ->where(function ($query) use ($criterio) {
                         $campos = ['o.nombre', 's.nombre', 'ca.nombre', 'cc.modalidad', 'g.cupos', 'g.dia', 'g.jornada', 'c.nombre', 'g.nombre'];
                 

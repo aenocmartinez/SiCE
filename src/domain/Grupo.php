@@ -176,8 +176,8 @@ class Grupo {
         return $this->id > 0;
     }
 
-    public static function listar($page=1): Paginate {
-        return GrupoDao::listarGrupos($page);
+    public static function listar($page=1, Calendario $periodo): Paginate {
+        return GrupoDao::listarGrupos($page, $periodo);
     }
 
     public static function buscarPorId(int $id, $repository): Grupo {

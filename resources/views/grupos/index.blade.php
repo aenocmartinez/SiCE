@@ -18,7 +18,7 @@
 
     <div class="row">
         
-        <div class="col-lg-8 col-sm-12">
+        <!-- <div class="col-lg-8 col-sm-12">
             <form method="post" action="{{ route('grupos.buscador') }}">
                 @csrf
                 <div class="pt-0">
@@ -34,18 +34,51 @@
                     </div>
                 </div>
             </form>
-        </div>  
+        </div>   -->
 
-        <div class="col-lg-4 col-sm-12 col-xs-12 text-end">
-            <a href="{{ route('grupos.create') }}" class="btn btn-lg btn-info">
-                <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear grupo
-            </a>
-        </div>        
+        <div class="row">
+            <div class="col-lg-8 col-sm-12">
+                <form method="post" action="{{ route('grupos.buscador') }}">
+                    @csrf
+                    <div class="d-flex align-items-center">
+                        <!-- Combobox para seleccionar el período -->
+                        <div class="me-2">
+                            <select name="periodo" id="periodo" class="form-select" style="height: calc(2.25rem + 2px);">
+                                <option value="">Seleccione un período</option>
+                                @foreach($periodos as $periodo)
+                                    <option value="{{ $periodo->getId() }}" {{ $periodoActual->getId() == $periodo->getId() ? 'selected' : '' }}>
+                                        {{ $periodo->getNombre() }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
 
-    </div>
+                        <!-- Input del buscador -->
+                        <div class="input-group flex-grow-1">
+                            <input type="text" class="form-control" 
+                                id="criterio" 
+                                name="criterio" 
+                                value="{{ $criterio }}"
+                                placeholder="Buscar en el tablero">
+                            <button class="btn btn-alt-primary" type="submit">
+                                <i class="fa fa-search me-1 opacity-50"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Botón para crear grupo -->
+            <div class="col-lg-4 col-sm-12 text-end">
+                <a href="{{ route('grupos.create') }}" class="btn btn-lg btn-info">
+                    <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear grupo
+                </a>
+            </div>
+        </div>
+
 </div>        
 
-<div class="row">
+<div class="row mt-3">
     <div class="block block-rounded">
         <div class="block-content">
 
@@ -123,7 +156,7 @@
                 </tr>
                 @endforelse 
             </table>     
-            @include('paginator', ['route'=>$route, 'criterio' => $criterio, 'page' => $page])
+            @include('paginator', ['route'=>$route, 'criterio' => $criterio, 'page' => $page, 'periodo' => $periodoActual])
 
         </div>
     </div>
