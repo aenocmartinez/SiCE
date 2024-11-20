@@ -66,6 +66,23 @@
                         </div>
                     </div>
                     <div class="list-group push">
+
+                        <!-- Filtro de Periodo -->
+
+                        <div class="form-group">
+                            <label for="f_periodo" class="mt-4 fs-sm">Periodo</label>
+                            <select name="f_periodo" id="f_periodo" class="form-control fs-sm" onchange="redirectToMoreInfo(this)">
+                                <option value="">Seleccionar Periodo</option>
+                                @foreach ($periodos as $periodo)                                
+                                    <option value="{{ $periodo->getId() }}" {{ $periodoFiltro->getId() == $periodo->getId() ? 'selected': ''}}>
+                                        {{ $periodo->getNombre() }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Fin Filtro de Periodo -->
+
                         <div class="form-group">
                             <label for="f_area" class="mt-4 fs-sm">Área</label>
                             <select name="f_area" id="f_area" class="form-control fs-sm">
@@ -192,7 +209,7 @@
                                     </a>
                                     @endif
 
-                                    @if (!$grupo->estaCancelado() && $grupo->tieneCuposDisponibles())                                         
+                                    @if (!$grupo->estaCancelado() && $grupo->tieneCuposDisponibles() && $periodoFiltro->esVigente())                                         
                                         <form method="POST" action="{{ route('orientador.cancelar-grupo', [$orientador->getId(), $grupo->getId()]) }}" id="form-cancelar-{{$grupo->getId()}}">
                                             @csrf @method('patch')
                                             <button class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-warning-light text-warning"
@@ -323,6 +340,21 @@ function confirmCancelar(button) {
         }
     });
 }
+
+function redirectToMoreInfo(selectElement) {
+    const periodoId = selectElement.value;
+
+    if (periodoId) {
+        const orientadorId = "{{ $orientador->getId() }}"; 
+        const url = `{{ route('orientadores.moreInfo', ['id' => '__ID__']) }}?periodo=__PERIODO__`
+            .replace('__ID__', orientadorId)
+            .replace('__PERIODO__', periodoId);
+
+        window.location.href = url;
+    }
+}
+
+
 </script>
 
 @endsection

@@ -8,7 +8,7 @@ use Src\infraestructure\util\Paginate;
 
 interface OrientadorRepository {
     public function listarOrientadores(): array;
-    public function buscarOrientadorPorId($id): Orientador;
+    public function buscarOrientadorPorId($orientadorId): Orientador;
     public static function buscadorOrientador(string $criterio, $page=1): Paginate;
     public function buscarOrientadorPorDocumento(string $tipo, string $documento): Orientador;
     public function crearOrientador(Orientador &$orientador): bool;

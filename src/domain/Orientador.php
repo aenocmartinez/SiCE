@@ -2,6 +2,8 @@
 
 namespace Src\domain;
 
+use Src\dao\mysql\CalendarioDao;
+use Src\dao\mysql\CursoDao;
 use Src\dao\mysql\OrientadorDao;
 use Src\infraestructure\util\FormatoFecha;
 use Src\infraestructure\util\Paginate;
@@ -160,8 +162,8 @@ class Orientador {
         $this->areas = $areas;
     }
 
-    public function setGrupos(array $grupos): void {
-        $this->grupos = $grupos;
+    public function setGruposPorCalendario($calendarioId=0): void {
+        $this->grupos = (new OrientadorDao())->grupos($this->id, $calendarioId);
     }
 
     public function setRangoSalarial($rangoSalarial): void {
@@ -187,7 +189,7 @@ class Orientador {
         return $this->areas;
     }
 
-    public function misGrupos(): array {        
+    public function misGrupos(): array {
         return $this->grupos;
     }
 

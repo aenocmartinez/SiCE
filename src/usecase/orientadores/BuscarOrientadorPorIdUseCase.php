@@ -11,6 +11,8 @@ class BuscarOrientadorPorIdUseCase {
 
         $orientadorRepository = new OrientadorDao();
 
-        return Orientador::buscarPorId($id, $orientadorRepository);
+        $orientador = Orientador::buscarPorId($id, $orientadorRepository);
+
+        return $orientador;
     }
 }

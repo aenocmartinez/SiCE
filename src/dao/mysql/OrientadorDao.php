@@ -35,46 +35,65 @@ class OrientadorDao extends Model implements OrientadorRepository {
         return $this->belongsToMany(AreaDao::class, 'orientador_areas', 'orientador_id', 'area_id');
     }
 
-    public function grupos($idOrientador) {        
+    public function grupos($idOrientador, $calendarioId) {        
+        $grupos = [];
+        $registros = DB::table('grupos as g')
+                    ->select(
+                        'g.id', 'g.curso_calendario_id', 'g.salon_id', 'g.dia', 'g.jornada', 'cc.curso_id', 'cc.calendario_id', 
+                        'cc.modalidad', 'g.cupos', 'g.nombre', 'g.cancelado',
+                        DB::raw('(
+                            SELECT COUNT(*)
+                            FROM formulario_inscripcion fi
+                            WHERE fi.grupo_id = g.id
+                            AND (
+                                fi.estado = "Pagado"
+                                OR (
+                                fi.estado = "Pendiente de Pago"
+                                AND fi.convenio_id IS NOT NULL
+                                AND EXISTS (
+                                    SELECT 1
+                                    FROM convenios c
+                                    WHERE c.id = fi.convenio_id
+                                    AND c.es_cooperativa = true
+                                )
+                                )
+                            )
+                        ) as total_inscripciones_validas')
+                    )
+                    ->join('orientadores as o', 'g.orientador_id', '=', 'o.id')
+                    ->join('curso_calendario as cc', function($join) use ($calendarioId) {
+                        $join->on('cc.id', '=', 'g.curso_calendario_id')
+                            ->where('cc.calendario_id', $calendarioId);
+                    })
+                    ->where('o.id', $idOrientador)
+                    ->orderBy('g.curso_calendario_id', 'desc')
+                    ->get();
 
-        $calendario = Calendario::Vigente();
-        if (!$calendario->existe()) {
-            return [];
+        $calendarioDao = new CalendarioDao();
+        $cursoDao = new CursoDao();
+        $salonDao = new SalonDao();
+
+        foreach($registros as $g) {
+
+            $grupo = new Grupo();                
+            $grupo->setNombre($g->nombre);
+            $grupo->setid($g->id);
+            $grupo->setDia($g->dia);
+            $grupo->setJornada($g->jornada);
+            $grupo->setCupo($g->cupos);
+            $grupo->setTotalInscritos($g->total_inscripciones_validas);
+            $grupo->setCancelado($g->cancelado);            
+            $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);                    
+            $curso = $cursoDao->buscarCursoPorId($g->curso_id);
+            $salon = $salonDao->buscarSalonPorId($g->salon_id);            
+            $cursoCalendario = new CursoCalendario($caledario, $curso);
+            $cursoCalendario->setId($g->curso_calendario_id);
+            $cursoCalendario->setModalidad($g->modalidad);            
+            $grupo->setCursoCalendario($cursoCalendario);
+            $grupo->setSalon($salon);            
+            array_push($grupos, $grupo);            
         }
-
-        $calendarioId = $calendario->getId();
-        
-        return DB::table('grupos as g')
-                ->select(
-                    'g.id', 'g.curso_calendario_id', 'g.salon_id', 'g.dia', 'g.jornada', 'cc.curso_id', 'cc.calendario_id', 
-                    'cc.modalidad', 'g.cupos', 'g.nombre', 'g.cancelado',
-                    DB::raw('(
-                        SELECT COUNT(*)
-                        FROM formulario_inscripcion fi
-                        WHERE fi.grupo_id = g.id
-                        AND (
-                            fi.estado = "Pagado"
-                            OR (
-                            fi.estado = "Pendiente de Pago"
-                            AND fi.convenio_id IS NOT NULL
-                            AND EXISTS (
-                                SELECT 1
-                                FROM convenios c
-                                WHERE c.id = fi.convenio_id
-                                AND c.es_cooperativa = true
-                            )
-                            )
-                        )
-                    ) as total_inscripciones_validas')
-                )
-                ->join('orientadores as o', 'g.orientador_id', '=', 'o.id')
-                ->join('curso_calendario as cc', function($join) use ($calendarioId) {
-                    $join->on('cc.id', '=', 'g.curso_calendario_id')
-                        ->where('cc.calendario_id', $calendarioId);
-                })
-                ->where('o.id', $idOrientador)
-                ->orderBy('g.curso_calendario_id', 'desc')
-                ->get();
+        return $grupos;
     }
 
     public function listarOrientadores(): array {
@@ -112,14 +131,14 @@ class OrientadorDao extends Model implements OrientadorRepository {
         return $orientadores;
     }
 
-    public function buscarOrientadorPorId($id): Orientador {        
+    public function buscarOrientadorPorId($participanteId): Orientador {        
         $orientador = new Orientador();        
         $cursoDao = new CursoDao();
         $calendarioDao = new CalendarioDao();
         $salonDao = new SalonDao();
                 
         try {
-            $rs = OrientadorDao::find($id);            
+            $rs = OrientadorDao::find($participanteId);            
             if ($rs) {            
                 $orientador->setId($rs['id']);
                 $orientador->setNombre($rs['nombre']);
@@ -135,44 +154,44 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 $orientador->setNivelEducativo($rs['nivel_estudio']);
                 $orientador->setRangoSalarial($rs->rango_salarial);
 
-                $areas = array();
+                $areas = [];
                 foreach($rs->areas as $area) 
-                    array_push($areas, new Area($area->id, $area->nombre));
+                {
+                    $areas [] = new Area($area->id, $area->nombre);
+                }
                 
                 $orientador->setAreas($areas);
 
-                $grupos = array();
-                foreach($this->grupos($rs['id']) as $g) {
+                // $grupos = array();
+                // foreach($this->grupos($orientador->getId(), $calendario) as $g) {
                     
-                    $grupo = new Grupo();                
-                    $grupo->setNombre($g->nombre);
-                    $grupo->setid($g->id);
-                    $grupo->setDia($g->dia);
-                    $grupo->setJornada($g->jornada);
-                    $grupo->setCupo($g->cupos);
-                    $grupo->setTotalInscritos($g->total_inscripciones_validas);
-                    $grupo->setCancelado($g->cancelado);
+                //     $grupo = new Grupo();                
+                //     $grupo->setNombre($g->nombre);
+                //     $grupo->setid($g->id);
+                //     $grupo->setDia($g->dia);
+                //     $grupo->setJornada($g->jornada);
+                //     $grupo->setCupo($g->cupos);
+                //     $grupo->setTotalInscritos($g->total_inscripciones_validas);
+                //     $grupo->setCancelado($g->cancelado);
                     
-                    $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);                    
+                //     $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);                    
 
-                    $curso = $cursoDao->buscarCursoPorId($g->curso_id);
+                //     $curso = $cursoDao->buscarCursoPorId($g->curso_id);
                     
-                    $salon = $salonDao->buscarSalonPorId($g->salon_id);
+                //     $salon = $salonDao->buscarSalonPorId($g->salon_id);
                     
+                //     $cursoCalendario = new CursoCalendario($caledario, $curso);
+                //     $cursoCalendario->setId($g->curso_calendario_id);
+                //     $cursoCalendario->setModalidad($g->modalidad);
+                    
+                //     $grupo->setCursoCalendario($cursoCalendario);
+                //     $grupo->setSalon($salon);
+                    
+                //     array_push($grupos, $grupo);
+                    
+                // }
 
-                    $cursoCalendario = new CursoCalendario($caledario, $curso);
-                    $cursoCalendario->setId($g->curso_calendario_id);
-                    $cursoCalendario->setModalidad($g->modalidad);
-                    
-                    $grupo->setCursoCalendario($cursoCalendario);
-                    // $grupo->setOrientador($orientador);
-                    $grupo->setSalon($salon);
-                    
-                    array_push($grupos, $grupo);
-                    
-                }
-
-                $orientador->setGrupos($grupos);                
+                // $orientador->setGrupos($grupos);                
             }            
         } catch (\Exception $e) {
             Sentry::captureException($e);

@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AgregarAreaOrientador;
 use App\Http\Requests\GuardarOrientador;
-
+use Src\domain\Calendario;
 use Src\domain\Orientador;
 use Src\infraestructure\util\ListaDeValor;
 use Src\infraestructure\util\Validador;
 use Src\usecase\areas\ListarAreasUseCase;
+use Src\usecase\calendarios\BuscarCalendarioPorIdUseCase;
+use Src\usecase\calendarios\ListarCalendariosUseCase;
 use Src\usecase\grupos\CancelarGrupoUseCase;
 use Src\usecase\orientadores\ActualizarOrientadorUseCase;
 use Src\usecase\orientadores\BuscadorOrientadorUseCase;
@@ -36,6 +38,8 @@ class OrientadorController extends Controller
     public function edit($id) {
 
         $this->validarParametroId($id);
+
+
 
         $orientador = (new BuscarOrientadorPorIdUseCase())->ejecutar($id);
 
@@ -150,17 +154,29 @@ class OrientadorController extends Controller
         }        
     }
 
-    public function show($id) {        
+    public function show($id) 
+    { 
+        $periodo = Calendario::Vigente();
+        if (!is_null(request('periodo')))  
+        {
+            $periodo = (new BuscarCalendarioPorIdUseCase)->ejecutar(request('periodo'));
+        }
+
         $orientador = (new BuscarOrientadorPorIdUseCase)->ejecutar($id);
         if (!$orientador->existe()) {
             return redirect()->route('cursos.index')->with('code', "404")->with('status', "Orientador no encontrado");
         }
+
+        $orientador->setGruposPorCalendario($periodo->getId());
+
 
         return view('orientadores.moreInfo', [
             'orientador' => $orientador, 
             'dias' => ListaDeValor::diasSemana(),
             'jornadas' => ListaDeValor::jornadas(),
             'areas' => (new ListarAreasUseCase)->ejecutar(),
+            'periodos' => (new ListarCalendariosUseCase)->ejecutar(),
+            'periodoFiltro' => $periodo,
         ]);
     }
 
