@@ -140,13 +140,13 @@
                 <br>
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="bloqueado" name="bloqueado" {{ $checked }}>
-                    <label class="form-check-label" for="bloqueado">Bloqueado</label>
+                    <label class="form-check-label" for="bloqueado">Bloqueado <small class="fs-xs">(Restringe el grupo a inscripciones solo por administradores.)</small></label>
                 </div> 
 
                 <br>
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="cerradoParaInscripcion" name="cerradoParaInscripcion" {{ $checkedCerradoParaInscripcion }}>
-                    <label class="form-check-label" for="cerradoParaInscripcion">Cerrar grupo <small>(no permite recibir inscripciones a este grupo)</small></label>
+                    <label class="form-check-label" for="cerradoParaInscripcion">Cerrar grupo <small class="fs-xs">(No permite recibir inscripciones a este grupo.)</small></label>
                 </div>
                 
                 <br>

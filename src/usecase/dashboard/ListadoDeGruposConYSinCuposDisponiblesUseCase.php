@@ -7,7 +7,11 @@ use Src\domain\Calendario;
 class ListadoDeGruposConYSinCuposDisponiblesUseCase {
 
     public function ejecutar(): array {
-        $grupos = [];
+        $grupos = [
+            'sin_cupos' => [],
+            'con_cupos' => [],
+            'cancelados' => [],
+        ];
         $grupos_sin_cupos = [];
         $grupos_con_cupos = [];
         $grupos_cancelados = [];

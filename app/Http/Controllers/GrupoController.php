@@ -64,11 +64,6 @@ class GrupoController extends Controller
         return redirect()->route('grupos.index')->with('code', $response->code)->with('status', $response->message);
     }
 
-    public function show($id)
-    {
-        //
-    }
-
     public function edit($id)
     {
         $esValido = Validador::parametroId($id);
@@ -145,7 +140,7 @@ class GrupoController extends Controller
             $title = 'cancelados';
         }
         
-        $cursos = (new ListadoDeGruposConYSinCuposDisponiblesUseCase)->ejecutar();        
+        $cursos = (new ListadoDeGruposConYSinCuposDisponiblesUseCase)->ejecutar();             
         return view('grupos.cursos_por_estado', [
             'title' => $title,
             'cursos' => $cursos[$index]

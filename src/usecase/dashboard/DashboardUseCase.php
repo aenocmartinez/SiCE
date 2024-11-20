@@ -15,10 +15,10 @@ class DashboardUseCase {
             'totalRevisionesPago' => 0,
             'totalPendintesDePago' => 0,
             'totalAnulados' => 0,
-            'pagoSinDescuento' => 0,
-            'pagoPorConvenio' => 0,
-            'pagoPendientes' => 0,
-            'pagoTotal' => 0,
+            'pagoSinDescuento' => '$' . number_format(0, 0, ',', '.') . ' COP',
+            'pagoPorConvenio' => '$' . number_format(0, 0, ',', '.') . ' COP',
+            'pagoPendientes' => '$' . number_format(0, 0, ',', '.') . ' COP',
+            'pagoTotal' => '$' . number_format(0, 0, ',', '.') . ' COP',
             'totalCursosSinCupos' => 0,
             'totalCancelados' => 0,
             'totalAplazados' => 0,
@@ -39,7 +39,7 @@ class DashboardUseCase {
         $datosDashboard['totalDevolucion'] = FormularioInscripcion::totalPorEstadoYCalendario('Devuelto', $calendarioVigente->getId());
         $datosDashboard['pagoSinDescuento'] = '$' . number_format($recaudos["RECAUDO_SIN_CONVENIO"], 0, ',', '.') . ' COP';
         $datosDashboard['pagoPorConvenio'] = '$' . number_format($recaudos["RECAUDO_POR_CONVENIO"], 0, ',', '.') . ' COP';
-        $datosDashboard['pagoPendientes'] = number_format(FormularioInscripcion::totalDeDineroPendienteDePago($calendarioVigente->getId()), 0, '.', ',');
+        $datosDashboard['pagoPendientes'] = '$' . number_format(FormularioInscripcion::totalDeDineroPendienteDePago($calendarioVigente->getId()), 0, '.', ',') . ' COP';
         $datosDashboard['pagoTotal'] = '$' . number_format($recaudos["RECAUDO_TOTAL"], 0, ',', '.'). ' COP';
         $datosDashboard['totalCancelados'] = Grupo::totalGruposCancelados($calendarioVigente->getId());  
         $datosDashboard['totalCursosSinCupos'] = Grupo::totalSinCupoDisponible();

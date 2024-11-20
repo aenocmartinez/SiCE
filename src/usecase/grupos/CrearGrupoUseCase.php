@@ -51,7 +51,7 @@ class CrearGrupoUseCase {
         //     return new Response('200', 'Ya existe un grupo con los datos ingresados.');
         // }
 
-        $disponible = Grupo::restriccionesParaCrearOActualizarUnGrupo($grupo, $grupoRepository);
+        $disponible = Grupo::restriccionesParaCrearOActualizarUnGrupo($grupo, $calendario, $grupoRepository);
         if ($disponible != "OK") {
             return new Response('401', $disponible);
         }

@@ -204,8 +204,8 @@ class Grupo {
         return $repository->salonDisponible($grupo);
     }
 
-    public static function restriccionesParaCrearOActualizarUnGrupo(Grupo $grupo, $repository) {
-        return $repository->restriccionesParaCrearOActualizarUnGrupo($grupo);
+    public static function restriccionesParaCrearOActualizarUnGrupo(Grupo $grupo, Calendario $periodo, $repository) {
+        return $repository->restriccionesParaCrearOActualizarUnGrupo($grupo, $periodo);
     }
 
     public function setCupo(int $cupo): void {
