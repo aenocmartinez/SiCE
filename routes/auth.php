@@ -171,7 +171,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/convenios/importar-beneficiario', [ConvenioController::class, 'cargarBeneficiarios'])->name('convenios.cargar-beneficiarios');   
     Route::get('convenios/{id}/exportar-participantes', [ExportarCSVController::class, 'listaParticipantesConvenio'])->name('convenios.exportar-participantes');
     Route::get('/convenios/{id}/facturar-convenio', [ConvenioController::class, 'facturarConvenio'])->name('convenios.facturar');
-    Route::get('/periodos/{id}/convenios', [ConvenioController::class, 'listarConveniosPorPeriodo'])->name('convenios.listar-convenios-por-periodo');
+    Route::get('/periodos/{id}/mostrar-convenios', [ConvenioController::class, 'listarConveniosPorPeriodo'])->name('convenios.listar-convenios-por-periodo');
 
     Route::get('/nueva-inscripcion/paso-1/existencia-participante', [FormularioInscripcionController::class, 'index'])->name('formulario-inscripcion.paso-1');
     Route::get('/nueva-inscripcion/paso-2/datos-participante/tipo-documento/{tipoDocumento}/documento/{documento}', [FormularioInscripcionController::class, 'create'])->name('formulario-inscripcion.paso-2');

@@ -108,21 +108,12 @@ function confirmDelete(button) {
     });
 }
 
-function filtrarPorPeriodo(periodoId) 
-{
-
-    if (periodoId) 
-    {        
-        const url = `/periodos/${periodoId}/convenios`;
-        window.location.href = url;
-    } 
-    else 
-    {    
-        const url = '/convenios';
-        window.location.href = url;
-    }
+function filtrarPorPeriodo(periodoId) {
+    let url = periodoId 
+        ? `{{ route('convenios.listar-convenios-por-periodo', ':id') }}`.replace(':id', periodoId)
+        : '{{ route('convenios.index') }}';
+    window.location.href = url;
 }
-
 
 </script>
 
