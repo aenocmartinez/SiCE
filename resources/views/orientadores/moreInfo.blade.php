@@ -158,7 +158,7 @@
                     <div class="block-content block-content-full d-flex align-items-center justify-content-between bg-primary-dark">
                         <div class="me-3">
                             <p class="fs-sm fw-medium text-white-75 mb-0">
-                                {{ count($orientador->misGrupos()) }} Cursos en el periodo vigente
+                                {{ count($orientador->misGrupos()) }} Cursos en el periodo {{ $periodoFiltro->getNombre() }}
                             </p>                        
                         </div>
                     </div>

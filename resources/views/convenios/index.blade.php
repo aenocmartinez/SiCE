@@ -111,7 +111,7 @@ function confirmDelete(button) {
 function filtrarPorPeriodo(periodoId) {
     let url = periodoId 
         ? `{{ route('convenios.listar-convenios-por-periodo', ':id') }}`.replace(':id', periodoId)
-        : '{{ route('convenios.index') }}';
+        : `{{ route('convenios.index') }}`;
     window.location.href = url;
 }
 
