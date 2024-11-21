@@ -3,10 +3,11 @@
 namespace Src\usecase\dashboard;
 
 use Src\domain\Calendario;
+use Src\usecase\calendarios\BuscarCalendarioPorIdUseCase;
 
 class ListadoDeGruposConYSinCuposDisponiblesUseCase {
 
-    public function ejecutar(): array {
+    public function ejecutar($periodoId=0): array {
         $grupos = [
             'sin_cupos' => [],
             'con_cupos' => [],
@@ -17,9 +18,14 @@ class ListadoDeGruposConYSinCuposDisponiblesUseCase {
         $grupos_cancelados = [];
 
         $periodo = Calendario::Vigente();
-        if (!$periodo->existe()) {
-            return $grupos;
+        if ($periodoId > 0) {
+            $periodo = (new BuscarCalendarioPorIdUseCase)->ejecutar($periodoId);
         }
+
+        // $periodo = Calendario::Vigente();
+        // if (!$periodo->existe()) {
+        //     return $grupos;
+        // }
 
         foreach ($periodo->listaDeGrupos() as $grupo) {
 

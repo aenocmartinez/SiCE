@@ -18,8 +18,13 @@ class DashboardController extends Controller
 
     public function buscarFormulariosPorEstado($estado) {
 
+        $periodo = 0;
+        if (!is_null(request('periodo'))) {
+            $periodo = request('periodo');
+        }
+
         return view('dashboard.formularios',[
-            'formularios' => (new BuscarFormulariosPorEstadoYCalendarioUseCase)->ejecutar($estado)
+            'formularios' => (new BuscarFormulariosPorEstadoYCalendarioUseCase)->ejecutar($estado, $periodo)
         ]);
     }
 }

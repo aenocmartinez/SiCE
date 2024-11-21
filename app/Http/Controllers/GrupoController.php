@@ -139,8 +139,13 @@ class GrupoController extends Controller
             $index = 'cancelados';
             $title = 'cancelados';
         }
+
+        $periodo = 0;
+        if ( !is_null(request('periodo'))) {
+            $periodo = request('periodo');
+        }
         
-        $cursos = (new ListadoDeGruposConYSinCuposDisponiblesUseCase)->ejecutar();             
+        $cursos = (new ListadoDeGruposConYSinCuposDisponiblesUseCase)->ejecutar($periodo);             
         return view('grupos.cursos_por_estado', [
             'title' => $title,
             'cursos' => $cursos[$index]

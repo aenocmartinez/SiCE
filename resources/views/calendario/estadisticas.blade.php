@@ -143,18 +143,18 @@
                     <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
                       <dl class="mb-0">
                         <dt class="fs-3 fw-bold">{{ $data['totalAnulados'] }}</dt>
-                        <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Anulados</dd>
+                        <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Formularios anulados</dd>
                       </dl>
                       <div class="item item-rounded-lg bg-body-light">
                         <i class="far fa-paper-plane fs-3 text-primary"></i>
                       </div>
                     </div>
-                    <!-- <div class="bg-body-light rounded-bottom">
-                      <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Anulado') }}">
-                        <span>Ver anulados</span>
+                    <div class="bg-body-light rounded-bottom">
+                      <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Anulado') }}?periodo={{ $calendarioId }}">
+                        <span>Ver formularios anulados</span>
                         <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
                       </a>
-                    </div> -->
+                    </div>
                   </div>
 
                 </div>
@@ -167,18 +167,18 @@
                     <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
                       <dl class="mb-0">
                         <dt class="fs-3 fw-bold">{{ $data['totalPendintesDePago'] }}</dt>
-                        <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Pendientes por legalizar</dd>
+                        <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Formularios pendientes de legalizar</dd>
                       </dl>
                       <div class="item item-rounded-lg bg-body-light">
                         <i class="fa fa-chart-bar fs-3 text-primary"></i>
                       </div>
                     </div>
-                    <!-- <div class="bg-body-light rounded-bottom">
-                      <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Pendiente de pago') }}">
-                        <span>Ver pendientes</span>
+                    <div class="bg-body-light rounded-bottom">
+                      <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Pendiente de pago') }}?periodo={{ $calendarioId }}">
+                        <span>Ver formularios pendientes de legalizar</span>
                         <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
                       </a>
-                    </div> -->
+                    </div>
                   </div>
                   
                 </div>    
@@ -190,21 +190,43 @@
                   <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
                     <dl class="mb-0">
                       <dt class="fs-3 fw-bold">{{ $data['totalDevolucion'] }}</dt>
-                      <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Devolución</dd>
+                      <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Formularios devueltos</dd>
                     </dl>
                     <div class="item item-rounded-lg bg-body-light">
                     <i class="fas fa-history fs-3 text-primary"></i>
                     </div>
                   </div>
-                  <!-- <div class="bg-body-light rounded-bottom">
-                    <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Devuelto') }}">
-                      <span>Ver devueltos</span>
+                  <div class="bg-body-light rounded-bottom">
+                    <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Devuelto') }}?periodo={{ $calendarioId }}">
+                      <span>Ver formularios devueltos</span>
                       <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
                     </a>
-                  </div> -->
+                  </div>
                 </div>
             </div>                           
-            <!-- Fin tarjeta Devolución -->            
+            <!-- Fin tarjeta Devolución -->      
+             
+            <!-- Tarjeta Aplazados -->
+            <div class="col-sm-6 col-xxl-4">
+                <div class="block block-rounded d-flex flex-column h-100 mb-0">
+                  <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
+                    <dl class="mb-0">
+                      <dt class="fs-3 fw-bold">{{ $data['totalAplazados'] }}</dt>
+                      <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Formularios aplazados</dd>
+                    </dl>
+                    <div class="item item-rounded-lg bg-body-light">
+                    <i class="fas fa-history fs-3 text-primary"></i>
+                    </div>
+                  </div>
+                  <div class="bg-body-light rounded-bottom">
+                    <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Aplazado') }}?periodo={{ $calendarioId }}">
+                      <span>Ver formularios aplazados</span>
+                      <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>                           
+              <!-- Fin tarjeta Aplazados -->            
 
             <!-- Tarjeta de cancelados -->
             <div class="col-sm-6 col-xxl-4">
@@ -213,45 +235,23 @@
                 <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
                   <dl class="mb-0">
                     <dt class="fs-3 fw-bold">{{ $data['totalCancelados'] }}</dt>
-                    <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Cancelados</dd>
+                    <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Cursos cancelados</dd>
                   </dl>
                   <div class="item item-rounded-lg bg-body-light">
                     <i class="far fa-calendar-xmark fs-3 text-primary"></i>
                   </div>
                 </div>
-                <!-- <div class="bg-body-light rounded-bottom">
-                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('grupos.estado-cursos', ['tipo' => 'cancelados']) }}">
-                    <span>Ver cancelados</span>
+                <div class="bg-body-light rounded-bottom">
+                  <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('grupos.estado-cursos', ['tipo' => 'cancelados']) }}?periodo={{ $calendarioId }}">
+                    <span>Ver cursos cancelados</span>
                     <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
                   </a>
-                </div> -->
+                </div>
               </div>
               
             </div>             
              <!-- Fin tarjeta de cancelados -->              
-            
-            
-            <!-- Tarjeta Aplazados -->
-              <div class="col-sm-6 col-xxl-4">
-                <div class="block block-rounded d-flex flex-column h-100 mb-0">
-                  <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
-                    <dl class="mb-0">
-                      <dt class="fs-3 fw-bold">{{ $data['totalAplazados'] }}</dt>
-                      <dd class="fs-sm fw-medium fs-sm fw-medium text-muted mb-0">Aplazados</dd>
-                    </dl>
-                    <div class="item item-rounded-lg bg-body-light">
-                    <i class="fas fa-history fs-3 text-primary"></i>
-                    </div>
-                  </div>
-                  <!-- <div class="bg-body-light rounded-bottom">
-                    <a class="block-content block-content-full block-content-sm fs-sm fw-medium d-flex align-items-center justify-content-between" href="{{ route('dashboard.buscar-formularios', 'Aplazado') }}">
-                      <span>Ver aplazados</span>
-                      <i class="fa fa-arrow-alt-circle-right ms-1 opacity-25 fs-base"></i>
-                    </a>
-                  </div> -->
-                </div>
-              </div>                           
-              <!-- Fin tarjeta Aplazados -->
+          
               </div>
             </div>
         </div>  
