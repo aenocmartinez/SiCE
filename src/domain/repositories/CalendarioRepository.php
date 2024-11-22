@@ -24,4 +24,5 @@ interface CalendarioRepository {
     public static function pasarANoDisponibleLosBeneficiosPorConvenioDeUnParticipante(): void;
     public static function listadoParticipantesPorCalendario($calendarioId=0): array;
     public function listarConveniosPorCalendario($calendarioId): array;
+    public static function obtenerIDsDeCursosAbiertosPorCalendarioYArea($calendarioId, $areaId): array;
 }

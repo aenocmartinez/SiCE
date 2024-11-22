@@ -153,41 +153,48 @@ class CalendarioController extends Controller
     public function guardarTodosLosCursos(Request $request) {  
 
         $areaId = 0;
-        // Extraer el array de cursos del request
         $cursos = $request->input('cursos', []);
-    
-        // Verificar si hay cursos para procesar
-        if (empty($cursos)) {
-            return response()->json(['success' => false, 'message' => 'No se recibieron cursos para asignar.'], 400);
+
+        $areaId = request('area_id');
+        if (is_null(request('area_id'))) {
+            return redirect()->route('calendario.index')->with('code', 500)->with('status','No se recibe un área válida.');
         }
 
-        if (!Calendario::Vigente()->existe()) {
-            return response()->json(['success' => false, 'message' => 'No existe un periodo vigente.'], 400);
+        $calendarioVigente = Calendario::Vigente();
+        if (!$calendarioVigente->existe()) {
+            return redirect()->route('calendario.index')->with('code', 500)->with('status','No existe un periodo vigente.');
         }
-    
+
         try {
-            // Procesar cada curso y asignarlo al calendario
-            foreach ($cursos as $cursoData) {
+
+            $ids_de_cursos_abiertos = $calendarioVigente->obtenerIDsDeCursosAbiertosPorCalendarioYArea($areaId);
+            $nuevos_ids_de_cursos_abiertos = [];
+
+            foreach ($cursos as $cursoData) {   
 
                 if (is_null($cursoData['costo'])) {
                     continue;
                 }
+               
+                $cursoCalendarioDto = $this->hydrateCursoCalendarioDto2($cursoData, $calendarioVigente);
 
-                $areaId = $cursoData['area_id'];
-                // Crear un DTO para cada curso
-                $cursoCalendarioDto = $this->hydrateCursoCalendarioDto2($cursoData);
-
-                // Ejecutar el caso de uso para agregar el curso al calendario
                 $response = (new AgregarCursoACalendarioUseCase())->ejecutar($cursoCalendarioDto);
-    
-                // Verificar si hubo algún error en el caso de uso
-                // if ($response->code !== 200) {
-                //     throw new \Exception($response->message);
-                // }
+
+                if ($response->code == '200') {
+                    $nuevos_ids_de_cursos_abiertos[] = $cursoCalendarioDto->cursoId;
+                }
+            }
+
+            $ids_para_retirar_del_calendario = array_diff($ids_de_cursos_abiertos, $nuevos_ids_de_cursos_abiertos);
+            $response = (new RetirarCursoACalendarioUseCase)->ejecutar($calendarioVigente, $ids_para_retirar_del_calendario);
+
+            $response->message = "Asignación de cursos exitosa";
+            if ($response->code != 200) {
+                $response->message = "Ha ocurrido un error en la apertura de los cursos.";
             }
 
             return redirect()->route('calendario.cursos', [
-                'id' => $cursoCalendarioDto->calendarioId,
+                'id' => $calendarioVigente->getId(),
                 'area_id' => $areaId,
                 ])
                 ->with('code', $response->code)
@@ -196,11 +203,11 @@ class CalendarioController extends Controller
         } catch (\Exception $e) {
 
             return redirect()->route('calendario.cursos', [
-                'id' => $cursoCalendarioDto->calendarioId,
+                'id' => $calendarioVigente->getId(),
                 'area_id' => $areaId,
                 ])
-                ->with('code', $response->code)
-                ->with('status', 'Error al asignar los cursos: ' . $e->getMessage());             
+                ->with('code', 500)
+                ->with('status', 'Error al asignar los cursos');             
         }
     }    
 
@@ -245,7 +252,7 @@ class CalendarioController extends Controller
             return redirect()->route('calendario.index')->with('code', 401)->with('status','parámetro no válido');
         }        
 
-        return view('calendario._cursos_calendario', [
+        return view('calendario._cursos_abiertos', [
             'cursosCalendario' => (new ListarCursosPorCalendarioUseCase)->ejecutar($calendarioId, $areaId),
             'area_id' => $areaId,
         ]);
@@ -332,12 +339,12 @@ class CalendarioController extends Controller
         return redirect()->route('calendario.index')->with('code', 200)->with('status', "Periodo cerrado con éxito");
     }
 
-    protected function hydrateCursoCalendarioDto2($cursoData) {
+    protected function hydrateCursoCalendarioDto2($cursoData, Calendario $calendario) {
 
         $cursoCalendarioDto = new CursoCalendarioDto();    
-        $cursoCalendarioDto->calendarioId = $cursoData['calendario_id'];
+        $cursoCalendarioDto->calendario = $calendario;
         $cursoCalendarioDto->cursoId = $cursoData['curso_id'];
-        $cursoCalendarioDto->costo = $cursoData['costo'];
+        $cursoCalendarioDto->costo = Validador::convertirAEnteroDesdeMoneda($cursoData['costo']);
         $cursoCalendarioDto->modalidad = $cursoData['modalidad'];
 
         // $clave = request('curso_id') . request('calendario_id');
@@ -367,35 +374,35 @@ class CalendarioController extends Controller
         return $cursoCalendarioDto;
     }
 
-    private function hydrateCursoCalendarioDto(): CursoCalendarioDto{        
-        $cursoCalendarioDto = new CursoCalendarioDto();
-        $cursoCalendarioDto->calendarioId = (int)request('calendario_id');
-        $cursoCalendarioDto->cursoId = (int)request('curso_id');
+    // private function hydrateCursoCalendarioDto(): CursoCalendarioDto{        
+    //     $cursoCalendarioDto = new CursoCalendarioDto();
+    //     $cursoCalendarioDto->calendarioId = (int)request('calendario_id');
+    //     $cursoCalendarioDto->cursoId = (int)request('curso_id');
 
-        $clave = request('curso_id') . request('calendario_id');
-        $modalidad = 'modalidad_' . $clave;    
+    //     $clave = request('curso_id') . request('calendario_id');
+    //     $modalidad = 'modalidad_' . $clave;    
         
-        $costo = 0;
-        if (!is_null(request('costo_' . $clave))) {
-            $costo = str_replace("$", "", request('costo_' . $clave));
-            $costo = str_replace(".", "", $costo);        
-            $costo = str_replace(" ", "", $costo);  
-        }
+    //     $costo = 0;
+    //     if (!is_null(request('costo_' . $clave))) {
+    //         $costo = str_replace("$", "", request('costo_' . $clave));
+    //         $costo = str_replace(".", "", $costo);        
+    //         $costo = str_replace(" ", "", $costo);  
+    //     }
 
-        $cupos = 0;
-        if (!is_null(request('cupos_' . $clave))) {
-            $cupos = request('cupos_' . $clave);
-        }
+    //     $cupos = 0;
+    //     if (!is_null(request('cupos_' . $clave))) {
+    //         $cupos = request('cupos_' . $clave);
+    //     }
 
-        $modalidad = 'Presencial';
-        if (!is_null(request('modalidad_' . $clave))) {
-            $modalidad = request('modalidad_' . $clave);
-        }        
+    //     $modalidad = 'Presencial';
+    //     if (!is_null(request('modalidad_' . $clave))) {
+    //         $modalidad = request('modalidad_' . $clave);
+    //     }        
 
-        $cursoCalendarioDto->costo = floatval($costo);
-        $cursoCalendarioDto->cupos = (int)$cupos;
-        $cursoCalendarioDto->modalidad = $modalidad;
+    //     $cursoCalendarioDto->costo = floatval($costo);
+    //     $cursoCalendarioDto->cupos = (int)$cupos;
+    //     $cursoCalendarioDto->modalidad = $modalidad;
 
-        return $cursoCalendarioDto;
-    }
+    //     return $cursoCalendarioDto;
+    // }
 }

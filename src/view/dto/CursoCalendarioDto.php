@@ -2,10 +2,12 @@
 
 namespace Src\view\dto;
 
+use Src\domain\Calendario;
+
 class CursoCalendarioDto {
     
     public $id;
-    public $calendarioId;
+    public Calendario $calendario;
     public $cursoId;
     public $cupos;
     public $costo;

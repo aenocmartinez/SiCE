@@ -153,40 +153,49 @@ class CalendarioDao extends Model implements CalendarioRepository {
 
     public function agregarCurso(CursoCalendario $cursoCalendario): bool {
         $exito = false;
-
         try {
-
             $calendario = CalendarioDao::find($cursoCalendario->getCalendarioId());
             if ($calendario) {
-
                 $idUsuarioSesion = Auth::id();
                 DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+    
+                // Verificar si el registro ya existe
+                $existe = $calendario->cursos()
+                    ->wherePivot('curso_id', $cursoCalendario->getCursoId())
+                    ->exists();
+    
+                if ($existe) {
+                    
+                    $calendario->cursos()->updateExistingPivot($cursoCalendario->getCursoId(), [
+                        'costo' => $cursoCalendario->getCosto(), 
+                        'modalidad' => $cursoCalendario->getModalidad(),
+                    ]);
+                } else {
 
-                $calendario->cursos()->attach($cursoCalendario->getCursoId(), [
-                    'costo' => $cursoCalendario->getCosto(), 
-                    'modalidad' => $cursoCalendario->getModalidad(), 
-                    // 'cupo' => $cursoCalendario->getCupo()
-                ]);
-
-            }            
-
+                    $calendario->cursos()->attach($cursoCalendario->getCursoId(), [
+                        'costo' => $cursoCalendario->getCosto(), 
+                        'modalidad' => $cursoCalendario->getModalidad(),
+                    ]);
+                }
+            }
+    
             $exito = true;
-
-        } catch(\Exception $e) {
+    
+        } catch (\Exception $e) {
             Sentry::captureException($e);
         }
-
+    
         return $exito;
     }
+    
 
     public function retirarCurso(CursoCalendario $cursoCalendario): bool {
-
         $resultado = true;
         try {
-            $calendario = CalendarioDao::find($cursoCalendario->getCalendarioId());
-            if ($calendario) {
-                $resultado = DB::table('curso_calendario')->where('id', $cursoCalendario->getId())->delete();
-            }            
+            DB::table('curso_calendario')
+                ->where('calendario_id', $cursoCalendario->getCalendarioId())
+                ->where('curso_id', $cursoCalendario->getCursoId())
+                ->delete();        
 
         } catch(\Exception $e) {
             $resultado = false;
@@ -636,4 +645,21 @@ class CalendarioDao extends Model implements CalendarioRepository {
 
         return $convenios;
     }
+
+    /**
+     * Obtener cursos por calendario y área.
+     *
+     * @param int $calendarioId
+     * @param int $areaId
+     * @return array
+     */
+    public static function obtenerIDsDeCursosAbiertosPorCalendarioYArea($calendarioId, $areaId): array
+    {
+        return DB::table('curso_calendario as cc')
+                    ->join('cursos as c', 'cc.curso_id', '=', 'c.id')
+                    ->where('cc.calendario_id', $calendarioId)
+                    ->where('c.area_id', $areaId)
+                    ->pluck('cc.curso_id')
+                    ->toArray(); 
+    }   
 }

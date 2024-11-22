@@ -23,4 +23,9 @@ class Validador {
         
         return true;
     }
+
+    public static function convertirAEnteroDesdeMoneda($texto) {                
+        $numeroLimpio = preg_replace('/[^\d]/', '', $texto);
+        return (int)$numeroLimpio;
+    }
 }

@@ -9,26 +9,16 @@ use Src\view\dto\CursoCalendarioDto;
 
 class AgregarCursoACalendarioUseCase {
 
-    public function ejecutar(CursoCalendarioDto $dto): Response {
+    public function ejecutar(CursoCalendarioDto $dto): Response 
+    {
+        $calendario = $dto->calendario;
 
-        $caledarioRepository = new CalendarioDao();
-        $cursoRepository = new CursoDao();
-
-        $calendario = $caledarioRepository->buscarCalendarioPorId($dto->calendarioId);
-        if (!$calendario->existe()) {
-            return new Response('500', 'El calendario no existe');
-        }
-
-        if (!$calendario->esVigente()) {
-            return new Response('500', 'No es posible agregar curso porque el calendario está caducado.');
-        }
-
-        $curso = $cursoRepository->buscarCursoPorId($dto->cursoId);
+        $curso = (new CursoDao())->buscarCursoPorId($dto->cursoId);
         if (!$curso->existe()) {
             return new Response('500', 'El curso que intenta agregar no existe.');
         }
 
-        $calendario->setRepository($caledarioRepository);
+        $calendario->setRepository(new CalendarioDao());
         $exito = $calendario->agregarCurso($curso, [
             'cupo' => $dto->cupos, 
             'costo' => $dto->costo, 

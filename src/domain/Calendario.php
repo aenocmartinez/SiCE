@@ -206,4 +206,9 @@ class Calendario {
     public static function cambiarFormulariosPendientesDePagoAAnulado(): bool {
         return FormularioInscripcionDao::cambiarPendientesDePagoAAnulado();
     }
+
+    public function obtenerIDsDeCursosAbiertosPorCalendarioYArea($areaId): array {
+        
+        return CalendarioDao::obtenerIDsDeCursosAbiertosPorCalendarioYArea($this->id, $areaId);
+    }
 }
