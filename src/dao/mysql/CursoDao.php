@@ -163,7 +163,7 @@ class CursoDao extends Model implements CursoRepository {
         $cursos = array();
         $calendarioId = 1;
         try {
-            $filas = CursoDao::where('area_id', $areaId)->get();
+            $filas = CursoDao::where('area_id', $areaId)->orderBy('nombre', 'asc')->get();
             foreach($filas as $fila) {
                 $curso = new Curso($fila->nombre);
                 $curso->setId($fila->id);

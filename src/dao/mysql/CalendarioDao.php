@@ -206,6 +206,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
     }
 
     public function listarCursos(int $calendarioId, int $areaId): array {
+        
         $cursos = array();
        
         $calendario = new Calendario();
