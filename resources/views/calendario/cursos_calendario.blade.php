@@ -66,7 +66,7 @@
     <div class="col-7">
         <div class="block block-rounded">
             <div class="block-content">
-                <form id="guardar-cursos-form" action="{{ route('calendario.agregar_varios_cursos') }}" method="POST">                    
+                <form id="guardar-cursos-form" action="{{ route('calendario.dar_apertura_a_cursos_de_un_periodo') }}" method="POST">                    
                     @csrf
                     <input type="hidden" name="area_id" id="area_id" value="{{ $areaId }}">
 

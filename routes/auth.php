@@ -126,14 +126,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/calendario/{id}/actualizar', [CalendarioController::class, 'update'])->name('calendario.update');
 
     Route::get('/calendario/{id}/cursos', [CalendarioController::class, 'cursosDelCalendario'])->name('calendario.cursos');
-    Route::post('/calendario/agregar-curso',[CalendarioController::class, 'agregarCursoACalendario'])->name('calendario.agregar_curso');
     Route::get('/calendario/{calendarioId}/area/{areaId}/cursos', [CalendarioController::class, 'listarCursosPorArea'])->name('calendario.cursos_por_area');
     Route::get('/calendario/{calendarioId}/area/{areaId}/cursos-periodo', [CalendarioController::class, 'listarCursosDelCalendario'])->name('calendario.cursos_por_calendario');
-    Route::delete('/calendario/{calendarioId}/curso/{cursoCalendarioId}/area/{areaId}', [CalendarioController::class, 'retirarCursoACalendario'])->name('calendario.retirar_curso');
     Route::get('/calendario/{id}/estadisticas',[CalendarioController::class, 'estadisticas'])->name('calendario.estadisticas');    
     Route::get('/calendario/{id}/descargar-participantes',[CalendarioController::class, 'descargarParticipantes'])->name('calendario.descargar-participantes');
     Route::get('/calendario/{id}/descargar-cuadro-110',[CalendarioController::class, 'generarReporteNumeroCursosYParticipantesPorJornada'])->name('calendario.descargar-cuadro-110');
-    Route::post('/calendario/abrir-cursos',[CalendarioController::class, 'guardarTodosLosCursos'])->name('calendario.agregar_varios_cursos');
+    Route::post('/calendario/abrir-cursos',[CalendarioController::class, 'darAperturaACursosDeUnPeriodo'])->name('calendario.dar_apertura_a_cursos_de_un_periodo');
     Route::get('/calendario/{id}/cerrar',[CalendarioController::class, 'cerrarPeriodo'])->name('calendario.cerrar');
     
 
