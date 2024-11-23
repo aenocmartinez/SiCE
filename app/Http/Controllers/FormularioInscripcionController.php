@@ -183,9 +183,11 @@ class FormularioInscripcionController extends Controller
     public function confirmarInscripcion(ConfirmarInscription $req) {
         $datos = $req->validated();
 
+        $ids_de_aplazamientos_para_redimir = request('ids_de_aplazamientos_para_redimir', []);
+
         $formularioDto = $this->hydrateConfirmarInscripcionDto($datos);
 
-        $response = (new ConfirmarInscripcionUseCase)->ejecutar($formularioDto);  
+        $response = (new ConfirmarInscripcionUseCase)->ejecutar($formularioDto, $ids_de_aplazamientos_para_redimir);  
 
         $nombre_archivo = "";
         if (isset($response->data['nombre_archivo'])) {

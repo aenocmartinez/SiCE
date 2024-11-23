@@ -103,21 +103,34 @@
             <div class="block-content block-content-full">
                 <div class="row g-3">
                     @forelse ($participante->getAplazamientos() as $ap)
-                        <div class="col-12">
-                            <input type="checkbox" class="form-check-input me-2" id="saldo-{{ $loop->index }}" name="saldo[]" value="{{ $ap->getId() }}">
+                        <div class="col-12 border-bottom">                            
+                            <!-- <input type="checkbox" class="form-check-input me-2" id="saldo-{{ $loop->index }}" name="saldo[]" value="{{ $ap->getId() }}"> -->
                             <label class="form-check-label" for="saldo-{{ $loop->index }}">
-                                <span class="fw-semibold fs-xs">
+                                <span class="fw-semibold fs-xs">                                    
                                 {{ Src\infraestructure\util\FormatoMoneda::PesosColombianos($ap->getSaldo()) }}
                                 </span> 
                                 -                                                                 
                                 <span class="fs-xs">Caduca el {{ Src\infraestructure\util\FormatoFecha::fechaFormateadaA5DeAgostoDe2024($ap->getFechaCaducidad()) }}</span>
+                                <input type="checkbox" class="form-check-input me-2" id="saldo-{{ $loop->index }}" name="ids_de_aplazamientos_para_redimir[]" value="{{ $ap->getId() }}"> 
+                                <label class="form-check-label fs-xs">Redimir</label>                                
                             </label>
                             <div class="mt-2">
                                 <a href="javascript:void(0)" class="fs-xs text-primary toggle-comment" data-target="#comentario-{{ $loop->index }}">Mostrar comentario</a>
                                 <div id="comentario-{{ $loop->index }}" class="comentario fs-xs text-muted d-none mt-1">
                                     {{ $ap->getComentarios() }}
+                                    <br/><br/>
+                                    <label for="vouchers">No. Voucher:</label>
+                                    <ul>
+                                        @foreach ($ap->getVouchers() as $item)
+                                            @if ($item['voucher'] != 0)                                            
+                                                <li>{{ $item['voucher'] }}</li>
+                                            @endif
+                                        @endforeach
+                                    </ul>
+                                        
                                 </div>
                             </div>
+                            
                         </div>                        
                     @empty
                         <div class="col-12">                            

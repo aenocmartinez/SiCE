@@ -16,19 +16,21 @@ use Src\view\dto\ConfirmarInscripcionDto;
 use Src\view\dto\Response;
 
 class ConfirmarInscripcionUseCase {
-    
-    public function ejecutar(ConfirmarInscripcionDto $confirmarInscripcionDto): Response { 
         
+    public function ejecutar(ConfirmarInscripcionDto $confirmarInscripcionDto, $ids_de_aplazamientos_para_redimir = []): Response 
+    {         
         date_default_timezone_set('America/Bogota');
         $fechaActual = Carbon::now();
         $diaFestivo = DiaFestivoDao::buscarDiasFestivoPorAnio($fechaActual->year);
         $diasFestivos = [];
-        if ($diaFestivo->existe()) {
+        if ($diaFestivo->existe()) 
+        {
             $diasFestivos = explode(',', $diaFestivo->getFechas());
         }
 
         $formularioInscripcion = new FormularioInscripcion();
-        if ($confirmarInscripcionDto->formularioId > 0) {
+        if ($confirmarInscripcionDto->formularioId > 0) 
+        {
             $formularioInscripcion = FormularioInscripcionDao::buscarFormularioPorId($confirmarInscripcionDto->formularioId);
         }
 
@@ -40,7 +42,8 @@ class ConfirmarInscripcionUseCase {
 
         $totalAPagar = $confirmarInscripcionDto->totalAPagar;
         $estado = $confirmarInscripcionDto->estado;
-        if ($convenio->esCooperativa()) {
+        if ($convenio->esCooperativa()) 
+        {
             $totalAPagar = 0;
             $estado = "Pagado";
         }        
@@ -64,13 +67,12 @@ class ConfirmarInscripcionUseCase {
         }
 
         $numeroFormulario = UUID::generarUUIDNumerico();
-        
-        // $formularioInscripcion->setNumero(strtotime($fechaActual->format('Y-m-d H:i:s.u')) . $confirmarInscripcionDto->participanteId);
         $formularioInscripcion->setNumero($numeroFormulario);
         $formularioInscripcion->setValorPago($confirmarInscripcionDto->valorPagoParcial);
         $formularioInscripcion->setPathComprobantePago($confirmarInscripcionDto->pathComprobantePago);
 
-        if (strlen($confirmarInscripcionDto->comentarios)>0) {
+        if (strlen($confirmarInscripcionDto->comentarios)>0) 
+        {
             $formularioInscripcion->setComentarios($confirmarInscripcionDto->comentarios);
         }
 
@@ -79,29 +81,35 @@ class ConfirmarInscripcionUseCase {
         }
 
         $exito = false;
-        if ($formularioInscripcion->existe()) {    
-            
+        if ($formularioInscripcion->existe()) 
+        {        
             $formularioInscripcion->setEstado('Revisar comprobante de pago');
             
             $exito = $formularioInscripcion->Actualizar();            
-            if (!$exito) {                
+            if (!$exito) 
+            {
                 return new Response("500", "Ha ocurrido al intentar confirmar la inscripción.");
             }
-
-        } else { 
+        } 
+        else 
+        { 
             $exito = $formularioInscripcion->Crear();
-            if (!$exito) {
+            if (!$exito) 
+            {
                 return new Response("500", "Ha ocurrido al intentar confirmar la inscripción.");
             }
 
             $medioPago = PagoFactory::Medio($confirmarInscripcionDto->medioPago);
             $exito = $medioPago->Pagar($formularioInscripcion, $confirmarInscripcionDto->voucher, $confirmarInscripcionDto->valorPagoParcial);
-            if (!$exito) {
+            if (!$exito) 
+            {
                 return new Response("500", "Ha ocurrido al intentar agregar el pago del formulario.");
             }            
 
             $formularioInscripcion->RedimirBeneficioConvenio();
         }
+
+        (new RedimirAplazamientoUseCase)->ejecutar($ids_de_aplazamientos_para_redimir);
 
         // EmailService::SendEmail("Confirmación de inscripción cursos de extensión - UCMC", Mensajes::CuerpoCorreoConfirmacionInscripcion($formularioInscripcion->getNumero()), env('EMAIL_DESTINATARIOS'));
 

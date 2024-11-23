@@ -192,8 +192,13 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                     $aplazamiento->setComentarios($item->comentarios);
                     $aplazamiento->setRedimido($item->redimido);
                     $aplazamiento->setSaldo($item->saldo_a_favor);
-        
-                    $aplazamientos[] = $aplazamiento;
+                    $aplazamiento->setVaouchers($item->formulario->pagos->toArray());
+                    // dd($item->formulario->pagos->toArray());
+
+                    if (!$aplazamiento->fueRedimido()) 
+                    {
+                        $aplazamientos[] = $aplazamiento;
+                    }
                 }      
                 
                 $participante->setAplazamientos($aplazamientos);

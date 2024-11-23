@@ -40,7 +40,11 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
     public function participante() {
         return $this->belongsTo(ParticipanteDao::class, 'participante_id');
-    }    
+    }  
+    
+    public function pagos() {
+        return $this->hasMany(FormularioInscripcionPagoDao::class, 'formulario_id');
+    }
 
     public function listarFormulariosPorPeriodo(int $calendarioId, $estado, $documento, $page=1): Paginate {    
         $paginate = new Paginate($page);
