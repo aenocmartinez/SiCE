@@ -181,7 +181,6 @@ class FormularioInscripcionController extends Controller
     }
     
     public function confirmarInscripcion(ConfirmarInscription $req) {
-        
         $datos = $req->validated();
 
         $formularioDto = $this->hydrateConfirmarInscripcionDto($datos);

@@ -275,6 +275,9 @@ $(document).ready(function() {
     valorPagoInput.form.addEventListener('submit', function() {
         abonoInput.value = abonoInput.value.replace(/[^0-9]/g, '');
         valorPagoInput.value = valorPagoInput.value.replace(/[^0-9]/g, '');
+        if (abonoInput.value.trim() !== '') {
+        valorPagoInput.value = abonoInput.value;
+    }        
     });
 
     $('input[name="convenio"]').change(function(){

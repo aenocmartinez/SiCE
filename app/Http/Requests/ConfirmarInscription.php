@@ -57,9 +57,12 @@ class ConfirmarInscription extends FormRequest
             $cantidad1 = $this->input('total_a_pagar');
             $cantidad2 = $this->input('valorPago');
 
+            // dd($this->all());
+
             if ($cantidad2 > $cantidad1) {
                 $validator->errors()->add('valorPago', 'El valor a pagar no puede superar el valor total a pagar.');
             }
         });
     }  
+
 }
