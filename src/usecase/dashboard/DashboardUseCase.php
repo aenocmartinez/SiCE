@@ -42,7 +42,7 @@ class DashboardUseCase {
         $datosDashboard['pagoPendientes'] = '$' . number_format(FormularioInscripcion::totalDeDineroPendienteDePago($calendarioVigente->getId()), 0, '.', ',') . ' COP';
         $datosDashboard['pagoTotal'] = '$' . number_format($recaudos["RECAUDO_TOTAL"], 0, ',', '.'). ' COP';
         $datosDashboard['totalCancelados'] = Grupo::totalGruposCancelados($calendarioVigente->getId());  
-        $datosDashboard['totalCursosSinCupos'] = Grupo::totalSinCupoDisponible();
+        $datosDashboard['totalCursosSinCupos'] = Grupo::totalSinCupoDisponible($calendarioVigente->getId());
         
         return $datosDashboard;
     }

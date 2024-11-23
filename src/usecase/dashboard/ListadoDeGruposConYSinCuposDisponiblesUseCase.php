@@ -22,11 +22,6 @@ class ListadoDeGruposConYSinCuposDisponiblesUseCase {
             $periodo = (new BuscarCalendarioPorIdUseCase)->ejecutar($periodoId);
         }
 
-        // $periodo = Calendario::Vigente();
-        // if (!$periodo->existe()) {
-        //     return $grupos;
-        // }
-
         foreach ($periodo->listaDeGrupos() as $grupo) {
 
             $item = [

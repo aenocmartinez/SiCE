@@ -269,7 +269,7 @@ class Grupo {
         return GrupoDao::where('calendario_id', $calendarioId)->where('cancelado', true)->count();
     }
 
-    public static function totalSinCupoDisponible(): int {
-        return GrupoDao::totalGruposSinCupoDisponible();
+    public static function totalSinCupoDisponible($calendarioId=0): int {
+        return GrupoDao::totalGruposSinCupoDisponible($calendarioId);
     }
 }

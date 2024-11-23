@@ -76,7 +76,7 @@ class EstadisticasCalendarioUseCase {
         // $datosDashboard['pagoPendientes'] = number_format(FormularioInscripcion::totalDeDineroPendienteDePago($calendarioVigente->getId()), 0, '.', ',');
         // $datosDashboard['pagoTotal'] = '$' . number_format($recaudos["RECAUDO_TOTAL"], 0, ',', '.'). ' COP';
         $data['totalCancelados'] = Grupo::totalGruposCancelados($calendario->getId());  
-        // $datosDashboard['totalCursosSinCupos'] = Grupo::totalSinCupoDisponible();
+        $data['totalCursosSinCupos'] = Grupo::totalSinCupoDisponible($calendario->getId());
 
         return $data;
     }
