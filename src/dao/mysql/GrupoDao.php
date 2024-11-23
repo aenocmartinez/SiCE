@@ -430,14 +430,6 @@ class GrupoDao extends Model implements GrupoRepository {
     }
 
     public static function totalGruposSinCupoDisponible($calendarioId=0): int {
-        // return GrupoDao::select(
-        //     DB::raw("
-        //         grupos.id,
-        //         (cupos - (SELECT count(*) FROM formulario_inscripcion WHERE grupo_id = grupos.id AND estado <> 'Anulado' AND estado <> 'Aplazado')) as cuposDisponibles
-        //     ")
-        // )
-        // ->having('cuposDisponibles', '<=', 0)
-        // ->count();
 
         return GrupoDao::select(
             DB::raw("
