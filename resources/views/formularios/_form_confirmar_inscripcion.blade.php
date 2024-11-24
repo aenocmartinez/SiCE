@@ -111,6 +111,7 @@
                                 </span> 
                                 -                                                                 
                                 <span class="fs-xs">Caduca el {{ Src\infraestructure\util\FormatoFecha::fechaFormateadaA5DeAgostoDe2024($ap->getFechaCaducidad()) }}</span>
+                                <br>
                                 <input type="checkbox" class="form-check-input me-2" id="saldo-{{ $loop->index }}" name="ids_de_aplazamientos_para_redimir[]" value="{{ $ap->getId() }}"> 
                                 <label class="form-check-label fs-xs">Redimir</label>                                
                             </label>
