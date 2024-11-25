@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnotacionController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
@@ -205,4 +206,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/salones/{page}/q/{criteria}', [ParticipanteController::class, 'buscadorParticipantesPaginados'])->name('participantes.buscador-paginador');
     Route::get('/participantes/formulario/{numeroFormulario}/detalle-inscripcion', [ParticipanteController::class, 'verDetalleInscripcion'])->name('participantes.ver-detalle-inscripcion');
 
+    Route::get('/comentarios', [AnotacionController::class, 'index'])->name('comentarios');
+    Route::post('/comentarios', [AnotacionController::class, 'buscar_comentario'])->name('comentarios.buscar');
 });

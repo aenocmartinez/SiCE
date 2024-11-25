@@ -296,4 +296,9 @@ class Participante {
     public function getAplazamientos() {
         return $this->aplazamientos;
     }
+
+    public function formularios_inscritos_en_un_periodo($periodo_id = 0): array
+    {
+        return $this->repository->formularios_inscritos_en_un_periodo($this->id, $periodo_id);
+    }
 }

@@ -25,4 +25,5 @@ interface ParticipanteRepository {
     public static function numeroParticipantesUnicosPorCalendario($calendarioId): int;
     public function listarFormulariosPendientesDePago(int $participanteId): array;
     public function aplazamientos();
+    public function formularios_inscritos_en_un_periodo($particite_id, $periodo_id): array;
 }

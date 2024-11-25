@@ -107,9 +107,10 @@
                 </a>
                 <a class="nav-main-link {{ setActive(['cambios-traslados.index', 'cambios-traslados.*']) }}" href="{{ route('cambios-traslados.index') }}">
                   <span class="nav-main-link-name">Cambios, aplazamientos y devoluciones</span>
-                  <!-- <span class="nav-main-link-name">Cambios de cursos</span> -->
                 </a>                
-
+                <a class="nav-main-link {{ setActive(['comentarios', 'comentarios.*']) }}" href="{{ route('comentarios') }}">
+                  <span class="nav-main-link-name">Consultar comentarios</span>
+                </a>                
 
               </li>
 

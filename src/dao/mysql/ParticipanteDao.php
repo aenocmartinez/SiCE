@@ -18,6 +18,7 @@ use Src\domain\repositories\ParticipanteRepository;
 use Sentry\Laravel\Facade as Sentry;
 use Src\domain\Aplazamiento;
 use Src\infraestructure\util\Paginate;
+use Src\view\dto\FormularioComentarioDto;
 
 class ParticipanteDao extends Model implements ParticipanteRepository {
 
@@ -639,5 +640,39 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         }
 
         return $formularioInscripcion;
+    }
+
+    public function formularios_inscritos_en_un_periodo($participante_id, $periodo_id): array
+    {
+        $formularios = [];
+        $registros = DB::table('formulario_inscripcion as f')
+                        ->select(
+                            'f.id',
+                            'f.numero_formulario',
+                            'f.estado',
+                            'c.nombre',
+                            'f.comentarios'
+                        )
+                        ->join('grupos as g', 'g.id', '=', 'f.grupo_id')
+                        ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
+                        ->join('cursos as c', 'c.id', '=', 'cc.curso_id')
+                        ->join('participantes as p', 'p.id', '=', 'f.participante_id')
+                        ->where('f.participante_id', $participante_id)
+                        ->where('g.calendario_id', $periodo_id)
+                        ->get();
+
+        foreach($registros as $registro)
+        {
+            $formulario = new FormularioComentarioDto();
+            $formulario->setFormularioId($registro->id);
+            $formulario->setNumeroFormulario($registro->numero_formulario);
+            $formulario->setEstadoFormulario($registro->estado);
+            $formulario->setCurso($registro->nombre);
+            $formulario->setComentario($registro->comentarios);
+
+            $formularios[] = $formulario;
+        }
+        
+        return $formularios;
     }
 }
