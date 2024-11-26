@@ -13,6 +13,7 @@ use Src\domain\repositories\GrupoRepository;
 
 use Sentry\Laravel\Facade as Sentry;
 use Src\domain\Orientador;
+use Src\domain\Salon;
 use Src\infraestructure\util\FormatoMoneda;
 use Src\infraestructure\util\Paginate;
 
@@ -85,7 +86,11 @@ class GrupoDao extends Model implements GrupoRepository {
                 
                 $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);
                 $curso = $cursoDao->buscarCursoPorId($g->curso_id);
-                $salon = $salonDao->buscarSalonPorId($g->salon_id);
+
+                $salon = new Salon();
+                if (!is_null($g->salon_id)) {
+                    $salon = $salonDao->buscarSalonPorId($g->salon_id);
+                }
 
                 $cursoCalendario = new CursoCalendario($calendario, $curso);
                 $cursoCalendario->setId($g->curso_calendario_id);
@@ -125,7 +130,7 @@ class GrupoDao extends Model implements GrupoRepository {
                     ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
                     ->join('calendarios as ca', 'ca.id', '=', 'cc.calendario_id')
                     ->join('cursos as c', 'c.id', '=', 'cc.curso_id')
-                    ->join('salones as s', 's.id', '=', 'g.salon_id')
+                    ->leftJoin('salones as s', 's.id', '=', 'g.salon_id')
                     ->where('g.id', $id)
                     ->first();
 
@@ -145,8 +150,13 @@ class GrupoDao extends Model implements GrupoRepository {
                 
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);
+
                 $curso = $cursoDao->buscarCursoPorId($g->curso_id);
-                $salon = $salonDao->buscarSalonPorId($g->salon_id);
+
+                $salon = new Salon();
+                if (!is_null($g->salon_id)) {
+                    $salon = $salonDao->buscarSalonPorId($g->salon_id);
+                }
 
                 $cursoCalendario = new CursoCalendario($caledario, $curso);
                 $cursoCalendario->setId($g->curso_calendario_id);
@@ -157,7 +167,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 $grupo->setOrientador($orientador);
                 $grupo->setSalon($salon);
             }            
-        } catch (\Exception $e) {
+        } catch (\Exception $e) {         
             Sentry::captureException($e);
         }
 
@@ -173,7 +183,7 @@ class GrupoDao extends Model implements GrupoRepository {
 
             $nuevoGrupo = GrupoDao::create([
                 'curso_calendario_id' => $grupo->getCursoCalendarioId(), 
-                'salon_id' => $grupo->getSalon()->getId(), 
+                'salon_id' => ($grupo->getSalon()->getId() == 0 ? NULL : $grupo->getSalon()->getId()), 
                 'orientador_id' => $grupo->getOrientador()->getId(), 
                 'dia' => $grupo->getDia(), 
                 'nombre' => null,
@@ -223,7 +233,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 DB::statement("SET @usuario_sesion = $idUsuarioSesion");
                                 
                 $rs->update([
-                    'salon_id' => $grupo->getSalon()->getId(), 
+                    'salon_id' => ($grupo->getSalon()->getId() == 0 ? NULL : $grupo->getSalon()->getId()), 
                     'orientador_id' => $grupo->getOrientador()->getId(), 
                     'dia' => $grupo->getDia(), 
                     'jornada' => $grupo->getJornada(),
@@ -393,7 +403,11 @@ class GrupoDao extends Model implements GrupoRepository {
                 $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);
                 $orientador = $orientadorDao->buscarOrientadorPorId($g->orientador_id);
                 $curso = $cursoDao->buscarCursoPorId($g->curso_id);
-                $salon = $salonDao->buscarSalonPorId($g->salon_id);
+
+                $salon = new Salon();
+                if (!is_null($g->salon_id)) {
+                    $salon = $salonDao->buscarSalonPorId($g->salon_id);
+                }
 
                 $cursoCalendario = new CursoCalendario($caledario, $curso);
                 $cursoCalendario->setId($g->curso_calendario_id);
@@ -481,7 +495,7 @@ class GrupoDao extends Model implements GrupoRepository {
                      ->where('fi.grupo_id', '=', $grupoId);
             })
             ->join('grupos as g', 'g.id', '=', 'fi.grupo_id')
-            ->join('salones as s', 's.id', '=', 'g.salon_id')
+            ->leftJoin('salones as s', 's.id', '=', 'g.salon_id')
             ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
             ->join('calendarios as ca', 'ca.id', '=', 'g.calendario_id')
             ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
@@ -496,7 +510,11 @@ class GrupoDao extends Model implements GrupoRepository {
 
             
             $participantes[] = ['CURSO', 'ORIENTADOR', 'GRUPO', 'DIA', 'JORNADA', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO', 'PERIODO', 'TOTAL_A_PAGAR', 'SALON'];
-            foreach($items as $item) {                        
+            foreach($items as $item) {    
+                $nombre_salon = "";
+                if (!is_null($item->salon_nombre)) {
+                    $nombre_salon = $item->salon_nombre;
+                }
                 $participantes[] = [mb_strtoupper($item->curso, 'UTF-8'),
                                     mb_strtoupper($item->orientador, 'UTF-8'),
                                     $item->grupo, 
@@ -510,20 +528,18 @@ class GrupoDao extends Model implements GrupoRepository {
                                     mb_strtoupper($item->estadoInscripcion, 'UTF-8'),
                                     mb_strtoupper($item->calendario, 'UTF-8'),
                                     FormatoMoneda::PesosColombianos($item->total_a_pagar),
-                                    mb_strtoupper($item->salon_nombre, 'UTF-8'),
+                                    mb_strtoupper($nombre_salon, 'UTF-8'),
                                 ];
             }
 
 
         } catch(\Exception $e) {
-            dd($e->getMessage());
             Sentry::captureException($e);
         }
         
         return $participantes;        
     }
 
-    // ES ESTEEEEE
     public static function listadoParticipantesPlanillaAsistencia($grupoId=0): array {
         $participantes = [];
 
@@ -560,7 +576,7 @@ class GrupoDao extends Model implements GrupoRepository {
                              ->where('fi.grupo_id', '=', $grupoId);
                     })
                     ->join('grupos as g', 'g.id', '=', 'fi.grupo_id')
-                    ->join('salones as s', 's.id', '=', 'g.salon_id')
+                    ->leftJoin('salones as s', 's.id', '=', 'g.salon_id')
                     ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
                     ->join('calendarios as ca', 'ca.id', '=', 'g.calendario_id')
                     ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
@@ -579,6 +595,11 @@ class GrupoDao extends Model implements GrupoRepository {
                 if ($item->nombre_convenio == "Convenio empleados y contratistas UnicolMayor") {
                     $nombreConvenio = "UCMC";
                 }
+
+                $nombre_salon = "";
+                if (!is_null($item->nombre_salon)) {
+                    $nombre_salon = $item->nombre_salon;
+                }
                 
                 $participantes[] = [mb_strtoupper($item->curso, 'UTF-8'),
                                     mb_strtoupper($item->orientador, 'UTF-8'),
@@ -593,13 +614,12 @@ class GrupoDao extends Model implements GrupoRepository {
                                     mb_strtoupper($item->estadoInscripcion, 'UTF-8'),
                                     mb_strtoupper($item->calendario, 'UTF-8'),                                    
                                     $nombreConvenio,
-                                    mb_strtoupper($item->nombre_salon, 'UTF-8'),
+                                    mb_strtoupper($nombre_salon, 'UTF-8'),
                                     mb_strtoupper($item->nombre_area, 'UTF-8')                                    
                                 ];
             }
 
         } catch(\Exception $e) {
-            dd($e->getMessage());
             Sentry::captureException($e);
         }
         

@@ -13,6 +13,7 @@ use Src\domain\repositories\OrientadorRepository;
 
 use Sentry\Laravel\Facade as Sentry;
 use Src\domain\Calendario;
+use Src\domain\Salon;
 use Src\infraestructure\util\Paginate;
 
 class OrientadorDao extends Model implements OrientadorRepository {
@@ -85,7 +86,12 @@ class OrientadorDao extends Model implements OrientadorRepository {
             $grupo->setCancelado($g->cancelado);            
             $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);                    
             $curso = $cursoDao->buscarCursoPorId($g->curso_id);
-            $salon = $salonDao->buscarSalonPorId($g->salon_id);            
+
+            $salon = new Salon();
+            if (!is_null($g->salon_id))
+            {
+                $salon = $salonDao->buscarSalonPorId($g->salon_id);            
+            }
             $cursoCalendario = new CursoCalendario($caledario, $curso);
             $cursoCalendario->setId($g->curso_calendario_id);
             $cursoCalendario->setModalidad($g->modalidad);            
@@ -161,38 +167,8 @@ class OrientadorDao extends Model implements OrientadorRepository {
                 }
                 
                 $orientador->setAreas($areas);
-
-                // $grupos = array();
-                // foreach($this->grupos($orientador->getId(), $calendario) as $g) {
-                    
-                //     $grupo = new Grupo();                
-                //     $grupo->setNombre($g->nombre);
-                //     $grupo->setid($g->id);
-                //     $grupo->setDia($g->dia);
-                //     $grupo->setJornada($g->jornada);
-                //     $grupo->setCupo($g->cupos);
-                //     $grupo->setTotalInscritos($g->total_inscripciones_validas);
-                //     $grupo->setCancelado($g->cancelado);
-                    
-                //     $caledario = $calendarioDao->buscarCalendarioPorId($g->calendario_id);                    
-
-                //     $curso = $cursoDao->buscarCursoPorId($g->curso_id);
-                    
-                //     $salon = $salonDao->buscarSalonPorId($g->salon_id);
-                    
-                //     $cursoCalendario = new CursoCalendario($caledario, $curso);
-                //     $cursoCalendario->setId($g->curso_calendario_id);
-                //     $cursoCalendario->setModalidad($g->modalidad);
-                    
-                //     $grupo->setCursoCalendario($cursoCalendario);
-                //     $grupo->setSalon($salon);
-                    
-                //     array_push($grupos, $grupo);
-                    
-                // }
-
-                // $orientador->setGrupos($grupos);                
             }            
+
         } catch (\Exception $e) {
             Sentry::captureException($e);
         }

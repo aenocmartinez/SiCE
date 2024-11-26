@@ -47,6 +47,12 @@
                             >{{ $salon->getNombreYTipoSalon() }} (capacidad: {{ $salon->getCapacidad() }} personas)                            
                         </option>
                     @endforeach
+                        <option 
+                            value="0" 
+                            data-valor-asignar="1000"
+                            {{ old('salon', $grupo->getSalon()->getId()) == 0 ? 'selected' : '' }}
+                            >Virtual
+                        </option>
                 </select>
                 @error('salon')
                     <span class="invalid-feedback" role="alert">
@@ -207,6 +213,7 @@
         }); 
         
         $('#salon').change(function() {
+            console.log("LLama aqui")
             var valorSeleccionado = $(this).val();
             var valorAsignar = $('#salon option:selected').data('valor-asignar');
             $('#capacidad_salon').val(valorAsignar);
@@ -258,7 +265,7 @@
     }      
 
     const salonId = "{{ $grupo->getSalonId() }}";
-    if (salonId > 0) {
+    if (salonId >= 0) {
         var valorSeleccionado = $('#salon').val();
             var valorAsignar = $('#salon option:selected').data('valor-asignar');
             $('#capacidad_salon').val(valorAsignar);        

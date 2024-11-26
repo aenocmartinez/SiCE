@@ -31,7 +31,7 @@ class GuardarGrupo extends FormRequest
             'dia' => 'required',
             'orientador' => 'required|integer',
             'capacidad_salon' => 'required|integer',
-            'cupo' => 'required|integer|gt:0|digits_between:1,2',
+            'cupo' => 'required|integer|gt:0|digits_between:1,4',
             'id' => 'numeric|nullable',
             'bloqueado' => 'nullable',
             'observaciones' => 'nullable',

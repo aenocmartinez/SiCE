@@ -162,6 +162,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 // Verificar si el registro ya existe
                 $existe = $calendario->cursos()
                     ->wherePivot('curso_id', $cursoCalendario->getCursoId())
+                    ->wherePivot('modalidad', $cursoCalendario->getModalidad())
                     ->exists();
     
                 if ($existe) {

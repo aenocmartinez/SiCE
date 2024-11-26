@@ -2,8 +2,6 @@
 
 namespace Src\domain;
 
-use Src\dao\mysql\CalendarioDao;
-use Src\dao\mysql\CursoDao;
 use Src\dao\mysql\OrientadorDao;
 use Src\infraestructure\util\FormatoFecha;
 use Src\infraestructure\util\Paginate;
