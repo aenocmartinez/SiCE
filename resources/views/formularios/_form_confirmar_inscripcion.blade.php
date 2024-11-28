@@ -259,82 +259,128 @@
 <script>One.helpersOnLoad(['js-flatpickr']);</script>
 
 <script>
+// $(document).ready(function() {
+//     const valorPagoInput = document.getElementById('valorPago');
+//     const abonoInput = document.getElementById('abono');
+
+//     // Mostrar y ocultar comentarios
+//     $('.toggle-comment').click(function() {
+//         const target = $(this).data('target');
+//         $(target).toggleClass('d-none');
+//         const text = $(this).text() === 'Mostrar comentario' ? 'Ocultar comentario' : 'Mostrar comentario';
+//         $(this).text(text);
+//     });
+
+//     abonoInput.addEventListener('input', function(event) {
+//         let value = event.target.value;
+//         value = value.replace(/\D/g, ''); // Elimina caracteres no numéricos
+//         value = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
+//         event.target.value = value;
+//         valorPagoInput.value = '';
+//     });
+
+//     valorPagoInput.addEventListener('input', function(event) {
+//         let value = event.target.value;
+//         value = value.replace(/\D/g, ''); // Elimina caracteres no numéricos
+//         value = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
+//         event.target.value = value;
+//     });
+
+//     valorPagoInput.form.addEventListener('submit', function() {
+//         abonoInput.value = abonoInput.value.replace(/[^0-9]/g, '');
+//         valorPagoInput.value = valorPagoInput.value.replace(/[^0-9]/g, '');
+//         if (abonoInput.value.trim() !== '') {
+//         valorPagoInput.value = abonoInput.value;
+//     }        
+//     });
+
+//     $('input[name="convenio"]').change(function(){
+//         checkearConvenio();
+//     });
+
+//     function checkearConvenio() {
+//         const valor = $('input[name="convenio"]:checked').val();            
+//         const datosConvenio = valor.split('@');
+        
+//         $("#convenioId").val(datosConvenio[0]); 
+
+//         const porcentajeDescuento = datosConvenio[1];
+//         const nombreDescuento = datosConvenio[2];            
+//         const valorCosto = $('#idCosto').text();
+
+//         const valores = calcularTotalAPagar(valorCosto, porcentajeDescuento);
+
+//         $('#idNombreDescuento').text(nombreDescuento);
+//         $('#idValorDescuento').text(formatoMoneda(valores[1]));
+//         $("#valor_descuento").val(valores[1]); 
+
+//         $('#idValorTotalAPagar').text(formatoMoneda(valores[0]));
+//     }
+
+//     function calcularTotalAPagar(valorCosto, porcentajeDescuento) {
+//         valorCosto = convertirFormatoCostoAEntero(valorCosto);
+//         const valorDescuento = calcularDescuento(valorCosto, porcentajeDescuento);
+//         const valorTotalAPagar = valorCosto - valorDescuento;
+
+//         return [valorTotalAPagar, valorDescuento];
+//     }
+
+//     function calcularDescuento(valorCosto, porcentajeDescuento) {
+//         return porcentajeDescuento == 0 ? 0 : valorCosto * (porcentajeDescuento / 100);
+//     }
+
+//     function convertirFormatoCostoAEntero(valorCosto) {
+//         return parseInt(valorCosto.replace(/[^0-9]/g, ''), 10);
+//     }
+
+//     function formatoMoneda(numero) {
+//         return '$' + numero.toLocaleString('es-CO', {minimumFractionDigits: 0}) + ' COP';
+//     }
+// });
+
 $(document).ready(function() {
     const valorPagoInput = document.getElementById('valorPago');
     const abonoInput = document.getElementById('abono');
 
-    // Mostrar y ocultar comentarios
-    $('.toggle-comment').click(function() {
-        const target = $(this).data('target');
-        $(target).toggleClass('d-none');
-        const text = $(this).text() === 'Mostrar comentario' ? 'Ocultar comentario' : 'Mostrar comentario';
-        $(this).text(text);
+    function formatCurrency(input) {
+        let value = input.value.replace(/\D/g, ''); // Eliminar caracteres no numéricos
+        if (value) {
+            input.value = new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0
+            }).format(value);
+        }
+    }
+
+    function removeFormatting(input) {
+        input.value = input.value.replace(/[^0-9]/g, ''); // Dejar solo los números
+    }
+
+    // Aplicar formato al perder el foco
+    abonoInput.addEventListener('blur', function() {
+        formatCurrency(abonoInput);
     });
 
-    abonoInput.addEventListener('input', function(event) {
-        let value = event.target.value;
-        value = value.replace(/\D/g, ''); // Elimina caracteres no numéricos
-        value = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
-        event.target.value = value;
-        valorPagoInput.value = '';
+    valorPagoInput.addEventListener('blur', function() {
+        formatCurrency(valorPagoInput);
     });
 
-    valorPagoInput.addEventListener('input', function(event) {
-        let value = event.target.value;
-        value = value.replace(/\D/g, ''); // Elimina caracteres no numéricos
-        value = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
-        event.target.value = value;
+    // Remover formato al enfocar
+    abonoInput.addEventListener('focus', function() {
+        removeFormatting(abonoInput);
     });
 
+    valorPagoInput.addEventListener('focus', function() {
+        removeFormatting(valorPagoInput);
+    });
+
+    // Remover formato antes de enviar el formulario
     valorPagoInput.form.addEventListener('submit', function() {
-        abonoInput.value = abonoInput.value.replace(/[^0-9]/g, '');
-        valorPagoInput.value = valorPagoInput.value.replace(/[^0-9]/g, '');
-        if (abonoInput.value.trim() !== '') {
-        valorPagoInput.value = abonoInput.value;
-    }        
+        removeFormatting(abonoInput);
+        removeFormatting(valorPagoInput);
     });
-
-    $('input[name="convenio"]').change(function(){
-        checkearConvenio();
-    });
-
-    function checkearConvenio() {
-        const valor = $('input[name="convenio"]:checked').val();            
-        const datosConvenio = valor.split('@');
-        
-        $("#convenioId").val(datosConvenio[0]); 
-
-        const porcentajeDescuento = datosConvenio[1];
-        const nombreDescuento = datosConvenio[2];            
-        const valorCosto = $('#idCosto').text();
-
-        const valores = calcularTotalAPagar(valorCosto, porcentajeDescuento);
-
-        $('#idNombreDescuento').text(nombreDescuento);
-        $('#idValorDescuento').text(formatoMoneda(valores[1]));
-        $("#valor_descuento").val(valores[1]); 
-
-        $('#idValorTotalAPagar').text(formatoMoneda(valores[0]));
-    }
-
-    function calcularTotalAPagar(valorCosto, porcentajeDescuento) {
-        valorCosto = convertirFormatoCostoAEntero(valorCosto);
-        const valorDescuento = calcularDescuento(valorCosto, porcentajeDescuento);
-        const valorTotalAPagar = valorCosto - valorDescuento;
-
-        return [valorTotalAPagar, valorDescuento];
-    }
-
-    function calcularDescuento(valorCosto, porcentajeDescuento) {
-        return porcentajeDescuento == 0 ? 0 : valorCosto * (porcentajeDescuento / 100);
-    }
-
-    function convertirFormatoCostoAEntero(valorCosto) {
-        return parseInt(valorCosto.replace(/[^0-9]/g, ''), 10);
-    }
-
-    function formatoMoneda(numero) {
-        return '$' + numero.toLocaleString('es-CO', {minimumFractionDigits: 0}) + ' COP';
-    }
 });
+
+
 </script>
