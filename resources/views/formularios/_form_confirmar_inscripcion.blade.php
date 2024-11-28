@@ -379,7 +379,55 @@ $(document).ready(function() {
     valorPagoInput.form.addEventListener('submit', function() {
         removeFormatting(abonoInput);
         removeFormatting(valorPagoInput);
+
+        if (abonoInput.value.trim() !== '') {
+            valorPagoInput.value = abonoInput.value;        
+        }
     });
+
+    $('input[name="convenio"]').change(function(){
+        console.log("Aqui está la cosa");
+        checkearConvenio();
+    });    
+
+    function checkearConvenio() {
+        const valor = $('input[name="convenio"]:checked').val();            
+        const datosConvenio = valor.split('@');
+        
+        $("#convenioId").val(datosConvenio[0]); 
+
+        const porcentajeDescuento = datosConvenio[1];
+        const nombreDescuento = datosConvenio[2];            
+        const valorCosto = $('#idCosto').text();
+
+        const valores = calcularTotalAPagar(valorCosto, porcentajeDescuento);
+
+        $('#idNombreDescuento').text(nombreDescuento);
+        $('#idValorDescuento').text(formatoMoneda(valores[1]));
+        $("#valor_descuento").val(valores[1]); 
+
+        $('#idValorTotalAPagar').text(formatoMoneda(valores[0]));
+    }    
+
+    function calcularTotalAPagar(valorCosto, porcentajeDescuento) {
+        valorCosto = convertirFormatoCostoAEntero(valorCosto);
+        const valorDescuento = calcularDescuento(valorCosto, porcentajeDescuento);
+        const valorTotalAPagar = valorCosto - valorDescuento;
+
+        return [valorTotalAPagar, valorDescuento];
+    }
+
+    function calcularDescuento(valorCosto, porcentajeDescuento) {
+        return porcentajeDescuento == 0 ? 0 : valorCosto * (porcentajeDescuento / 100);
+    }
+
+    function convertirFormatoCostoAEntero(valorCosto) {
+        return parseInt(valorCosto.replace(/[^0-9]/g, ''), 10);
+    }   
+    
+    function formatoMoneda(numero) {
+        return '$' + numero.toLocaleString('es-CO', {minimumFractionDigits: 0}) + ' COP';
+    }    
 });
 
 

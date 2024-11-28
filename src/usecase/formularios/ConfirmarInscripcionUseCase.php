@@ -46,7 +46,7 @@ class ConfirmarInscripcionUseCase {
         {
             $totalAPagar = 0;
             $estado = "Pagado";
-        }        
+        }
 
         $participante = new Participante();
         $participante->setId($confirmarInscripcionDto->participanteId);
@@ -82,7 +82,7 @@ class ConfirmarInscripcionUseCase {
 
         $exito = false;
         if ($formularioInscripcion->existe()) 
-        {        
+        {   
             $formularioInscripcion->setEstado('Revisar comprobante de pago');
             
             $exito = $formularioInscripcion->Actualizar();            
@@ -92,7 +92,12 @@ class ConfirmarInscripcionUseCase {
             }
         } 
         else 
-        { 
+        {                           
+            if ($formularioInscripcion->getTotalAPagar() - $formularioInscripcion->getValorDescuento() == $formularioInscripcion->getValorPago())
+            {
+                $formularioInscripcion->setEstado("Pagado");
+            }
+
             $exito = $formularioInscripcion->Crear();
             if (!$exito) 
             {

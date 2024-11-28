@@ -224,7 +224,7 @@
 </div>
 
 <script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
-<script>
+<!-- <script>
     $(document).ready(function(){
         if ($('input[name="convenio"]').is(':checked')) {
             checkearConvenio();
@@ -323,4 +323,110 @@
     function formatoMoneda(numero) {
         return numero.toLocaleString('es-CO', {minimumFractionDigits: 0});
     }    
+</script> -->
+
+<script>
+    $(document).ready(function(){
+        // Lógica existente para convenios
+        if ($('input[name="convenio"]').is(':checked')) {
+            checkearConvenio();
+        }
+
+        $('input[name="convenio"]').change(function(){   
+            checkearConvenio();
+        });
+
+        // Cambiar el comportamiento según el medio de pago seleccionado
+        $('input[name="medioPago"]').change(function(){
+            const medioPago = $('input[name="medioPago"]:checked').val();
+            $("#s-voucher").hide();
+            if (medioPago === "pagoDatafono") {
+                $("#s-voucher").show();
+            } else {
+                $("#voucher").val("");
+                var miRedirect = document.createElement('a');
+                miRedirect.setAttribute('href', 'https://www.e-collect.com/customers/pagosunicolmayor.htm');
+                miRedirect.setAttribute('target', '_blank');
+                miRedirect.click();
+            }
+        });
+
+        // Aplicar formato de moneda mientras se escribe y al perder el foco
+        $('#valorPago').on('input blur', function() {
+            formatCurrency(this);
+        });
+
+        // Quitar formato de moneda antes de enviar el formulario
+        $('form').submit(function() {
+            $('#valorPago').val($('#valorPago').val().replace(/[^0-9]/g, ''));
+        });
+    });
+
+    function formatCurrency(input) {
+        // Remover caracteres no numéricos
+        let rawValue = input.value.replace(/[^0-9]/g, '');
+
+        // Aplicar formato de moneda si hay valor
+        if (rawValue) {
+            input.value = parseInt(rawValue, 10).toLocaleString('es-CO');
+        } else {
+            input.value = ''; // Limpiar si no hay valor
+        }
+
+        // Mover el cursor al final
+        setTimeout(() => {
+            input.selectionStart = input.selectionEnd = input.value.length;
+        }, 0);
+    }
+
+    function checkearConvenio() {      
+        const valor = $('input[name="convenio"]:checked').val();            
+        var datosConvenio = valor.split('@');
+        
+        $("#convenioId").val(datosConvenio[0]); 
+
+        var porcentajeDescuento = datosConvenio[1];
+        var nombreDescuento = datosConvenio[2];            
+        var valorCosto = $('#costo_curso').val();
+
+        valores = calcularTotalAPagar(valorCosto, porcentajeDescuento);
+        
+        $('#idValorDescuento').text(formatoMoneda(valores[1]));
+        $("#valor_descuento").val(valores[1]); 
+
+        $('#idValorTotalAPagar').text(formatoMoneda(valores[0]));
+        $("#total_a_pagar").val(valores[0]); 
+
+        $("#idDescuentoNuevo").text(formatoMoneda(valores[1]));
+        $('#idCosto').text(formatoMoneda(valores[0]));    
+
+        var pendiente_por_pagar = valores[0] - $("#pago_parcial").val();
+        $('#idPendientePorAPagar').text(`$${formatoMoneda(pendiente_por_pagar)} COP`);
+        $("#valor_pendiente_por_pagar").val(pendiente_por_pagar);
+    }
+
+    function calcularTotalAPagar(valorCosto, porcentajeDescuento) {
+        valorCosto = convertirFormatoCostoAEntero(valorCosto);
+        var valorDescuento = calcularDescuento(valorCosto, porcentajeDescuento);
+        var valorTotalAPagar = valorCosto - valorDescuento;
+
+        return [valorTotalAPagar, valorDescuento];
+    }
+
+    function calcularDescuento(valorCosto, porcentajeDescuento) {
+        if (porcentajeDescuento == 0) {
+            return 0;
+        }
+        return valorCosto * (porcentajeDescuento / 100);
+    }
+
+    function convertirFormatoCostoAEntero(valorCosto) {
+        var numeros = valorCosto.replace(/[^0-9]/g, '');
+        return parseInt(numeros, 10);
+    }
+
+    function formatoMoneda(numero) {
+        return numero.toLocaleString('es-CO', {minimumFractionDigits: 0});
+    }
 </script>
+
