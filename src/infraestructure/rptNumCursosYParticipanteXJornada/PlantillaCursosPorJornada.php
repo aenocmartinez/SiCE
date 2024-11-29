@@ -259,7 +259,7 @@ class PlantillaCursosPorJornada
         self::$total_acumulados_por_area["total_participantes_noche"] += $consolidadoPorJornadaYSexo["Noche"]["total_participantes"];
         self::$total_acumulados_por_area["total_participantes_hombres_noche"] += $consolidadoPorJornadaYSexo["Noche"]["M"]["total"];
         self::$total_acumulados_por_area["total_participantes_mujeres_noche"] += $consolidadoPorJornadaYSexo["Noche"]["F"]["total"];
-        self::$total_acumulados_por_area["total_hombres"] += $registro->getCursoActualTotalGeneroMasculino();
+        self::$total_acumulados_por_area["total_hombres"] += $registro->getCursoActualTotalGeneroMasculino() + $registro->getCursoActualTotalGeneroOtro();
         self::$total_acumulados_por_area["total_mujeres"] += $registro->getCursoActualTotalGeneroFemenino();
         self::$total_acumulados_por_area["total_grupos"] += $registro->getCursoActualTotalGrupos();
         self::$total_acumulados_por_area["total_participantes"] += $registro->getCursoActualTotalParticipantes();
