@@ -79,8 +79,9 @@ class PlantillaCursosPorJornada
                     $registro->setCursoActualTotalGeneroMasculino($dato->getTotalMasculinos());
                     $registro->setCursoActualTotalGeneroOtro($dato->getTotalOtro());
                     $registro->setCursoActualTotalParticipantes($dato->getTotalParticipantes());  
-
-                    $tr_tBody .= self::agregarTagRegistro($registro, $consolidadoPorJornadaYSexo);                                            
+                    
+                    $consolidadoPorJornadaYSexo = self::consolidadoPorJornadaYSexo($consolidadoPorJornadaYSexo, $dato);
+                    $tr_tBody .= self::agregarTagRegistro($registro, $consolidadoPorJornadaYSexo);
                 }
 
                 $tr_tBody = $tr_tBody_Area . $tr_tBody . self::agregarAcumuladoPorArea($area_actual);
