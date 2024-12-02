@@ -28,13 +28,27 @@ use Src\view\dto\ParticipanteDto;
 
 use Illuminate\Support\Str;
 use Src\usecase\formularios\RealizarPreInscripcionUseCase;
+use Src\usecase\calendarios\ObtenerCalendarioVigenteUseCase;
 
 class InscripcionPublicaController extends Controller
 {
     public $cursos_a_matricular = array();
 
-    public function index() {            
-        return view('public.inicio', ['mostrarBoton']);
+    public function index() {     
+        
+        $mensajeVentanaModal = "Si usted se inscribe mediante un <strong>convenio</strong>, por favor comuníquese con nuestra oficina al número <strong>316 471 8655</strong> para recibir orientación.";
+        
+        $periodo = (new ObtenerCalendarioVigenteUseCase)->ejecutar();
+
+        if (!$periodo->existe() || !$periodo->estaElFormularioInscripcionAbierto())
+        {
+            $mensajeVentanaModal = "Actualmente, no hay calendarios disponibles para inscripción.";
+        }
+
+        return view('public.inicio', [
+            'mostrarBoton',
+            'mensajeVentanaModal' => $mensajeVentanaModal,
+        ]);
     }
 
     public function consultarExistencia(FormularioPublicoInscripionConsultarExistencia $req) 

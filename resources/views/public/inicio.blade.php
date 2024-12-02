@@ -53,6 +53,30 @@
     </form>
 </div>
 
-<!-- Script de reCAPTCHA -->
+<!-- Modal -->
+<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="infoModalLabel">Información importante</h5>
+      </div>
+      <div class="modal-body text-center">
+        {!! $mensajeVentanaModal !!}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = new bootstrap.Modal(document.getElementById('infoModal'));
+        modal.show();
+
+        setTimeout(() => {
+            modal.hide();
+        }, 6000); 
+    });
+</script>
+
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 @endsection
