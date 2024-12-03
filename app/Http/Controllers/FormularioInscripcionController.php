@@ -204,7 +204,9 @@ class FormularioInscripcionController extends Controller
         
         if ($participanteId == 0) {
             return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "Formulario no válido.");
-        }    
+        }
+
+
 
         $resultado = (new GenerarReciboMatriculaUseCase)->ejecutar($participanteId, $calendarioId);
 

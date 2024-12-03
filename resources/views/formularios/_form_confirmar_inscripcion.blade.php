@@ -342,6 +342,14 @@ $(document).ready(function() {
     const valorPagoInput = document.getElementById('valorPago');
     const abonoInput = document.getElementById('abono');
 
+    // Mostrar y ocultar comentarios
+    $('.toggle-comment').click(function() {
+        const target = $(this).data('target');
+        $(target).toggleClass('d-none');
+        const text = $(this).text() === 'Mostrar comentario' ? 'Ocultar comentario' : 'Mostrar comentario';
+        $(this).text(text);
+    });    
+
     function formatCurrency(input) {
         let value = input.value.replace(/\D/g, ''); // Eliminar caracteres no numéricos
         if (value) {
