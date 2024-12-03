@@ -8,6 +8,7 @@ use Src\infraestructure\util\Paginate;
 class CambioTraslado {
 
     private int $id;
+    private int $calendarioId;
     private string $periodo;
     private string $accion;
     private $valorInicialAPagar;
@@ -38,7 +39,18 @@ class CambioTraslado {
         $this->nuevoParticipante = new Participante();
         $this->grupoInicial = new Grupo();
         $this->nuevoGrupo = new Grupo();
+        $this->calendarioId = 0;
     }
+
+    public function setCalendarioId($calendarioId): void
+    {
+        $this->calendarioId = $calendarioId;
+    }
+
+    public function getCalendarioId()
+    {
+        return $this->calendarioId;
+    }    
 
     public function setId(int $id): void {
         $this->id = $id;

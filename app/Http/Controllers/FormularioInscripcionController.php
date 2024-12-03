@@ -200,7 +200,7 @@ class FormularioInscripcionController extends Controller
                             ->with('nombre_archivo', $nombre_archivo);
     }
 
-    function descargarReciboMatricula($participanteId, $calendarioId) {
+    function descargarReciboMatricula($participanteId, $calendarioId=0) {
         
         if ($participanteId == 0) {
             return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "Formulario no válido.");

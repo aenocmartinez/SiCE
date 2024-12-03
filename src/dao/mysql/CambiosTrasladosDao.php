@@ -99,6 +99,7 @@ class CambiosTrasladosDao extends Model {
                         'nuevo_grupo.jornada as nuevo_grupo_jornada',
                         'nuevo_grupo.dia as nuevo_grupo_dia',                                   
                         'nuevo_curso.nombre as nuevo_curso_nombre', 
+                        'grupos.calendario_id'
                     ])
                     ->join('formulario_inscripcion', function($join) {
                         $join->on('formulario_inscripcion.id', '=', 'cambios_traslados.formulario_id')
@@ -151,6 +152,7 @@ class CambiosTrasladosDao extends Model {
             $cambio = new CambioTraslado();
             $cambio->setId($item->id);
             $cambio->setPeriodo($item->periodo);
+            $cambio->setCalendarioId($item->calendario_id);
             $cambio->setAccion($item->accion);
             if ($item->estado == 'Aplazado') {
                 $cambio->setAccion('aplazamiento');

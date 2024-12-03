@@ -98,7 +98,7 @@
                             @endif
                             
                             @if (!$item->getFormulario()->Anulado() && !$item->getFormulario()->Aplazado())                                
-                                <a href="{{ route('formulario-inscripcion.descargar-recibo-matricula', $item->getParticipanteInicial()->getId()) }}" 
+                                <a href="{{ route('formulario-inscripcion.descargar-recibo-matricula', [$item->getParticipanteInicial()->getId(), $item->getCalendarioId()]) }}" 
                                         class="btn fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-info-light text-info"
                                         data-bs-toggle="tooltip" 
                                         title="Descargar recibo matrícula">
