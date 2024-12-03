@@ -200,13 +200,13 @@ class FormularioInscripcionController extends Controller
                             ->with('nombre_archivo', $nombre_archivo);
     }
 
-    function descargarReciboMatricula($participanteId) {
+    function descargarReciboMatricula($participanteId, $calendarioId) {
         
         if ($participanteId == 0) {
             return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "Formulario no válido.");
         }    
 
-        $resultado = (new GenerarReciboMatriculaUseCase)->ejecutar($participanteId);
+        $resultado = (new GenerarReciboMatriculaUseCase)->ejecutar($participanteId, $calendarioId);
 
         if (!$resultado["exito"]) {
             return redirect()->route('formulario-inscripcion.paso-1')->with('code', "404")->with('status', "Formulario no válido.");

@@ -576,9 +576,11 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         return $formularios;
     }
 
-    public static function GenerarReciboDeMatricula($participanteId=0): array {        
-        $datosReciboMatricula = [];        
-        $calendario = Calendario::Vigente();
+    public static function GenerarReciboDeMatricula($participanteId=0, $calendarioId = 0): array {        
+        $datosReciboMatricula = [];  
+        
+        $calendario = Calendario::buscarPorId($calendarioId);
+        // $calendario = Calendario::Vigente();
         if (!$calendario->existe()) {
             return $datosReciboMatricula;
         }

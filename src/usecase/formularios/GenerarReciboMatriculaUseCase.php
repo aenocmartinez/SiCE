@@ -20,9 +20,9 @@ class GenerarReciboMatriculaUseCase {
     const JORNADA = 13;
     const CONVENIO = 15;
 
-    public function ejecutar($formularioId=0): array {
+    public function ejecutar($formularioId=0, $calendarioId): array {
         
-        $datos_recibo_pago = FormularioInscripcionDao::GenerarReciboDeMatricula($formularioId);
+        $datos_recibo_pago = FormularioInscripcionDao::GenerarReciboDeMatricula($formularioId, $calendarioId);
         
         if (sizeof($datos_recibo_pago) == 0) {
             return [
