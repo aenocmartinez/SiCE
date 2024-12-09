@@ -125,7 +125,8 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
         return $paginate;
     }
 
-    public function crearFormulario(FormularioInscripcion &$formulario): bool {            
+    public function crearFormulario(FormularioInscripcion &$formulario): bool {    
+        
         $exito = true;
 
         try {
@@ -163,7 +164,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formulario->setId($nuevoFormulario->id);
             }
         } catch(Exception $e) {
-            $exito = false;       
+            $exito = false;               
             Sentry::captureException($e);
         }
 

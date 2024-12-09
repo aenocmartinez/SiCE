@@ -45,7 +45,7 @@ class ConfirmarInscripcionUseCase {
         if ($convenio->esCooperativa()) 
         {
             $totalAPagar = 0;
-            $estado = "Pagado";
+            $estado = "Pendiente de pago";
         }
 
         $participante = new Participante();
@@ -93,7 +93,7 @@ class ConfirmarInscripcionUseCase {
         } 
         else 
         {                           
-            if ($formularioInscripcion->getTotalAPagar() - $formularioInscripcion->getValorDescuento() == $formularioInscripcion->getValorPago())
+            if ($formularioInscripcion->getCostoCurso() - $formularioInscripcion->getValorDescuento() == $formularioInscripcion->getValorPago())
             {
                 $formularioInscripcion->setEstado("Pagado");
             }

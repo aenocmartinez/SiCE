@@ -373,7 +373,7 @@ class FormularioInscripcion {
 
     public function TotalPagoRealizado() {
 
-        if ($this->Pagado()) {
+        if ($this->Pagado()) {            
             return $this->totalAPagar;
         }
 
@@ -415,7 +415,8 @@ class FormularioInscripcion {
         return $this->grupo;
     }
 
-    public function RedimirBeneficioConvenio(): bool {                
+    public function RedimirBeneficioConvenio(): bool {  
+        
         return $this->repository->redimirBeneficioConvenio($this->getParticipanteDocumento(), $this->getConvenioId());
     }
 
@@ -425,7 +426,8 @@ class FormularioInscripcion {
             return false;
         }
 
-        return $this->repository->cambiarEstadoDePagoDeUnFormulario($this->id, $this->EstadoPago());
+        // return $this->repository->cambiarEstadoDePagoDeUnFormulario($this->id, $this->EstadoPago());
+        return $this->repository->cambiarEstadoDePagoDeUnFormulario($this->id, $this->getEstado());
     }
 
     public function tienePagosParciales(): bool {
