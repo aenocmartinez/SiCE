@@ -544,50 +544,53 @@ class GrupoDao extends Model implements GrupoRepository {
         $participantes = [];
 
         try {
-                    $items = DB::table('participantes as p')
-                    ->select([
-                        'fi.numero_formulario',
-                        DB::raw("CONCAT(p.primer_nombre, ' ', p.segundo_nombre, ' ', p.primer_apellido, ' ', p.segundo_apellido) AS nombre_participante"),
-                        DB::raw("CONCAT(p.tipo_documento, ' - ', p.documento) AS documento_participante"),
-                        'p.telefono',
-                        'p.email',
-                        DB::raw("IF(c.nombre IS NULL, 'N/A', c.nombre) as convenio"),
-                        DB::raw("IF(
-                            fi.convenio_id IS NULL, 
-                            IF(fi.estado = 'Pagado', 1, 0), 
+                $items = DB::table('participantes as p')
+                ->select([
+                    'fi.numero_formulario',
+                    DB::raw("CONCAT(p.primer_nombre, ' ', p.segundo_nombre, ' ', p.primer_apellido, ' ', p.segundo_apellido) AS nombre_participante"),
+                    DB::raw("CONCAT(p.tipo_documento, ' - ', p.documento) AS documento_participante"),
+                    'p.telefono',
+                    'p.email',
+                    DB::raw("IF(c.nombre IS NULL, 'N/A', c.nombre) as convenio"),
+                    DB::raw("IF(
+                        fi.estado = 'Pagado', 
+                        1, 
+                        IF(
+                            fi.estado = 'Pendiente de pago' AND fi.convenio_id IS NOT NULL AND c.es_cooperativa = 1, 
+                            1, 
                             IF(
-                                c.es_cooperativa AND fi.estado = 'Pendiente de Pago', 
-                                1, 
-                                IF(fi.estado = 'Pagado', 1, 0)
+                                fi.estado = 'Pendiente de pago' AND fi.convenio_id IS NOT NULL AND c.es_cooperativa = 0, 
+                                0, 
+                                0
                             )
-                        ) as estadoInscripcion"),
-                        'g.nombre as grupo',
-                        'g.dia',
-                        'g.jornada',
-                        'cu.nombre as curso',
-                        'o.nombre as orientador',
-                        'ca.nombre as calendario',
-                        'c.nombre as nombre_convenio',
-                        's.nombre as nombre_salon',
-                        'a.nombre as nombre_area',
-                    ])
-                    ->join('formulario_inscripcion as fi', function($join) use ($grupoId) {
-                        $join->on('fi.participante_id', '=', 'p.id')
-                             ->where('fi.grupo_id', '=', $grupoId);
-                    })
-                    ->join('grupos as g', 'g.id', '=', 'fi.grupo_id')
-                    ->leftJoin('salones as s', 's.id', '=', 'g.salon_id')
-                    ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
-                    ->join('calendarios as ca', 'ca.id', '=', 'g.calendario_id')
-                    ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
-                    ->join('cursos as cu', 'cu.id', '=', 'cc.curso_id')
-                    ->join('areas as a', 'a.id', '=', 'cu.area_id')
-                    ->leftJoin('convenios as c', 'c.id', '=', 'fi.convenio_id')
-                    ->having('estadoInscripcion', '=', 1) 
-                    ->orderBy('p.primer_nombre')
-                    ->orderBy('p.primer_apellido')
-                    ->get();
-                
+                        )
+                    ) as estadoInscripcion"),
+                    'g.nombre as grupo',
+                    'g.dia',
+                    'g.jornada',
+                    'cu.nombre as curso',
+                    'o.nombre as orientador',
+                    'ca.nombre as calendario',
+                    'c.nombre as nombre_convenio',
+                    's.nombre as nombre_salon',
+                    'a.nombre as nombre_area',
+                ])
+                ->join('formulario_inscripcion as fi', function($join) use ($grupoId) {
+                    $join->on('fi.participante_id', '=', 'p.id')
+                            ->where('fi.grupo_id', '=', $grupoId);
+                })
+                ->join('grupos as g', 'g.id', '=', 'fi.grupo_id')
+                ->leftJoin('salones as s', 's.id', '=', 'g.salon_id')
+                ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
+                ->join('calendarios as ca', 'ca.id', '=', 'g.calendario_id')
+                ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
+                ->join('cursos as cu', 'cu.id', '=', 'cc.curso_id')
+                ->join('areas as a', 'a.id', '=', 'cu.area_id')
+                ->leftJoin('convenios as c', 'c.id', '=', 'fi.convenio_id')
+                ->having('estadoInscripcion', '=', 1)
+                ->orderBy('p.primer_nombre')
+                ->orderBy('p.primer_apellido')
+                ->get();                                    
             
             $participantes[] = ['CURSO', 'ORIENTADOR', 'GRUPO', 'DIA', 'JORNADA', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO', 'PERIODO', 'CONVENIO', 'SALON', 'AREA'];
             foreach($items as $item) {
