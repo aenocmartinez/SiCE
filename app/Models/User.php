@@ -59,7 +59,12 @@ class User extends Authenticatable implements UsuarioRepository
     public function esSuperAdmin(): bool
     {
         return $this->role == 'superAdmin';
-    }    
+    }  
+    
+    public function estaActivo(): bool 
+    {
+        return $this->estado == 'Activo';
+    }
 
     public static function BuscarPorId(int $id=0): Usuario
     {

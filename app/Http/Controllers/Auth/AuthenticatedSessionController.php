@@ -35,14 +35,25 @@ class AuthenticatedSessionController extends Controller
 
         // Si la verificación falla, mostrar el mensaje de error
         if (!$responseKeys["success"]) {
-            Log::error('Fallo en reCAPTCHA: ', $responseKeys);
+            
             return back()->withErrors(['g-recaptcha-response' => 'Verificación de reCAPTCHA fallida. Inténtelo de nuevo.'])->withInput();
         }
 
         // Intento de autenticación
         if (!Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
-            Log::warning('Fallo en autenticación: Credenciales incorrectas para ' . $request->input('email'));
+            
             return back()->withErrors(['email' => __('auth.failed')])->withInput();
+        }
+
+        if (!Auth::user()->estaActivo())
+        {
+            Auth::guard('web')->logout();
+
+            $request->session()->invalidate();
+
+            $request->session()->regenerateToken();
+
+            return back()->withErrors(['email' => 'El usuario se encuentra inactivo.'])->withInput();
         }
 
         // Log::info('Autenticación exitosa para ' . $request->input('email'));
