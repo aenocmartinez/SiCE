@@ -45,7 +45,7 @@ class AuthenticatedSessionController extends Controller
             return back()->withErrors(['email' => __('auth.failed')])->withInput();
         }
 
-        Log::info('Autenticación exitosa para ' . $request->input('email'));
+        // Log::info('Autenticación exitosa para ' . $request->input('email'));
 
         $request->session()->regenerate();
 
