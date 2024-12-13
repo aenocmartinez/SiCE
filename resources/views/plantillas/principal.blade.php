@@ -160,7 +160,7 @@
                 </div>
                 <!-- PERFIL -->
                 <div class="p-1">
-                    <a class="dropdown-item d-flex align-items-center justify-content-between" href="#">
+                    <a class="dropdown-item d-flex align-items-center justify-content-between" href="{{ route('users.profile', Auth::user()->id) }}">
                       <span class="fs-sm fw-medium text-center">Mi perfil</span>
                       <span class="badge rounded-pill bg-primary ms-2">
                         <i class="fa fa-user-gear"></i>

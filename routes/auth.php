@@ -77,6 +77,8 @@ Route::middleware('auth')->group(function () {
     Route::post('usuarios/guardar', [UserController::class, 'store'])->middleware('role:superAdmin')->name('users.store'); 
     Route::get('usuarios/{id}/edit', [UserController::class, 'edit'])->middleware('role:superAdmin')->name('users.edit');
     Route::patch('usuarios/actualizar', [UserController::class, 'update'])->middleware('role:superAdmin')->name('users.update'); 
+    Route::get('usuarios/{id}/mi-perfil', [UserController::class, 'profile'])->middleware('role:superAdmin,Admin')->name('users.profile');
+    Route::patch('usuarios/mi-perfil', [UserController::class, 'updateProfile'])->middleware('role:superAdmin,Admin')->name('users.update_profile');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('role:Admin,superAdmin')->name('dashboard');
     Route::get('/dashboard/buscar-formularios/{estado}', [DashboardController::class, 'buscarFormulariosPorEstado'])->middleware('role:Admin,superAdmin')->name('dashboard.buscar-formularios');

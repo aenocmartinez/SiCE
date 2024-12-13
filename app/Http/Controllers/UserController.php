@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ActualizarProfile;
 use App\Http\Requests\ActualizarUsuario;
 use App\Http\Requests\CrearUsuario;
 use Src\infraestructure\util\ListaDeValor;
 use Src\infraestructure\util\Validador;
+use Src\usecase\usuarios\ActualizarProfileUseCase;
 use Src\usecase\usuarios\ActualizarUsuarioUseCase;
 use Src\usecase\usuarios\BuscarUsuarioPorIdUseCase;
 use Src\usecase\usuarios\CrearUsuarioUseCase;
@@ -100,5 +102,47 @@ class UserController extends Controller
         $response = (new ActualizarUsuarioUseCase)->Ejecutar($usuarioDto);
 
         return redirect()->route('users.index')->with('code', $response->code)->with('status', $response->message); 
+    }
+
+    public function profile($id)
+    {
+        $esValido = Validador::parametroId($id);
+        if (!$esValido)
+        {
+            return redirect()->route('users.index')->with('code', 500)->with('status', 'Parámetro no válido');
+        }        
+
+        $usuario = (new BuscarUsuarioPorIdUseCase)->Ejecutar($id);
+
+        if (!$usuario->Existe())
+        {
+            return redirect()->route('users.index')->with('code', 500)->with('status', 'El usuario no existe.');
+        }
+
+        return view('usuarios.profile', [
+            'usuario' => $usuario,
+        ]);
+    }
+
+    public function updateProfile(ActualizarProfile $req)
+    {
+        $data = $req->validated();                
+        $data = (object)$data;        
+
+        $password = "";
+        if (isset($data->password))
+        {
+            $password = $data->password;
+        }
+
+        $usuarioDto = new UsuarioDto();
+        $usuarioDto->setNombre($data->nombre);
+        $usuarioDto->setPassword($password);
+        $usuarioDto->setEmail($data->email);
+        $usuarioDto->setId($data->id);
+
+        $response = (new ActualizarProfileUseCase)->Ejecutar($usuarioDto);
+
+        return redirect()->route('dashboard')->with('code', $response->code)->with('status', $response->message);         
     }
 }

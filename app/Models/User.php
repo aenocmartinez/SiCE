@@ -131,7 +131,7 @@ class User extends Authenticatable implements UsuarioRepository
     }
 
     public function actualizarUsuario(Usuario $usuario): bool
-    {
+    {        
         try 
         {
             $idUsuarioSesion = Auth::id();
