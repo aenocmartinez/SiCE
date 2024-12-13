@@ -133,4 +133,14 @@ class ListaDeValor {
             [ 'value' => 'Participante', 'nombre' => 'Participante'],
         ];
     }
+
+    public static function roles(): array {
+        return [
+            [ 'value' => 'Admin', 'nombre' => 'Administrador'],
+            [ 'value' => 'superAdmin', 'nombre' => 'Súper administrador'],
+            [ 'value' => 'orientador', 'nombre' => 'Orientador'],
+            [ 'value' => 'participante', 'nombre' => 'Participante'],
+            [ 'value' => 'financiera', 'nombre' => 'Financiera'],                                                
+        ];        
+    }    
 }

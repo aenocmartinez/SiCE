@@ -63,6 +63,9 @@
           <!-- Side Navigation -->
           <div class="content-side">
             <ul class="nav-main">
+              @if (Auth::user()->esAdmin() || Auth::user()->esSuperAdmin())
+                
+              
               <li class="nav-main-item">
                 <a class="nav-main-link {{ setActive(['dashboard', 'dashboard.*']) }}" href="{{ route('dashboard') }}">
                   <!-- <i class="nav-main-link-icon si si-speedometer"></i> -->
@@ -114,6 +117,9 @@
 
               </li>
 
+
+              @endif
+
             </ul>
           </div>
           <!-- END Side Navigation -->
@@ -150,16 +156,29 @@
                 <div class="p-3 text-center bg-body-light border-bottom rounded-top">
                   <img class="img-avatar img-avatar48 img-avatar-thumb" src="{{asset('assets/media/avatars/avatar10.jpg')}}" alt="">
                   <p class="mt-2 mb-0 fw-medium">{{ Auth::user()->name }}</p>
-                  <p class="mb-0 text-muted fs-sm fw-medium">{{ "Administrador" }}</p>
+                  <p class="mb-0 text-muted fs-sm fw-medium">{{ Auth::user()->role }}</p>
                 </div>
                 <!-- PERFIL -->
-                <!-- <div class="p-2"> -->
-                  <!-- <a class="dropdown-item d-flex align-items-center justify-content-between" href="be_pages_generic_profile.html">
-                    <span class="fs-sm fw-medium">Profile</span>
-                    <span class="badge rounded-pill bg-primary ms-2">1</span>
-                  </a> -->
-                <!-- </div> -->
-                <!-- <div role="separator" class="dropdown-divider m-0"></div> -->
+                <div class="p-1">
+                    <a class="dropdown-item d-flex align-items-center justify-content-between" href="#">
+                      <span class="fs-sm fw-medium text-center">Mi perfil</span>
+                      <span class="badge rounded-pill bg-primary ms-2">
+                        <i class="fa fa-user-gear"></i>
+                        
+                      </span>
+                    </a>
+
+                  @if (Auth::user()->esSuperAdmin())
+                    <a class="dropdown-item d-flex align-items-center justify-content-between" href="{{ route('users.index') }}">
+                      <span class="fs-sm fw-medium text-center">Gestor de usuarios</span>
+                      <span class="badge rounded-pill bg-primary ms-2">
+                        <i class="fa fa-users"></i>
+                      </span>
+                    </a>                
+                  @endif
+                  
+                </div>
+                <div role="separator" class="dropdown-divider m-0"></div>
                 <div class="p-1 text-center">
                   <!-- <a class="dropdown-item d-flex align-items-center justify-content-between" href="{{ route('home') }}">
                     <span class="fs-sm fw-medium">Cerrar sesión</span>
