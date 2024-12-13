@@ -11,7 +11,7 @@ class Validador {
         return ($valor >= $limiteMinimo && $valor <= $limiteMaximo);
     }
 
-    public static function parametroId($id) {
+    public static function parametroId($id): bool {
         if (strlen($id) == 0)
             return false;
 

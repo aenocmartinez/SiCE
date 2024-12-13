@@ -159,17 +159,22 @@
                   <p class="mb-0 text-muted fs-sm fw-medium">{{ Auth::user()->role }}</p>
                 </div>
                 <!-- PERFIL -->
-                <div class="p-2">
-                  <a class="dropdown-item d-flex align-items-center justify-content-between" href="be_pages_generic_profile.html">
-                    <span class="fs-sm fw-medium">Mi perfil</span>
-                    <!-- <span class="badge rounded-pill bg-primary ms-2">1</span> -->
-                  </a>
+                <div class="p-1">
+                    <a class="dropdown-item d-flex align-items-center justify-content-between" href="#">
+                      <span class="fs-sm fw-medium text-center">Mi perfil</span>
+                      <span class="badge rounded-pill bg-primary ms-2">
+                        <i class="fa fa-user-gear"></i>
+                        
+                      </span>
+                    </a>
 
                   @if (Auth::user()->esSuperAdmin())
-                    <a class="dropdown-item d-flex align-items-center justify-content-between" href="be_pages_generic_profile.html">
-                      <span class="fs-sm fw-medium">Gestor de usuarios</span>
-                      <!-- <span class="badge rounded-pill bg-primary ms-2">1</span> -->
-                    </a>                  
+                    <a class="dropdown-item d-flex align-items-center justify-content-between" href="{{ route('users.index') }}">
+                      <span class="fs-sm fw-medium text-center">Gestor de usuarios</span>
+                      <span class="badge rounded-pill bg-primary ms-2">
+                        <i class="fa fa-users"></i>
+                      </span>
+                    </a>                
                   @endif
                   
                 </div>

@@ -23,15 +23,16 @@ use App\Http\Controllers\ParticipanteController;
 use App\Http\Controllers\SalonController;
 use App\Http\Controllers\TipoSalonController;
 use App\Http\Controllers\ExportarCSVController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-                ->middleware('role:superAdmin')
-                ->name('users.create');
+    // Route::get('register', [RegisteredUserController::class, 'create'])
+    //             ->middleware('role:superAdmin')
+    //             ->name('users.create');
 
-    Route::post('register', [RegisteredUserController::class, 'store'])
-                ->middleware('role:superAdmin');
+    // Route::post('register', [RegisteredUserController::class, 'store'])
+    //             ->middleware('role:superAdmin');
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
                 ->name('login');
@@ -70,6 +71,12 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');
+
+    Route::get('usuarios', [UserController::class, 'index'])->middleware('role:superAdmin')->name('users.index');
+    Route::get('usuarios/crear', [UserController::class, 'create'])->middleware('role:superAdmin')->name('users.create');
+    Route::post('usuarios/guardar', [UserController::class, 'store'])->middleware('role:superAdmin')->name('users.store'); 
+    Route::get('usuarios/{id}/edit', [UserController::class, 'edit'])->middleware('role:superAdmin')->name('users.edit');
+    Route::patch('usuarios/actualizar', [UserController::class, 'update'])->middleware('role:superAdmin')->name('users.update'); 
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('role:Admin,superAdmin')->name('dashboard');
     Route::get('/dashboard/buscar-formularios/{estado}', [DashboardController::class, 'buscarFormulariosPorEstado'])->middleware('role:Admin,superAdmin')->name('dashboard.buscar-formularios');
