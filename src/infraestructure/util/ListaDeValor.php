@@ -95,6 +95,7 @@ class ListaDeValor {
             [ 'value' => 'Pagado', 'nombre' => 'Pagado'],
             [ 'value' => 'Anulado', 'nombre' => 'Anulado'],
             [ 'value' => 'Aplazado', 'nombre' => 'Aplazado'],
+            [ 'value' => 'Devuelto', 'nombre' => 'Devuelto'],
         ];        
     }
 
