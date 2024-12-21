@@ -34,7 +34,16 @@
                 </td>
                 <td>{{ $item['orientador'] }}</td>
                 <td class="text-center">
-                    {{ $item['total_inscritos'] . " / " . $item['cupos'] }}
+                        <h5>
+                            {{ $item['total_inscritos'] . " / " . $item['cupos'] }}
+                            @if ($item['total_participantes_pendientes_de_pago_sin_convenio'] > 0)
+                                <small class="text-danger fs-xs" style="display: block;">
+                                    {{ $item['total_participantes_pendientes_de_pago_sin_convenio'] . " participantes sin confirmar el pago" }}
+                                    
+                                    <a href="{{ route('grupos.participantesPendientesPago', $item['grupo_id']) }}" style="display: block;" class="mt-2">ver participantes</a>
+                                </small>
+                            @endif
+                        </h5>
                 </td>
                 <td>
                     <a href="{{ route('grupos.descargar-planilla-asistencia', $item['grupo_id']) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">

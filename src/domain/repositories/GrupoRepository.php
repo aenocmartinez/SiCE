@@ -19,4 +19,7 @@ interface GrupoRepository {
     public function tieneCuposDisponibles($grupoId=0): bool;
     public static function listadoParticipantesGrupo($grupoId=0): array;
     public static function restriccionesParaCrearOActualizarUnGrupo(Grupo $grupo, Calendario $calendario): string;
+    public function totalDeParticipantesPendienteDePagoSinConvenio(int $grupoId): int;
+    public function participantesPendienteDePagoSinConvenio(int $grupoId): array;
+    public function cancelarGrupo($grupoId=0): bool;
 }

@@ -12,7 +12,9 @@ use Src\domain\Grupo;
 use Src\domain\repositories\GrupoRepository;
 
 use Sentry\Laravel\Facade as Sentry;
+use Src\domain\FormularioInscripcion;
 use Src\domain\Orientador;
+use Src\domain\Participante;
 use Src\domain\Salon;
 use Src\infraestructure\util\FormatoMoneda;
 use Src\infraestructure\util\Paginate;
@@ -672,5 +674,98 @@ class GrupoDao extends Model implements GrupoRepository {
         }
 
         return 'OK';
+    }
+
+    public function totalDeParticipantesPendienteDePagoSinConvenio(int $grupoId): int {
+        $total = 0;
+
+        try {
+
+            $total = DB::table('formulario_inscripcion as fi')
+            ->leftJoin('convenios as c', 'fi.convenio_id', '=', 'c.id')
+            ->where('fi.grupo_id', $grupoId)
+            ->where(function ($query) {
+                $query->where(function ($subquery) {
+                    $subquery->whereNull('fi.convenio_id')
+                             ->where('fi.estado', 'Pendiente de pago');
+                })
+                ->orWhere(function ($subquery) {
+                    $subquery->whereNotNull('fi.convenio_id')
+                             ->where('fi.estado', 'Pendiente de pago')
+                             ->where('c.es_cooperativa', false);
+                });
+            })
+            ->count();
+
+        } catch (\Exception $e) {
+            Sentry::captureException($e);
+        }
+
+        return $total;
+    }
+
+    public function participantesPendienteDePagoSinConvenio(int $grupoId): array
+    {
+        $participantes = [];
+
+        try {
+            
+            $registros = DB::table('formulario_inscripcion as fi')
+            ->leftJoin('convenios as c', 'fi.convenio_id', '=', 'c.id')
+            ->join('participantes as p', 'fi.participante_id', '=', 'p.id')
+            ->where('fi.grupo_id', $grupoId)
+            ->where(function ($query) {
+                $query->where(function ($subquery) {
+                    $subquery->whereNull('fi.convenio_id')
+                             ->where('fi.estado', 'Pendiente de pago');
+                })
+                ->orWhere(function ($subquery) {
+                    $subquery->whereNotNull('fi.convenio_id')
+                             ->where('fi.estado', 'Pendiente de pago')
+                             ->where('c.es_cooperativa', false);
+                });
+            })
+            ->select(
+                'p.primer_nombre',
+                'p.segundo_nombre',
+                'p.primer_apellido',
+                'p.segundo_apellido',
+                'p.tipo_documento',
+                'p.documento',
+                'p.telefono',
+                'p.email',
+                'fi.created_at',
+                'fi.fecha_max_legalizacion',
+                'fi.numero_formulario'
+            )
+            ->get();
+
+            foreach($registros as $registro) {
+                $participante = new Participante();
+                $participante->setPrimerNombre($registro->primer_nombre);
+                $participante->setSegundoNombre($registro->segundo_nombre);
+                $participante->setPrimerApellido($registro->primer_apellido);
+                $participante->setSegundoApellido($registro->segundo_apellido);
+                $participante->setTipoDocumento($registro->tipo_documento);
+                $participante->setDocumento($registro->documento);
+                $participante->setTelefono($registro->telefono);
+                $participante->setEmail($registro->email);
+
+                $formulario = new FormularioInscripcion();
+                $formulario->setNumero($registro->numero_formulario);
+                $formulario->setFechaCreacion($registro->created_at);
+                $formulario->setFechaMaxLegalizacion($registro->fecha_max_legalizacion);
+
+                $participante->setFormularioInscripcion($formulario);
+
+                $participantes[] = $participante;
+            }
+        
+
+        } catch (\Exception $e) {
+            Sentry::captureException($e);
+        }        
+        
+        return $participantes;
     }
 }

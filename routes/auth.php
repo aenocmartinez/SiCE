@@ -162,6 +162,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/grupos/{id}/descargar-planilla-asistencia', [GrupoController::class, 'descargarPlanillaAsistencia'])->middleware('role:Admin,superAdmin')->name('grupos.descargar-planilla-asistencia');
     Route::get('/grupos/{id}/descargar-estado-legalizacion-participantes', [GrupoController::class, 'descargarReporteEstadoDeLegalizaciónDeParticipantes'])->middleware('role:Admin,superAdmin')->name('grupos.descargar-estado-legalizacion-participantes');
     Route::get('/grupos/estado-cursos/{tipo}', [GrupoController::class, 'listarCursosAbiertosOCerrados'])->middleware('role:Admin,superAdmin')->name('grupos.estado-cursos');
+    Route::get('/grupos/{id}/participantes-pendientes-pago', [GrupoController::class, 'listarParticipantesPendientesDePagoPorGrupo'])->middleware('role:Admin,superAdmin')->name('grupos.participantesPendientesPago');
 
     Route::get('/tipo-salones/{id}/editar', [TipoSalonController::class, 'edit'])->middleware('role:Admin,superAdmin')->name('tipo-salones.edit');
     Route::get('/tipo-salones/crear', [TipoSalonController::class, 'create'])->middleware('role:Admin,superAdmin')->name('tipo-salones.create');

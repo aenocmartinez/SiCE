@@ -34,6 +34,7 @@ class ListadoDeGruposConYSinCuposDisponiblesUseCase {
                 'orientador' => $grupo->getNombreOrientador(),
                 'total_inscritos' => $grupo->getTotalInscritos(),
                 'cupos' => $grupo->getCupo(),
+                'total_participantes_pendientes_de_pago_sin_convenio' => $grupo->totalDeParticipantesPendientesDePagoSinConvenio(),
             ];
 
             if ($grupo->estaCancelado()) {

@@ -19,6 +19,7 @@ use Src\usecase\grupos\BuscadorGruposUseCase;
 use Src\usecase\grupos\BuscarGrupoPorIdUseCase;
 use Src\usecase\grupos\CrearGrupoUseCase;
 use Src\usecase\grupos\EliminarGrupoUseCase;
+use Src\usecase\grupos\ListadoDeParticipantesPendientesDePagoPorGrupoUseCase;
 use Src\usecase\grupos\ListarCursosPorCalendarioUseCase;
 use Src\usecase\grupos\ListarGruposUseCase;
 use Src\usecase\grupos\ListarParticipantesGrupoUseCase as GruposListarParticipantesGrupoUseCase;
@@ -149,8 +150,22 @@ class GrupoController extends Controller
         return view('grupos.cursos_por_estado', [
             'title' => $title,
             'cursos' => $cursos[$index]
+        ]);        
+    }
+
+    public function listarParticipantesPendientesDePagoPorGrupo($id)
+    {
+        $participantes = (new ListadoDeParticipantesPendientesDePagoPorGrupoUseCase)->Ejecutar($id);
+
+        if (sizeof($participantes) == 0)
+        {
+            return redirect()->route('dashboard')->with('status','Participantes no encontrados');
+        }
+
+        return view('grupos.participantes_pendiente_de_pagos',[
+            'participantes' => $participantes,
         ]);
-        
+
     }
 
     public function buscadorGrupos(){        

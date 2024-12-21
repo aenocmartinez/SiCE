@@ -3,6 +3,7 @@
 namespace Src\domain;
 
 use Src\dao\mysql\GrupoDao;
+use Src\domain\repositories\GrupoRepository;
 use Src\infraestructure\util\Paginate;
 
 class Grupo {
@@ -20,7 +21,7 @@ class Grupo {
     private $cerrado_para_inscripcion;
     private $habilitado_para_preinscripcion;
     private $observaciones;
-    private $repository;
+    private GrupoRepository $repository;
 
     public function __construct($cursoCalendarioId=0, $salonId=0, $orientadorId=0) {
         $this->id = 0;
@@ -271,5 +272,13 @@ class Grupo {
 
     public static function totalSinCupoDisponible($calendarioId=0): int {
         return GrupoDao::totalGruposSinCupoDisponible($calendarioId);
+    }
+
+    public function totalDeParticipantesPendientesDePagoSinConvenio(): int {
+        return $this->repository->totalDeParticipantesPendienteDePagoSinConvenio($this->id);
+    }
+
+    public function participantesPendientesDePagoSinConvenio(): array {
+        return $this->repository->participantesPendienteDePagoSinConvenio($this->id);
     }
 }

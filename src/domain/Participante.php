@@ -27,6 +27,7 @@ class Participante {
     private $aplazamientos;
     private bool $vinculadoUnicolMayor;
     private ParticipanteRepository $repository;
+    private FormularioInscripcion $formulario;
 
     public function __construct() {
         $this->id = 0;
@@ -65,6 +66,14 @@ class Participante {
 
         $this->vinculadoUnicolMayor = $vinculadoUnicolMayor;
     }
+
+    public function setFormularioInscripcion(FormularioInscripcion $formulario): void {
+        $this->formulario = $formulario;
+    }
+
+    public function getFormularioInscripcion(): FormularioInscripcion {
+        return $this->formulario;
+    }    
 
     public function vinculadoUnicolMayor(): bool {
         return $this->vinculadoUnicolMayor;
