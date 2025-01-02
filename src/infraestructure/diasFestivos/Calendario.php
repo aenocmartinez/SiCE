@@ -9,7 +9,7 @@ class Calendario {
 
     public static function obtenerDiasFestivo($anio) {
         $client = new Client();
-        $response = $client->get("https://date.nager.at/api/v2/publicholidays/$anio/co");
+        $response = $client->get("https://date.nager.at/api/v3/publicholidays/$anio/co");
         $holidaysData = json_decode($response->getBody(), true);
 
         $holidays = array_map(function ($holiday) {
