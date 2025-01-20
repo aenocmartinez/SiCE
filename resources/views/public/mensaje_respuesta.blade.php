@@ -28,7 +28,9 @@
                 <h3>{{ $mensaje }}</h3>                
                 <span class="text-info">Haz clic aquí para descargar tu comprobante de matrícula.</span>
                 <br><br><br>
-                <strong>Inicio de clases a partir del {{ $fec_ini_clase }} en el día y jornada de su curso matriculado.</strong>
+                <strong>
+                    Se informa que el pago de su curso(s) ha sido legalizado, e igualmente, el inicio de clases es a partir del {{ $fec_ini_clase }}, en el día y jornada de su curso matriculado.
+                </strong>
             </p>            
         </div>
     </a>

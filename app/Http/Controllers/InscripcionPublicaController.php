@@ -502,9 +502,14 @@ class InscripcionPublicaController extends Controller
         
         if ($participanteId == 0) {
             return redirect()->route('public.inicio')->with('code', "404")->with('status', "Formulario no válido.");
-        }    
+        }
 
-        $resultado = (new GenerarReciboMatriculaUseCase)->ejecutar($participanteId);
+        $calendario = Calendario::Vigente();
+        if (!$calendario->existe()) {
+            return redirect()->route('public.inicio')->with('code', "404")->with('status', "Calendario no vigente.");
+        }
+
+        $resultado = (new GenerarReciboMatriculaUseCase)->ejecutar($participanteId, $calendario->getId());
         if (!$resultado["exito"]) {
             return redirect()->route('public.inicio')->with('code', "404")->with('status', "Formulario no válido.");
         }
