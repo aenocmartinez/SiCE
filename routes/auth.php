@@ -6,9 +6,9 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
-use App\Http\Controllers\Auth\NewPasswordController;
-use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Auth\RegisteredUserController;
+// use App\Http\Controllers\Auth\NewPasswordController;
+// use App\Http\Controllers\Auth\PasswordResetLinkController;
+// use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\CambiosTrasladosController;
@@ -23,6 +23,7 @@ use App\Http\Controllers\ParticipanteController;
 use App\Http\Controllers\SalonController;
 use App\Http\Controllers\TipoSalonController;
 use App\Http\Controllers\ExportarCSVController;
+use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -220,4 +221,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/comentarios', [AnotacionController::class, 'index'])->middleware('role:Admin,superAdmin')->name('comentarios');
     Route::post('/comentarios', [AnotacionController::class, 'buscar_comentario'])->middleware('role:Admin,superAdmin')->name('comentarios.buscar');
+
+    Route::get('/notificaciones/inicio-de-clases', [NotificacionController::class, 'recordarInicioDeClases'])->name('notificacion.recordarInicioClase');
+    Route::get('/periodo/{periodoId}/notificaciones', [NotificacionController::class, 'notificacionesPeriodo'])->name('notificacion.periodo');
 });

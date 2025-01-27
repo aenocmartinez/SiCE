@@ -22,7 +22,7 @@
             <table class="table table-vcenter">
                 @forelse ($calendarios as $calendario)
                 <tr>
-                    <td class="fs-sm" style="width: 40%;">                        
+                    <td class="fs-sm" style="width: 20%;">                        
                         <h4 class="fw-normal mb-0">{{ $calendario->getNombre() }}</h4>
                         <small class="fw-light">
                             {{ $calendario->getFechaInicio() }} al {{ $calendario->getFechaFinal()}} <br>
@@ -48,10 +48,13 @@
                             <a href="{{ route('calendario.cursos', $calendario->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-success">
                                 <i class="fa fa-fw fa-book-open"></i> Abrir curso
                             </a>
+                            <a href="{{ route('notificacion.periodo', $calendario->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-primary">
+                                <i class="fa fa-fw fa-envelope"></i> Notificaciones
+                            </a>                            
                             <a href="{{ route('calendario.cerrar', $calendario->getId()) }}" 
                                 class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-warning cerrar-periodo">
                                 <i class="fa fa-fw fa-calendar-check"></i> Cerrar Periodo
-                            </a>                                                                              
+                            </a>
                         @endif
 
                         <a href="{{ route('calendario.estadisticas', $calendario->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
