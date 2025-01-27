@@ -15,12 +15,22 @@ class MensajeCursoExtension
             <p>El equipo de Cursos de Extensión</p>
         ",
         'recordatorio_clases' => "
-            <p>Apreciado(a): {{NOMBRE}}</p>
+            <p>Respetado(a): {{NOMBRE}}</p>
             <p>Reciba un cordial saludo,</p>
-            <p>Le recordamos que el curso <strong>\"{{NOMBRE_CURSO}}\"</strong>, en el cual se encuentra inscrito(a), impartido por la Universidad Colegio Mayor de Cundinamarca, dará inicio el próximo <strong>{{FECHA_INICIO}}</strong>.</p>            
+            <p>Le recordamos que el curso <strong>\"{{NOMBRE_CURSO}}\"</strong>, impartido por la Universidad Colegio Mayor de Cundinamarca, en el cual usted se encuentra inscrito(a), dará inicio el próximo <strong>{{FECHA_INICIO}}</strong>.</p>            
+            <p><br></p>
+            <p></p>
             <p>Equipo de Cursos de Extensión</p>
             <p><strong>Universidad Colegio Mayor de Cundinamarca</strong></p>
         ",
+        'inscripcion_no_legalizada' => "
+            <p>Respetado(a) {{NOMBRE}},</p>
+            <p>Se le recuerda que el inicio de Clases de los Cursos de Extensión, es a partir del <strong>{{FECHA_INICIO}}</strong>, en el día y jornada de su curso matriculado, por lo tanto, si no ha legalizado su curso, el cupo reservado será asignado a otro aspirante.</p>
+            <p><br></p>
+            <p></p>
+            <p>Equipo de Cursos de Extensión</p>
+            <p><strong>Universidad Colegio Mayor de Cundinamarca</strong></p>
+        ",        
     ];
 
     public function obtenerPlantilla(string $tipo): string

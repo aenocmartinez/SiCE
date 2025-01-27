@@ -2,6 +2,7 @@
 
 @php
     $titulo = "Notificaciones";
+    $fechaInicioClases = \Src\infraestructure\util\FormatoFecha::fechaFormateadaA5DeAgostoDe2024($periodo->getFechaInicioClase());
 @endphp
 
 @section("title", $titulo)
@@ -17,7 +18,38 @@
 @section("subseccion", $titulo)
 
 @section("content")
-    <a href="{{ route('notificacion.recordarInicioClase') }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-primary">
-        <i class="fa fa-fw fa-share-from-square"></i> Recordatorio inicio de clases
-    </a>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Recordatorio inicio de clases</h5>
+                    <p class="card-text">
+                        Envía un recordatorio a los participantes sobre el inicio de clases.
+                    </p>
+                    <p class="text-muted">
+                        Fecha de inicio: <strong>{{ $fechaInicioClases }}</strong>
+                    </p>
+                    <a href="{{ route('notificacion.enviar') }}?tipo=inicioClase" class="btn btn-outline-primary">
+                        <i class="fa fa-fw fa-share-from-square"></i> Enviar
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Recordatorio participantes pendientes de legalizar</h5>
+                    <p class="card-text">
+                        Envía un recordatorio a los participantes que aún no han legalizado su inscripción.
+                    </p>
+                    <p class="text-muted">
+                        Fecha de inicio: <strong>{{ $fechaInicioClases }}</strong>
+                    </p>
+                    <a href="{{ route('notificacion.enviar') }}?tipo=noLegalizados" class="btn btn-outline-primary">
+                        <i class="fa fa-fw fa-share-from-square"></i> Enviar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection

@@ -223,5 +223,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/comentarios', [AnotacionController::class, 'buscar_comentario'])->middleware('role:Admin,superAdmin')->name('comentarios.buscar');
 
     Route::get('/notificaciones/inicio-de-clases', [NotificacionController::class, 'recordarInicioDeClases'])->name('notificacion.recordarInicioClase');
-    Route::get('/periodo/{periodoId}/notificaciones', [NotificacionController::class, 'notificacionesPeriodo'])->name('notificacion.periodo');
+    Route::get('/periodo/{periodoId}/notificaciones', [NotificacionController::class, 'notificacionesPeriodo'])->name('notificacion.periodo');    
+    Route::get('/notificaciones/enviar', [NotificacionController::class, 'enviarNotificacion'])->name('notificacion.enviar');
 });

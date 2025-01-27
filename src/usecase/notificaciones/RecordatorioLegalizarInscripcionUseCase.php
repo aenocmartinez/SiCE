@@ -10,7 +10,7 @@ use Src\domain\notificaciones\ContenidoNotificacionDTO;
 use Src\infraestructure\util\FormatoFecha;
 use Src\infraestructure\util\FormatoString;
 
-class RecordatorioInicioDeClaseUseCase
+class RecordatorioLegalizarInscripcionUseCase
 {
     const BLOQUE_CORREOS = 1; // Tamaño del bloque de correos
     const LIMITE_MUESTRA = 3; // Límite de correos para prueba
@@ -24,7 +24,7 @@ class RecordatorioInicioDeClaseUseCase
     public function Ejecutar(Calendario $periodo): void
     {
         // Consultar formularios con el método optimizado
-        $formularios = FormularioInscripcionDao::listarFormulariosParaCorreo("pagado", $periodo->getId());
+        $formularios = FormularioInscripcionDao::listarFormulariosParaCorreo("Pendiente de pago", $periodo->getId());
 
         // Limitar la muestra a 14 para las pruebas
         $formulariosMuestra = array_slice($formularios, 0, self::LIMITE_MUESTRA);
@@ -39,8 +39,8 @@ class RecordatorioInicioDeClaseUseCase
 
         // Configuración del mensaje base
         $mensaje = new MensajeCursoExtension();
-        $contenidoBase = $mensaje->generarContenido('recordatorio_clases', [
-            'ASUNTO' => 'Cursos de Extensión - Recordatorio de Inicio de Clases',
+        $contenidoBase = $mensaje->generarContenido('inscripcion_no_legalizada', [
+            'ASUNTO' => 'Cursos de Extensión - Recordatorio para legalizar inscripción',
             'FECHA_INICIO' => FormatoFecha::fechaFormateadaA5DeAgostoDe2024($periodo->getFechaInicioClase()),
             'NOMBRE' => '{{NOMBRE}}',
         ]);
@@ -76,7 +76,7 @@ class RecordatorioInicioDeClaseUseCase
                 // Personalizar mensaje para cada participante
                 $nombreParticipante = FormatoString::convertirACapitalCase($participante['nombre']);
                 $txtMensaje = str_replace('{{NOMBRE}}', $nombreParticipante, $contenidoBase->getMensaje());
-                $txtMensaje = str_replace('{{NOMBRE_CURSO}}', $curso['nombre'], $txtMensaje);
+                // $txtMensaje = str_replace('{{NOMBRE_CURSO}}', $curso['nombre'], $txtMensaje);
 
                 // Crear contenido personalizado
                 $contenidoPersonalizado = new ContenidoNotificacionDTO(

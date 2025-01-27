@@ -570,12 +570,66 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             }
 
         } catch (Exception $e) {
-            // dd($e->getMessage());
-            Sentry::captureException($e);
+            // Sentry::captureException($e);
         }
 
         return $formularios;
     }
+
+    public static function listarFormulariosParaCorreo($estado = "", $calendarioId = 0): array
+    {
+        $formularios = [];
+    
+        try {
+
+            $resultados = FormularioInscripcionDao::join('grupos', 'formulario_inscripcion.grupo_id', '=', 'grupos.id')
+                ->join('curso_calendario', 'grupos.curso_calendario_id', '=', 'curso_calendario.id')
+                ->join('cursos', 'curso_calendario.curso_id', '=', 'cursos.id')
+                ->join('participantes', 'formulario_inscripcion.participante_id', '=', 'participantes.id')
+                ->where('grupos.calendario_id', $calendarioId)
+                ->when($estado, function ($query) use ($estado) {
+                    $query->where('formulario_inscripcion.estado', $estado);
+                })
+                ->orderByDesc('formulario_inscripcion.participante_id')
+                ->orderByDesc('formulario_inscripcion.id')
+                ->get([
+                    'formulario_inscripcion.id as formulario_id',
+                    'formulario_inscripcion.estado',
+                    'formulario_inscripcion.numero_formulario',
+                    'participantes.id as participante_id',
+                    DB::raw("CONCAT(
+                        COALESCE(participantes.primer_nombre, ''), ' ',
+                        COALESCE(participantes.segundo_nombre, ''), ' ',
+                        COALESCE(participantes.primer_apellido, ''), ' ',
+                        COALESCE(participantes.segundo_apellido, '')
+                    ) as participante_nombre"),
+                    'participantes.email as participante_email',
+                    'cursos.nombre as curso_nombre',
+                ]);    
+    
+            foreach ($resultados as $resultado) {
+                $formularios[] = [
+                    'formulario_id' => $resultado->formulario_id,
+                    'estado' => $resultado->estado,
+                    'numero_formulario' => $resultado->numero_formulario,
+                    'participante' => [
+                        'id' => $resultado->participante_id,
+                        'nombre' => $resultado->participante_nombre,
+                        'email' => $resultado->participante_email,
+                    ],
+                    'curso' => [
+                        'nombre' => $resultado->curso_nombre,
+                    ],
+                ];
+            }
+        } catch (\Exception $e) {
+            // Manejar excepciones, por ejemplo, capturándolas con Sentry o un log
+            // Sentry::captureException($e);
+        }
+    
+        return $formularios;
+    }
+        
 
     public static function GenerarReciboDeMatricula($participanteId=0, $calendarioId = 0): array {        
         $datosReciboMatricula = [];  
