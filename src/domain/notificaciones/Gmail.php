@@ -5,28 +5,30 @@ namespace Src\domain\notificaciones;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-class Mailtrap implements MedioNotificacion
+class Gmail implements MedioNotificacion
 {
     public function enviar(ContenidoNotificacionDTO $contenido): void
     {
         $mail = new PHPMailer(true);
 
         try {
+            // Configuración para el servidor SMTP de Gmail
             $mail->isSMTP();
-            $mail->Host = env('MAIL_HOST'); 
-            $mail->SMTPAuth = true;
-            $mail->Username = env('MAIL_USERNAME'); 
-            $mail->Password = env('MAIL_PASSWORD'); 
-            $mail->SMTPSecure = env('MAIL_ENCRYPTION', PHPMailer::ENCRYPTION_STARTTLS); 
-            $mail->Port = env('MAIL_PORT', 587); 
+            $mail->Host       = 'smtp.gmail.com';                     
+            $mail->SMTPAuth   = true;                                 
+            $mail->Username   = env('MAIL_GMAIL');
+            $mail->Password   = env('MAIL_GMAIL_PASSWORD');
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;       
+            $mail->Port       = 587;  
+            // $mail->SMTPDebug = 3; // O 3 para más detalles                                
 
-            $mail->setFrom(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME', 'Cursos de Extensión'));
+            $mail->setFrom(env('MAIL_GMAIL'), 'Cursos de Extensión');
             $mail->addAddress($contenido->getDestinatario());
-
+           
             $mail->CharSet = 'UTF-8';
             $mail->isHTML(true);
             $mail->Subject = $contenido->getAsunto();
-            $mail->Body = $contenido->getMensaje();
+            $mail->Body    = $contenido->getMensaje();
             
             if ($contenido->getAdjunto()) {
                 $mail->addAttachment($contenido->getAdjunto());

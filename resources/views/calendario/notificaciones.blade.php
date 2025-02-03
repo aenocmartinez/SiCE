@@ -29,9 +29,17 @@
                     <p class="text-muted">
                         Fecha de inicio: <strong>{{ $fechaInicioClases }}</strong>
                     </p>
-                    <a href="{{ route('notificacion.enviar') }}?tipo=inicioClase" class="btn btn-outline-primary">
-                        <i class="fa fa-fw fa-share-from-square"></i> Enviar
-                    </a>
+
+                    @if (!$notificacionInicioClaseEnviadoHoy)
+                        <a href="{{ route('notificacion.enviar') }}?tipo=inicioClase" class="btn btn-outline-primary">
+                            <i class="fa fa-fw fa-share-from-square"></i> Enviar
+                        </a>     
+                    @else
+                        <p class="fs-sm text-danger text-center">
+                            La notificación de recordatorio de inicio de clase ya fue enviada hoy.
+                        </p>
+                    @endif
+                   
                 </div>
             </div>
         </div>
@@ -45,9 +53,15 @@
                     <p class="text-muted">
                         Fecha de inicio: <strong>{{ $fechaInicioClases }}</strong>
                     </p>
-                    <a href="{{ route('notificacion.enviar') }}?tipo=noLegalizados" class="btn btn-outline-primary">
-                        <i class="fa fa-fw fa-share-from-square"></i> Enviar
-                    </a>
+                    @if (!$notificacionPendienteLegalizacionEnviadoHoy)
+                        <a href="{{ route('notificacion.enviar') }}?tipo=noLegalizados" class="btn btn-outline-primary">
+                            <i class="fa fa-fw fa-share-from-square"></i> Enviar
+                        </a>
+                    @else
+                        <p class="fs-sm text-danger text-center">
+                            La notificación de recordatorio de pendientes por legalizar inscripciones ya fue enviada hoy.
+                        </p>
+                    @endif
                 </div>
             </div>
         </div>

@@ -24,7 +24,8 @@ function logMessage($message, $logFile)
 logMessage("Iniciando script processRecordatorio.php", $logFile);
 
 // Obtener los argumentos desde la línea de comandos
-$options = getopt('', ['periodo:']);
+// $options = getopt('', ['periodo:']);
+$options = getopt("", ["periodo:", "usuario:"]);
 
 if (!isset($options['periodo'])) {
     logMessage("No se proporcionó un ID de periodo.", $logFile);
@@ -42,10 +43,15 @@ if (!$periodo || !$periodo->existe()) {
     exit(1);
 }
 
+$periodoId = $options['periodo'];
+logMessage("Periodo recibido: {$periodoId}", $logFile);
+
+$usuario = $options['usuario'];
+
 // Ejecutar el caso de uso
 try {
     logMessage("Ejecutando caso de uso RecordatorioInicioDeClaseUseCase", $logFile);
-    (new RecordatorioInicioDeClaseUseCase())->Ejecutar($periodo);
+    (new RecordatorioInicioDeClaseUseCase())->Ejecutar($periodo, $usuario);
     logMessage("El envío de correos se completó correctamente.", $logFile);
 } catch (\Exception $e) {
     logMessage("Error durante el envío de correos: " . $e->getMessage(), $logFile);
