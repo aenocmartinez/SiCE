@@ -76,8 +76,6 @@ class RecordatorioInicioDeClaseUseCase
                 $txtMensaje = str_replace('{{NOMBRE}}', $nombreParticipante, $contenidoBase->getMensaje());
                 $txtMensaje = str_replace('{{NOMBRE_CURSO}}', $curso['nombre'], $txtMensaje);
 
-                $participante['email'] = 'aenoc.martinez@gmail.com';
-
                 $contenidoPersonalizado = new ContenidoNotificacionDTO(
                     $participante['email'],
                     $contenidoBase->getAsunto(),

@@ -35,27 +35,22 @@ class NotificacionDao extends Model implements NotificacionRepository
     }
 
     public static function NotificacionEnviadaHoy($calendarioId, $tipoMensaje): bool
-    {
-        try {
+{
+    try {
 
-            $usuarioId = Auth::id(); 
+        $hoy = now('America/Bogota')->toDateString();
 
-            if (!$usuarioId) {
-                throw new \Exception('Usuario no autenticado.');
-            }
-
-            $hoy = now()->toDateString();
-
-            return self::where('calendario_id', $calendarioId)
-                ->where('tipo_mensaje', $tipoMensaje)
-                ->whereDate('fecha', $hoy)
-                ->exists();
-        } catch (\Exception $e) {
-            // \Sentry\captureException($e);
-            Log::info($e->getMessage());
-            return false;
-        }
+        return self::where('calendario_id', $calendarioId)
+            ->where('tipo_mensaje', $tipoMensaje)
+            ->whereDate('fecha', $hoy)
+            ->exists();
+    } catch (\Exception $e) {
+        // \Sentry\captureException($e);
+        Log::info($e->getMessage());
+        return false;
     }
+}
+
     
     
 }

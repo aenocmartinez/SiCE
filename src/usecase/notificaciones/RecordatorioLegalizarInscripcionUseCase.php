@@ -77,8 +77,6 @@ class RecordatorioLegalizarInscripcionUseCase
                 
                 $txtMensaje = str_replace('{{NOMBRE}}', $nombreParticipante, $contenidoBase->getMensaje());
 
-                $participante['email'] = 'aenoc.martinez@gmail.com';
-
                 $contenidoPersonalizado = new ContenidoNotificacionDTO(
                     $participante['email'],
                     $contenidoBase->getAsunto(),

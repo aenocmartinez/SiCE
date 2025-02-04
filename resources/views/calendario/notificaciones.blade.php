@@ -31,7 +31,9 @@
                     </p>
 
                     @if (!$notificacionInicioClaseEnviadoHoy)
-                        <a href="{{ route('notificacion.enviar') }}?tipo=inicioClase" class="btn btn-outline-primary">
+                        <a href="{{ route('notificacion.enviar') }}?tipo=inicioClase" 
+                           class="btn btn-outline-primary"
+                           onclick="return confirm('¿Está seguro de enviar la notificación de recordatorio de inicio de clases?');">
                             <i class="fa fa-fw fa-share-from-square"></i> Enviar
                         </a>     
                     @else
@@ -54,7 +56,9 @@
                         Fecha de inicio: <strong>{{ $fechaInicioClases }}</strong>
                     </p>
                     @if (!$notificacionPendienteLegalizacionEnviadoHoy)
-                        <a href="{{ route('notificacion.enviar') }}?tipo=noLegalizados" class="btn btn-outline-primary">
+                        <a href="{{ route('notificacion.enviar') }}?tipo=noLegalizados" 
+                           class="btn btn-outline-primary"
+                           onclick="return confirm('¿Está seguro de enviar la notificación de recordatorio para participantes pendientes de legalizar?');">
                             <i class="fa fa-fw fa-share-from-square"></i> Enviar
                         </a>
                     @else
