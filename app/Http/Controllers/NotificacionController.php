@@ -21,10 +21,10 @@ class NotificacionController extends Controller
         }
 
         // Se obtiene con: which php
-        $phpBin = '/Applications/MAMP/bin/php/php8.2.0/bin//php';
+        // $phpBin = '/Applications/MAMP/bin/php/php8.2.0/bin//php';
 
         // php en prod
-        // $phpBin = '/usr/bin/php';
+        $phpBin = '/usr/bin/php';
 
         if ($tipo == "inicioClase") {
 
