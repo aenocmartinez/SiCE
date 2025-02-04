@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Src\dao\mysql\NotificacionDao;
 use Src\domain\Calendario;
 use Src\usecase\calendarios\BuscarCalendarioPorIdUseCase;
@@ -20,11 +19,7 @@ class NotificacionController extends Controller
             return redirect()->route('calendario.index')->with('code', "404")->with('status', "No existe periodo académico vigente.");
         }
 
-        // Se obtiene con: which php
-        // $phpBin = '/Applications/MAMP/bin/php/php8.2.0/bin//php';
-
-        // php en prod
-        $phpBin = '/usr/bin/php';
+        $phpBin = env('PATH_RUNTIME_PHP'); 
 
         if ($tipo == "inicioClase") {
 

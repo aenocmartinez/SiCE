@@ -2,12 +2,10 @@
 
 namespace Src\usecase\notificaciones;
 
-use Illuminate\Support\Facades\Auth;
 use Src\dao\mysql\FormularioInscripcionDao;
 use Src\dao\mysql\NotificacionDao;
 use Src\domain\Calendario;
 use Src\domain\notificaciones\MensajeCursoExtension;
-use Src\domain\notificaciones\Mailtrap;
 use Src\domain\notificaciones\ContenidoNotificacionDTO;
 use Src\domain\notificaciones\Gmail;
 use Src\infraestructure\util\FormatoFecha;
@@ -15,8 +13,8 @@ use Src\infraestructure\util\FormatoString;
 
 class RecordatorioLegalizarInscripcionUseCase
 {
-    const BLOQUE_CORREOS = 1; 
-    const LIMITE_MUESTRA = 1; 
+    const BLOQUE_CORREOS = 10; 
+    // const LIMITE_MUESTRA = 1; 
 
     /**
      * Envía recordatorios a los participantes legalizados.
@@ -28,7 +26,7 @@ class RecordatorioLegalizarInscripcionUseCase
     {
         $formularios = FormularioInscripcionDao::listarFormulariosParaCorreo("Pendiente de pago", $periodo->getId());
 
-        $formulariosMuestra = array_slice($formularios, 0, self::LIMITE_MUESTRA);
+        // $formulariosMuestra = array_slice($formularios, 0, self::LIMITE_MUESTRA);
 
         if (empty($formulariosMuestra)) {
             echo json_encode([
