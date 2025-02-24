@@ -505,6 +505,7 @@ class GrupoDao extends Model implements GrupoRepository {
             ->leftJoin('convenios as c', 'c.id', '=', 'fi.convenio_id')
             ->where('fi.estado', '<>', 'Anulado')
             ->where('fi.estado', '<>', 'Aplazado')
+            ->where('fi.estado', '<>', 'Devuelto')
             ->orderBy('p.primer_nombre')
             ->orderBy('p.primer_apellido')            
             ->get();
