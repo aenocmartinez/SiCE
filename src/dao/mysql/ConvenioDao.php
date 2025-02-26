@@ -282,7 +282,8 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 DB::raw("(curso_calendario.costo * convenios.descuento / 100) as valor_descuento"),
                 'convenios.nombre as convenio',
                 'curso_calendario.costo as costo_curso',
-                'formulario_inscripcion.created_at as fecha_inscripcion'
+                'formulario_inscripcion.created_at as fecha_inscripcion',
+                'formulario_inscripcion.estado as estado_formulario'
             )
             ->join('formulario_inscripcion', 'formulario_inscripcion.participante_id', '=', 'participantes.id')
             ->join('convenios', 'convenios.id', '=', 'formulario_inscripcion.convenio_id')
@@ -292,14 +293,14 @@ class ConvenioDao extends Model implements ConvenioRepository {
             ->join('calendarios', 'calendarios.id', '=', 'curso_calendario.calendario_id')
             ->where('convenios.id', $convenioId)
             ->where('calendarios.id', $calendarioId)
-            ->whereNotIn('formulario_inscripcion.estado', ['Anulado', 'Aplazado', 'Devuelto', 'Pendiente de pago'])
+            ->whereNotIn('formulario_inscripcion.estado', ['Anulado', 'Aplazado', 'Devuelto'])
             ->orderBy('participantes.primer_nombre')
             ->orderBy('participantes.primer_apellido')
             ->get();
             
             
         
-            $participantes[] = ['NOMBRE', 'TIPO_DOCUMENTO', 'DOCUMENTO', 'CURSO', 'GRUPO', 'HORARIO', 'COSTO_CURSO', 'PORCENTAJE_DESCUENTO', 'VALOR_DESCUENTO' ,'VALOR_A_PAGAR', 'CONVENIO' ,'PERIODO', 'FECHA_INSCRIPCION'];
+            $participantes[] = ['NOMBRE', 'TIPO_DOCUMENTO', 'DOCUMENTO', 'CURSO', 'GRUPO', 'HORARIO', 'COSTO_CURSO', 'PORCENTAJE_DESCUENTO', 'VALOR_DESCUENTO' ,'VALOR_A_PAGAR', 'CONVENIO' ,'PERIODO', 'FECHA_INSCRIPCION', 'ESTADO'];
             foreach($items as $item) {
                 
                 $nombreCompleto = $item->primer_nombre . " " . $item->segundo_nombre . " " . $item->primer_apellido . " " . $item->segundo_apellido;
@@ -318,7 +319,8 @@ class ConvenioDao extends Model implements ConvenioRepository {
                                     // '$' . number_format($item->total_a_pagar, 2, ',', '.'),
                                     mb_strtoupper($item->convenio, 'UTF-8'),                                    
                                     mb_strtoupper($item->periodo, 'UTF-8'),
-                                    $fechaInscripcion->format('Y-m-d')
+                                    $fechaInscripcion->format('Y-m-d'),
+                                    mb_strtoupper($item->estado_formulario, 'UTF-8'),
                                 ];
             }
 
