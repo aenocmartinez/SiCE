@@ -34,6 +34,15 @@ class InscripcionPublicaController extends Controller
 {
     public $cursos_a_matricular = array();
 
+    public $mensajeNoHayInscripciones;
+
+    public function __construct()
+    {
+        $this->mensajeNoHayInscripciones = "Inscripciones cerradas periodo 2025-1. Nuevas inscripciones a partir de finales de mayo de 2025";    
+    }
+
+    
+
     public function index() {     
         
         $mensajeVentanaModal = "Si usted se inscribe mediante un <strong>convenio</strong>, por favor comuníquese con nuestra oficina al número <strong>316 471 8655</strong> para recibir orientación.";
@@ -42,7 +51,7 @@ class InscripcionPublicaController extends Controller
 
         if (!$periodo->existe() || !$periodo->estaElFormularioInscripcionAbierto())
         {
-            $mensajeVentanaModal = "Actualmente, no hay calendarios disponibles para inscripción.";
+            $mensajeVentanaModal = $this->mensajeNoHayInscripciones;
         }
 
         return view('public.inicio', [
@@ -66,7 +75,7 @@ class InscripcionPublicaController extends Controller
 
         $calendarioVigente = Calendario::Vigente();
         if (!$calendarioVigente->existe() || !$calendarioVigente->estaElFormularioInscripcionAbierto()) {
-            return redirect()->route('public.inicio')->with('status', 'Actualmente, no hay calendarios disponibles para inscripción.')->with('code', 404);
+            return redirect()->route('public.inicio')->with('status', $this->mensajeNoHayInscripciones)->with('code', 404);
         } 
 
         $datoFormulario = $req->validated();
@@ -135,7 +144,7 @@ class InscripcionPublicaController extends Controller
         
         $calendarioVigente = Calendario::Vigente();
         if (!$calendarioVigente->existe()) {
-            return redirect()->route('public.inicio')->with('status', 'Actualmente, no hay calendarios disponibles para inscripción.')->with('code', 500);
+            return redirect()->route('public.inicio')->with('status', $this->mensajeNoHayInscripciones)->with('code', 500);
         }
 
         if ($participante->tieneFormulariosPendientesDePago()) {
