@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Src\usecase\dashboard\BuscarFormulariosPorEstadoYCalendarioUseCase;
 use Src\usecase\dashboard\DashboardUseCase;
 use Src\usecase\dia_festivo\GuardarDiasFestivosDeUnAnioUseCase;
@@ -9,6 +10,11 @@ use Src\usecase\dia_festivo\GuardarDiasFestivosDeUnAnioUseCase;
 class DashboardController extends Controller
 {
     public function index() {
+
+        if(Auth::user()->esOrientador()) 
+        {                        
+            return view('dashboard.homeOrientador');
+        }
         
         (new GuardarDiasFestivosDeUnAnioUseCase)->ejecutar();        
         return view('dashboard.index', [

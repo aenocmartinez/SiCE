@@ -1,6 +1,7 @@
 <?php
 namespace Src\usecase\orientadores;
 
+use App\Models\User;
 use Src\dao\mysql\OrientadorDao;
 use Src\domain\Orientador;
 use Src\view\dto\OrientadorDto;
@@ -8,7 +9,17 @@ use Src\view\dto\Response;
 
 class ActualizarOrientadorUseCase {
 
-    public function ejecutar(OrientadorDto $orientadorDto): Response {
+    public function ejecutar(OrientadorDto $orientadorDto): Response 
+    {
+        $usuario = User::where('email', $orientadorDto->emailInstitucional)->first();
+        if ($usuario) 
+        {
+            if ($orientadorDto->id != $usuario->orientador_id)
+            {
+                return new Response('500', "Existe otro orientador(a) con el mismo correo electrónico institucional.");
+            }
+        }
+
        
         $orientadorRepository = new OrientadorDao();
 
@@ -38,6 +49,8 @@ class ActualizarOrientadorUseCase {
         }
 
         (new AgregarAreaAOrientadorUseCase)->ejecutar($orientador->getId(), $orientadorDto->areas);
+
+        (new AsignarUsuarioAOrientadorUseCase)->ejecutar($orientador);
 
         return new Response('200', 'Registro actualizado con éxito.');
     }

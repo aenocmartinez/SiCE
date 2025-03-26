@@ -63,9 +63,20 @@
           <!-- Side Navigation -->
           <div class="content-side">
             <ul class="nav-main">
+
+              @if (Auth::user()->esOrientador())
+              <li class="nav-main-item">
+                <a class="nav-main-link {{ setActive(['dashboard', 'dashboard.*']) }}" href="{{ route('dashboard') }}">                
+                  <span class="nav-main-link-name">Dashboard</span>
+                </a>
+                <a class="nav-main-link {{ setActive(['areas.index', 'areas.*']) }}" href="{{ route('areas.index') }}">
+                  <span class="nav-main-link-name">Registrar asistencia</span>
+                </a>
+              </li>
+              @endif
+
               @if (Auth::user()->esAdmin() || Auth::user()->esSuperAdmin())
-                
-              
+
               <li class="nav-main-item">
                 <a class="nav-main-link {{ setActive(['dashboard', 'dashboard.*']) }}" href="{{ route('dashboard') }}">
                   <!-- <i class="nav-main-link-icon si si-speedometer"></i> -->
@@ -113,7 +124,7 @@
                 </a>                
                 <a class="nav-main-link {{ setActive(['comentarios', 'comentarios.*']) }}" href="{{ route('comentarios') }}">
                   <span class="nav-main-link-name">Consultar comentarios</span>
-                </a>                
+                </a>
 
               </li>
 

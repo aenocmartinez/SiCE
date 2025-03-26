@@ -29,6 +29,7 @@ class User extends Authenticatable implements UsuarioRepository
         'password',
         'role',
         'estado',
+        'orientador_id',
     ];
 
     /**
@@ -59,7 +60,12 @@ class User extends Authenticatable implements UsuarioRepository
     public function esSuperAdmin(): bool
     {
         return $this->role == 'superAdmin';
-    }  
+    } 
+    
+    public function esOrientador(): bool
+    {
+        return strtolower($this->role) == 'orientador';
+    } 
     
     public function estaActivo(): bool 
     {
