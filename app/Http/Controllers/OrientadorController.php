@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AgregarAreaOrientador;
 use App\Http\Requests\GuardarOrientador;
+use App\Http\Requests\RegistrarAsistencia;
 use Src\domain\Calendario;
 use Src\domain\Orientador;
 use Src\infraestructure\util\ListaDeValor;
@@ -19,6 +20,8 @@ use Src\usecase\orientadores\CrearOrientadorUseCase;
 use Src\usecase\orientadores\EliminarOrientadorUseCase;
 use Src\usecase\orientadores\ListarOrientadoresPaginadoUseCase;
 use Src\usecase\orientadores\ListarOrientadoresUseCase;
+use Src\usecase\orientadores\ObtenerFormularioRegistroAsistenciaUseCase;
+use Src\usecase\orientadores\RegistrarAsistenciaUseCase;
 use Src\view\dto\OrientadorDto;
 
 class OrientadorController extends Controller 
@@ -211,5 +214,35 @@ class OrientadorController extends Controller
     public function cancelar($orientadorId, $grupoId) {        
         $response = (new CancelarGrupoUseCase)->ejecutar($grupoId);
         return redirect()->route('orientadores.moreInfo', $orientadorId)->with('code', $response->code)->with('status', $response->message);        
-    }    
+    }  
+    
+    public function formularioAsistencia() {
+
+        $response = (new ObtenerFormularioRegistroAsistenciaUseCase)->ejecutar();
+
+        if ($response->code != 200) {
+            return redirect()->route('dashboard')->with('code', $response->code)->with('status', $response->message);
+        }
+
+        $datosFormulario = $response->data;
+
+        return view('orientadores.registrarAsistencia',[
+            'datosFormulario' => $datosFormulario,
+        ]);
+        
+
+    }
+
+    public function registrarAsistencia(RegistrarAsistencia $req) {
+
+        $datos = $req->validated();
+
+        $grupoID            = $datos['grupo_id'];
+        $sesion             = $datos['sesion'];
+        $listaAsistencia    = $datos['asistencias'];
+
+        $response = (new RegistrarAsistenciaUseCase)->ejecutar($grupoID, $sesion, $listaAsistencia);
+
+        return redirect()->route('dashboard')->with('code', $response->code)->with('status', $response->message);
+    }
 }

@@ -242,7 +242,7 @@ class GrupoController extends Controller
 
     public function descargarPlanillaAsistencia($grupoId=0) {    
 
-        $datos = (new ListarParticipantesPlanillaAsistenciaUseCase)->ejecutar($grupoId);        
+        $datos = (new ListarParticipantesPlanillaAsistenciaUseCase)->ejecutar($grupoId);
         if (sizeof($datos) == 1) {
             return redirect()->route('grupos.index')->with('code', "500")->with('status', "No tiene participantes inscritos");
         }            

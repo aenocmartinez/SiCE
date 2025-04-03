@@ -40,7 +40,6 @@ class DashboardController extends Controller
 
     private function getDatosDashboardOrientador()
     {
-
         return view('dashboard.homeOrientador');        
     }
 }

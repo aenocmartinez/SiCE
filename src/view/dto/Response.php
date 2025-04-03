@@ -7,8 +7,9 @@ class Response {
     public string $message;
     public $data = [];
 
-    public function __construct(string $code="", string $message="") {
+    public function __construct(string $code="", string $message="", $data = []) {
         $this->code = $code;
         $this->message = $message;
+        $this->data = $data;
     }
 }

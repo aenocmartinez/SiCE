@@ -2,6 +2,7 @@
 
 namespace Src\domain\repositories;
 
+use Src\domain\AsistenciaClase;
 use Src\domain\Calendario;
 use Src\domain\Grupo;
 use Src\infraestructure\util\Paginate;
@@ -22,4 +23,9 @@ interface GrupoRepository {
     public function totalDeParticipantesPendienteDePagoSinConvenio(int $grupoId): int;
     public function participantesPendienteDePagoSinConvenio(int $grupoId): array;
     public function cancelarGrupo($grupoId=0): bool;
+    public function registrarAsistenciaAClase(int $grupoID, AsistenciaClase $asistencia): bool;
+    public function obtenerAsistenciaAClase(int $grupoID): array;
+    public function obtenerAsistenciaAClaseParticipante(int $grupoID, int $participanteID): array;
+    public function buscarAsistenciaPorSesion(int $grupoID, int $sesion): bool;
+    public function obtenerLaUltimaAsistenciaRegistrada(int $grupoID): int;
 }

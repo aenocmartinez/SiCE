@@ -281,4 +281,20 @@ class Grupo {
     public function participantesPendientesDePagoSinConvenio(): array {
         return $this->repository->participantesPendienteDePagoSinConvenio($this->id);
     }
+
+    public function registrarAsistenciaAClase(AsistenciaClase $asistencia): bool {
+        return $this->repository->registrarAsistenciaAClase($this->id, $asistencia);
+    }
+
+    public function obtenerAsistenciaAClases(): array {
+        return $this->repository->obtenerAsistenciaAClase($this->id);
+    }
+
+    public function obtenerAsistenciaDeUnParticipante(Participante $participante): array {
+        return $this->repository->obtenerAsistenciaAClaseParticipante($this->id, $participante->getId());
+    }
+
+    public function obtenerLaUltimaAsistenciaRegistrada(): int {
+        return $this->repository->obtenerLaUltimaAsistenciaRegistrada($this->id);
+    }
 }

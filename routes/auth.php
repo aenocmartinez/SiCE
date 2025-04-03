@@ -225,4 +225,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/notificaciones/inicio-de-clases', [NotificacionController::class, 'recordarInicioDeClases'])->name('notificacion.recordarInicioClase');
     Route::get('/periodo/{periodoId}/notificaciones', [NotificacionController::class, 'notificacionesPeriodo'])->name('notificacion.periodo');    
     Route::get('/notificaciones/enviar', [NotificacionController::class, 'enviarNotificacion'])->name('notificacion.enviar');
+
+
+    // Registro de asistencia
+    Route::post('/asistencia/registrar', [OrientadorController::class, 'registrarAsistencia'])->middleware('role:orientador')->name('asistencia.registrar');
+    Route::get('/asistencia/formulario', [OrientadorController::class, 'formularioAsistencia'])->middleware('role:orientador')->name('asistencia.formulario');
 });

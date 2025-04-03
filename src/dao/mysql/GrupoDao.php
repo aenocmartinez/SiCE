@@ -12,6 +12,7 @@ use Src\domain\Grupo;
 use Src\domain\repositories\GrupoRepository;
 
 use Sentry\Laravel\Facade as Sentry;
+use Src\domain\AsistenciaClase;
 use Src\domain\FormularioInscripcion;
 use Src\domain\Orientador;
 use Src\domain\Participante;
@@ -769,4 +770,93 @@ class GrupoDao extends Model implements GrupoRepository {
         
         return $participantes;
     }
+
+    public function registrarAsistenciaAClase(int $grupoID, AsistenciaClase $asistencia): bool
+    {
+        try {
+            DB::table('asistencia_clase')->insert([
+                'grupo_id'               => $grupoID,
+                'participante_id'        => $asistencia->getParticipante()->getId(),
+                'sesion'                 => $asistencia->getSesion(),
+                'presente'               => $asistencia->estaPresente(),
+                'orientador_que_registra'=> Auth::id(), 
+                'created_at'             => now(),
+            ]);
+        } catch (\Exception $e) {
+            Sentry::captureException($e);
+            return false;
+        }
+    
+        return true;
+    }
+    
+    public function obtenerAsistenciaAClase(int $grupoID): array
+    {
+        $registros = DB::table('asistencia_clase')
+            ->join('participantes', 'asistencia_clase.participante_id', '=', 'participantes.id')
+            ->where('asistencia_clase.grupo_id', $grupoID)
+            ->select(
+                'asistencia_clase.sesion',
+                'asistencia_clase.presente',
+                'participantes.id as participante_id',
+            )
+            ->get();
+    
+        $asistencias = [];
+    
+        foreach ($registros as $registro) {
+            $participante = (new ParticipanteDao())->buscarParticipantePorId($registro->participante_id);    
+            $asistencias[] = new AsistenciaClase(
+                $participante,
+                (int) $registro->sesion,
+                (bool) $registro->presente
+            );
+        }
+    
+        return $asistencias;
+    }
+    
+    public function obtenerAsistenciaAClaseParticipante(int $grupoID, int $participanteID): array
+    {
+        $registros = DB::table('asistencia_clase')
+            ->join('participantes', 'asistencia_clase.participante_id', '=', 'participantes.id')
+            ->where('asistencia_clase.grupo_id', $grupoID)
+            ->where('asistencia_clase.participante_id', $participanteID)
+            ->select(
+                'asistencia_clase.sesion',
+                'asistencia_clase.presente',
+                'participantes.id as participante_id',
+            )
+            ->get();
+    
+        $asistencias = [];
+    
+        foreach ($registros as $registro) {
+            $participante = (new ParticipanteDao())->buscarParticipantePorId($registro->participante_id);   
+    
+            $asistencias[] = new AsistenciaClase(
+                $participante,
+                (int) $registro->sesion,
+                (bool) $registro->presente
+            );
+        }
+    
+        return $asistencias;
+    }
+    
+    public function buscarAsistenciaPorSesion(int $grupoID, int $sesion): bool
+    {
+        return DB::table('asistencia_clase')
+            ->where('grupo_id', $grupoID)
+            ->where('sesion', $sesion)
+            ->exists();
+    }      
+
+    public function obtenerLaUltimaAsistenciaRegistrada(int $grupoID): int
+    {
+        return (int) DB::table('asistencia_clase')
+            ->where('grupo_id', $grupoID)
+            ->max('sesion') ?? 0;
+    }
+    
 }
