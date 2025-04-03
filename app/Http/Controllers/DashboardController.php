@@ -6,14 +6,18 @@ use Illuminate\Support\Facades\Auth;
 use Src\usecase\dashboard\BuscarFormulariosPorEstadoYCalendarioUseCase;
 use Src\usecase\dashboard\DashboardUseCase;
 use Src\usecase\dia_festivo\GuardarDiasFestivosDeUnAnioUseCase;
+use Src\usecase\orientadores\DashboardOrientadorUseCase;
 
 class DashboardController extends Controller
 {
     public function index() {
 
         if(Auth::user()->esOrientador()) 
-        {                        
-            return view('dashboard.homeOrientador');
+        {   
+            $datosDashboard = (new DashboardOrientadorUseCase)->ejecutar();                                 
+            return view('dashboard.homeOrientador', [
+                "datos" => $datosDashboard,
+            ]); 
         }
         
         (new GuardarDiasFestivosDeUnAnioUseCase)->ejecutar();        
@@ -32,5 +36,11 @@ class DashboardController extends Controller
         return view('dashboard.formularios',[
             'formularios' => (new BuscarFormulariosPorEstadoYCalendarioUseCase)->ejecutar($estado, $periodo)
         ]);
+    }
+
+    private function getDatosDashboardOrientador()
+    {
+
+        return view('dashboard.homeOrientador');        
     }
 }
