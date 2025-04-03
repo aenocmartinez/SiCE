@@ -32,27 +32,42 @@ class ObtenerFormularioRegistroAsistenciaUseCase
             "orientador" => $orientador,
         ];
 
-        foreach($orientador->misGrupos() as $grupo) 
+        foreach ($orientador->misGrupos() as $grupo) 
         {
             if ($grupo->estaCancelado()) 
             {
                 continue;
             }
-        
+
             $participantes = GrupoDao::listadoParticipantesPlanillaAsistencia($grupo->getId());
 
             $datosFormulario['grupos'][] = [
-                    'id' => $grupo->getId(),
-                    'nombre_curso' => $grupo->getNombreCurso(),
-                    "jornada" => $grupo->getJornada(),
-                    "dia" => $grupo->getDia(),
-                    "nombre_salon" => $grupo->getNombreSalon(),
-                    "codigo_grupo" => $grupo->getCodigoGrupo(),
-                    'proxima_sesion' => $grupo->obtenerLaUltimaAsistenciaRegistrada() + 1,
-                    'participantes' => $participantes,
+                'id' => $grupo->getId(),
+                'nombre_curso' => $grupo->getNombreCurso(),
+                'jornada' => $grupo->getJornada(),
+                'dia' => $grupo->getDia(),
+                'nombre_salon' => $grupo->getNombreSalon(),
+                'codigo_grupo' => $grupo->getCodigoGrupo(),
+                'proxima_sesion' => $grupo->obtenerLaUltimaAsistenciaRegistrada() + 1,
+                'participantes' => $participantes,
             ]; 
-        }        
+        }
 
-        return new Response("200", "Orientador no encontrado.", $datosFormulario);
+        // Ordenar los grupos por día y jornada antes de retornar
+        $ordenDias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        $ordenJornadas = ['Mañana' => 1, 'Tarde' => 2, 'Noche' => 3];
+
+        usort($datosFormulario['grupos'], function ($a, $b) use ($ordenDias, $ordenJornadas) {
+            $diaA = array_search($a['dia'], $ordenDias);
+            $diaB = array_search($b['dia'], $ordenDias);
+
+            if ($diaA === $diaB) {
+                return $ordenJornadas[$a['jornada']] <=> $ordenJornadas[$b['jornada']];
+            }
+
+            return $diaA <=> $diaB;
+        });
+
+        return new Response("200", "Formulario generado correctamente.", $datosFormulario);
     }    
 }

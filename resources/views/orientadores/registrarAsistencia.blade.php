@@ -54,12 +54,13 @@
                                 <tr class="bg-body-dark fs-xs">
                                     <th>Nombre</th>
                                     <th>Documento</th>
+                                    <th>Convenio</th>
                                     <th>Presente</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="3" class="text-muted">Seleccione un grupo para ver los participantes.</td>
+                                    <td colspan="4" class="text-muted">Seleccione un grupo para ver los participantes.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -97,11 +98,13 @@
                 const nombre = p[5];
                 const documento = p[6];
                 const participante_id = p[16] ?? i; // si no hay id real, usar índice
+                const convenio = p[12];
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td class="fs-xs text-start">${nombre}</td>
                     <td class="fs-xs">${documento}</td>
+                    <td class="fs-xs">${convenio}</td>
                     <td class="text-center">
                         <input type="hidden" name="asistencias[${i}][participante_id]" value="${participante_id}">
                         <input type="hidden" name="asistencias[${i}][presente]" value="0">
