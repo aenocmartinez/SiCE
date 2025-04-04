@@ -29,14 +29,14 @@
 
   <!-- Tarjeta 2 -->
   <div class="col-md-6 col-xl-4">
-    <a class="block block-rounded block-link-shadow bg-success" href="#">
+    <a class="block block-rounded block-link-shadow bg-success" href="{{ route('asistencia.formulario-reportes') }}">
       <div class="block-content block-content-full d-flex align-items-center justify-content-between">
         <div>
           <i class="fa fa-users fa-2x text-white-50"></i>
         </div>
         <dl class="ms-3 text-end mb-0">
-          <dt class="text-white h3 fw-medium mb-0">{{ $datos["total_participantes"] }}</dt>
-          <dd class="text-white fs-sm fw-medium text-muted mb-0">Participantes totales</dd>
+          <dt class="text-white h4 fw-medium mb-0">Consultar asistencias por cursos</dt>
+          <dd class="text-white fs-sm fw-medium text-muted mb-0"></dd>
         </dl>
       </div>
     </a>
@@ -44,22 +44,37 @@
 
   <!-- Tarjeta 3 -->
   <div class="col-md-6 col-xl-4">
+    <a class="block block-rounded block-link-shadow bg-info" href="{{ route('asistencia.formulario-reportes') }}">
+      <div class="block-content block-content-full d-flex align-items-center justify-content-between">
+        <div>
+          <i class="fa fa-users fa-2x text-white-50"></i>
+        </div>
+        <dl class="ms-3 text-end mb-0">
+          <dt class="text-white h4 fw-medium mb-0">Consultar asistencias por participante</dt>
+          <dd class="text-white fs-sm fw-medium text-muted mb-0"></dd>
+        </dl>
+      </div>
+    </a>
+  </div>
+
+  <!-- Tarjeta 4 -->
+  <div class="col-md-6 col-xl-4">
     <a class="block block-rounded block-link-shadow bg-warning" href="{{ route('asistencia.formulario') }}">
       <div class="block-content block-content-full d-flex align-items-center justify-content-between">
         <div>
           <i class="fa fa-calendar-check fa-2x text-white-50"></i>
         </div>
         <dl class="ms-3 text-end mb-0">
-          <dt class="text-white h3 fw-medium mb-0">Registrar nueva asistencia</dt>
+          <dt class="text-white h4 fw-medium mb-0">Registrar nueva asistencia</dt>
           <dd class="text-white fs-sm fw-medium text-muted mb-0"></dd>
         </dl>
       </div>
     </a>
-  </div>
+  </div>  
 </div>
 
 <!-- Calendario visual renovado -->
-<div class="row mt-4">
+<div class="row mt-1">
   <div class="col-12">
     <div class="block block-rounded">
       <div class="block-header">

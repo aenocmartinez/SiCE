@@ -799,6 +799,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 'asistencia_clase.sesion',
                 'asistencia_clase.presente',
                 'participantes.id as participante_id',
+                'asistencia_clase.created_at',
             )
             ->get();
     
@@ -809,7 +810,8 @@ class GrupoDao extends Model implements GrupoRepository {
             $asistencias[] = new AsistenciaClase(
                 $participante,
                 (int) $registro->sesion,
-                (bool) $registro->presente
+                (bool) $registro->presente,
+                (string) $registro->created_at,
             );
         }
     

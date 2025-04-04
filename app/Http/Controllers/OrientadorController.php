@@ -20,6 +20,7 @@ use Src\usecase\orientadores\CrearOrientadorUseCase;
 use Src\usecase\orientadores\EliminarOrientadorUseCase;
 use Src\usecase\orientadores\ListarOrientadoresPaginadoUseCase;
 use Src\usecase\orientadores\ListarOrientadoresUseCase;
+use Src\usecase\orientadores\ObtenerDatosFormularioReporteAsistenciaUseCase;
 use Src\usecase\orientadores\ObtenerFormularioRegistroAsistenciaUseCase;
 use Src\usecase\orientadores\RegistrarAsistenciaUseCase;
 use Src\view\dto\OrientadorDto;
@@ -243,6 +244,15 @@ class OrientadorController extends Controller
 
         $response = (new RegistrarAsistenciaUseCase)->ejecutar($grupoID, $sesion, $listaAsistencia);
 
-        return redirect()->route('dashboard')->with('code', $response->code)->with('status', $response->message);
+        return redirect()->route('asistencia.formulario')->with('code', $response->code)->with('status', $response->message);
+    }
+
+    public function formularioReporte() {
+
+        $response = (new ObtenerDatosFormularioReporteAsistenciaUseCase)->ejecutar();
+
+        return view('orientadores.formulario-reportes', [
+            'datos' => $response->data['datos']
+        ]);
     }
 }

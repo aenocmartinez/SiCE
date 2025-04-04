@@ -9,8 +9,8 @@
 @section("title", $titulo)
 
 @section("seccion")
-    <a class="link-fx" href="{{ route('asistencia.formulario') }}">
-        Asistencia
+    <a class="link-fx" href="{{ route('dashboard') }}">
+        Dashboard
     </a>
 @endsection
 
@@ -26,7 +26,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="grupo_id" class="form-label fw-semibold text-center d-block">Curso</label>
-                        <select name="grupo_id" id="grupo_id" class="form-control" required>
+                        <select name="grupo_id" id="grupo_id" class="form-control fs-xs" required>
                             <option value="">Seleccionar grupo</option>
                             @foreach ($grupos as $g)
                                 <option value="{{ $g['id'] }}">
@@ -44,6 +44,21 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row mb-3" id="info-extra" style="display: none;">
+                <div class="col-md-12">
+                    <div class="bg-light rounded p-3">
+                        <div class="row text-center fs-xs">
+                            <div class="col-md-2"><strong>Grupo:</strong> <span id="info-grupo"></span></div>
+                            <div class="col-md-2"><strong>Periodo:</strong> <span id="info-periodo"></span></div>
+                            <div class="col-md-2"><strong>Salón:</strong> <span id="info-salon"></span></div>
+                            <div class="col-md-3"><strong>Participantes:</strong> <span id="info-participantes"></span></div>
+                            <div class="col-md-3"><strong>Área:</strong> <span id="info-area"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <div class="row mt-5">
                 <div class="col-12">
@@ -68,7 +83,7 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-end mt-4">
+            <div class="d-flex justify-content-end mt-4 mb-4">
                 <button type="submit" class="btn btn-primary">
                     <i class="fa fa-save me-1"></i> Registrar Asistencia
                 </button>
@@ -91,13 +106,24 @@
         campoSesion.value = grupo ? grupo.proxima_sesion : '';
         tablaParticipantes.innerHTML = '';
 
+        if (grupo) {
+            document.getElementById('info-extra').style.display = 'block';
+            document.getElementById('info-grupo').textContent = grupo.codigo_grupo;
+            document.getElementById('info-periodo').textContent = grupo.participantes[1][11] ?? 'N/A';
+            document.getElementById('info-salon').textContent = grupo.nombre_salon;
+            document.getElementById('info-participantes').textContent = (grupo.participantes.length - 1); 
+            document.getElementById('info-area').textContent = grupo.participantes[1][14] ?? 'N/A';
+        } else {
+            document.getElementById('info-extra').style.display = 'none';
+        }        
+
         if (grupo && grupo.participantes.length > 1) {
             grupo.participantes.forEach((p, i) => {
-                if (i === 0) return; // omitir encabezado
+                if (i === 0) return; 
 
                 const nombre = p[5];
                 const documento = p[6];
-                const participante_id = p[16] ?? i; // si no hay id real, usar índice
+                const participante_id = p[16] ?? i; 
                 const convenio = p[12];
 
                 const tr = document.createElement('tr');
