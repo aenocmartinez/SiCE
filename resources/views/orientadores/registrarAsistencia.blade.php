@@ -118,12 +118,13 @@
         }        
 
         if (grupo && grupo.participantes.length > 1) {
+
             grupo.participantes.forEach((p, i) => {
                 if (i === 0) return; 
 
                 const nombre = p[5];
                 const documento = p[6];
-                const participante_id = p[16] ?? i; 
+                const participante_id = p[15] ?? i; 
                 const convenio = p[12];
 
                 const tr = document.createElement('tr');

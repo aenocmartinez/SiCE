@@ -225,8 +225,7 @@ class OrientadorController extends Controller
             return redirect()->route('dashboard')->with('code', $response->code)->with('status', $response->message);
         }
 
-        $datosFormulario = $response->data;
-
+        $datosFormulario = $response->data;      
         return view('orientadores.registrarAsistencia',[
             'datosFormulario' => $datosFormulario,
         ]);

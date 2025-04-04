@@ -39,7 +39,7 @@ class ObtenerFormularioRegistroAsistenciaUseCase
                 continue;
             }
 
-            $participantes = GrupoDao::listadoParticipantesPlanillaAsistencia($grupo->getId());
+            $participantes = GrupoDao::listadoParticipantesParaTomarAsistencia($grupo->getId());
 
             $datosFormulario['grupos'][] = [
                 'id' => $grupo->getId(),

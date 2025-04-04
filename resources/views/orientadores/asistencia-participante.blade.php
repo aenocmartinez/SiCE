@@ -78,6 +78,15 @@
             return;
         }
 
+        if (!grupo.sesiones || Object.keys(grupo.sesiones).length === 0) {
+            contenedor.innerHTML = `
+                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                    <i class="fa fa-info-circle me-2"></i>
+                    <div>No hay registros de asistencia disponibles para este grupo.</div>
+                </div>`;
+            return;
+        }
+
         // Render encabezado
         const encabezado = `
             <div class="bg-body-light rounded p-3 mb-2 fs-sm">

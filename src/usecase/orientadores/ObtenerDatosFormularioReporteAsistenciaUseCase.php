@@ -45,7 +45,7 @@ class ObtenerDatosFormularioReporteAsistenciaUseCase
                 $area = $grupo->getNombreArea();
 
                 $asistencias = $grupoDao->obtenerAsistenciaAClase($grupoID);
-                $participantesTabla = GrupoDao::listadoParticipantesPlanillaAsistencia($grupoID);
+                $participantesTabla = GrupoDao::listadoParticipantesParaTomarAsistencia($grupoID);
 
                 $sesiones = [];
 
@@ -60,7 +60,11 @@ class ObtenerDatosFormularioReporteAsistenciaUseCase
                     // Buscar convenio desde el listado plano (índice 6: documento, índice 12: convenio)
                     $convenio = '';
                     foreach ($participantesTabla as $idx => $p) {
-                        if ($idx === 0) continue; // Saltar encabezado
+                        if ($idx === 0) 
+                        {
+                            continue; // Saltar encabezado
+                        }
+
                         if (isset($p[6]) && $p[6] === $documento) {
                             $convenio = $p[12] ?? '';
                             break;
@@ -94,7 +98,7 @@ class ObtenerDatosFormularioReporteAsistenciaUseCase
                 ];
             }
         }
-
+        
         return new Response(200, "OK", $datosFormulario);
     }
 }
