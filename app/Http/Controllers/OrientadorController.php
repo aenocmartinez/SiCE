@@ -247,12 +247,21 @@ class OrientadorController extends Controller
         return redirect()->route('asistencia.formulario')->with('code', $response->code)->with('status', $response->message);
     }
 
-    public function formularioReporte() {
+    public function formularioReportePorCurso() {
 
         $response = (new ObtenerDatosFormularioReporteAsistenciaUseCase)->ejecutar();
 
         return view('orientadores.formulario-reportes', [
             'datos' => $response->data['datos']
+        ]);
+    }
+
+    public function formularioReporteParticipante() {
+        
+        $response = (new ObtenerDatosFormularioReporteAsistenciaUseCase)->ejecutar();
+        // dd($response->data['datos']);
+        return view('orientadores.asistencia-participante', [
+            'datos' => $response->data['datos'],
         ]);
     }
 }

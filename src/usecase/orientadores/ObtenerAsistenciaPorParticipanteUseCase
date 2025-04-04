@@ -1,0 +1,82 @@
+<?php
+
+namespace Src\usecase\orientadores;
+
+use Illuminate\Support\Facades\Auth;
+use Src\dao\mysql\CalendarioDao;
+use Src\dao\mysql\GrupoDao;
+use Src\dao\mysql\OrientadorDao;
+use Src\view\dto\Response;
+
+class ObtenerAsistenciaPorParticipanteUseCase
+{
+    public function ejecutar(): Response
+    {
+        $orientadorDao = new OrientadorDao();
+        $orientador = $orientadorDao->buscarOrientadorPorId(Auth::user()->orientador_id);
+
+        if (!$orientador->existe()) {
+            return new Response("404", "Orientador no encontrado.");
+        }
+
+        $calendarioDao = new CalendarioDao();
+        $periodos = $calendarioDao->listarCalendarios();
+        $grupoDao = new GrupoDao();
+
+        $datos = [];
+
+        foreach ($periodos as $periodo) {
+            $orientador->setGruposPorCalendario($periodo->getId());
+
+            foreach ($orientador->misGrupos() as $grupo) {
+                if ($grupo->estaCancelado()) {
+                    continue;
+                }
+
+                $asistencias = $grupoDao->obtenerAsistenciaAClase($grupo->getId());
+                $participantes = $grupoDao::listadoParticipantesPlanillaAsistencia($grupo->getId());
+
+                foreach ($participantes as $index => $p) {
+                    if ($index === 0) continue; // Encabezado
+
+                    $nombre = $p[5];
+                    $documento = $p[6];
+                    $convenio = $p[12];
+                    $idGrupo = $grupo->getId();
+                    $grupoCodigo = $grupo->getCodigoGrupo();
+                    $nombreCurso = $grupo->getNombreCurso();
+                    $jornada = $grupo->getJornada();
+                    $salon = $grupo->getNombreSalon();
+                    $dia = $grupo->getDia();
+                    $area = $p[14];
+
+                    // Buscar asistencias del participante
+                    $sesiones = [];
+                    foreach ($asistencias as $asistencia) {
+                        if ((int)$asistencia->participante_id === (int)$p[16]) {
+                            $sesion = (int)$asistencia->sesion;
+                            $sesiones[$sesion] = [
+                                'fecha' => $asistencia->created_at,
+                                'presente' => (bool)$asistencia->presente,
+                            ];
+                        }
+                    }
+
+                    $datos[$periodo->getNombre()][] = [
+                        'nombre' => $nombre,
+                        'documento' => $documento,
+                        'grupo' => $grupoCodigo,
+                        'curso' => $nombreCurso,
+                        'jornada' => $jornada,
+                        'salon' => $salon,
+                        'dia' => $dia,
+                        'area' => $area,
+                        'sesiones' => $sesiones,
+                    ];
+                }
+            }
+        }
+
+        return new Response(200, "OK", $datos);
+    }
+}
