@@ -1,7 +1,7 @@
 @extends("plantillas.principal")
 
 @php
-    $titulo = "Consultar asistencia por participante";
+    $titulo = "Consultar asistencia por curso";
     $periodos = array_keys($datos); // ["2025-1", "2024-2"]
 @endphp
 

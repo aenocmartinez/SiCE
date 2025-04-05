@@ -35,7 +35,7 @@
           <i class="fa fa-users fa-2x text-white-50"></i>
         </div>
         <dl class="ms-3 text-end mb-0">
-          <dt class="text-white h4 fw-medium mb-0">Consultar asistencias por cursos</dt>
+          <dt class="text-white h4 fw-medium mb-0">Consultar asistencias por sesión</dt>
           <dd class="text-white fs-sm fw-medium text-muted mb-0"></dd>
         </dl>
       </div>
@@ -50,7 +50,7 @@
           <i class="fa fa-users fa-2x text-white-50"></i>
         </div>
         <dl class="ms-3 text-end mb-0">
-          <dt class="text-white h4 fw-medium mb-0">Consultar asistencias por participante</dt>
+          <dt class="text-white h4 fw-medium mb-0">Consultar asistencias por curso</dt>
           <dd class="text-white fs-sm fw-medium text-muted mb-0"></dd>
         </dl>
       </div>

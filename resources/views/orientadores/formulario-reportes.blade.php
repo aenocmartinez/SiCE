@@ -1,7 +1,7 @@
 @extends("plantillas.principal")
 
 @php
-    $titulo = "Consultar asistencia";
+    $titulo = "Consultar asistencia por sesión";
 @endphp
 
 @section("title", $titulo)
