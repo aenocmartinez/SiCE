@@ -30,6 +30,7 @@ class User extends Authenticatable implements UsuarioRepository
         'role',
         'estado',
         'orientador_id',
+        'puede_cargar_firmas',
     ];
 
     /**
@@ -72,6 +73,10 @@ class User extends Authenticatable implements UsuarioRepository
         return $this->estado == 'Activo';
     }
 
+    public function puedeCargarFirma(): bool {
+        return $this->puede_cargar_firmas;
+    }
+
     public static function BuscarPorId(int $id=0): Usuario
     {
         $usuario = new Usuario();
@@ -85,7 +90,12 @@ class User extends Authenticatable implements UsuarioRepository
             $usuario->setRole($registro->role);
             $usuario->setEstado($registro->estado);
             $usuario->setPassword($registro->password);
-            $usuario->setFechaCreacion($registro->created_at);            
+            $usuario->setFechaCreacion($registro->created_at);
+            $usuario->setPuedeCargarFirmas($registro->puede_cargar_firmas);
+
+            if (!is_null($registro->orientador_id)) {
+                $usuario->setOrientadorID($registro->orientador_id);
+            }
         }
 
         return $usuario;
@@ -102,7 +112,12 @@ class User extends Authenticatable implements UsuarioRepository
             $usuario->setNombre($registro->name);
             $usuario->setEmail($registro->email);
             $usuario->setRole($registro->role);
-            $usuario->setFechaCreacion($registro->created_at);            
+            $usuario->setFechaCreacion($registro->created_at);  
+            $usuario->setPuedeCargarFirmas($registro->puede_cargar_firmas);  
+
+            if (!is_null($registro->orientador_id)) {
+                $usuario->setOrientadorID($registro->orientador_id);
+            }                              
         }
 
         return $usuario;
@@ -114,6 +129,11 @@ class User extends Authenticatable implements UsuarioRepository
         {
             $idUsuarioSesion = Auth::id();
             DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
+            $orientadorID = null;
+            if ($usuario->getOrientadorID() > 0) {
+                $orientadorID = $usuario->getOrientadorID();
+            }
                     
             $user = User::create([
                 'name' => $usuario->getNombre(),
@@ -121,6 +141,9 @@ class User extends Authenticatable implements UsuarioRepository
                 'estado' => $usuario->getEstado(),
                 'password' => Hash::make($usuario->getPassword()),
                 'role' => $usuario->getRole(),
+                'orientador_id' => $orientadorID,
+                'puede_cargar_firmas' => $usuario->puedeCargarFirmas(),
+                
             ]);
 
         }
@@ -143,6 +166,11 @@ class User extends Authenticatable implements UsuarioRepository
             $idUsuarioSesion = Auth::id();
             DB::statement("SET @usuario_sesion = $idUsuarioSesion");
 
+            $orientadorID = null;
+            if ($usuario->getOrientadorID() > 0) {
+                $orientadorID = $usuario->getOrientadorID();
+            }            
+
             $usuarioDB = User::find($usuario->getId());
             if ($usuarioDB)
             {                
@@ -153,6 +181,8 @@ class User extends Authenticatable implements UsuarioRepository
                     'estado' => $usuario->getEstado(),
                     'password' => $usuario->getPassword(),
                     'role' => $usuario->getRole(),
+                    'orientador_id' => $orientadorID,
+                    'puede_cargar_firmas' => $usuario->puedeCargarFirmas(),                    
                 ]);
             }
         }

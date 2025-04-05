@@ -1,6 +1,7 @@
 
 @php
     $checked = ($usuario->getEstado() == 'Activo' ? 'checked' : '');    
+    $checked_firmas = ($usuario->puedeCargarFirmas() ? 'checked' : '');    
 @endphp
 
 
@@ -71,7 +72,30 @@
                             {{ $message }}
                         </span>
                     @enderror
+
+                    <br> 
                     
+                    <label class="form-label fw-light" for="orientador_id">Si además de administrador cumple rol de orientador seleccione al orientador</label>
+                    <select class="form-select @error('orientador_id') is-invalid @enderror" id="orientador_id" name="orientador_id">            
+                        <option value=""> - </option>
+                        @foreach ($orientadores as $orientador)                            
+                            <option value="{{ $orientador->getId() }}" {{ $usuario->getOrientadorID() == $orientador->getId() ? 'selected' : '' }} >{{ $orientador->getNombre() }}</option>
+                        @endforeach
+                    </select>
+                    @error('role')
+                        <span class="invalid-feedback" role="alert">
+                            {{ $message }}
+                        </span>
+                    @enderror                    
+
+                    <br>
+                
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="puede_cargar_firmas" name="puede_cargar_firmas" {{ $checked_firmas }}>
+                        <label class="form-check-label" for="estado">Puede cargar firmas</label>
+                    </div>
+
+
                     <br>
                 
                     <div class="form-check form-switch">

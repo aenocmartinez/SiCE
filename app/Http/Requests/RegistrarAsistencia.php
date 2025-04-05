@@ -21,7 +21,8 @@ class RegistrarAsistencia extends FormRequest
     {
         return [
             'grupo_id' => ['required', 'integer', 'min:1'],
-            'sesion'   => ['required', 'integer', 'between:1,16'],
+            // 'sesion'   => ['required', 'integer', 'between:1,16'],
+            'sesion'   => ['required', 'integer'],
             'asistencias' => ['required', 'array', 'min:1'],
             'asistencias.*.participante_id' => ['required', 'integer', 'min:1'],
             'asistencias.*.presente'        => ['required', 'boolean'],
@@ -36,7 +37,7 @@ class RegistrarAsistencia extends FormRequest
         return [
             'grupo_id.required' => 'El grupo es obligatorio.',
             'sesion.required'   => 'La sesión es obligatoria.',
-            'sesion.between'    => 'La sesión debe estar entre 1 y 16.',
+            // 'sesion.between'    => 'La sesión debe estar entre 1 y 16.',
             'asistencias.required' => 'Debe registrar al menos una asistencia.',
             'asistencias.*.participante_id.required' => 'El ID del participante es obligatorio.',
             'asistencias.*.presente.required' => 'Debe indicar si el participante estuvo presente.',

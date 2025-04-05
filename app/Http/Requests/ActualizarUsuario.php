@@ -32,6 +32,8 @@ class ActualizarUsuario extends FormRequest
             'password' => ['nullable', Rules\Password::defaults()],
             'role' => 'required|string',
             'estado' => 'nullable',
+            'puede_cargar_firmas' => 'nullable',
+            'orientador_id' => 'nullable',
         ];        
     }
 }

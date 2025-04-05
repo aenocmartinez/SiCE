@@ -7,6 +7,7 @@ use App\Http\Requests\ActualizarUsuario;
 use App\Http\Requests\CrearUsuario;
 use Src\infraestructure\util\ListaDeValor;
 use Src\infraestructure\util\Validador;
+use Src\usecase\orientadores\ListarOrientadoresUseCase;
 use Src\usecase\usuarios\ActualizarProfileUseCase;
 use Src\usecase\usuarios\ActualizarUsuarioUseCase;
 use Src\usecase\usuarios\BuscarUsuarioPorIdUseCase;
@@ -26,9 +27,11 @@ class UserController extends Controller
 
     public function create()
     {
+        $orientadores = (new ListarOrientadoresUseCase)->ejecutar();
         return view('usuarios.create', [
             'roles' => ListaDeValor::roles(),
             'usuario' => new UsuarioDto,
+            'orientadores' => $orientadores,
         ]);
     }
 
@@ -48,6 +51,12 @@ class UserController extends Controller
         $usuarioDto->setEmail($data->email);
         $usuarioDto->setRole($data->role);
         $usuarioDto->setEstado($estado);
+        $usuarioDto->setPuedeCargarFirmas($data->puede_cargar_firmas);
+
+        if (!is_null($data->orientador_id))
+        {
+            $usuarioDto->setOrientadorID($data->orientador_id);
+        }        
 
         $response = (new CrearUsuarioUseCase)->Ejecutar($usuarioDto);
 
@@ -69,9 +78,12 @@ class UserController extends Controller
             return redirect()->route('users.index')->with('code', 500)->with('status', 'El usuario no existe.');
         }
 
+        $orientadores = (new ListarOrientadoresUseCase)->ejecutar();
+
         return view('usuarios.edit', [
             'roles' => ListaDeValor::roles(),
             'usuario' => $usuario,
+            'orientadores' => $orientadores,
         ]);
     }
 
@@ -98,6 +110,12 @@ class UserController extends Controller
         $usuarioDto->setRole($data->role);
         $usuarioDto->setEstado($estado);
         $usuarioDto->setId($data->id);
+        $usuarioDto->setPuedeCargarFirmas($data->puede_cargar_firmas);
+
+        if (!is_null($data->orientador_id))
+        {
+            $usuarioDto->setOrientadorID($data->orientador_id);
+        }
 
         $response = (new ActualizarUsuarioUseCase)->Ejecutar($usuarioDto);
 

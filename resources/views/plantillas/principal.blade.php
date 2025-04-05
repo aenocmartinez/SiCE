@@ -69,9 +69,6 @@
                 <a class="nav-main-link {{ setActive(['dashboard', 'dashboard.*']) }}" href="{{ route('dashboard') }}">                
                   <span class="nav-main-link-name">Dashboard</span>
                 </a>
-                <a class="nav-main-link {{ setActive(['areas.index', 'areas.*']) }}" href="{{ route('areas.index') }}">
-                  <span class="nav-main-link-name">Registrar asistencia</span>
-                </a>
               </li>
               @endif
 

@@ -10,6 +10,8 @@ class UsuarioDto
     private string $password;
     private string $role;
     private string $estado;
+    private bool $puedeCargarFirmas;
+    private int $orientadorID;
     private $fecha_creacion;
 
     public function __construct()
@@ -19,6 +21,8 @@ class UsuarioDto
         $this->password = "";
         $this->role = "";
         $this->estado = "";
+        $this->orientadorID = 0;
+        $this->puedeCargarFirmas = false;
     }
 
     public function setId(int $id): void 
@@ -90,4 +94,20 @@ class UsuarioDto
     {
         return $this->estado;
     }
+
+    public function setPuedeCargarFirmas(bool $puedeCargarFirmas): void {
+        $this->puedeCargarFirmas = $puedeCargarFirmas;
+    }
+
+    public function puedeCargarFirmas(): bool {
+        return $this->puedeCargarFirmas;
+    }    
+
+    public function setOrientadorID(int $orientadorID): void {
+        $this->orientadorID = $orientadorID;
+    }
+
+    public function getOrientadorID(): int {
+        return $this->orientadorID;
+    }        
 }

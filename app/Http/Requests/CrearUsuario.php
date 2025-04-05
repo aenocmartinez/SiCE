@@ -32,6 +32,8 @@ class CrearUsuario extends FormRequest
             'password' => ['required', Rules\Password::defaults()],
             'role' => 'required|string',
             'estado' => 'nullable',
+            'puede_cargar_firmas' => 'nullable',
+            'orientador_id' => 'nullable',
         ];        
     }
 }

@@ -20,7 +20,7 @@ class RegistrarAsistenciaUseCase
             return new Response("404", "Grupo no encontrado");
         }
 
-        if ($sesion < 1 && $sesion > 16) {
+        if ($sesion < 1 || $sesion > 16) {
             return new Response("500", "Solo se permiten sesiones entre 1 y 16.");
         }
 

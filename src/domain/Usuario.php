@@ -14,6 +14,8 @@ class Usuario
     private string $password;
     private string $role;
     private string $estado;
+    private bool $puedeCargarFirmas;
+    private int $orientadorID;
     private $fecha_creacion;
     private $repository;
 
@@ -25,6 +27,7 @@ class Usuario
         $this->password = "";
         $this->email = "";
         $this->estado = "";
+        $this->orientadorID = 0;
         $this->repository = new User();
     }
 
@@ -145,5 +148,21 @@ class Usuario
     public function getEstado(): string
     {
         return $this->estado;
+    }    
+
+    public function setPuedeCargarFirmas(bool $puedeCargarFirmas): void {
+        $this->puedeCargarFirmas = $puedeCargarFirmas;
+    }
+
+    public function puedeCargarFirmas(): bool {
+        return $this->puedeCargarFirmas;
+    }  
+    
+    public function setOrientadorID(int $orientadorID): void {
+        $this->orientadorID = $orientadorID;
+    }
+
+    public function getOrientadorID(): int {
+        return $this->orientadorID;
     }    
 }

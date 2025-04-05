@@ -25,6 +25,8 @@ class CrearUsuarioUseCase
         $usuario->setRole($usuarioDto->getRole());
         $usuario->setEmail($usuarioDto->getEmail());
         $usuario->setEstado($usuarioDto->getEstado());
+        $usuario->setOrientadorID($usuarioDto->getOrientadorID());
+        $usuario->setPuedeCargarFirmas($usuarioDto->puedeCargarFirmas());
 
         $exito = $usuario->crear();
 
