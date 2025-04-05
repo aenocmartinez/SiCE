@@ -310,4 +310,8 @@ class Participante {
     {
         return $this->repository->formularios_inscritos_en_un_periodo($this->id, $periodo_id);
     }
+
+    public function cursosAprobados(): array {
+        return $this->repository->listarCursosAprobados($this->id);
+    }
 }

@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\CambiosTrasladosController;
+use App\Http\Controllers\CertificadoController;
 use App\Http\Controllers\ConvenioController;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\DashboardController;
@@ -232,4 +233,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/asistencia/formulario', [OrientadorController::class, 'formularioAsistencia'])->middleware('role:Admin,superAdmin,orientador')->name('asistencia.formulario');
     Route::get('/asistencia/reportes', [OrientadorController::class, 'formularioReportePorCurso'])->middleware('role:Admin,superAdmin,orientador')->name('asistencia.formulario-reportes');
     Route::get('/asistencia/participante', [OrientadorController::class, 'formularioReporteParticipante'])->middleware('role:Admin,superAdmin,orientador')->name('asistencia.participante');
+
+
+    // Listar cursos aprobados de un participante para obtener certificado
+    Route::get('participantes/{id}/cursos-aprobados', [ParticipanteController::class, 'listarCursosAprobados'])->middleware('role:Admin,superAdmin')->name('participantes.cursos-aprobados');
+    Route::get('certificados/{participanteID}/{grupoID}/descargar', [CertificadoController::class, 'descargar'])->name('certificados.descargar');
 });

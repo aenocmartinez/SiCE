@@ -53,11 +53,11 @@
             <table class="table table-vcenter">
                 <tr>
                     <thead>
-                        <th>Nombre</th>
-                        <th>Documento</th>
-                        <th>Email</th>
-                        <th>Teléfono</th>
-                        <th></th>
+                        <th width="35%">Nombre</th>
+                        <th width="15%">Documento</th>
+                        <th width="15%">Email</th>
+                        <th width="10%">Teléfono</th>
+                        <th width="25%"></th>
                     </thead>
                 </tr>                
                 @forelse ($paginate->Records() as $p)
@@ -66,16 +66,28 @@
                     <td>{{ $p->getDocumentoCompleto() }}</td>
                     <td>{{ $p->getEmail() }}</td>
                     <td>{{ $p->getTelefono() }}</td>
-                    <td class="text-center">
-                        <div class="d-sm-table-cell">
-                            <a href="{{ route('participantes.edit', $p->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-secondary">
-                                <i class="fa fa-fw fa-pencil-alt"></i> Editar
+                    <td class="text-end">
+                        <div class="d-flex justify-content-end gap-1 flex-wrap">
+                            <a href="{{ route('participantes.edit', $p->getId()) }}" 
+                            class="fs-xs fw-semibold btn rounded-pill btn-outline-secondary"
+                            data-bs-toggle="tooltip" 
+                            title="Editar">
+                                <i class="fa fa-fw fa-pencil-alt"></i> 
                             </a>
-                            <a href="{{ route('participantes.formularios', $p->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-success">
-                                <i class="fa fa-fw fa-address-card"></i> Inscripciones
-                            </a>                           
+                            <a href="{{ route('participantes.formularios', $p->getId()) }}" 
+                            class="fs-xs fw-semibold btn rounded-pill btn-outline-success"
+                            data-bs-toggle="tooltip" 
+                            title="Inscripciones">
+                                <i class="fa fa-fw fa-address-card"></i> 
+                            </a>
+                            <a href="{{ route('participantes.cursos-aprobados', $p->getId()) }}" 
+                            class="fs-xs fw-semibold btn rounded-pill btn-outline-info"
+                            data-bs-toggle="tooltip" 
+                            title="Certificados">
+                                <i class="fa fa-fw fa-file-circle-check"></i> 
+                            </a>
                         </div>
-                    </td>                    
+                    </td>                  
                 </tr>
                 @empty
                 <tr>

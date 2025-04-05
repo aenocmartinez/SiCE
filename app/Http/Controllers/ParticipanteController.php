@@ -15,6 +15,7 @@ use Src\usecase\participantes\BuscadorParticipantesUseCase;
 use Src\usecase\participantes\BuscarParticipantePorIdUseCase;
 use Src\usecase\participantes\EliminarParticipanteUseCase;
 use Src\usecase\participantes\GuardarParticipanteUseCase;
+use Src\usecase\participantes\ListarCursosAprobadosUseCase;
 use Src\usecase\participantes\ListarFormulariosParticipanteUseCase;
 use Src\usecase\participantes\ListarParticipantesUseCase;
 use Src\view\dto\ParticipanteDto;
@@ -128,7 +129,7 @@ class ParticipanteController extends Controller
         ]);
     }    
 
-    public function listarFormularios($participanteId) {
+    public function listarFormularios($participanteId) {        
         $esValido = Validador::parametroId($participanteId);
         if (!$esValido) {
             return redirect()->route('participantes.index')->with('code', "401")->with('status', "parámetro no válido");
@@ -210,5 +211,20 @@ class ParticipanteController extends Controller
         }
 
         return $participanteDto;
+    }
+
+    public function listarCursosAprobados($participanteID)
+    {
+        $response = (new ListarCursosAprobadosUseCase)->ejecutar($participanteID);
+
+        if ($response->code == "404") {
+            return redirect()->route('participantes.index')->with('code', $response->code)->with('status', $response->message);
+        }
+
+        $participante = $response->data;
+        
+        return view("participantes.cursos_aprobados", [
+            "participante" => $participante,
+        ]);              
     }
 }
