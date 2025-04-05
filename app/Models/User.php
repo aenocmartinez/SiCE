@@ -77,6 +77,10 @@ class User extends Authenticatable implements UsuarioRepository
         return $this->puede_cargar_firmas;
     }
 
+    public function cumpleFuncionesComoOrientador(): bool {
+        return !is_null($this->orientador_id);
+    }
+
     public static function BuscarPorId(int $id=0): Usuario
     {
         $usuario = new Usuario();

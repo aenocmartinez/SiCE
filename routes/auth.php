@@ -228,8 +228,8 @@ Route::middleware('auth')->group(function () {
 
 
     // Registro de asistencia
-    Route::post('/asistencia/registrar', [OrientadorController::class, 'registrarAsistencia'])->middleware('role:orientador')->name('asistencia.registrar');
-    Route::get('/asistencia/formulario', [OrientadorController::class, 'formularioAsistencia'])->middleware('role:orientador')->name('asistencia.formulario');
-    Route::get('/asistencia/reportes', [OrientadorController::class, 'formularioReportePorCurso'])->middleware('role:orientador')->name('asistencia.formulario-reportes');
-    Route::get('/asistencia/participante', [OrientadorController::class, 'formularioReporteParticipante'])->middleware('role:orientador')->name('asistencia.participante');
+    Route::post('/asistencia/registrar', [OrientadorController::class, 'registrarAsistencia'])->middleware('role:Admin,superAdmin,orientador')->name('asistencia.registrar');
+    Route::get('/asistencia/formulario', [OrientadorController::class, 'formularioAsistencia'])->middleware('role:Admin,superAdmin,orientador')->name('asistencia.formulario');
+    Route::get('/asistencia/reportes', [OrientadorController::class, 'formularioReportePorCurso'])->middleware('role:Admin,superAdmin,orientador')->name('asistencia.formulario-reportes');
+    Route::get('/asistencia/participante', [OrientadorController::class, 'formularioReporteParticipante'])->middleware('role:Admin,superAdmin,orientador')->name('asistencia.participante');
 });
