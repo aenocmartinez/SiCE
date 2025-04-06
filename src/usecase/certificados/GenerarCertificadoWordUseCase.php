@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Src\dao\mysql\GrupoDao;
 use Src\dao\mysql\ParticipanteDao;
+use Src\infraestructure\util\FormatoString;
 
 class GenerarCertificadoWordUseCase
 {
@@ -53,7 +54,7 @@ class GenerarCertificadoWordUseCase
 
             // Procesar plantilla
             $template = new TemplateProcessor($rutaPlantilla);
-            $template->setValue('NOMBRE_COMPLETO', $participante->getNombreCompleto());
+            $template->setValue('NOMBRE_COMPLETO', FormatoString::convertirACapitalCase($participante->getNombreCompleto()));
             $template->setValue('DOCUMENTO', $participante->getDocumentoCompleto());
             $template->setValue('NOMBRE_CURSO', strtoupper($grupo->getNombreCurso()));
             $template->setValue('FECHA_INICIO', $fechaInicio);
@@ -67,7 +68,8 @@ class GenerarCertificadoWordUseCase
             if (env('CERTIFICADO_CONVERTIR_PDF', false)) {
                 $libreOfficePath = env('LIBREOFFICE_PATH', '/usr/bin/libreoffice');
 
-                $comando = $libreOfficePath . ' --headless --convert-to pdf "' . $rutaDocx . '" --outdir "' . $rutaTemporal . '"';
+                // $comando = $libreOfficePath . ' --headless --convert-to pdf "' . $rutaDocx . '" --outdir "' . $rutaTemporal . '"';
+                $comando = $libreOfficePath . ' --headless --convert-to pdf:writer_pdf_Export "' . $rutaDocx . '" --outdir "' . $rutaTemporal . '"';
                 exec($comando, $output, $returnCode);
 
                 if ($returnCode !== 0 || !file_exists($rutaPdf)) {
@@ -80,7 +82,7 @@ class GenerarCertificadoWordUseCase
                     return new Response("500", "No se pudo generar el PDF con LibreOffice.");
                 }
 
-                unlink($rutaDocx); // Limpieza
+                // unlink($rutaDocx); // Limpieza
                 return new Response("200", "PDF generado correctamente", [
                     'path' => $rutaPdf,
                     'filename' => "certificado_{$participante->getId()}_{$grupo->getId()}.pdf"

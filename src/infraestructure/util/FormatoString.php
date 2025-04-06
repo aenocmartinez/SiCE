@@ -9,4 +9,5 @@ class FormatoString {
         $textoMinusculas = mb_strtolower($texto, 'UTF-8');
         return mb_convert_case($textoMinusculas, MB_CASE_TITLE, 'UTF-8');
     }
+    
 }
