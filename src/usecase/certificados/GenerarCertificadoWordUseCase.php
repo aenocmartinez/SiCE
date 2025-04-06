@@ -3,8 +3,6 @@
 namespace Src\usecase\certificados;
 
 use PhpOffice\PhpWord\TemplateProcessor;
-use Src\domain\Participante;
-use Src\domain\Grupo;
 use Src\view\dto\Response;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
@@ -29,10 +27,9 @@ class GenerarCertificadoWordUseCase
             return new Response("404", "Grupo no encontrado");
         }
 
-
         try {
             // Obtener fechas
-            $fechaInicio = $grupo->getCursoCalendario()->getCalendario()->getFechaInicioFormateada();
+            $fechaInicio = $grupo->getCursoCalendario()->getCalendario()->getFechaInicioClaseFormateada();
             $fechaFin = $grupo->getCursoCalendario()->getCalendario()->getFechaFinalFormateada();
             $fechaCertificado = now()->format('j') . ' días del mes de ' . now()->translatedFormat('F') . ' de ' . now()->year;
 
@@ -66,23 +63,33 @@ class GenerarCertificadoWordUseCase
 
             // Verificar si se debe convertir a PDF
             if (env('CERTIFICADO_CONVERTIR_PDF', false)) {
-                $libreOfficePath = env('LIBREOFFICE_PATH', '/usr/bin/libreoffice');
+                $libreOfficePath = env('LIBREOFFICE_PATH', 'C:\\Program Files\\LibreOffice\\program\\soffice.exe'); // Aquí usamos la ruta de LibreOffice en Windows
 
-                // $comando = $libreOfficePath . ' --headless --convert-to pdf "' . $rutaDocx . '" --outdir "' . $rutaTemporal . '"';
-                $comando = $libreOfficePath . ' --headless --convert-to pdf:writer_pdf_Export "' . $rutaDocx . '" --outdir "' . $rutaTemporal . '"';
+                $comando = "\"$libreOfficePath\" --headless --convert-to pdf:writer_pdf_Export \"$rutaDocx\" --outdir \"$rutaTemporal\"";
+                
+                // Ejecutar el comando y capturar salida
                 exec($comando, $output, $returnCode);
 
+                // Registrar el comando y la salida para ver qué está pasando
+                // Log::error('Comando ejecutado para convertir a PDF', [
+                //     'comando' => $comando,
+                //     'output' => $output,
+                //     'returnCode' => $returnCode,
+                // ]);
+
+                // Verificar si la conversión fue exitosa
                 if ($returnCode !== 0 || !file_exists($rutaPdf)) {
-                    Log::error('Error al convertir certificado a PDF', [
-                        'comando' => $comando,
-                        'output' => $output,
-                        'code' => $returnCode,
-                    ]);
+                    // Log::error('Error al convertir certificado a PDF', [
+                    //     'comando' => $comando,
+                    //     'output' => $output,
+                    //     'code' => $returnCode,
+                    // ]);
                     unlink($rutaDocx);
                     return new Response("500", "No se pudo generar el PDF con LibreOffice.");
                 }
 
-                // unlink($rutaDocx); // Limpieza
+                // Si todo sale bien, devolver el archivo PDF
+                unlink($rutaDocx); // Limpieza
                 return new Response("200", "PDF generado correctamente", [
                     'path' => $rutaPdf,
                     'filename' => "certificado_{$participante->getId()}_{$grupo->getId()}.pdf"
@@ -96,7 +103,7 @@ class GenerarCertificadoWordUseCase
             ]);
 
         } catch (\Throwable $e) {
-            Log::error('Error inesperado al generar el certificado', ['exception' => $e]);
+            // Log::error('Error inesperado al generar el certificado', ['exception' => $e]);
             return new Response("500", "Error al generar certificado: " . $e->getMessage());
         }
     }

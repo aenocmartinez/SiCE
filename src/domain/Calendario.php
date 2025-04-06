@@ -83,6 +83,13 @@ class Calendario {
         return FormatoFecha::fechaDDdeMMdeYYYY($this->fechaInicio);
     }
 
+    public function getFechaInicioClaseFormateada(): string {
+        if (is_null($this->fechaInicioClase))
+        return "";
+    
+    return FormatoFecha::fechaDDdeMMdeYYYY($this->fechaInicioClase);
+    }
+
     public function setFechaFinal($fechaFinal): void{
         $this->fechaFinal = $fechaFinal;
     }
