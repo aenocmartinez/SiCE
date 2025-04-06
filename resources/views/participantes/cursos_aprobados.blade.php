@@ -47,18 +47,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($participante->cursosAprobados() as $curso)
+                    @forelse ($participante->cursosParticipados() as $curso)
                     <tr>
                         <td>{{ $curso->nombre_curso }}</td>
                         <td class="text-center">{{ $curso->asistencias }}</td>
                         <td class="text-center">{{ $curso->total_sesiones }}</td>
                         <td class="text-center">{{ $curso->porcentaje_asistencia }}%</td>
                         <td class="text-center">
-                            <a href="{{ route('certificados.descargar', ['participanteID' => $participante->getId(), 'grupoID' => $curso->grupo_id]) }}"
-                               class="btn btn-sm btn-primary rounded-pill"
-                               title="Descargar certificado">
-                                <i class="fa fa-download me-1"></i> Descargar
-                            </a>
+                            @if($curso->aprobado)
+                                <a href="{{ route('certificados.descargar', ['participanteID' => $participante->getId(), 'grupoID' => $curso->grupo_id]) }}"
+                                class="btn btn-sm btn-primary rounded-pill"
+                                title="Descargar certificado">
+                                    <i class="fa fa-download me-1"></i> Descargar
+                                </a>
+                            @else
+                                <span class="badge bg-danger text-white">No aprobado</span>
+                            @endif
                         </td>
                     </tr>
                     @empty

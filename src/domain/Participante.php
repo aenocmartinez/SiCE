@@ -314,4 +314,8 @@ class Participante {
     public function cursosAprobados(): array {
         return $this->repository->listarCursosAprobados($this->id);
     }
+
+    public function cursosParticipados(): array {
+        return $this->repository->listarCursosParticipados($this->id);
+    }
 }

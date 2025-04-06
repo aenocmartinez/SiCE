@@ -50,11 +50,7 @@ class ActualizarOrientadorUseCase {
 
         (new AgregarAreaAOrientadorUseCase)->ejecutar($orientador->getId(), $orientadorDto->areas);
 
-        if ($usuario->esOrientador()) 
-        {
-            (new AsignarUsuarioAOrientadorUseCase)->ejecutar($orientador);
-        }
-
+        (new AsignarUsuarioAOrientadorUseCase)->ejecutar($orientador);
 
         return new Response('200', 'Registro actualizado con éxito.');
     }
