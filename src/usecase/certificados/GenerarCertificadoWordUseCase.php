@@ -8,11 +8,27 @@ use Src\domain\Grupo;
 use Src\view\dto\Response;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Src\dao\mysql\GrupoDao;
+use Src\dao\mysql\ParticipanteDao;
 
 class GenerarCertificadoWordUseCase
 {
-    public function ejecutar(Participante $participante, Grupo $grupo): Response
+    public function ejecutar(int $participanteID, int $grupoID): Response
     {
+        $participanteDao = new ParticipanteDao();
+        $grupoDao = new GrupoDao();
+
+        $participante = $participanteDao->buscarParticipantePorId($participanteID);
+        if (!$participante->existe()) {
+            return new Response("404", "Participante no encontrado");
+        }
+
+        $grupo = $grupoDao->buscarGrupoPorId($grupoID);
+        if (!$grupo->existe()) {
+            return new Response("404", "Grupo no encontrado");
+        }
+
+
         try {
             // Obtener fechas
             $fechaInicio = $grupo->getCursoCalendario()->getCalendario()->getFechaInicioFormateada();
