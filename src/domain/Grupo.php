@@ -297,4 +297,8 @@ class Grupo {
     public function obtenerLaUltimaAsistenciaRegistrada(): int {
         return $this->repository->obtenerLaUltimaAsistenciaRegistrada($this->id);
     }
+
+    public function getCursoCalendario(): CursoCalendario {
+        return $this->cursoCalendario;
+    }    
 }
