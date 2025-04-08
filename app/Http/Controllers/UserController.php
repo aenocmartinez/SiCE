@@ -51,7 +51,10 @@ class UserController extends Controller
         $usuarioDto->setEmail($data->email);
         $usuarioDto->setRole($data->role);
         $usuarioDto->setEstado($estado);
-        $usuarioDto->setPuedeCargarFirmas($data->puede_cargar_firmas);
+
+        if (isset($data->puede_cargar_firmas)) {
+            $usuarioDto->setPuedeCargarFirmas($data->puede_cargar_firmas);
+        }
 
         if (!is_null($data->orientador_id))
         {
@@ -89,7 +92,7 @@ class UserController extends Controller
 
     public function update(ActualizarUsuario $req)
     {
-        $data = $req->validated();                
+        $data = $req->validated();  
         $data = (object)$data;        
 
         $estado = 'Activo';
@@ -110,7 +113,10 @@ class UserController extends Controller
         $usuarioDto->setRole($data->role);
         $usuarioDto->setEstado($estado);
         $usuarioDto->setId($data->id);
-        $usuarioDto->setPuedeCargarFirmas($data->puede_cargar_firmas);
+
+        if (isset($data->puede_cargar_firmas)) {
+            $usuarioDto->setPuedeCargarFirmas($data->puede_cargar_firmas);
+        }
 
         if (!is_null($data->orientador_id))
         {
