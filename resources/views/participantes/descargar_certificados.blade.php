@@ -1,6 +1,6 @@
 @extends('plantillas.principal')
 
-@section('title', 'Cursos Aprobados')
+@section('title', 'Descargar certificados')
 @section('description', '')
 
 @section("seccion")
@@ -9,7 +9,7 @@
     </a>
 
 @endsection
-@section("subseccion", 'Cursos Aprobados')
+@section("subseccion", 'Descargar certificados')
 
 @section('content')
 
@@ -18,7 +18,7 @@
         <div class="card shadow-sm border-0">
             <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-start">
                 <div>
-                    <h4 class="mb-1">Cursos aprobados</h4>
+                    <!-- <h4 class="mb-1">Cursos aprobados</h4> -->
                     <p class="mb-0 text-muted">
                         Participante: {{ $participante->getNombreCompleto() }}<br>
                         Documento: {{ $participante->getDocumentoCompleto() }}<br>

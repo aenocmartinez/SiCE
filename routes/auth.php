@@ -236,6 +236,6 @@ Route::middleware('auth')->group(function () {
 
 
     // Listar cursos aprobados de un participante para obtener certificado
-    Route::get('participantes/{id}/cursos-aprobados', [ParticipanteController::class, 'listarCursosAprobados'])->middleware('role:Admin,superAdmin')->name('participantes.cursos-aprobados');
+    Route::get('participantes/{id}/descargar-certificados', [ParticipanteController::class, 'listarCursosRealizadosParaDescargarCertificado'])->middleware('role:Admin,superAdmin')->name('participantes.descargar-certificados');
     Route::get('certificados/{participanteID}/{grupoID}/descargar', [CertificadoController::class, 'descargar'])->name('certificados.descargar');
 });

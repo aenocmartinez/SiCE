@@ -15,7 +15,7 @@ use Src\usecase\participantes\BuscadorParticipantesUseCase;
 use Src\usecase\participantes\BuscarParticipantePorIdUseCase;
 use Src\usecase\participantes\EliminarParticipanteUseCase;
 use Src\usecase\participantes\GuardarParticipanteUseCase;
-use Src\usecase\participantes\ListarCursosAprobadosUseCase;
+use Src\usecase\participantes\ListarCursosRealizadosParaDescargarCertificadoUseCase;
 use Src\usecase\participantes\ListarFormulariosParticipanteUseCase;
 use Src\usecase\participantes\ListarParticipantesUseCase;
 use Src\view\dto\ParticipanteDto;
@@ -213,9 +213,9 @@ class ParticipanteController extends Controller
         return $participanteDto;
     }
 
-    public function listarCursosAprobados($participanteID)
+    public function listarCursosRealizadosParaDescargarCertificado($participanteID)
     {
-        $response = (new ListarCursosAprobadosUseCase)->ejecutar($participanteID);
+        $response = (new ListarCursosRealizadosParaDescargarCertificadoUseCase)->ejecutar($participanteID);
 
         if ($response->code == "404") {
             return redirect()->route('participantes.index')->with('code', $response->code)->with('status', $response->message);
@@ -223,7 +223,7 @@ class ParticipanteController extends Controller
 
         $participante = $response->data;
         
-        return view("participantes.cursos_aprobados", [
+        return view("participantes.descargar_certificados", [
             "participante" => $participante,
         ]);              
     }

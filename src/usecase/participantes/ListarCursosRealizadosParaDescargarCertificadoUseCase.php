@@ -5,7 +5,7 @@ namespace Src\usecase\participantes;
 use Src\dao\mysql\ParticipanteDao;
 use Src\view\dto\Response;
 
-class ListarCursosAprobadosUseCase
+class ListarCursosRealizadosParaDescargarCertificadoUseCase
 {
 
     public function ejecutar(int $participanteID = 0): Response

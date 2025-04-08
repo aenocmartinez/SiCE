@@ -80,7 +80,7 @@
                             title="Inscripciones">
                                 <i class="fa fa-fw fa-address-card"></i> 
                             </a>
-                            <a href="{{ route('participantes.cursos-aprobados', $p->getId()) }}" 
+                            <a href="{{ route('participantes.descargar-certificados', $p->getId()) }}" 
                             class="fs-xs fw-semibold btn rounded-pill btn-outline-info"
                             data-bs-toggle="tooltip" 
                             title="Certificados">
