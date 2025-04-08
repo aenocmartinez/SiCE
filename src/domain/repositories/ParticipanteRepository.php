@@ -27,4 +27,5 @@ interface ParticipanteRepository {
     public function aplazamientos();
     public function formularios_inscritos_en_un_periodo($particite_id, $periodo_id): array;
     public function listarCursosAprobados(int $participanteID): array;
+    public function listarCursosParticipados(int $participanteID): array;
 }

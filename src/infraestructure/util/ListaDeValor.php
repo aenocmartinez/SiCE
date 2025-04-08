@@ -108,6 +108,18 @@ class ListaDeValor {
         ];        
     }
 
+    public static function obtenerNombreTipoDocumentoPorCodigo(string $value): string {
+        $tiposDocumento = [
+            'CC' => 'Cédula de Ciudadanía',
+            'TI' => 'Tarjeta de identidad',
+            'CE' => 'Cédula de extranjería',
+            'PP' => 'Pasaporte',
+        ];
+    
+        return $tiposDocumento[$value] ?? '';
+    }
+    
+
     public static function motivosCambiosYTraslados(): array {
         return [
             [ 'value' => 'cambio', 'nombre' => 'Cambiar de curso o grupo'],

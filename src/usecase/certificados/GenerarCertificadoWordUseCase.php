@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Src\dao\mysql\GrupoDao;
 use Src\dao\mysql\ParticipanteDao;
 use Src\infraestructure\util\FormatoString;
+use Src\infraestructure\util\ListaDeValor;
 
 class GenerarCertificadoWordUseCase
 {
@@ -49,15 +50,18 @@ class GenerarCertificadoWordUseCase
             $rutaDocx = "{$rutaTemporal}/{$nombreBase}.docx";
             $rutaPdf = "{$rutaTemporal}/{$nombreBase}.pdf";
 
+            $nombreTipoDocumento = ListaDeValor::obtenerNombreTipoDocumentoPorCodigo($participante->getTipoDocumento());
+
             // Procesar plantilla
             $template = new TemplateProcessor($rutaPlantilla);
             $template->setValue('NOMBRE_COMPLETO', FormatoString::convertirACapitalCase($participante->getNombreCompleto()));
-            $template->setValue('DOCUMENTO', $participante->getDocumentoCompleto());
-            $template->setValue('NOMBRE_CURSO', strtoupper($grupo->getNombreCurso()));
+            $template->setValue('TIPO_DOCUMENTO', $nombreTipoDocumento);
+            $template->setValue('DOCUMENTO', $participante->getDocumento());
+            $template->setValue('NOMBRE_CURSO', mb_strtoupper($grupo->getNombreCurso(), 'UTF-8'));
             $template->setValue('FECHA_INICIO', $fechaInicio);
             $template->setValue('FECHA_FIN', $fechaFin);
             $template->setValue('FECHA_CERTIFICADO', $fechaCertificado);
-            $template->setValue('INTENSIDAD', '48'); // Valor fijo según indicaste
+            $template->setValue('INTENSIDAD', '48'); 
 
             $template->saveAs($rutaDocx);
 
