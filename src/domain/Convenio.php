@@ -210,12 +210,12 @@ class Convenio {
     }
 
     public function listarParticipantes(): array {
-        $calendario = Calendario::Vigente();
-        if (!$calendario->existe()) {
-            return [];
-        }
-        
-        return $this->repository->listadoParticipantesPorConvenio($this->id, $calendario->getId());
+        // $calendario = Calendario::Vigente();
+        // if (!$calendario->existe()) {
+        //     return [];
+        // }
+
+        return $this->repository->listadoParticipantesPorConvenio($this->id, $this->getCalendarioId());
     }
 
     public function actualizarTotalAPagar() {
