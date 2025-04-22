@@ -7,8 +7,10 @@ use PDF; // si usas DomPDF, recuerda tenerlo instalado
 use App\Models\Participante;
 use App\Support\BancoPreguntasIdentidad;
 use Src\infraestructure\util\ListaDeValor;
+use Src\usecase\certificados\GenerarCertificadoWordUseCase;
 use Src\usecase\participantes\BuscarParticipantePorDocumentoUseCase;
 use Src\usecase\participantes\BuscarParticipantePorIdUseCase;
+use Src\usecase\participantes\ListarCursosRealizadosParaDescargarCertificadoUseCase;
 
 class CertificadoAsistenciaController extends Controller
 {
@@ -75,12 +77,10 @@ class CertificadoAsistenciaController extends Controller
             $respuestaUsuario = strtolower(trim($request->input("respuesta_{$index}")));
             $esperada = strtolower(trim(BancoPreguntasIdentidad::respuestaEsperada($pregunta, $participante)));
     
-            // Normaliza espacios múltiples
             $respuestaUsuario = preg_replace('/\s+/', ' ', $respuestaUsuario);
             $esperada = preg_replace('/\s+/', ' ', $esperada);
     
             if ($respuestaUsuario !== $esperada) {
-                // Limpiar sesión (opcional)
                 session()->forget(['participante_id', 'verificacion_preguntas']);
     
                 return redirect()
@@ -92,7 +92,61 @@ class CertificadoAsistenciaController extends Controller
         }
     
         // ✅ Si pasa la verificación
-        dd("Pasó la verificación y comenzará la descarga");
+        $response = (new ListarCursosRealizadosParaDescargarCertificadoUseCase)
+            ->ejecutar($participante->getId());
+    
+        if ($response->code !== "200") {
+            return redirect()
+                ->route('certificado.asistencia.formulario')
+                ->withErrors(['error' => 'No fue posible obtener los cursos realizados.']);
+        }
+    
+        $participante = $response->data;
+    
+        return view('certificados.cursos_participados', compact('participante'));
+    }
+
+    public function descargarCertificadoPublico($participanteID, $grupoID)
+    {
+        $sessionID = session('participante_id');
+        if (!$sessionID || (int)$participanteID !== (int)$sessionID) {
+            return redirect()->route('certificado.asistencia.formulario')
+                ->withErrors(['error' => 'Acceso no autorizado al certificado.']);
+        }
+
+        $participante = (new BuscarParticipantePorIdUseCase)->ejecutar($participanteID);
+        if (!$participante->existe()) {
+            return redirect()->route('certificado.asistencia.formulario')
+                ->withErrors(['error' => 'Participante no encontrado.']);
+        }
+    
+        $cursoValido = collect($participante->cursosParticipados())->first(function ($curso) use ($grupoID) {
+            return $curso->grupo_id == $grupoID && $curso->aprobado;
+        });
+    
+        if (!$cursoValido) {
+            return redirect()->route('certificado.asistencia.cursos')
+                ->withErrors(['error' => 'No tiene permitido descargar el certificado para este curso.']);
+        }
+
+        $response = (new GenerarCertificadoWordUseCase)->ejecutar($participanteID, $grupoID);
+    
+        if ($response->code !== "200") {
+            return redirect()->route('certificado.asistencia.cursos')
+                ->withErrors(['error' => $response->message]);
+        }
+    
+        $path = $response->data['path'];
+        $filename = $response->data['filename'];
+    
+        return response()->streamDownload(function () use ($path) {
+            readfile($path);
+            register_shutdown_function(function () use ($path) {
+                if (file_exists($path)) {
+                    @unlink($path);
+                }
+            });
+        }, $filename);
     }
     
 }
