@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CertificadoAsistenciaController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\HomeController;
@@ -52,3 +53,9 @@ Route::get('/public/inscripcion/{participanteId}/participante/{grupoId}/grupo/{f
 Route::get('/public/inscripcion/{participanteId}/participante/pagar-matricula', [InscripcionPublicaController::class, 'pagarMatricula'])->name('public.pagar-matricula');
 
 Route::get('/public/preinscripcion/{participanteId}/participante/{grupoId}/curso', [InscripcionPublicaController::class, 'realizarPreinscripcion'])->name('public.presinscribirse');
+
+
+// Descargar certifiado de participación
+Route::get('/certificado-asistencia', [CertificadoAsistenciaController::class, 'formulario'])->name('certificado.asistencia.formulario');
+
+Route::post('/certificado-asistencia/descargar', [CertificadoAsistenciaController::class, 'descargar'])->name('certificado.asistencia.descargar');
