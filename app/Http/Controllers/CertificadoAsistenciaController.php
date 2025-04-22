@@ -5,33 +5,79 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use PDF; // si usas DomPDF, recuerda tenerlo instalado
 use App\Models\Participante;
+use App\Support\BancoPreguntasIdentidad;
+use Src\infraestructure\util\ListaDeValor;
+use Src\usecase\participantes\BuscarParticipantePorDocumentoUseCase;
+use Src\usecase\participantes\BuscarParticipantePorIdUseCase;
 
 class CertificadoAsistenciaController extends Controller
 {
     public function formulario()
     {
-        dd("LLega hasta aqui");
-        return view('certificados.formulario');
+        $tiposDocumento = ListaDeValor::tipoDocumentos();
+        return view('certificados.formulario', compact('tiposDocumento'));
+    }  
+
+
+    public function verificar(Request $request)
+    {
+        $request->validate([
+            'tipo_documento' => 'required',
+            'documento' => 'required',
+        ]);
+
+        $buscarParticipante = (new BuscarParticipantePorDocumentoUseCase);
+        $participante = $buscarParticipante->ejecutar($request->tipo_documento, $request->documento);
+
+        if (!$participante->existe()) {
+            return back()->withErrors(['documento' => 'No se encontró un registro con esos datos.']);
+        }
+
+        $preguntas = BancoPreguntasIdentidad::generarAleatorias(2);
+        foreach ($preguntas as &$pregunta) {
+            $pregunta['texto'] = BancoPreguntasIdentidad::personalizarTexto($pregunta, $participante);
+        }
+
+        session([
+            'participante_id' => $participante->getId(),
+            'verificacion_preguntas' => $preguntas,
+        ]);
+
+        return view('certificados.verificacion', compact('preguntas'));
     }
 
     public function descargar(Request $request)
     {
-
-        // $request->validate([
-        //     'documento' => 'required|string',
-        // ]);
-
-        // $participante = Participante::where('documento', $request->documento)->first();
-
-        // if (!$participante) {
-        //     return back()->withErrors(['documento' => 'Participante no encontrado']);
-        // }
-
-        // // Supón que tienes una vista `certificados.pdf_asistencia.blade.php`
-        // $pdf = PDF::loadView('certificados.pdf_asistencia', [
-        //     'participante' => $participante,
-        // ]);
-
-        // return $pdf->download("certificado_asistencia_{$participante->documento}.pdf");
+        $participante = (new BuscarParticipantePorIdUseCase)->ejecutar(session('participante_id'));
+        $preguntas = session('verificacion_preguntas');
+    
+        if (!$participante->existe() || !$preguntas) {
+            return redirect()->route('certificado.asistencia.formulario')
+                ->withErrors(['error' => 'Sesión inválida. Por favor inicie nuevamente.']);
+        }
+    
+        foreach ($preguntas as $index => $pregunta) {
+            $respuestaUsuario = strtolower(trim($request->input("respuesta_{$index}")));
+            $esperada = strtolower(trim(BancoPreguntasIdentidad::respuestaEsperada($pregunta, $participante)));
+    
+            // Normaliza espacios múltiples
+            $respuestaUsuario = preg_replace('/\s+/', ' ', $respuestaUsuario);
+            $esperada = preg_replace('/\s+/', ' ', $esperada);
+    
+            if ($respuestaUsuario !== $esperada) {
+                // Limpiar sesión (opcional)
+                session()->forget(['participante_id', 'verificacion_preguntas']);
+    
+                return redirect()
+                    ->route('certificado.asistencia.formulario')
+                    ->withErrors([
+                        'error' => 'No se aprobó la validación de identidad. Por favor, inténtelo nuevamente desde el inicio.',
+                    ]);
+            }
+        }
+    
+        // ✅ Si pasa la verificación
+        dd("Pasó la verificación y comenzará la descarga");
     }
+    
 }

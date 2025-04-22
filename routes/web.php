@@ -56,6 +56,11 @@ Route::get('/public/preinscripcion/{participanteId}/participante/{grupoId}/curso
 
 
 // Descargar certifiado de participación
-Route::get('/certificado-asistencia', [CertificadoAsistenciaController::class, 'formulario'])->name('certificado.asistencia.formulario');
+Route::get('/certificado-asistencia', [CertificadoAsistenciaController::class, 'formulario'])
+    ->name('certificado.asistencia.formulario');
 
-Route::post('/certificado-asistencia/descargar', [CertificadoAsistenciaController::class, 'descargar'])->name('certificado.asistencia.descargar');
+Route::post('/certificado-asistencia/verificar', [CertificadoAsistenciaController::class, 'verificar'])
+    ->name('certificado.asistencia.verificar');
+
+Route::post('/certificado-asistencia/descargar', [CertificadoAsistenciaController::class, 'descargar'])
+    ->name('certificado.asistencia.descargar');

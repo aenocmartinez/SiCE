@@ -58,7 +58,7 @@
                 <img class="logo-public" src="{{asset('assets/media/favicons/logo_principal.png')}}" 
                   alt="Universidad Colegio Mayor de Cundinamarca">
                 <p class="fw-medium text-white-50 mb-0">
-                  Universidad Colegio Mayor de Cundinamarca &copy; <span data-toggle="year-copy"></span>
+                  Universidad Mayor de Cundinamarca &copy; <span data-toggle="year-copy"></span>
                 </p>
 
               </div>
