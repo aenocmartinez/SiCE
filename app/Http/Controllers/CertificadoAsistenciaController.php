@@ -24,7 +24,22 @@ class CertificadoAsistenciaController extends Controller
         $request->validate([
             'tipo_documento' => 'required',
             'documento' => 'required',
+            'g-recaptcha-response' => 'required',
         ]);
+    
+        //  Validar reCAPTCHA
+        $recaptchaResponse = $request->input('g-recaptcha-response');
+        $secretKey = env('RECAPTCHA_SECRET_KEY_V2');
+        $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+    
+        $response = file_get_contents($verifyUrl . '?secret=' . $secretKey . '&response=' . $recaptchaResponse);
+        $responseKeys = json_decode($response, true);
+    
+        if (!$responseKeys["success"]) {
+            return back()->withErrors([
+                'g-recaptcha-response' => 'Verificación de reCAPTCHA fallida. Inténtelo de nuevo.'
+            ])->withInput();
+        }
 
         $buscarParticipante = (new BuscarParticipantePorDocumentoUseCase);
         $participante = $buscarParticipante->ejecutar($request->tipo_documento, $request->documento);
