@@ -106,7 +106,7 @@
 
         const sesiones = grupo.sesiones;
         for (const [n, s] of Object.entries(sesiones)) {
-            tabla += `<th>Sesión ${n}<br><span class="text-muted">${s.fecha}</span></th>`;
+            tabla += `<th class="fs-sm">Sesión ${n}<br><span class="text-muted fs-sm">${s.fecha}</span></th>`;
         }
 
         tabla += `</tr></thead><tbody>`;

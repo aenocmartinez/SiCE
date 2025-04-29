@@ -50,8 +50,9 @@ class ObtenerDatosFormularioReporteAsistenciaUseCase
                 $sesiones = [];
 
                 foreach ($asistencias as $registro) {
+
                     $sesionNum = $registro->getSesion();
-                    $fechaRegistro = $registro->getFechaRegistro();
+                    $fechaRegistro = (new \DateTime($registro->getFechaRegistro()))->format('Y-m-d');
                     $participanteID = $registro->getParticipante()->getId();
                     $nombre = $registro->getParticipante()->getNombreCompleto();
                     $documento = $registro->getParticipante()->getDocumentoCompleto();
