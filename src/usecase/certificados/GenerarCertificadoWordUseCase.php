@@ -13,7 +13,7 @@ use Src\infraestructure\util\ListaDeValor;
 
 class GenerarCertificadoWordUseCase
 {
-    public function ejecutar(int $participanteID, int $grupoID): Response
+    public function ejecutar(int $participanteID, int $grupoID, bool $solicitadoEnLinea = false): Response
     {
         $participanteDao = new ParticipanteDao();
         $grupoDao = new GrupoDao();
@@ -31,8 +31,14 @@ class GenerarCertificadoWordUseCase
         try {
             // Obtener fechas
             $fechaInicio = $grupo->getCursoCalendario()->getCalendario()->getFechaInicioClaseFormateada();
-            $fechaFin = $grupo->getCursoCalendario()->getCalendario()->getFechaFinalFormateada();
-            $fechaCertificado = now()->format('j') . ' días del mes de ' . now()->translatedFormat('F') . ' de ' . now()->year;
+            $fechaFin = $grupo->getCursoCalendario()->getCalendario()->getFechaFinalFormateada();            
+            // $fechaCertificado = now()->format('j') . ' días del mes de ' . now()->translatedFormat('F') . ' de ' . now()->year;
+
+            // Fecha Certificado
+            $fechaBase = $grupo->getCursoCalendario()->getCalendario()->getFechaCertificado();
+            $fecha = $solicitadoEnLinea || !$fechaBase || !strlen($fechaBase) ? now() : \Carbon\Carbon::parse($fechaBase);  
+            
+            $fechaCertificado = $fecha->format('j') . ' días del mes de ' . $fecha->translatedFormat('F') . ' de ' . $fecha->year;
 
             // Preparar rutas
             $uuid = Str::uuid();

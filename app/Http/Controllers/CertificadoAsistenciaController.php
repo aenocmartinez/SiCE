@@ -129,7 +129,7 @@ class CertificadoAsistenciaController extends Controller
                 ->withErrors(['error' => 'No tiene permitido descargar el certificado para este curso.']);
         }
 
-        $response = (new GenerarCertificadoWordUseCase)->ejecutar($participanteID, $grupoID);
+        $response = (new GenerarCertificadoWordUseCase)->ejecutar($participanteID, $grupoID, true);
     
         if ($response->code !== "200") {
             return redirect()->route('certificado.asistencia.cursos')
