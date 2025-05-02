@@ -11,6 +11,7 @@ class CursoParticipadoDTO
     public $total_sesiones;
     public $porcentaje_asistencia;
     public $aprobado;
+    public $nombre_calendario;
 
     public function __construct(
         $curso_id,
@@ -19,7 +20,8 @@ class CursoParticipadoDTO
         $asistencias,
         $total_sesiones,
         $porcentaje_asistencia,
-        $aprobado
+        $aprobado,
+        $nombre_calendario
     ) {
         $this->curso_id = $curso_id;
         $this->nombre_curso = $nombre_curso;
@@ -28,5 +30,6 @@ class CursoParticipadoDTO
         $this->total_sesiones = $total_sesiones;
         $this->porcentaje_asistencia = $porcentaje_asistencia;
         $this->aprobado = $aprobado;
+        $this->nombre_calendario = $nombre_calendario;
     }
 }

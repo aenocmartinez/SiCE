@@ -40,6 +40,7 @@
                 <thead>
                     <tr class="text-center">
                         <th>Curso</th>
+                        <th>Periodo</th>
                         <th>Asistencias</th>
                         <th>Total Sesiones</th>
                         <th>Asistencia (%)</th>
@@ -50,6 +51,7 @@
                     @forelse ($participante->cursosParticipados() as $curso)
                     <tr>
                         <td>{{ $curso->nombre_curso }}</td>
+                        <td class="text-center">{{ $curso->nombre_calendario}}</td>
                         <td class="text-center">{{ $curso->asistencias }}</td>
                         <td class="text-center">{{ $curso->total_sesiones }}</td>
                         <td class="text-center">{{ $curso->porcentaje_asistencia }}%</td>

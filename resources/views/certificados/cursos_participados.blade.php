@@ -19,6 +19,7 @@
         <thead class="table-primary text-center">
             <tr>
                 <th>Curso</th>
+                <th>Periodo</th>
                 <th>Asistencias</th>
                 <th>Total sesiones</th>
                 <th>% Asistencia</th>
@@ -31,6 +32,7 @@
                     <td style="max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                         {{ $curso->nombre_curso }}
                     </td>
+                    <td class="text-center">{{ $curso->nombre_calendario }}</td>
                     <td class="text-center">{{ $curso->asistencias }}</td>
                     <td class="text-center">{{ $curso->total_sesiones }}</td>
                     <td class="text-center">{{ $curso->porcentaje_asistencia }}%</td>

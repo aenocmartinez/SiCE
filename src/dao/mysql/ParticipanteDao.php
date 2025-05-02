@@ -722,30 +722,32 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
     public function listarCursosParticipados(int $participanteID): array
     {
         $resultados = DB::table('asistencia_clase as a')
-            ->join('grupos as g', 'a.grupo_id', '=', 'g.id')
-            ->join('curso_calendario as cc', 'g.curso_calendario_id', '=', 'cc.id')
-            ->join('cursos as cu', 'cc.curso_id', '=', 'cu.id')
-            ->joinSub(
-                DB::table('asistencia_clase')
-                    ->select('grupo_id', DB::raw('COUNT(DISTINCT sesion) as total_sesiones'))
-                    ->groupBy('grupo_id'),
-                'sesiones',
-                'sesiones.grupo_id',
-                '=',
-                'a.grupo_id'
-            )
-            ->where('a.participante_id', $participanteID)
-            ->where('g.cancelado', false)
-            ->groupBy('cu.id', 'cu.nombre', 'g.id', 'sesiones.total_sesiones')
-            ->orderByDesc(DB::raw('ROUND(100 * SUM(a.presente) / sesiones.total_sesiones, 2)'))
-            ->get([
-                'cu.id as curso_id',
-                'cu.nombre as nombre_curso',
-                'g.id as grupo_id',
-                DB::raw('SUM(a.presente) as asistencias'),
-                'sesiones.total_sesiones',
-                DB::raw('ROUND(100 * SUM(a.presente) / sesiones.total_sesiones, 2) as porcentaje_asistencia'),
-            ]);
+        ->join('grupos as g', 'a.grupo_id', '=', 'g.id')
+        ->join('curso_calendario as cc', 'g.curso_calendario_id', '=', 'cc.id')
+        ->join('cursos as cu', 'cc.curso_id', '=', 'cu.id')
+        ->join('calendarios as ca', 'cc.calendario_id', '=', 'ca.id') 
+        ->joinSub(
+            DB::table('asistencia_clase')
+                ->select('grupo_id', DB::raw('COUNT(DISTINCT sesion) as total_sesiones'))
+                ->groupBy('grupo_id'),
+            'sesiones',
+            'sesiones.grupo_id',
+            '=',
+            'a.grupo_id'
+        )
+        ->where('a.participante_id', $participanteID)
+        ->where('g.cancelado', false)
+        ->groupBy('cu.id', 'cu.nombre', 'g.id', 'sesiones.total_sesiones', 'ca.nombre') 
+        ->orderByDesc(DB::raw('ROUND(100 * SUM(a.presente) / sesiones.total_sesiones, 2)'))
+        ->get([
+            'cu.id as curso_id',
+            'cu.nombre as nombre_curso',
+            'g.id as grupo_id',
+            DB::raw('SUM(a.presente) as asistencias'),
+            'sesiones.total_sesiones',
+            DB::raw('ROUND(100 * SUM(a.presente) / sesiones.total_sesiones, 2) as porcentaje_asistencia'),
+            'ca.nombre as nombre_calendario'
+        ]);    
     
         return $resultados->map(function ($row) {
             return new CursoParticipadoDto(
@@ -755,7 +757,8 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                 $row->asistencias,
                 $row->total_sesiones,
                 $row->porcentaje_asistencia,
-                $row->porcentaje_asistencia >= 80
+                $row->porcentaje_asistencia >= 80,
+                $row->nombre_calendario
             );
         })->all();
     }
