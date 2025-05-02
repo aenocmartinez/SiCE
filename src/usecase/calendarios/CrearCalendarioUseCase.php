@@ -24,6 +24,7 @@ class CrearCalendarioUseCase {
         $calendario->setFechaFinal($calendarioDto->fechaFinal);
         $calendario->setRepository($calendarioRepository);
         $calendario->setFechaInicioClase($calendarioDto->fechaInicioClase);
+        $calendario->setFechaCertificado($calendarioDto->fechaCertificado);
         $calendario->setEstaFormularioInscripcionAbierto($calendarioDto->estaFormularioInscripcionAbierto);
 
         $exito = $calendario->crear();

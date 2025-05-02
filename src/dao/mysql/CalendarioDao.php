@@ -25,7 +25,7 @@ use Src\view\dto\GrupoInscripcionDto;
 class CalendarioDao extends Model implements CalendarioRepository {
 
     protected $table = 'calendarios';
-    protected $fillable = ['nombre', 'fec_ini', 'fec_fin', 'fec_ini_clase', 'esta_formulario_inscripcion_abierto'];   
+    protected $fillable = ['nombre', 'fec_ini', 'fec_fin', 'fec_ini_clase', 'esta_formulario_inscripcion_abierto', 'fec_certificado'];   
     
     public function cursos() {
         return $this->belongsToMany(CursoDao::class, 'curso_calendario', 'calendario_id', 'curso_id')
@@ -60,6 +60,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 $calendario->setFechaInicio($result['fec_ini']);
                 $calendario->setFechaFinal($result['fec_fin']);
                 $calendario->setFechaInicioClase($result['fec_ini_clase']);
+                $calendario->setFechaCertificado($result['fec_certificado']);
             }
         } catch (\Exception $e) {
             Sentry::captureException($e);
@@ -78,6 +79,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 $calendario->setFechaFinal($result['fec_fin']);
                 $calendario->setFechaInicioClase($result['fec_ini_clase']);
                 $calendario->setEstaFormularioInscripcionAbierto($result['esta_formulario_inscripcion_abierto']);
+                $calendario->setFechaCertificado($result['fec_certificado']);
             }
         } catch (\Exception $e) {
             Sentry::captureException($e);
@@ -97,6 +99,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                 'fec_ini' => $calendario->getFechaInicio(),
                 'fec_fin' => $calendario->getFechaFinal(),
                 'fec_ini_clase' => $calendario->getFechaInicioClase(),
+                'fec_certificado' => $calendario->getFechaCertificado(),
                 'esta_formulario_inscripcion_abierto' => $calendario->estaElFormularioInscripcionAbierto(),
             ]);
 
@@ -141,6 +144,7 @@ class CalendarioDao extends Model implements CalendarioRepository {
                     'fec_ini' => $calendario->getFechaInicio(),
                     'fec_fin' => $calendario->getFechaFinal(),
                     'fec_ini_clase' => $calendario->getFechaInicioClase(),
+                    'fec_certificado' => $calendario->getFechaCertificado(),
                     'esta_formulario_inscripcion_abierto' => $calendario->estaElFormularioInscripcionAbierto(),
                 ]);                
                 $exito = true;

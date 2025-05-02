@@ -16,6 +16,7 @@ class Calendario {
     private $fechaInicio;
     private $fechaFinal;
     private $fechaInicioClase;
+    private $fechaCertificado;
     private bool $estaElFormularioDeInscripcionAbierto;
     private $repository;
     private $cursos = [];
@@ -25,6 +26,7 @@ class Calendario {
         $this->nombre = $nombre;
         $this->fechaInicio = $fechaInicio;
         $this->fechaFinal = $fechaFinal;
+        $this->fechaCertificado = "";
         $this->estaElFormularioDeInscripcionAbierto = false;
         $this->repository = new CalendarioDao();
     }
@@ -103,6 +105,14 @@ class Calendario {
             return "";
         
         return FormatoFecha::fechaDDdeMMdeYYYY($this->fechaFinal);
+    }    
+
+    public function setFechaCertificado($fechaCertificado): void {
+        $this->fechaCertificado = $fechaCertificado;
+    }
+
+    public function getFechaCertificado() {
+        return $this->fechaCertificado;
     }    
 
     public static function listar($repository): array {

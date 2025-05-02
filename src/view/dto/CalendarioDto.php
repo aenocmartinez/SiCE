@@ -9,6 +9,7 @@ class CalendarioDto {
     public $fechaInicial;
     public $fechaFinal;
     public $fechaInicioClase;
+    public $fechaCertificado;
     public $estaFormularioInscripcionAbierto;
 
     public function __construct(string $nombre="", $fechaInicial="", $fechaFinal="") {

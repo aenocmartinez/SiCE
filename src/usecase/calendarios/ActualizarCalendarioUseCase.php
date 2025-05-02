@@ -28,6 +28,7 @@ class ActualizarCalendarioUseCase {
         $calendario->setFechaInicio($calendarioDto->fechaInicial);
         $calendario->setFechaFinal($calendarioDto->fechaFinal);
         $calendario->setFechaInicioClase($calendarioDto->fechaInicioClase);
+        $calendario->setFechaCertificado($calendarioDto->fechaCertificado);
         $calendario->setEstaFormularioInscripcionAbierto($calendarioDto->estaFormularioInscripcionAbierto);
 
         $exito = $calendario->actualizar();

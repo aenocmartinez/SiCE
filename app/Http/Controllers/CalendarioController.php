@@ -51,6 +51,8 @@ class CalendarioController extends Controller
         $calendarioDto->fechaInicial = $data['fec_ini'];
         $calendarioDto->fechaFinal = $data['fec_fin'];
         $calendarioDto->fechaInicioClase = $data['fec_ini_clase'];
+        $calendarioDto->fechaCertificado = $data['fec_certificado'];
+
         
         $calendarioDto->estaFormularioInscripcionAbierto = false;
         if (isset($data['esta_formulario_inscripcion_abierto'])) {
@@ -91,6 +93,7 @@ class CalendarioController extends Controller
         $calendarioDto->fechaInicial = $data['fec_ini'];
         $calendarioDto->fechaFinal = $data['fec_fin'];
         $calendarioDto->fechaInicioClase = $data['fec_ini_clase'];
+        $calendarioDto->fechaCertificado = $data['fec_certificado'];
         $calendarioDto->id = $id;
 
         $calendarioDto->estaFormularioInscripcionAbierto = false;

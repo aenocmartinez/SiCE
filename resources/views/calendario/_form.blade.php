@@ -68,8 +68,23 @@
                         <span class="invalid-feedback" role="alert">
                             {{ $message }}
                         </span>
-                    @enderror   
+                    @enderror                       
                     
+                <br>
+                <label class="form-label mt-2" for="fec_certificado">Fecha expedición certificado</label>
+                <input type="text" 
+                       class="js-flatpickr form-control @error('fec_certificado') is-invalid @enderror" 
+                       id="fec_certificado" 
+                       name="fec_certificado" 
+                       placeholder="Y-m-d"
+                       value="{{ old('fec_certificado', $calendario->getFechaCertificado()) }}"
+                       >
+                    @error('fec_certificado')
+                        <span class="invalid-feedback" role="alert">
+                            {{ $message }}
+                        </span>
+                    @enderror                
+                
                 <br>
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="esta_formulario_inscripcion_abierto" name="esta_formulario_inscripcion_abierto" {{ $esta_formulario_inscripcion_abierto }}>
