@@ -11,7 +11,8 @@
 
 <div class="mb-4 text-center">
     <p class="mb-1"><strong>Participante:</strong> {{ $participante->getNombreCompleto() }}</p>
-    <p><strong>Documento:</strong> {{ $participante->getDocumentoCompleto() }}</p>
+    <p class="mb-1"><strong>Documento:</strong> {{ $participante->getDocumentoCompleto() }}</p>
+    <p>Nota importante</p>
 </div>
 
 <div class="table-responsive">
