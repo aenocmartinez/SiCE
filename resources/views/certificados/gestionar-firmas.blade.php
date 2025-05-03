@@ -9,8 +9,8 @@
 @section("description", "Cargue o actualice las firmas que aparecerán en los certificados")
 
 @section("seccion")
-    <a class="link-fx" href="{{ url()->previous() }}">
-        Volver
+    <a class="link-fx" href="{{ route('dashboard') }}">
+        Dashboard
     </a>
 @endsection
 
