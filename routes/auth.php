@@ -24,6 +24,7 @@ use App\Http\Controllers\ParticipanteController;
 use App\Http\Controllers\SalonController;
 use App\Http\Controllers\TipoSalonController;
 use App\Http\Controllers\ExportarCSVController;
+use App\Http\Controllers\FirmaCertificadoController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -233,6 +234,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/asistencia/formulario', [OrientadorController::class, 'formularioAsistencia'])->middleware('role:Admin,superAdmin,orientador')->name('asistencia.formulario');
     Route::get('/asistencia/reportes', [OrientadorController::class, 'formularioReportePorCurso'])->middleware('role:Admin,superAdmin,orientador')->name('asistencia.formulario-reportes');
     Route::get('/asistencia/participante', [OrientadorController::class, 'formularioReporteParticipante'])->middleware('role:Admin,superAdmin,orientador')->name('asistencia.participante');
+
+    // Firmas certificado
+    Route::get('/firmas/gestionar', [FirmaCertificadoController::class, 'gestionar'])->middleware('role:Admin,superAdmin')->name('firmas.gestionar');
+    Route::post('/firmas/guardar', [FirmaCertificadoController::class, 'guardar'])->middleware('role:Admin,superAdmin')->name('firmas.guardar');
 
 
     // Listar cursos aprobados de un participante para obtener certificado

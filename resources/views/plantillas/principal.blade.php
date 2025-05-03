@@ -126,28 +126,36 @@
               </li>
 
 
-              @if (Auth::user()->cumpleFuncionesComoOrientador())              
-                
-                <li class="nav-main-heading">Control de asistencias</li>
-                <li class="nav-main-item">
-                    <a class="nav-main-link {{ setActive(['asistencia.formulario']) }}" href="{{ route('asistencia.formulario') }}">
-                      <span class="nav-main-link-name">Registrar asistencia</span>
-                    </a>
-                </li>
+                @if (Auth::user()->cumpleFuncionesComoOrientador())              
+                  
+                  <li class="nav-main-heading">Control de asistencias</li>
+                  <li class="nav-main-item">
+                      <a class="nav-main-link {{ setActive(['asistencia.formulario']) }}" href="{{ route('asistencia.formulario') }}">
+                        <span class="nav-main-link-name">Registrar asistencia</span>
+                      </a>
+                  </li>
 
-                <li class="nav-main-item">
-                    <a class="nav-main-link {{ setActive(['asistencia.formulario-reportes']) }}" href="{{ route('asistencia.formulario-reportes') }}">
-                      <span class="nav-main-link-name">Consultar asistencia por sesión</span>
-                    </a>
-                </li>
-                
-                <li class="nav-main-item">
-                    <a class="nav-main-link {{ setActive(['asistencia.participante']) }}" href="{{ route('asistencia.participante') }}">
-                      <span class="nav-main-link-name">Consultar asistencias por curso</span>
-                    </a>
-                </li>                
-              @endif
+                  <li class="nav-main-item">
+                      <a class="nav-main-link {{ setActive(['asistencia.formulario-reportes']) }}" href="{{ route('asistencia.formulario-reportes') }}">
+                        <span class="nav-main-link-name">Consultar asistencia por sesión</span>
+                      </a>
+                  </li>
+                  
+                  <li class="nav-main-item">
+                      <a class="nav-main-link {{ setActive(['asistencia.participante']) }}" href="{{ route('asistencia.participante') }}">
+                        <span class="nav-main-link-name">Consultar asistencias por curso</span>
+                      </a>
+                  </li>                
+                @endif
 
+                @if (Auth::user()->puedeGestionarFirmas())
+                  <li class="nav-main-heading">Gestión de Firmas</li>
+                  <li class="nav-main-item">
+                  <a class="nav-main-link {{ setActive(['firmas.gestionar', 'firmas.*']) }}" href="{{ route('firmas.gestionar') }}">
+                          <span class="nav-main-link-name">Firmas del certificado</span>
+                        </a>
+                    </li>
+                @endif
 
               @endif
 
