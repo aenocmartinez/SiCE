@@ -656,6 +656,7 @@ class GrupoDao extends Model implements GrupoRepository {
         $cruce = GrupoDao::where('dia', $grupo->getDia())
             ->where('jornada', $grupo->getJornada())
             ->where('cerrado_para_inscripcion', false) 
+            ->where('cancelado', false) 
             ->where('calendario_id', $calendario->getId())
             ->where(function($query) use ($grupo) {
                 $query->where('salon_id', $grupo->getSalonId())
