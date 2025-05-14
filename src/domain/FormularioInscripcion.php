@@ -8,6 +8,8 @@ use Src\dao\mysql\FormularioInscripcionDao;
 use Src\domain\repositories\FormularioRepository;
 use Src\infraestructure\util\FormatoMoneda;
 
+use Illuminate\Support\Facades\Storage;
+
 class FormularioInscripcion {
     private int $id;
     private Participante $participante;
@@ -68,7 +70,13 @@ class FormularioInscripcion {
     }
 
     public function getPathComprobantePago() {
-        return $this->pathComprobantePago;
+        // return $this->pathComprobantePago;
+        $ruta = str_replace([
+            'https://sites.unicolmayor.edu.co/SiCE/storage/app/public/',
+            'https://sites.universidadmayor.edu.co/SiCE/storage/app/public/',
+        ], '', $this->pathComprobantePago);
+        
+        return Storage::url($ruta);
     }   
     
     public function tieneComprobanteDePago(): bool {
