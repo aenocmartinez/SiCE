@@ -130,12 +130,10 @@
                     <!-- Comprobante de Pago -->
                     @if ($formulario->tieneComprobanteDePago())
                         <div class="text-center mt-4">
-                            @if (\Illuminate\Support\Facades\Storage::exists($formulario->getPathComprobantePago()))
+                            @if (Storage::exists($formulario->getPathComprobantePago()))
                                 <a href="{{ $formulario->getPathComprobantePago() }}" class="btn btn-lg rounded-pill btn-alt-info px-4" target="_blank">
                                     <i class="fa fa-download me-1"></i> Ver comprobante de pago
                                 </a>
-                            @else
-                                <span class="text-danger">Archivo no disponible. Vuelva a subirlo.</span>
                             @endif
                         </div>
                     @endif
