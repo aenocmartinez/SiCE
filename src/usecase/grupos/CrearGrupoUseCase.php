@@ -31,7 +31,6 @@ class CrearGrupoUseCase {
         $orientador = new Orientador;
         $orientador->setId($grupoDto->orientadorId);
 
-
         $salon = new Salon; 
         $salon->setId($grupoDto->salonId);
 
