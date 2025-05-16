@@ -246,9 +246,10 @@ class Orientador {
     }
 
     public function getFechaNacimientoFormateada(): string {
-        if (is_null($this->fechaNacimiento))
+        if (is_null($this->fechaNacimiento) || empty($this->fechaNacimiento)) {
             return "";
-        
+        }
+
         return FormatoFecha::fecha01enero1970($this->fechaNacimiento);
     }
 
