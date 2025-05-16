@@ -80,6 +80,9 @@ class Salon {
     }
 
     public function getNombre(): string {
+        if (empty($this->nombre)) {
+            return "Virtual";
+        }
         return $this->nombre;
     }
 
