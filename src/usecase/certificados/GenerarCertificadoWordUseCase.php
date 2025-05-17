@@ -6,6 +6,7 @@ use PhpOffice\PhpWord\TemplateProcessor;
 use Src\view\dto\Response;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Src\dao\mysql\FirmaDao;
 use Src\dao\mysql\GrupoDao;
 use Src\dao\mysql\ParticipanteDao;
 use Src\infraestructure\util\FormatoString;
@@ -28,17 +29,33 @@ class GenerarCertificadoWordUseCase
             return new Response("404", "Grupo no encontrado");
         }
 
+        
         try {
             // Obtener fechas
             $fechaInicio = $grupo->getCursoCalendario()->getCalendario()->getFechaInicioClaseFormateada();
             $fechaFin = $grupo->getCursoCalendario()->getCalendario()->getFechaFinalFormateada();            
             // $fechaCertificado = now()->format('j') . ' días del mes de ' . now()->translatedFormat('F') . ' de ' . now()->year;
-
+            
             // Fecha Certificado
             $fechaBase = $grupo->getCursoCalendario()->getCalendario()->getFechaCertificado();
             $fecha = $solicitadoEnLinea || !$fechaBase || !strlen($fechaBase) ? now() : \Carbon\Carbon::parse($fechaBase);  
             
             $fechaCertificado = $fecha->format('j') . ' días del mes de ' . $fecha->translatedFormat('F') . ' de ' . $fecha->year;
+            
+            
+            // Firmas
+            $nombreFirmante1 = env('NOMBRE_FIRMANTE_1');
+            $nombreFirmante2 = env('NOMBRE_FIRMANTE_2');
+            $cargoFirmante1  = env('CARGO_FIRMANTE_1');
+            $cargoFirmante2  = env('CARGO_FIRMANTE_2');
+            
+            $firma = FirmaDao::ObtenerFirmas();
+            if ($firma->existe()) {
+                $nombreFirmante1 = $firma->getNombreFirmante1();
+                $nombreFirmante2 = $firma->getNombreFirmante2();
+                $cargoFirmante1  = $firma->getCargoFirmante1();
+                $cargoFirmante2  = $firma->getCargoFirmante2();
+            }
 
             // Preparar rutas
             $uuid = Str::uuid();
@@ -68,6 +85,10 @@ class GenerarCertificadoWordUseCase
             $template->setValue('FECHA_FIN', $fechaFin);
             $template->setValue('FECHA_CERTIFICADO', $fechaCertificado);
             $template->setValue('INTENSIDAD', '48'); 
+            $template->setValue('NOMBRE_FIRMANTE_1', $nombreFirmante1);
+            $template->setValue('NOMBRE_FIRMANTE_2', $nombreFirmante2);
+            $template->setValue('CARGO_FIRMANTE_1', $cargoFirmante1);
+            $template->setValue('CARGO_FIRMANTE_2', $cargoFirmante2);
 
             $template->saveAs($rutaDocx);
 
