@@ -130,9 +130,11 @@
                     <!-- Comprobante de Pago -->
                     @if ($formulario->tieneComprobanteDePago())
                         <div class="text-center mt-4">
-                            <a href="{{ $formulario->getPathComprobantePago() }}" class="btn btn-lg rounded-pill btn-alt-info px-4" target="_blank">
-                                <i class="fa fa-download me-1"></i> Ver comprobante de pago
-                            </a>
+                            @if (Storage::exists($formulario->getPathComprobantePago()))
+                                <a href="{{ $formulario->getPathComprobantePago() }}" class="btn btn-lg rounded-pill btn-alt-info px-4" target="_blank">
+                                    <i class="fa fa-download me-1"></i> Ver comprobante de pago
+                                </a>
+                            @endif
                         </div>
                     @endif
                 </div>
