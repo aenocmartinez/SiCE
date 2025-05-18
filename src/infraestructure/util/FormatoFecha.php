@@ -4,6 +4,7 @@ namespace Src\infraestructure\util;
 
 use Carbon\Carbon;
 use DateTime;
+use Illuminate\Support\Facades\Log;
 
 class FormatoFecha {
 
@@ -27,10 +28,18 @@ class FormatoFecha {
         return $horaFormateada;
     }
     
-    public static function fecha01enero1970($fecha) {
-        $fecha = Carbon::createFromFormat('Y-m-d', $fecha, 'UTC');
-        $fechaFormateada = $fecha->isoFormat('DD [de] MMMM, YYYY', 'Do MMMM, YYYY');
-        return $fechaFormateada;
+    public static function fecha01enero1970($fecha): string {
+        if (empty($fecha) || $fecha === '0000-00-00') {
+            return '';
+        }
+
+        try {
+            $carbon = Carbon::createFromFormat('Y-m-d', $fecha, 'UTC');
+            return $carbon->isoFormat('DD [de] MMMM, YYYY');
+        } catch (\Exception $e) {
+            Log::warning("❗ FormatoFecha::fecha01enero1970() recibió fecha inválida: [$fecha]");
+            return '';
+        }
     }
 
     public static function fechaDDdeMMdeYYYY($fecha) {
