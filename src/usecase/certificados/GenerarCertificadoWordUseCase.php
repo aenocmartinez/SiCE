@@ -90,6 +90,7 @@ class GenerarCertificadoWordUseCase
             $template->setValue('CARGO_FIRMANTE_1', $cargoFirmante1);
             $template->setValue('CARGO_FIRMANTE_2', $cargoFirmante2);
 
+
             $template->saveAs($rutaDocx);
 
             // Verificar si se debe convertir a PDF
