@@ -93,9 +93,9 @@ class GenerarCertificadoWordUseCase
 
             $template->saveAs($rutaDocx);
 
-            dd("Mensaje");
             // Verificar si se debe convertir a PDF
             if (env('CERTIFICADO_CONVERTIR_PDF', false)) {
+                dd("Entra");
                 // $libreOfficePath = env('LIBREOFFICE_PATH', 'C:\\Program Files\\LibreOffice\\program\\soffice.exe'); 
                 $libreOfficePath = env('LIBREOFFICE_PATH') ?? '/usr/bin/libreoffice';
 
