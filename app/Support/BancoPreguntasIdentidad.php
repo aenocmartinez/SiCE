@@ -80,7 +80,81 @@ class BancoPreguntasIdentidad
         return array_slice($todas, 0, $cantidad);
     }
 
-    public static function respuestaEsperada(array $pregunta, Participante $participante): string
+    // public static function respuestaEsperada(array $pregunta, Participante $participante): string
+    // {
+    //     $tipo = $pregunta['tipo'];
+    //     $extra = $pregunta['extra'] ?? null;
+
+    //     $map = [
+    //         'primer_nombre' => 'getPrimerNombre',
+    //         'segundo_nombre' => 'getSegundoNombre',
+    //         'primer_apellido' => 'getPrimerApellido',
+    //         'segundo_apellido' => 'getSegundoApellido',
+    //         'fecha_nacimiento' => 'getFechaNacimiento',
+    //         'tipo_documento' => 'getTipoDocumento',
+    //         'documento' => 'getDocumento',
+    //         'direccion' => 'getDireccion',
+    //         'telefono' => 'getTelefono',
+    //         'email' => 'getEmail',
+    //         'eps' => 'getEps',
+    //         'estado_civil' => 'getEstadoCivil',
+    //         'sexo' => 'getSexo',
+    //         'contacto_emergencia' => 'getContactoEmergencia',
+    //         'telefono_contacto_emergencia' => 'getTelefonoEmergencia',
+    //         'ultimo_curso_aprobado' => 'getFormularioInscripcion' 
+    //     ];
+    
+    //     // Extraer valores reales usando getters
+    //     $valores = collect($pregunta['campos'])->map(function ($campo) use ($map, $participante) {
+    //         if (!isset($map[$campo])) {
+    //             throw new \Exception("Getter no definido para el campo '$campo'");
+    //         }
+    
+    //         $getter = $map[$campo];
+    //         $valor = $participante->$getter();
+    
+    //         // Si el campo es especial, como 'ultimo_curso_aprobado', lo tratamos aparte
+    //         if ($campo === 'ultimo_curso_aprobado') {
+    //             try {
+    //                 $valor = $participante->cursosAprobados();
+    //                 if (empty($valor)) {
+    //                     return '';
+    //                 }
+    
+    //                 // Obtener el año del último curso aprobado
+    //                 $ultimo = collect($valor)->last();
+    //                 return date('Y', strtotime($ultimo->getFechaFin()));
+    //             } catch (\Throwable $e) {
+    //                 return '';
+    //             }
+    //         }
+    
+    //         return strtolower(trim($valor));
+    //     });
+    
+    //     return match ($tipo) {
+    //         'atomizada' => match ($extra) {
+    //             'year' => date('Y', strtotime($valores[0])),
+    //             'month' => date('m', strtotime($valores[0])),
+    //             'day' => date('d', strtotime($valores[0])),
+    //             default => $valores[0],
+    //         },
+    //         'parcial' => match ($extra) {
+    //             'ultimos_3' => substr($valores[0], -3),
+    //             'primeros_3' => substr($valores[0], 0, 3),
+    //             default => $valores[0],
+    //         },
+    //         'compuesta' => $valores->implode(' '),
+    //         'oculto_correo',
+    //         'oculto_direccion',
+    //         'oculto_telefono',
+    //         'oculto_anio_nacimiento',
+    //         'simple' => $valores[0],
+    //         default => $valores[0],
+    //     };
+    // }    
+
+   public static function respuestaEsperada(array $pregunta, Participante $participante): string
     {
         $tipo = $pregunta['tipo'];
         $extra = $pregunta['extra'] ?? null;
@@ -101,37 +175,34 @@ class BancoPreguntasIdentidad
             'sexo' => 'getSexo',
             'contacto_emergencia' => 'getContactoEmergencia',
             'telefono_contacto_emergencia' => 'getTelefonoEmergencia',
-            'ultimo_curso_aprobado' => 'getFormularioInscripcion' 
+            'ultimo_curso_aprobado' => 'getFormularioInscripcion',
         ];
-    
+
         // Extraer valores reales usando getters
         $valores = collect($pregunta['campos'])->map(function ($campo) use ($map, $participante) {
             if (!isset($map[$campo])) {
                 throw new \Exception("Getter no definido para el campo '$campo'");
             }
-    
+
             $getter = $map[$campo];
             $valor = $participante->$getter();
-    
-            // Si el campo es especial, como 'ultimo_curso_aprobado', lo tratamos aparte
+
             if ($campo === 'ultimo_curso_aprobado') {
                 try {
                     $valor = $participante->cursosAprobados();
                     if (empty($valor)) {
                         return '';
                     }
-    
-                    // Obtener el año del último curso aprobado
                     $ultimo = collect($valor)->last();
                     return date('Y', strtotime($ultimo->getFechaFin()));
                 } catch (\Throwable $e) {
                     return '';
                 }
             }
-    
+
             return strtolower(trim($valor));
         });
-    
+
         return match ($tipo) {
             'atomizada' => match ($extra) {
                 'year' => date('Y', strtotime($valores[0])),
@@ -145,14 +216,14 @@ class BancoPreguntasIdentidad
                 default => $valores[0],
             },
             'compuesta' => $valores->implode(' '),
-            'oculto_correo',
-            'oculto_direccion',
-            'oculto_telefono',
-            'oculto_anio_nacimiento',
+            'oculto_correo' => $valores[0],
+            'oculto_direccion' => $valores[0],
+            'oculto_telefono' => $valores[0],
+            'oculto_anio_nacimiento' => $valores[0],
             'simple' => $valores[0],
             default => $valores[0],
         };
-    }    
+    }
 
     public static function personalizarTexto(array $pregunta, Participante $participante): string
     {
