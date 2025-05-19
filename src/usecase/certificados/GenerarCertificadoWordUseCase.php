@@ -94,8 +94,8 @@ class GenerarCertificadoWordUseCase
             $template->saveAs($rutaDocx);
 
             // Verificar si se debe convertir a PDF
-            if (env('CERTIFICADO_CONVERTIR_PDF', false)) {
-                dd("Entra");
+            // if (env('CERTIFICADO_CONVERTIR_PDF', false)) {
+                
                 // $libreOfficePath = env('LIBREOFFICE_PATH', 'C:\\Program Files\\LibreOffice\\program\\soffice.exe'); 
                 $libreOfficePath = env('LIBREOFFICE_PATH') ?? '/usr/bin/libreoffice';
 
@@ -130,13 +130,13 @@ class GenerarCertificadoWordUseCase
                     'path' => $rutaPdf,
                     'filename' => "certificado_{$participante->getId()}_{$grupo->getId()}.pdf"
                 ]);
-            }
+            // }
 
             // En desarrollo (sin PDF)
-            return new Response("200", "DOCX generado correctamente", [
-                'path' => $rutaDocx,
-                'filename' => "certificado_{$participante->getId()}_{$grupo->getId()}.docx"
-            ]);
+            // return new Response("200", "DOCX generado correctamente", [
+            //     'path' => $rutaDocx,
+            //     'filename' => "certificado_{$participante->getId()}_{$grupo->getId()}.docx"
+            // ]);
 
         } catch (\Throwable $e) {
             // Log::error('Error inesperado al generar el certificado', ['exception' => $e]);
