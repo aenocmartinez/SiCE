@@ -80,6 +80,7 @@ class BancoPreguntasIdentidad
         return array_slice($todas, 0, $cantidad);
     }
 
+    // Compatible con PHP 8.0
     // public static function respuestaEsperada(array $pregunta, Participante $participante): string
     // {
     //     $tipo = $pregunta['tipo'];
