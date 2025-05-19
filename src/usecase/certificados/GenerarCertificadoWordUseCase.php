@@ -57,6 +57,9 @@ class GenerarCertificadoWordUseCase
                 $cargoFirmante2  = $firma->getCargoFirmante2();
             }
 
+            echo "LIBREOFFICE_PATH:";
+            dd(env('LIBREOFFICE_PATH'));
+
             // Preparar rutas
             $uuid = Str::uuid();
             $nombreBase = "certificado_temp_{$uuid}";
