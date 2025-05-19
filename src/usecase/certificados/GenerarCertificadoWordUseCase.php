@@ -96,10 +96,12 @@ class GenerarCertificadoWordUseCase
             // Verificar si se debe convertir a PDF
             // if (env('CERTIFICADO_CONVERTIR_PDF', false)) {
                 
-                // $libreOfficePath = env('LIBREOFFICE_PATH', 'C:\\Program Files\\LibreOffice\\program\\soffice.exe'); 
+                // $libreOfficePath = env('LIBREOFFICE_PATH', 'C:\\Program Files\\LibreOffice\\program\\soffice.exe'); // Windows
                 $libreOfficePath = env('LIBREOFFICE_PATH') ?? '/usr/bin/libreoffice';
 
-                $comando = "\"$libreOfficePath\" --headless --convert-to pdf:writer_pdf_Export \"$rutaDocx\" --outdir \"$rutaTemporal\"";
+                //$comando = "\"$libreOfficePath\" --headless --convert-to pdf:writer_pdf_Export \"$rutaDocx\" --outdir \"$rutaTemporal\""; //Windows
+                $comando = "HOME=/tmp \"$libreOfficePath\" --headless --convert-to pdf:writer_pdf_Export \"$rutaDocx\" --outdir \"$rutaTemporal\"";
+
                 
                 // Ejecutar el comando y capturar salida
                 exec($comando, $output, $returnCode);
