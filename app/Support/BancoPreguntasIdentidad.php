@@ -154,10 +154,10 @@ class BancoPreguntasIdentidad
     //     };
     // }    
 
-   public static function respuestaEsperada(array $pregunta, Participante $participante): string
+    public static function respuestaEsperada(array $pregunta, Participante $participante): string
     {
         $tipo = $pregunta['tipo'];
-        $extra = $pregunta['extra'] ?? null;
+        $extra = isset($pregunta['extra']) ? $pregunta['extra'] : null;
 
         $map = [
             'primer_nombre' => 'getPrimerNombre',
@@ -178,7 +178,6 @@ class BancoPreguntasIdentidad
             'ultimo_curso_aprobado' => 'getFormularioInscripcion',
         ];
 
-        // Extraer valores reales usando getters
         $valores = collect($pregunta['campos'])->map(function ($campo) use ($map, $participante) {
             if (!isset($map[$campo])) {
                 throw new \Exception("Getter no definido para el campo '$campo'");
@@ -193,6 +192,7 @@ class BancoPreguntasIdentidad
                     if (empty($valor)) {
                         return '';
                     }
+
                     $ultimo = collect($valor)->last();
                     return date('Y', strtotime($ultimo->getFechaFin()));
                 } catch (\Throwable $e) {
@@ -203,26 +203,40 @@ class BancoPreguntasIdentidad
             return strtolower(trim($valor));
         });
 
-        return match ($tipo) {
-            'atomizada' => match ($extra) {
-                'year' => date('Y', strtotime($valores[0])),
-                'month' => date('m', strtotime($valores[0])),
-                'day' => date('d', strtotime($valores[0])),
-                default => $valores[0],
-            },
-            'parcial' => match ($extra) {
-                'ultimos_3' => substr($valores[0], -3),
-                'primeros_3' => substr($valores[0], 0, 3),
-                default => $valores[0],
-            },
-            'compuesta' => $valores->implode(' '),
-            'oculto_correo' => $valores[0],
-            'oculto_direccion' => $valores[0],
-            'oculto_telefono' => $valores[0],
-            'oculto_anio_nacimiento' => $valores[0],
-            'simple' => $valores[0],
-            default => $valores[0],
-        };
+        switch ($tipo) {
+            case 'atomizada':
+                switch ($extra) {
+                    case 'year':
+                        return date('Y', strtotime($valores[0]));
+                    case 'month':
+                        return date('m', strtotime($valores[0]));
+                    case 'day':
+                        return date('d', strtotime($valores[0]));
+                    default:
+                        return $valores[0];
+                }
+
+            case 'parcial':
+                switch ($extra) {
+                    case 'ultimos_3':
+                        return substr($valores[0], -3);
+                    case 'primeros_3':
+                        return substr($valores[0], 0, 3);
+                    default:
+                        return $valores[0];
+                }
+
+            case 'compuesta':
+                return $valores->implode(' ');
+
+            case 'oculto_correo':
+            case 'oculto_direccion':
+            case 'oculto_telefono':
+            case 'oculto_anio_nacimiento':
+            case 'simple':
+            default:
+                return $valores[0];
+        }
     }
 
     public static function personalizarTexto(array $pregunta, Participante $participante): string
