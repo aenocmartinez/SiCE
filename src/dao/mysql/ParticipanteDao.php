@@ -223,6 +223,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                             'id', 'primer_nombre', 'segundo_nombre', 'primer_apellido', 'segundo_apellido', 
                             'tipo_documento', 'documento', 'sexo', 'telefono', 'email')
                             ->skip($paginate->Offset())->take($paginate->Limit())
+                            ->take($paginate->Limit())
                             ->orderBy('primer_nombre')
                             ->get();
 

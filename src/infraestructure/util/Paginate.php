@@ -11,14 +11,26 @@ class Paginate {
     private $totalRecords;
     private $records;
 
-    public function __construct($page=1, $itemsPerPage=0) {        
-        $this->page = $page;        
+    public function __construct($page = 1, $itemsPerPage = 0) {
+        $this->page = max(1, (int) $page); // asegura página válida
 
-        $this->limit = ($itemsPerPage != 0) ? $itemsPerPage :  env('APP_PAGINADOR_NUM_ITEMS');
-        
-        $this->offset = ($this->page - 1) * $this->limit;        
-        $this->records = array();
+        $this->limit = ($itemsPerPage != 0)
+            ? (int) $itemsPerPage
+            : (int) env('APP_PAGINADOR_NUM_ITEMS', 20); // valor por defecto seguro
+
+        $this->offset = ($this->page - 1) * $this->limit;
+        $this->records = [];
     }
+
+
+    // public function __construct($page=1, $itemsPerPage=0) {        
+    //     $this->page = $page;        
+
+    //     $this->limit = ($itemsPerPage != 0) ? $itemsPerPage :  env('APP_PAGINADOR_NUM_ITEMS');
+        
+    //     $this->offset = ($this->page - 1) * $this->limit;        
+    //     $this->records = array();
+    // }
 
     public function Limit() {
         return $this->limit;
