@@ -57,9 +57,6 @@ class GenerarCertificadoWordUseCase
                 $cargoFirmante2  = $firma->getCargoFirmante2();
             }
 
-            echo "LIBREOFFICE_PATH:";
-            dd(env('LIBREOFFICE_PATH'));
-
             // Preparar rutas
             $uuid = Str::uuid();
             $nombreBase = "certificado_temp_{$uuid}";
@@ -98,7 +95,9 @@ class GenerarCertificadoWordUseCase
 
             // Verificar si se debe convertir a PDF
             if (env('CERTIFICADO_CONVERTIR_PDF', false)) {
-                $libreOfficePath = env('LIBREOFFICE_PATH', 'C:\\Program Files\\LibreOffice\\program\\soffice.exe'); // Aquí usamos la ruta de LibreOffice en Windows
+                // $libreOfficePath = env('LIBREOFFICE_PATH', 'C:\\Program Files\\LibreOffice\\program\\soffice.exe'); 
+                $libreOfficePath = env('LIBREOFFICE_PATH') ?? '/usr/bin/libreoffice';
+
 
                 $comando = "\"$libreOfficePath\" --headless --convert-to pdf:writer_pdf_Export \"$rutaDocx\" --outdir \"$rutaTemporal\"";
                 
