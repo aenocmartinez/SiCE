@@ -103,19 +103,19 @@ class GenerarCertificadoWordUseCase
                 exec($comando, $output, $returnCode);
 
                 // Registrar el comando y la salida para ver qué está pasando
-                // Log::error('Comando ejecutado para convertir a PDF', [
-                //     'comando' => $comando,
-                //     'output' => $output,
-                //     'returnCode' => $returnCode,
-                // ]);
+                Log::error('Comando ejecutado para convertir a PDF', [
+                    'comando' => $comando,
+                    'output' => $output,
+                    'returnCode' => $returnCode,
+                ]);
 
                 // Verificar si la conversión fue exitosa
                 if ($returnCode !== 0 || !file_exists($rutaPdf)) {
-                    // Log::error('Error al convertir certificado a PDF', [
-                    //     'comando' => $comando,
-                    //     'output' => $output,
-                    //     'code' => $returnCode,
-                    // ]);
+                    Log::error('Error al convertir certificado a PDF', [
+                        'comando' => $comando,
+                        'output' => $output,
+                        'code' => $returnCode,
+                    ]);
                     unlink($rutaDocx);
                     return new Response("500", "No se pudo generar el PDF con LibreOffice.");
                 }
