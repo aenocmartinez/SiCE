@@ -62,6 +62,10 @@ class FormularioInscripcion {
     }
 
     public function getMedioInscripcion(): string {
+        if ($this->medioInscripcion != "formulario publico") {
+            $this->pathComprobantePago = "";
+        }
+
         return $this->medioInscripcion;
     }    
 
@@ -70,15 +74,9 @@ class FormularioInscripcion {
     }
 
     public function getPathComprobantePago() {
-        // return $this->pathComprobantePago;
-        $ruta = str_replace([
-            'https://sites.unicolmayor.edu.co/SiCE/storage/app/public/',
-            'https://sites.universidadmayor.edu.co/SiCE/storage/app/public/',
-        ], '', $this->pathComprobantePago);
-        
-        return Storage::url($ruta);
-    }   
-    
+        return $this->pathComprobantePago;
+    }
+
     public function tieneComprobanteDePago(): bool {
         return $this->pathComprobantePago != "";
     }

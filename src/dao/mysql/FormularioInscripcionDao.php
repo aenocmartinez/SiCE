@@ -126,7 +126,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
     }
 
     public function crearFormulario(FormularioInscripcion &$formulario): bool {    
-        
+
         $exito = true;
 
         try {

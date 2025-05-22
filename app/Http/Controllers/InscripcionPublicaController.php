@@ -469,7 +469,7 @@ class InscripcionPublicaController extends Controller
     }
 
     public function confirmarInscripcion(FormularioPublicoConfirmarInscripcion $req) {
-
+        
         if (is_null(request()->session()->get('SESSION_UUID'))) {
             return redirect()->route('public.inicio')->with('code', "404")->with('status', "Su sesión ha finalizado.");
         }

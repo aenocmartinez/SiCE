@@ -10,6 +10,7 @@ use Src\domain\FormularioInscripcion;
 use Src\domain\Grupo;
 use Src\domain\Participante;
 use Src\infraestructure\medioPago\PagoFactory;
+use Src\infraestructure\util\URL;
 use Src\infraestructure\util\UUID;
 use Src\usecase\convenios\BuscarConvenioPorIdUseCase;
 use Src\view\dto\ConfirmarInscripcionDto;
@@ -69,7 +70,8 @@ class ConfirmarInscripcionUseCase {
         $numeroFormulario = UUID::generarUUIDNumerico();
         $formularioInscripcion->setNumero($numeroFormulario);
         $formularioInscripcion->setValorPago($confirmarInscripcionDto->valorPagoParcial);
-        $formularioInscripcion->setPathComprobantePago($confirmarInscripcionDto->pathComprobantePago);
+
+        $formularioInscripcion->setPathComprobantePago(URL::ObtenerRutaRelativa($confirmarInscripcionDto->pathComprobantePago));
 
         if (strlen($confirmarInscripcionDto->comentarios)>0) 
         {
@@ -92,7 +94,7 @@ class ConfirmarInscripcionUseCase {
             }
         } 
         else 
-        {                           
+        {                    
             if ($formularioInscripcion->getCostoCurso() - $formularioInscripcion->getValorDescuento() == $formularioInscripcion->getValorPago())
             {
                 $formularioInscripcion->setEstado("Pagado");
