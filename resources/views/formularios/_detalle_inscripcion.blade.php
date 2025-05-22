@@ -127,16 +127,25 @@
                         <span class="fw-semibold">Fecha Máxima de Legalización:</span>
                         <div class="fs-sm text-muted">{{ \Carbon\Carbon::parse($formulario->getFechaMaxLegalizacion())->locale('es')->isoFormat('D [de] MMMM [de] YYYY') }}</div>
                     </div>
+
                     <!-- Comprobante de Pago -->
                     @if ($formulario->tieneComprobanteDePago())
                         <div class="text-center mt-4">
-                            @if (Storage::exists($formulario->getPathComprobantePago()))
-                                <a href="{{ $formulario->getPathComprobantePago() }}" class="btn btn-lg rounded-pill btn-alt-info px-4" target="_blank">
+                            @php
+                                $archivoPath = $formulario->getPathComprobantePago();
+                                $archivoPathInterno = str_replace('/storage/', 'public/', $archivoPath);
+                            @endphp
+
+                            @if (Storage::exists($archivoPathInterno))
+                                <a href="{{ Storage::url($archivoPathInterno) }}" class="btn btn-lg rounded-pill btn-alt-info px-4" target="_blank">
                                     <i class="fa fa-download me-1"></i> Ver comprobante de pago
                                 </a>
+                            @else
+                                <p>No se encontró el comprobante de pago.</p>
                             @endif
                         </div>
                     @endif
+
                 </div>
             </div>
         </div>
