@@ -147,24 +147,6 @@
 </div>
 
 <script>
-// function confirmAnular(button) {
-//     const numeroFormulario = button.getAttribute('data-id'); 
-//     Swal.fire({
-//         title: '¿Estás seguro?',
-//         text: 'Esta acción no se puede deshacer',
-//         icon: 'warning',
-//         showCancelButton: true,
-//         confirmButtonText: 'Sí, estoy seguro',
-//         cancelButtonText: 'Cancelar'
-//     }).then((result) => {
-//         if (result.isConfirmed) {
-//             const form = document.getElementById(`form-del-anular-${numeroFormulario}`);
-//             if (form) {                
-//                 form.submit();
-//             }
-//         }
-//     });
-// }
 
 function confirmAnular(button) {
     const numeroFormulario = button.getAttribute('data-id');
