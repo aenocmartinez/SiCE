@@ -119,7 +119,7 @@
     </div>
 </div>
 
-<script>
+<!-- <script>
     function confirmAnular(button) {
         const numeroFormulario = button.getAttribute('data-id'); 
         Swal.fire({
@@ -138,5 +138,41 @@
             }
         });
     }
+</script> -->
+<script>
+function confirmAnular(button) {
+    const numeroFormulario = button.getAttribute('data-id');
+
+    Swal.fire({
+        title: '¿Estás seguro de anular la inscripción?',
+        input: 'textarea',
+        inputLabel: 'Motivo de anulación',
+        inputPlaceholder: 'Escribe aquí el motivo...',
+        inputAttributes: {
+            'aria-label': 'Motivo de anulación'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Sí, anular',
+        cancelButtonText: 'Cancelar',
+        inputValidator: (value) => {
+            if (!value.trim()) {
+                return 'Debes indicar un motivo';
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.getElementById(`form-del-anular-${numeroFormulario}`);
+            if (form) {
+                const motivoInput = document.createElement('input');
+                motivoInput.type = 'hidden';
+                motivoInput.name = 'motivo_anulacion';
+                motivoInput.value = result.value.trim();
+                form.appendChild(motivoInput);
+                form.submit();
+            }
+        }
+    });
+}
 </script>
+
 @endsection
