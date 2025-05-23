@@ -54,11 +54,13 @@
                 </div>
             </div>
 
-            <div class="text-end mt-4">
-                <a href="{{ route('certificados.descargarDesdeQR', $registro['uuid']) }}"
-                   class="btn btn-primary px-4">
-                   Descargar certificado
-                </a>
+            <div class="text-center mt-4">
+                <form action="{{ route('certificados.descargarDesdeQR', $registro['uuid']) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-primary px-4 d-inline-flex align-items-center">
+                        <i class="fa fa-file-pdf me-2"></i> Descargar certificado en PDF
+                    </button>
+                </form>
             </div>
 
         </div>

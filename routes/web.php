@@ -70,8 +70,12 @@ Route::get('/certificados/publicos/{participanteID}/{grupoID}', [CertificadoAsis
 
 Route::get('/validar-certificado', [CertificadoAsistenciaController::class, 'validarPorCodigo']);
 
-Route::get('/certificados/qr/descargar/{uuid}', [CertificadoAsistenciaController::class, 'descargarDesdeQR'])
+// Route::get('/certificados/qr/descargar/{uuid}', [CertificadoAsistenciaController::class, 'descargarDesdeQR'])
+//     ->name('certificados.descargarDesdeQR');
+
+Route::post('/certificado/descargar/{uuid}', [CertificadoAsistenciaController::class, 'descargarDesdeQR'])
     ->name('certificados.descargarDesdeQR');
+
 
 Route::post('/certificado/asistencia/logout', function () {
     session()->forget(['participante_id', 'verificacion_preguntas']);
