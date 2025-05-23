@@ -68,3 +68,9 @@ Route::post('/certificado-asistencia/descargar', [CertificadoAsistenciaControlle
 Route::get('/certificados/publicos/{participanteID}/{grupoID}', [CertificadoAsistenciaController::class, 'descargarCertificadoPublico'])
     ->name('certificados.publicos.descargar');
 
+Route::get('/validar-certificado', [CertificadoAsistenciaController::class, 'validarPorCodigo']);
+
+Route::get('/certificados/qr/descargar/{uuid}', [CertificadoAsistenciaController::class, 'descargarDesdeQR'])
+    ->name('certificados.descargarDesdeQR');
+
+

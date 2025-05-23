@@ -6,8 +6,11 @@ use Illuminate\Http\Request;
 use PDF; // si usas DomPDF, recuerda tenerlo instalado
 use App\Models\Participante;
 use App\Support\BancoPreguntasIdentidad;
+use Src\dao\mysql\CertificadoGeneradoDao;
 use Src\infraestructure\util\ListaDeValor;
+use Src\usecase\certificados\BuscarCertificadoPorUUIDUseCase;
 use Src\usecase\certificados\GenerarCertificadoWordUseCase;
+use Src\usecase\certificados\ValidarCertificadoPorCodigoUseCase;
 use Src\usecase\participantes\BuscarParticipantePorDocumentoUseCase;
 use Src\usecase\participantes\BuscarParticipantePorIdUseCase;
 use Src\usecase\participantes\ListarCursosRealizadosParaDescargarCertificadoUseCase;
@@ -129,7 +132,7 @@ class CertificadoAsistenciaController extends Controller
                 ->withErrors(['error' => 'No tiene permitido descargar el certificado para este curso.']);
         }
 
-        $response = (new GenerarCertificadoWordUseCase)->ejecutar($participanteID, $grupoID, true);
+        $response = (new GenerarCertificadoWordUseCase)->ejecutar($participanteID, $grupoID, false);
     
         if ($response->code !== "200") {
             return redirect()->route('certificado.asistencia.cursos')
@@ -148,5 +151,51 @@ class CertificadoAsistenciaController extends Controller
             });
         }, $filename);
     }
-    
+
+    public function validarPorCodigo(Request $request)
+    {
+        $uuid = $request->query('codigo');
+
+        $useCase = new ValidarCertificadoPorCodigoUseCase(new CertificadoGeneradoDao());
+        $registro = $useCase->ejecutar($uuid);
+
+        if (!$registro) {
+            return view('certificados.no_valido');
+        }
+
+        return view('certificados.valido', ['registro' => $registro]);
+    }
+
+    public function descargarDesdeQR(string $uuid)
+    {
+        $certificado = (new BuscarCertificadoPorUUIDUseCase)->ejecutar($uuid);
+
+        if (!$certificado) {
+            abort(404, 'Certificado no encontrado.');
+        }
+
+        // Generar certificado nuevamente desde el UUID
+        $response = (new GenerarCertificadoWordUseCase)->ejecutar(
+            $certificado['participante_id'],
+            $certificado['grupo_id'],
+            false
+        );
+
+        if ($response->code !== "200") {
+            abort(500, $response->message);
+        }
+
+        $path = $response->data['path'];
+        $filename = $response->data['filename'];
+
+        return response()->streamDownload(function () use ($path) {
+            readfile($path);
+            register_shutdown_function(function () use ($path) {
+                if (file_exists($path)) {
+                    @unlink($path);
+                }
+            });
+        }, $filename);
+    }
+ 
 }

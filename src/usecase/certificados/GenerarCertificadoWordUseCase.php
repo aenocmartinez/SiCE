@@ -12,6 +12,9 @@ use Src\dao\mysql\ParticipanteDao;
 use Src\infraestructure\util\FormatoString;
 use Src\infraestructure\util\ListaDeValor;
 
+use Src\dao\mysql\CertificadoGeneradoDao;
+
+
 class GenerarCertificadoWordUseCase
 {
     public function ejecutar(int $participanteID, int $grupoID, bool $solicitadoEnLinea = false): Response
@@ -29,117 +32,114 @@ class GenerarCertificadoWordUseCase
             return new Response("404", "Grupo no encontrado");
         }
 
-        
         try {
-            // Obtener fechas
+            // Fechas
             $fechaInicio = $grupo->getCursoCalendario()->getCalendario()->getFechaInicioClaseFormateada();
-            $fechaFin = $grupo->getCursoCalendario()->getCalendario()->getFechaFinalFormateada();            
-            // $fechaCertificado = now()->format('j') . ' días del mes de ' . now()->translatedFormat('F') . ' de ' . now()->year;
-            
-            // Fecha Certificado
-            $fechaBase = $grupo->getCursoCalendario()->getCalendario()->getFechaCertificado();
-            $fecha = $solicitadoEnLinea || !$fechaBase || !strlen($fechaBase) ? now() : \Carbon\Carbon::parse($fechaBase);  
-            
-            $fechaCertificado = $fecha->format('j') . ' días del mes de ' . $fecha->translatedFormat('F') . ' de ' . $fecha->year;
-            
-            
-            // Firmas
-            $nombreFirmante1 = env('NOMBRE_FIRMANTE_1');
-            $nombreFirmante2 = env('NOMBRE_FIRMANTE_2');
-            $cargoFirmante1  = env('CARGO_FIRMANTE_1');
-            $cargoFirmante2  = env('CARGO_FIRMANTE_2');
-            
-            $firma = FirmaDao::ObtenerFirmas();
-            if ($firma->existe()) {
-                $nombreFirmante1 = $firma->getNombreFirmante1();
-                $nombreFirmante2 = $firma->getNombreFirmante2();
-                $cargoFirmante1  = $firma->getCargoFirmante1();
-                $cargoFirmante2  = $firma->getCargoFirmante2();
-            }
+            $fechaFin = $grupo->getCursoCalendario()->getCalendario()->getFechaFinalFormateada();
 
-            // Preparar rutas
+            $fechaBase = $grupo->getCursoCalendario()->getCalendario()->getFechaCertificado();
+            $fecha = $solicitadoEnLinea || !$fechaBase || !strlen($fechaBase)
+                ? now()
+                : \Carbon\Carbon::parse($fechaBase);
+            $fechaCertificado = $fecha->format('j') . ' días del mes de ' . $fecha->translatedFormat('F') . ' de ' . $fecha->year;
+
+            // Firmas
+            $firma = FirmaDao::ObtenerFirmas();
+            $nombreFirmante1 = $firma->existe() ? $firma->getNombreFirmante1() : env('NOMBRE_FIRMANTE_1');
+            $nombreFirmante2 = $firma->existe() ? $firma->getNombreFirmante2() : env('NOMBRE_FIRMANTE_2');
+            $cargoFirmante1  = $firma->existe() ? $firma->getCargoFirmante1()  : env('CARGO_FIRMANTE_1');
+            $cargoFirmante2  = $firma->existe() ? $firma->getCargoFirmante2()  : env('CARGO_FIRMANTE_2');
+
+            // Rutas
             $uuid = Str::uuid();
             $nombreBase = "certificado_temp_{$uuid}";
             $rutaPlantilla = storage_path('app/certificados/plantillas/certificado_plantilla.docx');
             $rutaTemporal = storage_path('app/temp');
 
-            // Crear carpeta temporal si no existe
             if (!is_dir($rutaTemporal)) {
-                if (!mkdir($rutaTemporal, 0755, true) && !is_dir($rutaTemporal)) {
-                    return new Response("500", "No se pudo crear el directorio temporal.");
-                }
+                mkdir($rutaTemporal, 0755, true);
             }
 
             $rutaDocx = "{$rutaTemporal}/{$nombreBase}.docx";
-            $rutaPdf = "{$rutaTemporal}/{$nombreBase}.pdf";
+            $rutaPdf  = "{$rutaTemporal}/{$nombreBase}.pdf";
+            $qrPath   = "{$rutaTemporal}/qr_{$uuid}.png";
 
-            $nombreTipoDocumento = ListaDeValor::obtenerNombreTipoDocumentoPorCodigo($participante->getTipoDocumento());
+            // ✅ Código QR desde API externa
+            //$url = "http://cursos-extension.test/validar-certificado?codigo={$uuid}";
+            
+            $url = env('DOMINIO_CERTIFICADO') . "/validar-certificado?codigo={$uuid}";
 
-            // Procesar plantilla
+            $qrApi = "https://api.qrserver.com/v1/create-qr-code/?data=" . urlencode($url) . "&size=200x200";
+
+            file_put_contents($qrPath, file_get_contents($qrApi));
+
+            if (!file_exists($qrPath)) {
+                Log::error("❌ No se pudo descargar el QR desde la API externa: $qrApi");
+                return new Response("500", "No se pudo generar el código QR.");
+            }
+
+            // 📄 Plantilla Word
             $template = new TemplateProcessor($rutaPlantilla);
             $template->setValue('NOMBRE_COMPLETO', FormatoString::convertirACapitalCase($participante->getNombreCompleto()));
-            $template->setValue('TIPO_DOCUMENTO', $nombreTipoDocumento);
+            $template->setValue('TIPO_DOCUMENTO', ListaDeValor::obtenerNombreTipoDocumentoPorCodigo($participante->getTipoDocumento()));
             $template->setValue('DOCUMENTO', $participante->getDocumento());
             $template->setValue('NOMBRE_CURSO', mb_strtoupper($grupo->getNombreCurso(), 'UTF-8'));
             $template->setValue('FECHA_INICIO', $fechaInicio);
             $template->setValue('FECHA_FIN', $fechaFin);
             $template->setValue('FECHA_CERTIFICADO', $fechaCertificado);
-            $template->setValue('INTENSIDAD', '48'); 
+            $template->setValue('INTENSIDAD', '48');
             $template->setValue('NOMBRE_FIRMANTE_1', $nombreFirmante1);
             $template->setValue('NOMBRE_FIRMANTE_2', $nombreFirmante2);
             $template->setValue('CARGO_FIRMANTE_1', $cargoFirmante1);
             $template->setValue('CARGO_FIRMANTE_2', $cargoFirmante2);
-
+            $template->setImageValue('CODIGO_QR', [
+                'path' => $qrPath,
+                'width' => 70,
+                'height' => 70,
+                'ratio' => false
+            ]);
 
             $template->saveAs($rutaDocx);
 
-            // Verificar si se debe convertir a PDF
-            // if (env('CERTIFICADO_CONVERTIR_PDF', false)) {
-                
-                // $libreOfficePath = env('LIBREOFFICE_PATH', 'C:\\Program Files\\LibreOffice\\program\\soffice.exe'); // Windows
-                $libreOfficePath = env('LIBREOFFICE_PATH') ?? '/usr/bin/libreoffice';
+            // 🧾 Convertir a PDF
+            //$libreOfficePath = env('LIBREOFFICE_PATH', 'C:\\Program Files\\LibreOffice\\program\\soffice.exe'); //Windows
+            $libreOfficePath = env('LIBREOFFICE_PATH') ?? '/usr/bin/libreoffice';
 
-                //$comando = "\"$libreOfficePath\" --headless --convert-to pdf:writer_pdf_Export \"$rutaDocx\" --outdir \"$rutaTemporal\""; //Windows
-                $comando = "HOME=/tmp \"$libreOfficePath\" --headless --convert-to pdf:writer_pdf_Export \"$rutaDocx\" --outdir \"$rutaTemporal\"";
+            //$comando = "\"$libreOfficePath\" --headless --convert-to pdf:writer_pdf_Export \"$rutaDocx\" --outdir \"$rutaTemporal\""; //Windows
+            $comando = "HOME=/tmp \"$libreOfficePath\" --headless --convert-to pdf:writer_pdf_Export \"$rutaDocx\" --outdir \"$rutaTemporal\"";
 
-                
-                // Ejecutar el comando y capturar salida
-                exec($comando, $output, $returnCode);
+            exec($comando, $output, $returnCode);
 
-                // Registrar el comando y la salida para ver qué está pasando
-                Log::error('Comando ejecutado para convertir a PDF', [
-                    'comando' => $comando,
-                    'output' => $output,
-                    'returnCode' => $returnCode,
-                ]);
+            Log::info('Comando ejecutado para convertir a PDF', [
+                'comando' => $comando,
+                'output' => $output,
+                'returnCode' => $returnCode,
+            ]);
 
-                // Verificar si la conversión fue exitosa
-                if ($returnCode !== 0 || !file_exists($rutaPdf)) {
-                    Log::error('Error al convertir certificado a PDF', [
-                        'comando' => $comando,
-                        'output' => $output,
-                        'code' => $returnCode,
-                    ]);
-                    unlink($rutaDocx);
-                    return new Response("500", "No se pudo generar el PDF con LibreOffice.");
-                }
+            if ($returnCode !== 0 || !file_exists($rutaPdf)) {
+                unlink($rutaDocx);
+                return new Response("500", "No se pudo generar el PDF con LibreOffice.");
+            }
 
-                // Si todo sale bien, devolver el archivo PDF
-                unlink($rutaDocx); // Limpieza
-                return new Response("200", "PDF generado correctamente", [
-                    'path' => $rutaPdf,
-                    'filename' => "certificado_{$participante->getId()}_{$grupo->getId()}.pdf"
-                ]);
-            // }
+            $certificadoDao = new CertificadoGeneradoDao();
+            $certificadoDao->registrar((string) $uuid, $participante->getId(), $grupo->getId());
 
-            // En desarrollo (sin PDF)
-            // return new Response("200", "DOCX generado correctamente", [
-            //     'path' => $rutaDocx,
-            //     'filename' => "certificado_{$participante->getId()}_{$grupo->getId()}.docx"
-            // ]);
+
+            unlink($rutaDocx); // Limpieza DOCX
+            return new Response("200", "PDF generado correctamente", [
+                'path' => $rutaPdf,
+                'filename' => "certificado_{$participante->getId()}_{$grupo->getId()}.pdf"
+            ]);
+
+
 
         } catch (\Throwable $e) {
-            // Log::error('Error inesperado al generar el certificado', ['exception' => $e]);
+            Log::error('❌ Error al generar certificado', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
             return new Response("500", "Error al generar certificado: " . $e->getMessage());
         }
     }
