@@ -84,7 +84,7 @@
             </div>
 
             <div class="d-flex justify-content-end mt-4 mb-4">
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary" id="btn-registrar-asistencia">
                     <i class="fa fa-save me-1"></i> Registrar Asistencia
                 </button>
             </div>
@@ -94,17 +94,29 @@
 
 <script>
     const grupos = @json($grupos);
-
     const selectGrupo = document.getElementById('grupo_id');
     const campoSesion = document.getElementById('sesion');
     const tablaParticipantes = document.getElementById('tabla-participantes').querySelector('tbody');
+    const btnRegistrar = document.getElementById('btn-registrar-asistencia');
+    btnRegistrar.style.display = 'none'; 
 
     selectGrupo.addEventListener('change', () => {
-        const grupoID = parseInt(selectGrupo.value);
+        const grupoID = selectGrupo.value ? parseInt(selectGrupo.value) : null;
         const grupo = grupos.find(g => g.id === grupoID);
 
         campoSesion.value = grupo ? grupo.proxima_sesion : '';
         tablaParticipantes.innerHTML = '';
+
+        // Condiciones para ocultar el botón
+        const grupoNoSeleccionado = !grupoID || !grupo;
+        const sesionInvalida = grupo && grupo.proxima_sesion >= 17;
+        const sinParticipantes = !grupo || grupo.participantes.length <= 1;
+
+        if (grupoNoSeleccionado || sesionInvalida || sinParticipantes) {
+            btnRegistrar.style.display = 'none';
+        } else {
+            btnRegistrar.style.display = 'inline-block';
+        }
 
         if (grupo) {
             document.getElementById('info-extra').style.display = 'block';
@@ -115,16 +127,15 @@
             document.getElementById('info-area').textContent = grupo.participantes[1][14] ?? 'N/A';
         } else {
             document.getElementById('info-extra').style.display = 'none';
-        }        
+        }
 
-        if (grupo && grupo.participantes.length > 1) {
-
+        if (!sinParticipantes && grupo) {
             grupo.participantes.forEach((p, i) => {
-                if (i === 0) return; 
+                if (i === 0) return;
 
                 const nombre = p[5];
                 const documento = p[6];
-                const participante_id = p[15] ?? i; 
+                const participante_id = p[15] ?? i;
                 const convenio = p[12];
 
                 const tr = document.createElement('tr');
@@ -146,11 +157,11 @@
         } else {
             tablaParticipantes.innerHTML = `
                 <tr>
-                    <td colspan="3" class="text-muted">Este grupo no tiene participantes.</td>
+                    <td colspan="4" class="text-muted">Este grupo no tiene participantes.</td>
                 </tr>
             `;
         }
-    });    
+    });
 </script>
 
 @endsection
