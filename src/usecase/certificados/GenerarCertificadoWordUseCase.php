@@ -94,8 +94,8 @@ class GenerarCertificadoWordUseCase
             $template->setValue('CARGO_FIRMANTE_2', $cargoFirmante2);
             $template->setImageValue('CODIGO_QR', [
                 'path' => $qrPath,
-                'width' => 70,
-                'height' => 70,
+                'width' => 60,
+                'height' => 60,
                 'ratio' => false
             ]);
 
