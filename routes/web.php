@@ -73,4 +73,7 @@ Route::get('/validar-certificado', [CertificadoAsistenciaController::class, 'val
 Route::get('/certificados/qr/descargar/{uuid}', [CertificadoAsistenciaController::class, 'descargarDesdeQR'])
     ->name('certificados.descargarDesdeQR');
 
-
+Route::post('/certificado/asistencia/logout', function () {
+    session()->forget(['participante_id', 'verificacion_preguntas']);
+    return redirect()->route('certificado.asistencia.formulario');
+})->name('certificado.asistencia.logout');

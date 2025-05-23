@@ -9,6 +9,16 @@
 
 @section('content')
 
+<div class="d-flex justify-content-end mb-3">
+    <form action="{{ route('certificado.asistencia.logout') }}" method="POST">
+        @csrf
+        <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill">
+            <i class="fa fa-sign-out-alt me-1"></i> Finalizar sesión
+        </button>
+    </form>
+</div>
+
+
 <div class="mb-4 text-center">
     <p class="mb-1"><strong>Participante:</strong> {{ $participante->getNombreCompleto() }}</p>
     <p class="mb-1"><strong>Documento:</strong> {{ $participante->getDocumentoCompleto() }}</p>
