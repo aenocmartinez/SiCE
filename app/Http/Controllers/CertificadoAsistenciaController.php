@@ -195,7 +195,10 @@ class CertificadoAsistenciaController extends Controller
                     @unlink($path);
                 }
             });
-        }, $filename);
+        }, $filename, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
     }
  
 }
