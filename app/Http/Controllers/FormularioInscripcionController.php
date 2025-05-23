@@ -261,10 +261,17 @@ class FormularioInscripcionController extends Controller
         return redirect()->route('formularios.index')->with('code', $response->code)->with('status', $response->message);
     }
 
-    public function anularInscripcion($numeroFormulario, $participanteId) {        
-        $response = (new AnularFormularioUseCase)->ejecutar($numeroFormulario);
+    public function anularInscripcion($numeroFormulario, $participanteId) {     
+        
+        $data = request()->validate([
+                    'motivo_anulacion' => 'required|string|max:1000',
+                ]);
+
+        $motivo = strip_tags($data['motivo_anulacion']);
+
+        $response = (new AnularFormularioUseCase)->ejecutar($numeroFormulario, $motivo);
         return redirect()->route('formularios.index')->with('code', $response->code)->with('status', $response->message);
-    }    
+    } 
 
     private function hydrateConfirmarInscripcionDto($datos): ConfirmarInscripcionDto{
         $formularioDto = new ConfirmarInscripcionDto;

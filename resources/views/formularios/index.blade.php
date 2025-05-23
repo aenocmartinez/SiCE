@@ -147,24 +147,60 @@
 </div>
 
 <script>
+// function confirmAnular(button) {
+//     const numeroFormulario = button.getAttribute('data-id'); 
+//     Swal.fire({
+//         title: '¿Estás seguro?',
+//         text: 'Esta acción no se puede deshacer',
+//         icon: 'warning',
+//         showCancelButton: true,
+//         confirmButtonText: 'Sí, estoy seguro',
+//         cancelButtonText: 'Cancelar'
+//     }).then((result) => {
+//         if (result.isConfirmed) {
+//             const form = document.getElementById(`form-del-anular-${numeroFormulario}`);
+//             if (form) {                
+//                 form.submit();
+//             }
+//         }
+//     });
+// }
+
 function confirmAnular(button) {
-    const numeroFormulario = button.getAttribute('data-id'); 
+    const numeroFormulario = button.getAttribute('data-id');
+
     Swal.fire({
-        title: '¿Estás seguro?',
-        text: 'Esta acción no se puede deshacer',
-        icon: 'warning',
+        title: '¿Estás seguro de anular la inscripción?',
+        input: 'textarea',
+        inputLabel: 'Motivo de anulación',
+        inputPlaceholder: 'Escribe aquí el motivo...',
+        inputAttributes: {
+            'aria-label': 'Motivo de anulación'
+        },
         showCancelButton: true,
-        confirmButtonText: 'Sí, estoy seguro',
-        cancelButtonText: 'Cancelar'
+        confirmButtonText: 'Sí, anular',
+        cancelButtonText: 'Cancelar',
+        inputValidator: (value) => {
+            if (!value.trim()) {
+                return 'Debes indicar un motivo';
+            }
+        }
     }).then((result) => {
         if (result.isConfirmed) {
             const form = document.getElementById(`form-del-anular-${numeroFormulario}`);
-            if (form) {                
+            if (form) {
+                // Crea un input oculto para enviar el motivo
+                const motivoInput = document.createElement('input');
+                motivoInput.type = 'hidden';
+                motivoInput.name = 'motivo_anulacion';
+                motivoInput.value = result.value.trim();
+                form.appendChild(motivoInput);
                 form.submit();
             }
         }
     });
 }
+
 </script>
 
 @endsection

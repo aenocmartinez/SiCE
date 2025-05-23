@@ -7,11 +7,11 @@ use Src\view\dto\Response;
 
 class AnularFormularioUseCase {
 
-    public function ejecutar($numeroFormulario): Response {
+    public function ejecutar($numeroFormulario, $motivo=""): Response {
         $response = new Response();
 
         $formularioRepository = new FormularioInscripcionDao();
-        $exito = $formularioRepository->anularInscripcion($numeroFormulario);
+        $exito = $formularioRepository->anularInscripcion($numeroFormulario, $motivo);
 
         $response->code = "200";
         $response->message = "El formulario se ha sido anulado.";
