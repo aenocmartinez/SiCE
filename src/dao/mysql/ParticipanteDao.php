@@ -303,10 +303,10 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
         $formularios = array();
 
         try {
-            $calendarioVigente = Calendario::Vigente();
-            if (!$calendarioVigente->existe()) {
-                return $formularios;
-            }
+            // $calendarioVigente = Calendario::Vigente();
+            // if (!$calendarioVigente->existe()) {
+            //     return $formularios;
+            // }
             
             $resultados = FormularioInscripcionDao::select(
                     'formulario_inscripcion.id',
@@ -335,7 +335,7 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                 ->join('cursos', 'cursos.id', '=', 'curso_calendario.curso_id')
                 ->leftJoin('convenios', 'convenios.id', '=', 'formulario_inscripcion.convenio_id')
                 ->where('p.id', $participanteId)
-                ->where('grupos.calendario_id', $calendarioVigente->getId())
+                // ->where('grupos.calendario_id', $calendarioVigente->getId())
                 ->where('formulario_inscripcion.estado', '<>', 'Anulado')
                 ->orderByDesc('formulario_inscripcion.id')
                 ->get();
