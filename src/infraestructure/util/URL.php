@@ -20,16 +20,13 @@ class URL
     {
         $ruta = parse_url($path, PHP_URL_PATH);
 
-        $pos = strpos($ruta, '/storage/');
-        if ($pos !== false) {
-            // Cortamos desde /storage/
-            $rutaRelativa = substr($ruta, $pos);
+        $rutaRelativa = str_replace(['/storage/app/public/', '/storage/public/'], '/storage/', $ruta);
 
-            // Eliminamos el /public/ si viene después de /storage/
-            return str_replace('/storage/public/', '/storage/', $rutaRelativa);
-        }
+        $rutaRelativa = str_replace('/app/public/', '/storage/', $rutaRelativa);
 
-        return $ruta;
+        $rutaRelativa = preg_replace('#/+#', '/', $rutaRelativa);
+
+        return $rutaRelativa;
     }
 
 }
