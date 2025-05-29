@@ -4,7 +4,7 @@
 
 @section('description')
     Usted está a punto de descargar el <strong>Certificado de Asistencia</strong> a los Cursos de Extensión 
-    de la Universidad Mayor de Cundinamarca.
+    de la Universidad Colegio Mayor de Cundinamarca.
     <br><br>
     Para continuar, por favor ingrese su <strong>tipo</strong> y <strong>número de documento</strong>. 
     A continuación, le haremos unas preguntas de validación que solo usted puede responder.
