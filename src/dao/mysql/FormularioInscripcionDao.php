@@ -752,4 +752,15 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 ->whereNotNull('f.convenio_id')
                 ->count();
     }
+
+    public static function asignarConvenioAFormulario(int $formularioID, int $convenioID): bool
+    {
+        $valorConvenio = ($convenioID === 0) ? null : $convenioID;
+
+        $actualizados = DB::table('formulario_inscripcion')
+            ->where('id', $formularioID)
+            ->update(['convenio_id' => $valorConvenio]);
+
+        return $actualizados > 0;
+    }
 }

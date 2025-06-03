@@ -24,4 +24,5 @@ interface FormularioRepository {
     public static function GenerarReciboDeMatricula($participanteId=0): array;
     public function actualizarGrupoFormulario($formularioId, $grupoId, $datos = []): bool;
     public static function cambiarPendientesDePagoAAnulado(): bool;
+    public static function asignarConvenioAFormulario(int $formularioID, int $convenioID): bool;
 }

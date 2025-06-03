@@ -98,6 +98,14 @@
                                                title="Legalizar inscripción">
                                                <i class="fa fa-check"></i> 
                                             </a>
+
+                                            <a href="{{ route('formularios.asignar-convenio', [$f->getNumero()]) }}" 
+                                               class="btn btn-sm btn-outline-primary rounded-pill shadow-sm me-1"
+                                               data-bs-toggle="tooltip" 
+                                               title="Asignar o cambiar convenio">
+                                               <i class="fa fa-exchange"></i> 
+                                            </a>
+
                                             <form method="POST" action="{{ route('formularios.anular-inscripcion', [$f->getNumero(), $f->getParticipanteId()]) }}" id="form-del-anular-{{$f->getNumero()}}" class="d-inline">
                                                 @csrf @method('patch')
                                                 <button class="btn btn-sm btn-outline-danger rounded-pill shadow-sm"

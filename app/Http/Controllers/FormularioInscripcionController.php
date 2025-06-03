@@ -26,6 +26,7 @@ use Src\usecase\participantes\GuardarParticipanteUseCase;
 use Src\view\dto\ConfirmarInscripcionDto;
 use Src\view\dto\ParticipanteDto;
 use Src\usecase\formularios\AnularFormularioUseCase;
+use Src\usecase\formularios\AsignarOCambiarConvenioFormularioUseCase;
 use Src\usecase\formularios\GenerarReciboMatriculaUseCase;
 
 class FormularioInscripcionController extends Controller
@@ -251,6 +252,38 @@ class FormularioInscripcionController extends Controller
             'formulario' => $formulario,
             'convenios' => (new ListarConveniosUseCase)->ejecutar(),
         ]);
+    }
+
+    public function formularioParaAsignarOCambiarConvenio($numeroFormulario)
+    {
+        $formulario = (new BuscarFormularioPorNumeroUseCase)->ejecutar($numeroFormulario);
+        if (!$formulario->existe()) {
+            return redirect()->route('formularios.index')->with('code', "404")->with('status', "El formulario no fue encontrado.");
+        }
+
+        return view("formularios.asignar_o_cambiar_convenio", [
+            'formulario' => $formulario,
+            'convenios' => (new ListarConveniosUseCase)->ejecutar(),
+        ]);
+    }
+
+    public function asignaroCambiarConvenio()
+    {
+        $formularioId = request()->formularioId;
+        $convenioRaw = request()->convenio;
+
+        [$convenioId, $descuento, $nombre] = explode('@', $convenioRaw);
+
+        // dd([
+        //     'formularioId' => $formularioId,
+        //     'convenioId' => $convenioId,
+        //     'descuento' => $descuento,
+        //     'nombre' => $nombre
+        // ]);        
+
+        (new AsignarOCambiarConvenioFormularioUseCase)->Ejecutar($formularioId, $convenioId);
+
+        return redirect()->route('formularios.index')->with('code', 200)->with('status', 'Información actualizada exitosamente.');
     }
 
     public function legalizarInscripcion(LegalizarFormularioInscripcion $req) {

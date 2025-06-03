@@ -206,6 +206,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/formularios/{numeroFormulario}/participante/{participanteId}/anular', [FormularioInscripcionController::class, 'anularInscripcion'])->middleware('role:Admin,superAdmin')->name('formularios.anular-inscripcion');
     Route::get('/formularios/p/{page}/periodo/{periodo}/estado/{estado?}', [FormularioInscripcionController::class, 'buscadorFormulariosPaginados'])->middleware('role:Admin,superAdmin')->name('formularios.buscador-paginador');
     Route::get('/formularios/detalle-inscripcion/{numeroFormulario}/formulario', [FormularioInscripcionController::class, 'verDetalleInscripcion'])->middleware('role:Admin,superAdmin')->name('formularios.ver-detalle-inscripcion');
+    Route::get('/formularios/{numeroFormulario}/asignar-convenio', [FormularioInscripcionController::class, 'formularioParaAsignarOCambiarConvenio'])->middleware('role:Admin,superAdmin')->name('formularios.asignar-convenio');
+    Route::patch('/formularios/asignar-cambiar-convenio', [FormularioInscripcionController::class, 'asignaroCambiarConvenio'])->middleware('role:Admin,superAdmin')->name('formularios.asignar-o-cambiar-convenio');
+    
 
     Route::get('/participantes/{id}/editar', [ParticipanteController::class, 'edit'])->middleware('role:Admin,superAdmin')->name('participantes.edit');
     Route::get('/participantes/crear', [ParticipanteController::class, 'create'])->middleware('role:Admin,superAdmin')->name('participantes.create');
