@@ -187,8 +187,14 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                 $participante->setTelefonoEmergencia($participanteDao->telefono_emergencia);
                 $participante->setVinculadoUnicolMayor($participanteDao->vinculado_a_unicolmayor);
 
-                $aplazamientos = [];
+                $aplazamientos = [];  
+                
+                           
                 foreach($participanteDao->aplazamientos()->get() as $item) {
+                    if (is_null($item->formulario_id )) {
+                        continue;                        
+                    }
+                    
                     $aplazamiento = new Aplazamiento();
                     $aplazamiento->setId($item->id);
                     $aplazamiento->setFechaCaducidad($item->fecha_caducidad);
@@ -196,7 +202,6 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                     $aplazamiento->setRedimido($item->redimido);
                     $aplazamiento->setSaldo($item->saldo_a_favor);
                     $aplazamiento->setVaouchers($item->formulario->pagos->toArray());
-                    // dd($item->formulario->pagos->toArray());
 
                     if (!$aplazamiento->fueRedimido()) 
                     {
@@ -208,7 +213,8 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
             }
 
         } catch (Exception $e) {
-            Sentry::captureException($e);
+            dd($e->getMessage());
+            // Sentry::captureException($e);
         }
 
         return $participante;          
