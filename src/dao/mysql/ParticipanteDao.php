@@ -188,13 +188,12 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
                 $participante->setVinculadoUnicolMayor($participanteDao->vinculado_a_unicolmayor);
 
                 $aplazamientos = [];  
-                
                            
                 foreach($participanteDao->aplazamientos()->get() as $item) {
                     if (is_null($item->formulario_id )) {
                         continue;                        
                     }
-                    
+
                     $aplazamiento = new Aplazamiento();
                     $aplazamiento->setId($item->id);
                     $aplazamiento->setFechaCaducidad($item->fecha_caducidad);

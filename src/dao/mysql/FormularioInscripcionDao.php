@@ -234,7 +234,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
     public function aplazarInscripcion($numeroFormulario, $comentario=""): bool {
         $exito = true;
         try {
-            $formulario = FormularioInscripcionDao::where('numero_formulario', $numeroFormulario)->first();
+            $formulario = FormularioInscripcionDao::where('numero_formulario', $numeroFormulario)->first();            
             if ($formulario) {
                 
                 $idUsuarioSesion = Auth::id();
