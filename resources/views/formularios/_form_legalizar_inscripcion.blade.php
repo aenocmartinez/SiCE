@@ -151,7 +151,7 @@
 
                     <div class="form-floating mt-3">
                         <input type="text" 
-                               class="form-control fs-xs @error('valorPago') is-invalid @enderror" 
+                               class="form-control fs-md text-success fw-bold text-center @error('valorPago') is-invalid @enderror" 
                                id="valorPago" 
                                name="valorPago" 
                                value="{{ old('valorPago') }}"
@@ -223,210 +223,123 @@
     <!-- Fin Tarjeta: Abonos Realizados y Legalización -->
 </div>
 
-<script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
-<!-- <script>
-    $(document).ready(function(){
-        if ($('input[name="convenio"]').is(':checked')) {
-            checkearConvenio();
-        }
-
-        $('input[name="convenio"]').change(function(){   
-            checkearConvenio();
-        });
-
-        $('input[name="medioPago"]').change(function(){
-            const medioPago = $('input[name="medioPago"]:checked').val();
-            $("#s-voucher").hide();
-            if (medioPago == "pagoDatafono") {
-                $("#s-voucher").show();
-            } else {
-                $("#voucher").val("");
-                var miRedirect = document.createElement('a');
-                miRedirect.setAttribute('href', 'https://www.e-collect.com/customers/plus/UColMayorProServicesPlus.htm');
-                miRedirect.setAttribute('target', '_blank');
-                miRedirect.click();
-            }
-        });
-
-        // Quitar formato de moneda antes de enviar el formulario
-        $('form').submit(function() {
-            $('#valorPago').val($('#valorPago').val().replace(/[^0-9]/g, ''));
-        });
-    });
-
-    function formatCurrency(input) {
-        // Guardar la posición del cursor
-        const selectionStart = input.selectionStart;
-        const selectionEnd = input.selectionEnd;
-
-        // Remover cualquier carácter no numérico
-        let value = input.value.replace(/[^0-9]/g, '');
-
-        // Aplicar formato de moneda
-        if (value) {
-            value = parseInt(value, 10).toLocaleString('es-CO');
-            input.value = value;
-        } else {
-            input.value = ''; // Limpiar el campo si no hay valor
-        }
-
-        // Restaurar la posición del cursor
-        input.setSelectionRange(selectionStart, selectionEnd);
-    }
-
-    function checkearConvenio() {      
-        const valor = $('input[name="convenio"]:checked').val();            
-        var datosConvenio = valor.split('@');
-        
-        $("#convenioId").val(datosConvenio[0]); 
-
-        var porcentajeDescuento = datosConvenio[1];
-        var nombreDescuento = datosConvenio[2];            
-        var valorCosto = $('#costo_curso').val();
-
-        valores = calcularTotalAPagar(valorCosto, porcentajeDescuento);
-        
-        $('#idValorDescuento').text(formatoMoneda(valores[1]));
-        $("#valor_descuento").val(valores[1]); 
-
-        $('#idValorTotalAPagar').text(formatoMoneda(valores[0]));
-        $("#total_a_pagar").val(valores[0]); 
-
-        $("#idDescuentoNuevo").text(formatoMoneda(valores[1]));
-        $('#idCosto').text(formatoMoneda(valores[0]));    
-
-        var pendiente_por_pagar = valores[0] - $("#pago_parcial").val();
-        $('#idPendientePorAPagar').text(`$${formatoMoneda(pendiente_por_pagar)} COP`);
-        $("#valor_pendiente_por_pagar").val(pendiente_por_pagar);
-    }
-
-    function calcularTotalAPagar(valorCosto, porcentajeDescuento) {
-        valorCosto = convertirFormatoCostoAEntero(valorCosto);
-        var valorDescuento = calcularDescuento(valorCosto, porcentajeDescuento);
-        var valorTotalAPagar = valorCosto - valorDescuento;
-
-        return [valorTotalAPagar, valorDescuento];
-    }
-
-    function calcularDescuento(valorCosto, porcentajeDescuento) {
-        if (porcentajeDescuento == 0) {
-            return 0;
-        }
-        return valorCosto * (porcentajeDescuento / 100);
-    }
-
-    function convertirFormatoCostoAEntero(valorCosto) {
-        var numeros = valorCosto.replace(/[^0-9]/g, '');
-        return parseInt(numeros, 10);
-    }
-
-    function formatoMoneda(numero) {
-        return numero.toLocaleString('es-CO', {minimumFractionDigits: 0});
-    }    
-</script> -->
+<script src="{{ asset('assets/js/lib/jquery.min.js') }}"></script>
 
 <script>
     $(document).ready(function(){
-        // Lógica existente para convenios
-        if ($('input[name="convenio"]').is(':checked')) {
-            checkearConvenio();
-        }
+        // Al cargar la página con una opción seleccionada
+        checkearConvenio();
 
-        $('input[name="convenio"]').change(function(){   
+        // Evento: Cambio de convenio
+        $('input[name="convenio"]').change(function() {
             checkearConvenio();
         });
 
-        // Cambiar el comportamiento según el medio de pago seleccionado
-        $('input[name="medioPago"]').change(function(){
+        // Evento: Cambio de medio de pago
+        $('input[name="medioPago"]').change(function() {
             const medioPago = $('input[name="medioPago"]:checked').val();
             $("#s-voucher").hide();
+
             if (medioPago === "pagoDatafono") {
                 $("#s-voucher").show();
             } else {
                 $("#voucher").val("");
-                var miRedirect = document.createElement('a');
+                const miRedirect = document.createElement('a');
                 miRedirect.setAttribute('href', 'https://www.e-collect.com/customers/plus/UColMayorProServicesPlus.htm');
                 miRedirect.setAttribute('target', '_blank');
                 miRedirect.click();
             }
         });
 
-        // Aplicar formato de moneda mientras se escribe y al perder el foco
+        // Evento: Formateo dinámico del valorPago
         $('#valorPago').on('input blur', function() {
             formatCurrency(this);
         });
 
-        // Quitar formato de moneda antes de enviar el formulario
+        // Evento: Limpiar formato de moneda antes del submit
         $('form').submit(function() {
             $('#valorPago').val($('#valorPago').val().replace(/[^0-9]/g, ''));
         });
     });
 
-    function formatCurrency(input) {
-        // Remover caracteres no numéricos
-        let rawValue = input.value.replace(/[^0-9]/g, '');
+    function checkearConvenio() {
+        const valor = $('input[name="convenio"]:checked').val();
+        const datosConvenio = valor.split('@');
 
-        // Aplicar formato de moneda si hay valor
-        if (rawValue) {
-            input.value = parseInt(rawValue, 10).toLocaleString('es-CO');
-        } else {
-            input.value = ''; // Limpiar si no hay valor
+        const convenioId = datosConvenio[0];
+        const porcentajeDescuento = parseFloat(datosConvenio[1]);
+        const nombreConvenio = datosConvenio[2];
+
+        $("#convenioId").val(convenioId);
+
+        const valorCurso = $('#costo_curso').val() || '{{ $formulario->getGrupoCursoCosto() }}';
+        const valores = calcularTotalAPagar(valorCurso, porcentajeDescuento);
+
+        $('#idDescuentoNuevo').text(formatoMoneda(valores[1]));
+        $("#valor_descuento").val(valores[1]); 
+
+        $('#idCosto').text(formatoMoneda(valores[0]));
+        $("#total_a_pagar").val(valores[0]); 
+
+        // Asignar valor a pagar formateado
+        const inputPago = document.getElementById("valorPago");
+        inputPago.value = valores[0];
+        formatCurrency(inputPago);
+
+        // Calcular valor pendiente por pagar
+        const pagoParcial = parseInt($("#pago_parcial").val() || "0", 10);
+        const pendiente = valores[0] - pagoParcial;
+
+        $('#idPendientePorAPagar').text(`$${formatoMoneda(pendiente)} COP`);
+        $("#valor_pendiente_por_pagar").val(pendiente);
+
+        // Limpiar voucher si no es cooperativa
+        const nombreConvenioLower = nombreConvenio.trim().toLowerCase();
+        if (!nombreConvenioLower.includes("cooperativa")) {
+            $("#voucher").val("");
+        }
+    }
+
+    function calcularTotalAPagar(valorCosto, porcentajeDescuento) {
+        const valorEntero = convertirFormatoCostoAEntero(valorCosto);
+        const valorDescuento = calcularDescuento(valorEntero, porcentajeDescuento);
+        const valorTotal = valorEntero - valorDescuento;
+        return [valorTotal, valorDescuento];
+    }
+
+    function calcularDescuento(valorCosto, porcentajeDescuento) {
+        if (!porcentajeDescuento || porcentajeDescuento === 0) return 0;
+        return Math.floor(valorCosto * (porcentajeDescuento / 100));
+    }
+
+    function convertirFormatoCostoAEntero(valorCosto) {
+        const limpio = valorCosto.toString().replace(/[^0-9]/g, '');
+        return parseInt(limpio, 10) || 0;
+    }
+
+    function formatoMoneda(numero) {
+        return numero.toLocaleString('es-CO', { minimumFractionDigits: 0 });
+    }
+
+    function formatCurrency(input) {
+        let rawValue = input.value.replace(/[^0-9]/g, '');
+        if (!rawValue) {
+            input.value = '';
+            return;
         }
 
-        // Mover el cursor al final
+        input.value = parseInt(rawValue, 10).toLocaleString('es-CO', {
+            style: 'currency',
+            currency: 'COP',
+            minimumFractionDigits: 0
+        });
+
+        // Lleva el cursor al final
         setTimeout(() => {
             input.selectionStart = input.selectionEnd = input.value.length;
         }, 0);
     }
-
-    function checkearConvenio() {      
-        const valor = $('input[name="convenio"]:checked').val();            
-        var datosConvenio = valor.split('@');
-        
-        $("#convenioId").val(datosConvenio[0]); 
-
-        var porcentajeDescuento = datosConvenio[1];
-        var nombreDescuento = datosConvenio[2];            
-        var valorCosto = $('#costo_curso').val();
-
-        valores = calcularTotalAPagar(valorCosto, porcentajeDescuento);
-        
-        $('#idValorDescuento').text(formatoMoneda(valores[1]));
-        $("#valor_descuento").val(valores[1]); 
-
-        $('#idValorTotalAPagar').text(formatoMoneda(valores[0]));
-        $("#total_a_pagar").val(valores[0]); 
-
-        $("#idDescuentoNuevo").text(formatoMoneda(valores[1]));
-        $('#idCosto').text(formatoMoneda(valores[0]));    
-
-        var pendiente_por_pagar = valores[0] - $("#pago_parcial").val();
-        $('#idPendientePorAPagar').text(`$${formatoMoneda(pendiente_por_pagar)} COP`);
-        $("#valor_pendiente_por_pagar").val(pendiente_por_pagar);
-    }
-
-    function calcularTotalAPagar(valorCosto, porcentajeDescuento) {
-        valorCosto = convertirFormatoCostoAEntero(valorCosto);
-        var valorDescuento = calcularDescuento(valorCosto, porcentajeDescuento);
-        var valorTotalAPagar = valorCosto - valorDescuento;
-
-        return [valorTotalAPagar, valorDescuento];
-    }
-
-    function calcularDescuento(valorCosto, porcentajeDescuento) {
-        if (porcentajeDescuento == 0) {
-            return 0;
-        }
-        return valorCosto * (porcentajeDescuento / 100);
-    }
-
-    function convertirFormatoCostoAEntero(valorCosto) {
-        var numeros = valorCosto.replace(/[^0-9]/g, '');
-        return parseInt(numeros, 10);
-    }
-
-    function formatoMoneda(numero) {
-        return numero.toLocaleString('es-CO', {minimumFractionDigits: 0});
-    }
 </script>
+
+
 
