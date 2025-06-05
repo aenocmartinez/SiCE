@@ -42,7 +42,17 @@
                             @if ($convenio->esCooperativa())                                
                                 Es una cooperativa <br>
                             @endif
-                            Descuento: {{ $convenio->getDescuento()."%" }}<br>
+                            
+                            <!-- Descuento aplicado -->
+                            @if ($convenio->esCooperativa())
+                                @php
+                                    $descuentoActual = $convenio->getDescuentoAplicado();
+                                @endphp
+                                Descuento aplicado: {{ $descuentoActual }}% <br>
+                            @else
+                                Descuento: {{ $convenio->getDescuento() }}% <br>
+                            @endif
+
                             {{ $convenio->getVigenciaEnTexto()}}
                         </small>                     
                     </td>

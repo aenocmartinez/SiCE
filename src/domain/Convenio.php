@@ -4,6 +4,7 @@ namespace Src\domain;
 
 use Carbon\Carbon;
 use Src\dao\mysql\ConvenioDao;
+use Src\dao\mysql\FormularioInscripcionDao;
 use Src\domain\repositories\ConvenioRepository;
 use Src\infraestructure\util\FormatoMoneda;
 
@@ -324,5 +325,22 @@ class Convenio {
         $this->reglasDescuento = [];
     }
 
+    public function getDescuentoAplicado(): int
+    {
+        $totalPagados = FormularioInscripcionDao::contarFormulariosPagadosPorConvenio($this->getId());
+
+        foreach (ConvenioDao::obtenerReglasPorConvenio($this->id) as $regla) {
+            if ($regla->aplicaPara($totalPagados)) {
+                return $regla->getDescuento();
+            }
+        }
+
+        return 0;
+    }
+
+    public function getTotalParticipantesMatriculados(): int 
+    {
+        return FormularioInscripcionDao::contarFormulariosPagadosPorConvenio($this->getId());
+    }
 
 }

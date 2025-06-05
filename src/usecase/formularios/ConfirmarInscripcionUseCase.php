@@ -39,14 +39,15 @@ class ConfirmarInscripcionUseCase {
         $grupo->setId($confirmarInscripcionDto->grupoId);
 
 
+        /** @var \Src\domain\Convenio $convenio */
         $convenio = (new BuscarConvenioPorIdUseCase)->ejecutar($confirmarInscripcionDto->convenioId);
 
         $totalAPagar = $confirmarInscripcionDto->totalAPagar;
         $estado = $confirmarInscripcionDto->estado;
         if ($convenio->esCooperativa()) 
-        {
-            $totalAPagar = 0;
-            $estado = "Pendiente de pago";
+        {            
+            $totalAPagar = $convenio->calcularValorConDescuento($totalAPagar, FormularioInscripcionDao::contarFormulariosPagadosPorConvenio($convenio->getId()));
+            $estado = "Pagado";
         }
 
         $participante = new Participante();
@@ -81,6 +82,8 @@ class ConfirmarInscripcionUseCase {
         if (!$grupo->tieneCuposDisponibles()) {            
             return new Response("409", "El grupo no tiene cupos disponibles");
         }
+
+        // dd($formularioInscripcion);
 
         $exito = false;
         if ($formularioInscripcion->existe()) 

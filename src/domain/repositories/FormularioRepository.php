@@ -25,4 +25,5 @@ interface FormularioRepository {
     public function actualizarGrupoFormulario($formularioId, $grupoId, $datos = []): bool;
     public static function cambiarPendientesDePagoAAnulado(): bool;
     public static function asignarConvenioAFormulario(int $formularioID, int $convenioID): bool;
+    public static function contarFormulariosPagadosPorConvenio(int $convenioId): int;
 }

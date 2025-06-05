@@ -14,6 +14,7 @@ class ActualizarConvenioUseCase {
 
         $convenioRepository = new ConvenioDao();
 
+        /** @var \Src\domain\Convenio $convenio */
         $convenio = $convenioRepository->buscarConvenioPorId($convenioDto->id);
         if (!$convenio->existe()) {
             return new Response("404", "El convenio no existe.");

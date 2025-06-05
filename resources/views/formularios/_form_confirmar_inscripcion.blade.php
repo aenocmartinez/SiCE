@@ -22,17 +22,28 @@
                     @foreach ($convenios as $convenio)
                         @if ($convenio->esVigente())
                             @php
+
                                 $descuento = $convenio->getDescuento();
+                                if ($convenio->esCooperativa())
+                                {
+                                    $descuento = $convenio->getDescuentoAplicado();
+                                }
+                                
                                 $tagColor = 'bg-danger'; // Rojo por defecto
-                                if ($descuento >= 50) {
-                                    $tagColor = 'bg-success'; // Verde para descuentos >= 50%
+                                if ($descuento < 20) {
+                                    $tagColor = 'bg-warning';                                     
                                 } elseif ($descuento >= 20) {
-                                    $tagColor = 'bg-warning'; // Amarillo para descuentos >= 20%
+                                    $tagColor = 'bg-success'; 
                                 }
                             @endphp
                             <div class="col-6">
                                 <div class="form-check form-block">
-                                    <input type="radio" class="form-check-input" id="convenio-{{ $convenio->getId() }}" value="{{ $convenio->getId().'@'.$descuento.'@'.$convenio->getNombre() }}" name="convenio">
+                                    <input type="radio" 
+                                            class="form-check-input" 
+                                            id="convenio-{{ $convenio->getId() }}" 
+                                            value="{{ $convenio->getId().'@'.$descuento.'@'.$convenio->getNombre().'@'.($convenio->esCooperativa() ? '1' : '0') }}"
+                                            name="convenio">
+
                                     <label class="form-check-label" for="convenio-{{ $convenio->getId() }}">
                                         <span class="d-block fw-normal p-1 fs-xs text-truncate">
                                             <span class="badge {{ $tagColor }} text-white">{{ $descuento }}%</span>
@@ -259,84 +270,6 @@
 <script>One.helpersOnLoad(['js-flatpickr']);</script>
 
 <script>
-// $(document).ready(function() {
-//     const valorPagoInput = document.getElementById('valorPago');
-//     const abonoInput = document.getElementById('abono');
-
-//     // Mostrar y ocultar comentarios
-//     $('.toggle-comment').click(function() {
-//         const target = $(this).data('target');
-//         $(target).toggleClass('d-none');
-//         const text = $(this).text() === 'Mostrar comentario' ? 'Ocultar comentario' : 'Mostrar comentario';
-//         $(this).text(text);
-//     });
-
-//     abonoInput.addEventListener('input', function(event) {
-//         let value = event.target.value;
-//         value = value.replace(/\D/g, ''); // Elimina caracteres no numéricos
-//         value = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
-//         event.target.value = value;
-//         valorPagoInput.value = '';
-//     });
-
-//     valorPagoInput.addEventListener('input', function(event) {
-//         let value = event.target.value;
-//         value = value.replace(/\D/g, ''); // Elimina caracteres no numéricos
-//         value = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
-//         event.target.value = value;
-//     });
-
-//     valorPagoInput.form.addEventListener('submit', function() {
-//         abonoInput.value = abonoInput.value.replace(/[^0-9]/g, '');
-//         valorPagoInput.value = valorPagoInput.value.replace(/[^0-9]/g, '');
-//         if (abonoInput.value.trim() !== '') {
-//         valorPagoInput.value = abonoInput.value;
-//     }        
-//     });
-
-//     $('input[name="convenio"]').change(function(){
-//         checkearConvenio();
-//     });
-
-//     function checkearConvenio() {
-//         const valor = $('input[name="convenio"]:checked').val();            
-//         const datosConvenio = valor.split('@');
-        
-//         $("#convenioId").val(datosConvenio[0]); 
-
-//         const porcentajeDescuento = datosConvenio[1];
-//         const nombreDescuento = datosConvenio[2];            
-//         const valorCosto = $('#idCosto').text();
-
-//         const valores = calcularTotalAPagar(valorCosto, porcentajeDescuento);
-
-//         $('#idNombreDescuento').text(nombreDescuento);
-//         $('#idValorDescuento').text(formatoMoneda(valores[1]));
-//         $("#valor_descuento").val(valores[1]); 
-
-//         $('#idValorTotalAPagar').text(formatoMoneda(valores[0]));
-//     }
-
-//     function calcularTotalAPagar(valorCosto, porcentajeDescuento) {
-//         valorCosto = convertirFormatoCostoAEntero(valorCosto);
-//         const valorDescuento = calcularDescuento(valorCosto, porcentajeDescuento);
-//         const valorTotalAPagar = valorCosto - valorDescuento;
-
-//         return [valorTotalAPagar, valorDescuento];
-//     }
-
-//     function calcularDescuento(valorCosto, porcentajeDescuento) {
-//         return porcentajeDescuento == 0 ? 0 : valorCosto * (porcentajeDescuento / 100);
-//     }
-
-//     function convertirFormatoCostoAEntero(valorCosto) {
-//         return parseInt(valorCosto.replace(/[^0-9]/g, ''), 10);
-//     }
-
-//     function formatoMoneda(numero) {
-//         return '$' + numero.toLocaleString('es-CO', {minimumFractionDigits: 0}) + ' COP';
-//     }
-// });
 
 $(document).ready(function() {
     const valorPagoInput = document.getElementById('valorPago');
@@ -402,20 +335,29 @@ $(document).ready(function() {
         const valor = $('input[name="convenio"]:checked').val();            
         const datosConvenio = valor.split('@');
         
-        $("#convenioId").val(datosConvenio[0]); 
-
+        const convenioId = datosConvenio[0];
         const porcentajeDescuento = datosConvenio[1];
-        const nombreDescuento = datosConvenio[2];            
-        const valorCosto = $('#idCosto').text();
+        const nombreDescuento = datosConvenio[2];
+        const esCooperativa = datosConvenio[3] === '1'; // nuevo campo
 
+        $("#convenioId").val(convenioId); 
+
+        const valorCosto = $('#idCosto').text();
         const valores = calcularTotalAPagar(valorCosto, porcentajeDescuento);
+        const valorTotalAPagar = valores[0];
+        const valorDescuento = valores[1];
 
         $('#idNombreDescuento').text(nombreDescuento);
-        $('#idValorDescuento').text(formatoMoneda(valores[1]));
-        $("#valor_descuento").val(valores[1]); 
+        $('#idValorDescuento').text(formatoMoneda(valorDescuento));
+        $("#valor_descuento").val(valorDescuento); 
+        $('#idValorTotalAPagar').text(formatoMoneda(valorTotalAPagar));
 
-        $('#idValorTotalAPagar').text(formatoMoneda(valores[0]));
-    }    
+        if (esCooperativa) {
+            // Autocompletar voucher y valor a pagar
+            $('#voucher').val(nombreDescuento);
+            $('#valorPago').val(formatoMoneda(valorTotalAPagar));
+        }
+    }
 
     function calcularTotalAPagar(valorCosto, porcentajeDescuento) {
         valorCosto = convertirFormatoCostoAEntero(valorCosto);

@@ -42,15 +42,11 @@
                         </tr>
                         <tr class="fs-sm">
                             <td>Descuento</td>
-                            <td>{{ $convenio->getDescuento() }}%</td>
+                            <td>{{ ($convenio->esCooperativa() ? $convenio->getDescuentoAplicado() : $convenio->getDescuento()) }}%</td>
                         </tr>                         
                         <tr class="fs-sm">
-                            <td>Número proyectado de beneficiados</td>
-                            <td>{{ $convenio->getNumeroBeneficiados() }}</td>
-                        </tr>
-                        <tr class="fs-sm">
-                            <td>Total de inscripciones realizadas</td>
-                            <td>{{ $convenio->getNumeroInscritos() }}</td>
+                            <td>Total participantes matriculados</td>
+                            <td>{{ $convenio->getTotalParticipantesMatriculados() }}</td>
                         </tr>                          
                         <tr class="fs-sm">
                             <td>Periodo</td>

@@ -763,4 +763,18 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
 
         return $actualizados > 0;
     }
+
+    /**
+     * Retorna el número de formularios en estado Pagado asociados a un convenio.
+     *
+     * @param int $convenioId
+     * @return int
+     */
+    public static function contarFormulariosPagadosPorConvenio(int $convenioId): int
+    {
+        return self::where('convenio_id', $convenioId)
+                    ->where('estado', 'Pagado')
+                    ->count();
+    }
+
 }
