@@ -52,9 +52,10 @@ class EstadisticasCalendarioUseCase {
         $data["listaRecaudoPorAreas"] = FormularioInscripcion::listadoDeRecaudoPorAreas($calendario->getId());
         $recaudos = FormularioInscripcion::totalDeDineroRecaudado($calendario->getId());
 
-        $data["total_recaudo"] =  '$' . number_format($recaudos["RECAUDO_TOTAL"], 0, ',', '.'). ' COP';
-        $data["total_por_convenio"] = '$' . number_format($recaudos["RECAUDO_POR_CONVENIO"], 0, ',', '.') . ' COP';
-        $data["total_sin_convenio"] = '$' . number_format($recaudos["RECAUDO_SIN_CONVENIO"], 0, ',', '.') . ' COP';
+        $data["total_recaudo"]        = '$' . number_format($recaudos["RECAUDO_TOTAL"], 0, ',', '.') . ' COP';
+        $data["total_por_convenio"]   = '$' . number_format($recaudos["RECAUDO_POR_CONVENIO"], 0, ',', '.') . ' COP';
+        $data["total_sin_convenio"]   = '$' . number_format($recaudos["RECAUDO_SIN_CONVENIO"], 0, ',', '.') . ' COP';
+        $data["total_aplazados"]      = '$' . number_format($recaudos["RECAUDO_APLAZADO"], 0, ',', '.') . ' COP';
                 
         $data["existe"] = true;
         $data["nombre"] = $calendario->getNombre();

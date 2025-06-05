@@ -33,7 +33,7 @@ class RecalcularValorAPagarConveniosCooperativaUseCase
         foreach ($formularios as $formulario) 
         {
             $totalAPagar = $convenio->calcularValorConDescuento($formulario->getCostoCurso(), $cantidadMatriculados);
-            $valorDescuento = round(($formulario->getCostoCurso() * $porcentajeDescuento / 100), 2);
+            $valorDescuento = round(($formulario->getCostoCurso() * $porcentajeDescuento / 100), 0);
 
             $datosActualizar[] = [
                 'id' => $formulario->getId(),

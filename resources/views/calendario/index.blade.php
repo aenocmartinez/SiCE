@@ -55,7 +55,24 @@
                                 class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-warning cerrar-periodo">
                                 <i class="fa fa-fw fa-calendar-check"></i> Cerrar Periodo
                             </a>
-                        @endif
+                            @endif
+                            <!-- Recalcular valor a pagar -->
+                             @if (Auth::user()->esSuperAdmin())
+                            <a href="{{ route('calendario.recalcular-valor-a-pagar', $calendario->getId()) }}" 
+                                class="fs-xs 
+                                        fw-semibold 
+                                        d-inline-block 
+                                        py-1 
+                                        px-3 
+                                        btn 
+                                        rounded-pill 
+                                        btn-outline-danger"
+                                        data-bs-toggle="tooltip" 
+                                        title="Recalcular valor a pagar"
+                                        >
+                                <i class="fa fa-fw fa-rotate-right"></i>
+                            </a>
+                            @endif
 
                         <a href="{{ route('calendario.estadisticas', $calendario->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info">
                             <i class="fa fa-fw fa-chart-pie"></i> Estadísticas

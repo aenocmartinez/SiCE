@@ -552,6 +552,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 $formulario->setFechaCreacion($resultado->created_at);
                 $formulario->setTotalAPagar($resultado->total_a_pagar);
                 $formulario->setNumero($resultado->numero_formulario);
+                $formulario->setCostoCurso($resultado->costo_curso);
                 $formulario->setFechaMaxLegalizacion($resultado->fecha_max_legalizacion);
 
                 $grupo = $grupoDao->buscarGrupoPorId($resultado->grupo_id);

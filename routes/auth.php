@@ -148,6 +148,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/calendario/{id}/descargar-cuadro-110',[CalendarioController::class, 'generarReporteNumeroCursosYParticipantesPorJornada'])->middleware('role:Admin,superAdmin')->name('calendario.descargar-cuadro-110');
     Route::post('/calendario/abrir-cursos',[CalendarioController::class, 'darAperturaACursosDeUnPeriodo'])->middleware('role:Admin,superAdmin')->name('calendario.dar_apertura_a_cursos_de_un_periodo');
     Route::get('/calendario/{id}/cerrar',[CalendarioController::class, 'cerrarPeriodo'])->middleware('role:Admin,superAdmin')->name('calendario.cerrar');
+    Route::get('/calendario/{id}/recalcular-valor-a-pagar',[CalendarioController::class, 'recalcularValorAPagarDelPeriodo'])->middleware('role:superAdmin')->name('calendario.recalcular-valor-a-pagar');
     
 
     Route::get('/grupos/{id}/editar', [GrupoController::class, 'edit'])->middleware('role:Admin,superAdmin')->name('grupos.edit');

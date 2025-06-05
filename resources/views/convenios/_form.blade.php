@@ -200,8 +200,8 @@
             </div>
             
             <div class="col-12 mt-4">
-                @if (!$convenio->haSidoFacturado() && !$convenio->esUCMC())
                 <button class="btn btn-large btn-info">{{ $btnText }}</button>        
+                @if (!$convenio->haSidoFacturado() && !$convenio->esUCMC())
                 @endif
                 <a href="{{ route('convenios.index') }}" class="btn btn-large btn-light"> Cancelar</a>
             </div>            

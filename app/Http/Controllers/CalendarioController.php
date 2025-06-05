@@ -23,6 +23,7 @@ use Src\usecase\calendarios\CerrarCalendarioUseCase;
 use Src\usecase\calendarios\EstadisticasCalendarioUseCase;
 use Src\usecase\calendarios\ListarCursosPorCalendarioUseCase;
 use Src\usecase\calendarios\ListarParticipantesPorCalendarioUseCase;
+use Src\usecase\calendarios\RecalcularValorAPagarDelPeriodoUseCase;
 use Src\usecase\calendarios\ReporteNumeroCursoYParticipantePorJornadaUseCase;
 use Src\usecase\calendarios\RetirarCursoACalendarioUseCase;
 
@@ -273,5 +274,11 @@ class CalendarioController extends Controller
         (new CerrarCalendarioUseCase)->Ejecutar($periodo);
 
         return redirect()->route('calendario.index')->with('code', 200)->with('status', "Periodo cerrado con éxito");
+    }
+
+    public function recalcularValorAPagarDelPeriodo($periodoID)
+    {
+        $response = (new RecalcularValorAPagarDelPeriodoUseCase)->ejecutar($periodoID);
+        return redirect()->route('calendario.index')->with('code', $response->code)->with('status', $response->message);
     }
 }

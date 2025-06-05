@@ -19,7 +19,7 @@
                         <th>Convenio</th>
                         <th>Curso</th>
                         <th>Estado</th>
-                        <th>Fecha max. legalización</th>
+                        <th></th>
                         <th></th>
                     </thead>
                 </tr>
@@ -50,7 +50,7 @@
                             {{ $f->getEstado() }} 
                         @endif
                     </td>
-                    <td>{{ $f->getFechaMaxLegalizacion() }}</td>
+                    <td>${{ number_format($f->getTotalAPagar(), 0, ',', '.') }} COP</td>
                     <td class="text-center">
                     
                         

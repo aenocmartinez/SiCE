@@ -35,7 +35,7 @@
             <table class="table table-vcenter">
                 @forelse ($convenios as $convenio)
                 <tr>
-                    <td class="fs-sm" style="width: 49%;">
+                    <td class="fs-sm" style="width: 60%;">
                     <h4 class="fw-normal mb-0">{{ $convenio->getNombre() }} - {{ $convenio->getNombreCalendario() }}</h4>
                         <small class="fw-light">
                          
@@ -58,10 +58,10 @@
                     </td>
                     <td class="text-center">
                         <div class="d-sm-table-cell">
+                            <a href="{{ route('convenios.edit', $convenio->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-secondary">
+                                <i class="fa fa-fw fa-pencil-alt"></i> Editar
+                            </a>  
                             @if ($convenio->esVigente())
-                                <a href="{{ route('convenios.edit', $convenio->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-secondary">
-                                    <i class="fa fa-fw fa-pencil-alt"></i> Editar
-                                </a>  
 
                                 @if (!$convenio->esUCMC()) 
                                 <form method="POST" action="{{ route('convenios.delete', $convenio->getId()) }}" class="d-inline-block" id="form-del-convenio-{{$convenio->getId()}}">
@@ -80,9 +80,9 @@
                                 <i class="fa fa-fw fa-circle-info"></i> Más info
                             </a>   
                             @if (!$convenio->tieneBeneficiariosPotenciales() && !$convenio->haSidoFacturado() && $convenio->esVigente())                                
-                            <a href="{{ route('convenios.beneficiarios', $convenio->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-warning">
+                            <!-- <a href="{{ route('convenios.beneficiarios', $convenio->getId()) }}" class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-warning">
                                 <i class="fa fa-fw fa-file-import"></i> Cargar beneficiados
-                            </a>                                                                  
+                            </a>                                                                   -->
                             @endif                           
                         </div>
                     </td>                    
