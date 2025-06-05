@@ -61,50 +61,41 @@ class ConvenioDao extends Model implements ConvenioRepository {
     }
 
     public function buscarConvenioPorId(int $id): Convenio {
-        
         $convenio = new Convenio();
-        try {
-            
-            $c = DB::table('convenios as c')
-            ->select(
-                'c.id',
-                'c.nombre',
-                'c.calendario_id',
-                'c.es_cooperativa',
-                'c.fec_ini',
-                'c.fec_fin',
-                'c.descuento',
-                'c.comentarios',
-                'c.ha_sido_facturado',
-                'c.es_ucmc_actual',
-                DB::raw('(select count(*) from formulario_inscripcion where convenio_id = c.id and estado <> \'Anulado\' and estado <> \'Aplazado\') as numeroInscritos'),
-                DB::raw('(select count(*) from convenio_participante where convenio_id = c.id) as numeroBeneficiados'),
-                DB::raw('IFNULL(SUM(
-                    CASE 
-                        WHEN c.descuento = 0 THEN formulario_inscripcion.costo_curso
-                        ELSE (formulario_inscripcion.costo_curso - (formulario_inscripcion.costo_curso * c.descuento / 100))
-                    END
-                ), 0) as total_a_pagar')
-            )
-            ->leftJoin('formulario_inscripcion', 'formulario_inscripcion.convenio_id', '=', 'c.id')
-            ->where('c.id', $id)
-            ->groupBy(
-                'c.id',
-                'c.nombre',
-                'c.calendario_id',
-                'c.es_cooperativa',
-                'c.fec_ini',
-                'c.fec_fin',
-                'c.descuento',
-                'c.comentarios',
-                'c.ha_sido_facturado',
-                'c.es_ucmc_actual'
-            )
-            ->first();        
 
+        try {
+            $c = DB::table('convenios as c')
+                ->select(
+                    'c.id',
+                    'c.nombre',
+                    'c.calendario_id',
+                    'c.es_cooperativa',
+                    'c.fec_ini',
+                    'c.fec_fin',
+                    'c.descuento',
+                    'c.comentarios',
+                    'c.ha_sido_facturado',
+                    'c.es_ucmc_actual',
+                    DB::raw("(
+                        SELECT COUNT(*)
+                        FROM formulario_inscripcion
+                        WHERE convenio_id = c.id AND estado = 'Pagado'
+                    ) AS numeroInscritos"),
+                    DB::raw("(
+                        SELECT COUNT(*)
+                        FROM convenio_participante
+                        WHERE convenio_id = c.id
+                    ) AS numeroBeneficiados"),
+                    DB::raw("(
+                        SELECT IFNULL(SUM(total_a_pagar), 0)
+                        FROM formulario_inscripcion
+                        WHERE convenio_id = c.id AND estado = 'Pagado'
+                    ) AS total_a_pagar")
+                )
+                ->where('c.id', $id)
+                ->first();
 
             if ($c) {
-                $convenio = new Convenio();
                 $convenio->setId($c->id);
                 $convenio->setNombre($c->nombre);
                 $convenio->setFecInicio($c->fec_ini);
@@ -117,19 +108,17 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenio->setComentarios($c->comentarios);
                 $convenio->setHaSidoFacturado($c->ha_sido_facturado);
                 $convenio->setEsUCMC($c->es_ucmc_actual);
-            
+
                 $calendarioDao = new CalendarioDao();
                 $calendario = $calendarioDao->buscarCalendarioPorId($c->calendario_id);
                 $convenio->setCalendario($calendario);
 
                 $convenio->setReglasDescuento(ConvenioDao::obtenerReglasPorConvenio($id));
-
             }
 
-            
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             dd($e->getMessage());
-            Sentry::captureException($e);
+            \Sentry\captureException($e);
         }
 
         return $convenio;
@@ -303,8 +292,7 @@ class ConvenioDao extends Model implements ConvenioRepository {
         return true;
     }
 
-    public static function listadoParticipantesPorConvenio($convenioId=0, $calendarioId=0): array {
-
+    public static function listadoParticipantesPorConvenio($convenioId = 0, $calendarioId = 0): array {
         $participantes = [];
 
         try {
@@ -320,14 +308,11 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 'grupos.nombre as grupo',
                 'grupos.dia',
                 'grupos.jornada',
-                'convenios.descuento',
-                DB::raw("CASE 
-                    WHEN convenios.descuento = 0 THEN curso_calendario.costo
-                    ELSE (curso_calendario.costo - (curso_calendario.costo * convenios.descuento / 100))
-                END as total_a_pagar"),
-                DB::raw("(curso_calendario.costo * convenios.descuento / 100) as valor_descuento"),
-                'convenios.nombre as convenio',
+                'convenios.id as convenio_id',
+                'formulario_inscripcion.valor_descuento',
+                'formulario_inscripcion.total_a_pagar',
                 'curso_calendario.costo as costo_curso',
+                'convenios.nombre as convenio',
                 'formulario_inscripcion.created_at as fecha_inscripcion',
                 'formulario_inscripcion.estado as estado_formulario'
             )
@@ -339,43 +324,44 @@ class ConvenioDao extends Model implements ConvenioRepository {
             ->join('calendarios', 'calendarios.id', '=', 'curso_calendario.calendario_id')
             ->where('convenios.id', $convenioId)
             ->where('calendarios.id', $calendarioId)
-            ->whereNotIn('formulario_inscripcion.estado', ['Anulado', 'Aplazado', 'Devuelto'])
+            ->where('formulario_inscripcion.estado', 'Pagado') // Solo formularios Pagados
             ->orderBy('participantes.primer_nombre')
             ->orderBy('participantes.primer_apellido')
             ->get();
-            
-            
-        
-            $participantes[] = ['NOMBRE', 'TIPO_DOCUMENTO', 'DOCUMENTO', 'CURSO', 'GRUPO', 'HORARIO', 'COSTO_CURSO', 'PORCENTAJE_DESCUENTO', 'VALOR_DESCUENTO' ,'VALOR_A_PAGAR', 'CONVENIO' ,'PERIODO', 'FECHA_INSCRIPCION', 'ESTADO'];
-            foreach($items as $item) {
-                
+
+            $participantes[] = ['NOMBRE', 'TIPO_DOCUMENTO', 'DOCUMENTO', 'CURSO', 'GRUPO', 'HORARIO', 'COSTO_CURSO', 'PORCENTAJE_DESCUENTO', 'VALOR_DESCUENTO', 'VALOR_A_PAGAR', 'CONVENIO', 'PERIODO', 'FECHA_INSCRIPCION', 'ESTADO'];
+
+            foreach ($items as $item) {
                 $nombreCompleto = $item->primer_nombre . " " . $item->segundo_nombre . " " . $item->primer_apellido . " " . $item->segundo_apellido;
                 $fechaInscripcion = new \DateTime($item->fecha_inscripcion);
 
-                $participantes[] = [mb_strtoupper($nombreCompleto, 'UTF-8'), 
-                                    $item->tipo_documento, 
-                                    $item->documento, 
-                                    mb_strtoupper($item->nombre_curso, 'UTF-8'), 
-                                    $item->grupo, 
-                                    mb_strtoupper($item->dia."/".$item->jornada, 'UTF-8'), 
-                                    $item->costo_curso,
-                                    $item->descuento, 
-                                    $item->valor_descuento,
-                                    $item->total_a_pagar,
-                                    // '$' . number_format($item->total_a_pagar, 2, ',', '.'),
-                                    mb_strtoupper($item->convenio, 'UTF-8'),                                    
-                                    mb_strtoupper($item->periodo, 'UTF-8'),
-                                    $fechaInscripcion->format('Y-m-d'),
-                                    mb_strtoupper($item->estado_formulario, 'UTF-8'),
-                                ];
+                $convenio = self::buscarConvenioPorId($item->convenio_id);
+
+                $porcentaje_descuento = ($convenio->esCooperativa() ? $convenio->getDescuentoAplicado() : $convenio->getDescuento());
+
+                $participantes[] = [
+                    mb_strtoupper($nombreCompleto, 'UTF-8'),
+                    $item->tipo_documento,
+                    $item->documento,
+                    mb_strtoupper($item->nombre_curso, 'UTF-8'),
+                    $item->grupo,
+                    mb_strtoupper($item->dia . "/" . $item->jornada, 'UTF-8'),
+                    $item->costo_curso,
+                    $porcentaje_descuento,
+                    $item->valor_descuento,
+                    $item->total_a_pagar,
+                    mb_strtoupper($item->convenio, 'UTF-8'),
+                    mb_strtoupper($item->periodo, 'UTF-8'),
+                    $fechaInscripcion->format('Y-m-d'),
+                    mb_strtoupper($item->estado_formulario, 'UTF-8'),
+                ];
             }
 
-
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             dd($e->getMessage());
             Sentry::captureException($e);
         }
-        
+
         return $participantes;
     }
 

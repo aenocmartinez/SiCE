@@ -352,10 +352,11 @@ $(document).ready(function() {
         $("#valor_descuento").val(valorDescuento); 
         $('#idValorTotalAPagar').text(formatoMoneda(valorTotalAPagar));
 
+        $('#valorPago').val(formatoMoneda(valorTotalAPagar));
+        
         if (esCooperativa) {
             // Autocompletar voucher y valor a pagar
             $('#voucher').val(nombreDescuento);
-            $('#valorPago').val(formatoMoneda(valorTotalAPagar));
         }
     }
 
