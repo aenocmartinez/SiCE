@@ -43,4 +43,5 @@ class ConvenioRegla
             'descuento' => $this->descuento,
         ];
     }
+
 }

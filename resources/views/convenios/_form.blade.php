@@ -116,27 +116,44 @@
                                     </div>
                                 @endforeach
                             @else
-                                {{-- Solo si no hay datos anteriores, mostrar la fila base --}}
-                                <div class="row g-2 align-items-center mb-1 regla-row">
-                                    <div class="col-4">
-                                        <input type="number" name="reglas[0][min_participantes]" class="form-control form-control-sm fs-xs" placeholder="Mín. participantes" required>
-                                    </div>
-                                    <div class="col-4">
-                                        <input type="number" name="reglas[0][max_participantes]" class="form-control form-control-sm fs-xs" placeholder="Máx. participantes" required>
-                                    </div>
-                                    <div class="col-3">
-                                        <div class="input-group input-group-sm">
-                                            <input type="number" name="reglas[0][descuento]" class="form-control fs-xs" placeholder="%" required step="0.01" min="0" max="100">
-                                            <span class="input-group-text fs-xs">%</span>
+                                @foreach($reglas as $i => $regla)
+                                    <div class="row g-2 align-items-center mb-1 regla-row">
+                                        <div class="col-4">
+                                            <input type="number"
+                                                name="reglas[{{ $i }}][min_participantes]"
+                                                value="{{ $regla->getMinParticipantes() }}"
+                                                class="form-control form-control-sm fs-xs"
+                                                placeholder="Mín. participantes"
+                                                required>
+                                        </div>
+                                        <div class="col-4">
+                                            <input type="number"
+                                                name="reglas[{{ $i }}][max_participantes]"
+                                                value="{{ $regla->getMaxParticipantes() }}"
+                                                class="form-control form-control-sm fs-xs"
+                                                placeholder="Máx. participantes"
+                                                required>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="input-group input-group-sm">
+                                                <input type="number"
+                                                    name="reglas[{{ $i }}][descuento]"
+                                                    value="{{ $regla->getDescuento() }}"
+                                                    class="form-control fs-xs"
+                                                    placeholder="%"
+                                                    required step="0.01" min="0" max="100">
+                                                <span class="input-group-text fs-xs">%</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-1 text-end">
+                                            <button type="button" class="btn btn-sm btn-alt-danger" onclick="eliminarFila(this)">
+                                                <i class="fa fa-times fs-xs"></i>
+                                            </button>
                                         </div>
                                     </div>
-                                    <div class="col-1 text-end">
-                                        <button type="button" class="btn btn-sm btn-alt-danger" onclick="eliminarFila(this)">
-                                            <i class="fa fa-times fs-xs"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                @endforeach
                             @endif
+
                         </div>
 
 
@@ -144,8 +161,6 @@
                             <i class="fa fa-plus"></i> Agregar nueva regla
                         </button>
                     </div>
-
-
 
                 <!-- <label class="form-label" for="fec_ini">Fecha inicial</label>
                 <input type="text" 

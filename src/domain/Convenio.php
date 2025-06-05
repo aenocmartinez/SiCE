@@ -265,4 +265,58 @@ class Convenio {
         return count($this->reglasDescuento) > 0;
     }
 
+    /**
+     * Retorna la regla aplicable según la cantidad de participantes.
+     *
+     * @param int $cantidad
+     * @return ConvenioRegla|null
+     */
+    public function getReglaAplicable(int $cantidad): ?ConvenioRegla
+    {
+        foreach ($this->reglasDescuento as $regla) {
+            if ($regla->aplicaPara($cantidad)) {
+                return $regla;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Retorna el porcentaje de descuento aplicable según la cantidad de inscritos.
+     *
+     * @param int $cantidad
+     * @return float
+     */
+    public function getDescuentoAplicable(int $cantidad): float
+    {
+        $regla = $this->getReglaAplicable($cantidad);
+
+        return $regla ? $regla->getDescuento() : 0.0;
+    }
+
+    /**
+     * Calcula el valor final con descuento según la cantidad de participantes.
+     *
+     * @param float $valorBase
+     * @param int $cantidadInscritos
+     * @return float
+     */
+    public function calcularValorConDescuento(float $valorBase, int $cantidadInscritos): float
+    {
+        if (!$this->esCooperativa()) {
+            // Si no es cooperativa, se usa el descuento fijo del convenio
+            return $valorBase - ($valorBase * $this->descuento / 100);
+        }
+
+        $regla = $this->getReglaAplicable($cantidadInscritos);
+
+        if ($regla) {
+            return $valorBase - ($valorBase * $regla->getDescuento() / 100);
+        }
+
+        return $valorBase;
+    }
+
+
 }

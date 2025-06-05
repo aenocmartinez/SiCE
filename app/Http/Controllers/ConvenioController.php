@@ -66,6 +66,7 @@ class ConvenioController extends Controller
         return view('convenios.edit', [
             'convenio'=> $convenio,
             'calendarios' => (new ListarCalendariosUseCase)->ejecutar(),
+            'reglas' => $convenio->getReglasDescuento(),
         ]);     
     }
 
