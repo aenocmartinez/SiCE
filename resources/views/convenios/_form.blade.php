@@ -64,31 +64,87 @@
                         <label class="form-label d-block fs-sm"><strong>Reglas de descuento por número de participantes</strong></label>
 
                         <div id="reglas-container">
-                            <div class="row g-2 align-items-center mb-1 regla-row">
-                                <div class="col-4">
-                                    <input type="number" name="reglas[0][min_participantes]" class="form-control form-control-sm fs-xs" placeholder="Mín. participantes" required>
-                                </div>
-                                <div class="col-4">
-                                    <input type="number" name="reglas[0][max_participantes]" class="form-control form-control-sm fs-xs" placeholder="Máx. participantes" required>
-                                </div>
-                                <div class="col-3">
-                                    <div class="input-group input-group-sm">
-                                        <input type="number" name="reglas[0][descuento]" class="form-control fs-xs" placeholder="%" required step="0.01" min="0" max="100">
-                                        <span class="input-group-text fs-xs">%</span>
+                            @php $reglasOld = old('reglas'); @endphp
+
+                            @if(is_array($reglasOld) && count($reglasOld) > 0)
+                                @foreach($reglasOld as $i => $regla)
+                                    <div class="row g-2 align-items-center mb-1 regla-row">
+                                        <div class="col-4">
+                                            <input type="number"
+                                                name="reglas[{{ $i }}][min_participantes]"
+                                                value="{{ old("reglas.$i.min_participantes") }}"
+                                                class="form-control form-control-sm fs-xs @error("reglas.$i.min_participantes") is-invalid @enderror"
+                                                placeholder="Mín. participantes"
+                                                required>
+                                            @error("reglas.$i.min_participantes")
+                                                <span class="invalid-feedback d-block fs-xs">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+
+                                        <div class="col-4">
+                                            <input type="number"
+                                                name="reglas[{{ $i }}][max_participantes]"
+                                                value="{{ old("reglas.$i.max_participantes") }}"
+                                                class="form-control form-control-sm fs-xs @error("reglas.$i.max_participantes") is-invalid @enderror"
+                                                placeholder="Máx. participantes"
+                                                required>
+                                            @error("reglas.$i.max_participantes")
+                                                <span class="invalid-feedback d-block fs-xs">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+
+                                        <div class="col-3">
+                                            <div class="input-group input-group-sm">
+                                                <input type="number"
+                                                    name="reglas[{{ $i }}][descuento]"
+                                                    value="{{ old("reglas.$i.descuento") }}"
+                                                    class="form-control fs-xs @error("reglas.$i.descuento") is-invalid @enderror"
+                                                    placeholder="%"
+                                                    required step="0.01" min="0" max="100">
+                                                <span class="input-group-text fs-xs">%</span>
+                                            </div>
+                                            @error("reglas.$i.descuento")
+                                                <span class="invalid-feedback d-block fs-xs">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+
+                                        <div class="col-1 text-end">
+                                            <button type="button" class="btn btn-sm btn-alt-danger" onclick="eliminarFila(this)">
+                                                <i class="fa fa-times fs-xs"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                {{-- Solo si no hay datos anteriores, mostrar la fila base --}}
+                                <div class="row g-2 align-items-center mb-1 regla-row">
+                                    <div class="col-4">
+                                        <input type="number" name="reglas[0][min_participantes]" class="form-control form-control-sm fs-xs" placeholder="Mín. participantes" required>
+                                    </div>
+                                    <div class="col-4">
+                                        <input type="number" name="reglas[0][max_participantes]" class="form-control form-control-sm fs-xs" placeholder="Máx. participantes" required>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="input-group input-group-sm">
+                                            <input type="number" name="reglas[0][descuento]" class="form-control fs-xs" placeholder="%" required step="0.01" min="0" max="100">
+                                            <span class="input-group-text fs-xs">%</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-1 text-end">
+                                        <button type="button" class="btn btn-sm btn-alt-danger" onclick="eliminarFila(this)">
+                                            <i class="fa fa-times fs-xs"></i>
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="col-1 text-end">
-                                    <button type="button" class="btn btn-sm btn-alt-danger" onclick="eliminarFila(this)">
-                                        <i class="fa fa-times fs-xs"></i>
-                                    </button>
-                                </div>
-                            </div>
+                            @endif
                         </div>
+
 
                         <button type="button" id="agregar-btn" class="btn btn-sm btn-alt-success fs-xs">
                             <i class="fa fa-plus"></i> Agregar nueva regla
                         </button>
                     </div>
+
 
 
                 <!-- <label class="form-label" for="fec_ini">Fecha inicial</label>
@@ -151,7 +207,7 @@
 <script>One.helpersOnLoad(['js-flatpickr']);</script>
 
 <script>
-    let index = 1;
+    let index = {{ is_array(old('reglas')) ? count(old('reglas')) : 1 }};
 
     function agregarFila() {
         const container = document.getElementById('reglas-container');
@@ -200,10 +256,12 @@
                 wrapper.style.display = 'block';
             } else {
                 wrapper.style.display = 'none';
-                // 🧹 Limpia todas las reglas excepto la inicial
-                container.innerHTML = '';
-                index = 0;
-                agregarFila(); // Deja una fila visible por defecto
+                if (!@json(old('reglas'))) {
+                    // Solo borrar si NO es una recarga con old()
+                    container.innerHTML = '';
+                    index = 0;
+                    agregarFila();
+                }
             }
         }
 
