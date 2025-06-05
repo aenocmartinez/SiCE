@@ -3,26 +3,15 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Validator;
 
 class GuardarConvenio extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         $rules = [
             'nombre' => 'required|max:50',
@@ -43,8 +32,7 @@ class GuardarConvenio extends FormRequest
         return $rules;
     }
 
-
-    public function messages()
+    public function messages(): array
     {
         return [
             'calendario.required' => 'El campo periodo es obligatorio',
@@ -56,20 +44,24 @@ class GuardarConvenio extends FormRequest
         ];
     }
 
-    public function withValidator($validator)
+    public function withValidator($validator): void
     {
         $validator->after(function ($validator) {
             if ($this->has('esCooperativa')) {
-                $reglas = $this->input('reglas', []);
+                // Reindexar para evitar errores por índices faltantes
+                $reglas = array_values($this->input('reglas', []));
 
                 // Validar que max > min para cada regla
                 foreach ($reglas as $i => $regla) {
-                    if (isset($regla['min_participantes'], $regla['max_participantes']) &&
-                        $regla['max_participantes'] <= $regla['min_participantes']) {
+                    if (
+                        isset($regla['min_participantes'], $regla['max_participantes']) &&
+                        $regla['max_participantes'] <= $regla['min_participantes']
+                    ) {
                         $validator->errors()->add("reglas.$i.max_participantes", 'El máximo debe ser mayor al mínimo.');
                     }
                 }
 
+                // Validar que no haya cruces entre reglas
                 for ($i = 0; $i < count($reglas); $i++) {
                     for ($j = $i + 1; $j < count($reglas); $j++) {
                         $a = $reglas[$i];
@@ -80,6 +72,7 @@ class GuardarConvenio extends FormRequest
                         $b_min = $b['min_participantes'];
                         $b_max = $b['max_participantes'];
 
+                        // Cruce de rangos
                         if (!($a_max < $b_min || $b_max < $a_min)) {
                             $validator->errors()->add("reglas.$i.min_participantes", 'Cruce de rangos con otra regla.');
                             $validator->errors()->add("reglas.$j.min_participantes", 'Cruce de rangos con otra regla.');
@@ -89,5 +82,4 @@ class GuardarConvenio extends FormRequest
             }
         });
     }
-
 }

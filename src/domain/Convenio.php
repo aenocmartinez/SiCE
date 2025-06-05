@@ -318,5 +318,11 @@ class Convenio {
         return $valorBase;
     }
 
+    // En la clase Convenio
+    public function limpiarReglasDescuento(): void
+    {
+        $this->reglasDescuento = [];
+    }
+
 
 }

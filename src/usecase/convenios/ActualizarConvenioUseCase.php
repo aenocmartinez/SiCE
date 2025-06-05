@@ -33,6 +33,7 @@ class ActualizarConvenioUseCase {
         $convenio->setComentarios($convenioDto->comentarios);
         $convenio->setCalendario($periodo);
 
+        $convenio->limpiarReglasDescuento(); 
         foreach ($convenioDto->reglasDeDescuento as $reglaDto) {
             $convenio->agregarReglaDescuento(
                 new ConvenioRegla(
