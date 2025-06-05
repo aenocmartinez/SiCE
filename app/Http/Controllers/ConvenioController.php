@@ -41,8 +41,10 @@ class ConvenioController extends Controller
 
     public function create()
     {        
+        $convenio = new Convenio();
         return view('convenios.create', [
-            'convenio' => new Convenio(),
+            'convenio' => $convenio,
+            'reglas' => $convenio->getReglasDescuento(),
         ]);
     }
 
