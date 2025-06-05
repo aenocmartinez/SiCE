@@ -273,24 +273,26 @@
 
         const valorCurso = $('#costo_curso').val() || '{{ $formulario->getGrupoCursoCosto() }}';
         const valores = calcularTotalAPagar(valorCurso, porcentajeDescuento);
+        const valorTotal = valores[0];
+        const valorDescuento = valores[1];
 
-        $('#idDescuentoNuevo').text(formatoMoneda(valores[1]));
-        $('#idCosto').text(formatoMoneda(valores[0]));
-        $('#idValorDescuento').text(formatoMoneda(valores[1]));
-        $('#idValorTotalAPagar').text(formatoMoneda(valores[0]));
+        $('#idDescuentoNuevo').text(formatoMoneda(valorDescuento));
+        $('#idCosto').text(formatoMoneda(valorTotal));
+        $('#idValorDescuento').text(formatoMoneda(valorDescuento));
+        $('#idValorTotalAPagar').text(formatoMoneda(valorTotal));
 
-        $('#valor_descuento').val(valores[1]);
-        $('#total_a_pagar').val(valores[0]);
+        $('#valor_descuento').val(valorDescuento);
+        $('#total_a_pagar').val(valorTotal);
 
         const pagoParcial = parseInt($('#pago_parcial').val() || "0", 10);
-        const pendiente = valores[0] - pagoParcial;
+        const pendiente = valorTotal - pagoParcial;
 
         $('#idPendientePorAPagar').text(`$${formatoMoneda(pendiente)} COP`);
         $('#valor_pendiente_por_pagar').val(pendiente);
 
-        // Asignar valorPago con formato
+        // Asignar valor pendiente al input valorPago con formato
         const inputPago = document.getElementById("valorPago");
-        inputPago.value = valores[0];
+        inputPago.value = pendiente;
         formatCurrency(inputPago);
 
         // Limpiar voucher si no es cooperativa

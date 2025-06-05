@@ -273,7 +273,7 @@
         $("#convenioId").val(convenioId);
 
         const valorCurso = $('#costo_curso').val() || '{{ $formulario->getGrupoCursoCosto() }}';
-        const valores = calcularTotalAPagar(valorCurso, porcentajeDescuento);
+        const valores = calcularTotalAPagar(valorCurso, porcentajeDescuento); // [valorTotal, valorDescuento]
 
         $('#idDescuentoNuevo').text(formatoMoneda(valores[1]));
         $("#valor_descuento").val(valores[1]); 
@@ -281,15 +281,16 @@
         $('#idCosto').text(formatoMoneda(valores[0]));
         $("#total_a_pagar").val(valores[0]); 
 
-        // Asignar valor a pagar formateado
+        // Calcular valor pendiente por pagar
+        const abonos = parseInt($("#pago_parcial").val() || "0", 10);
+        const pendiente = valores[0] - abonos;
+
+        // Mostrar valor pendiente real en el input de valorPago
         const inputPago = document.getElementById("valorPago");
-        inputPago.value = valores[0];
+        inputPago.value = pendiente;
         formatCurrency(inputPago);
 
-        // Calcular valor pendiente por pagar
-        const pagoParcial = parseInt($("#pago_parcial").val() || "0", 10);
-        const pendiente = valores[0] - pagoParcial;
-
+        // Mostrar también en el resumen
         $('#idPendientePorAPagar').text(`$${formatoMoneda(pendiente)} COP`);
         $("#valor_pendiente_por_pagar").val(pendiente);
 
