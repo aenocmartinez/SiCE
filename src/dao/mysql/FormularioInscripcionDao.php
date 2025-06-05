@@ -777,4 +777,101 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                     ->count();
     }
 
+    /**
+     * Retorna un array de objetos FormularioInscripcion en estado Pagado asociados a un convenio.
+     * Solo se llenan los datos propios de la tabla formulario_inscripcion.
+     *
+     * @param int $convenioId
+     * @return FormularioInscripcion[]
+     */
+    public static function listarFormulariosPagadosPorConvenio(int $convenioId): array
+    {
+        $formularios = [];
+
+        try {
+            $resultados = FormularioInscripcionDao::query()
+                ->where('estado', 'Pagado')
+                ->where('convenio_id', $convenioId)
+                ->get([
+                    'id',
+                    'grupo_id',
+                    'participante_id',
+                    'convenio_id',
+                    'numero_formulario',
+                    'estado',
+                    'costo_curso',
+                    'valor_descuento',
+                    'total_a_pagar',
+                    'fecha_max_legalizacion',
+                    'created_at',
+                    'updated_at',
+                    'medio_inscripcion',
+                    'comentarios',
+                    'path_comprobante_pago'
+                ]);
+
+            foreach ($resultados as $resultado) {
+                $formulario = new FormularioInscripcion();
+                $formulario->setId($resultado->id);
+                $formulario->setEstado($resultado->estado);
+                $formulario->setFechaCreacion($resultado->created_at);
+                $formulario->setTotalAPagar($resultado->total_a_pagar);
+                $formulario->setNumero($resultado->numero_formulario);
+                $formulario->setFechaMaxLegalizacion($resultado->fecha_max_legalizacion);
+                $formulario->setCostoCurso($resultado->costo_curso);
+                $formulario->setValorDescuento($resultado->valor_descuento);
+                $formulario->setMedioInscripcion($resultado->medio_inscripcion);
+                $formulario->setComentarios($resultado->comentarios);
+                $formulario->setPathComprobantePago($resultado->path_comprobante_pago);
+                // Si tienes métodos setGrupoId, setParticipanteId, setConvenioId, puedes también:
+                // $formulario->setGrupoId($resultado->grupo_id);
+                // $formulario->setParticipanteId($resultado->participante_id);
+                // $formulario->setConvenioId($resultado->convenio_id);
+
+                $formularios[] = $formulario;
+            }
+        } catch (\Exception $e) {
+            \Sentry\captureException($e);
+        }
+
+        return $formularios;
+    }
+
+    /**
+     * Actualiza los campos valor_descuento y total_a_pagar en los formularios de inscripción dados.
+     * La actualización se realiza de forma individual para cada formulario mediante múltiples consultas SQL.
+     *
+     * @param array $datosFormularios Arreglo asociativo con estructura:
+     *  [
+     *      int $formularioId => ['valor_descuento' => float, 'total_a_pagar' => float],
+     *      ...
+     *  ]
+     *
+     * @return void
+     */
+    public static function actualizarValoresDescuento(array $datos): void
+    {
+        try {
+            foreach ($datos as $valores) {
+                DB::table('formulario_inscripcion')
+                    ->where('id', $valores['id'])
+                    ->update([
+                        'valor_descuento' => $valores['valor_descuento'],
+                        'total_a_pagar'   => $valores['total_a_pagar'],
+                    ]);
+            }
+        } catch (\Throwable $e) {
+
+            dd($e->getMessage());
+            // Registra el error si usas Sentry
+            if (class_exists('\Sentry\captureException')) {
+                \Sentry\captureException($e);
+            }
+
+            // Opcional: relanza la excepción si quieres que se propague
+            throw $e;
+        }
+    }
+
+
 }

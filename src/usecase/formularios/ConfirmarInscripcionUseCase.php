@@ -45,8 +45,9 @@ class ConfirmarInscripcionUseCase {
         $totalAPagar = $confirmarInscripcionDto->totalAPagar;
         $estado = $confirmarInscripcionDto->estado;
         if ($convenio->esCooperativa()) 
-        {            
-            $totalAPagar = $convenio->calcularValorConDescuento($totalAPagar, FormularioInscripcionDao::contarFormulariosPagadosPorConvenio($convenio->getId()));
+        {
+            $cantidadMatriculados = FormularioInscripcionDao::contarFormulariosPagadosPorConvenio($convenio->getId()) + 1;            
+            $totalAPagar = $convenio->calcularValorConDescuento($totalAPagar, $cantidadMatriculados);
             $estado = "Pagado";
         }
 
@@ -83,8 +84,6 @@ class ConfirmarInscripcionUseCase {
             return new Response("409", "El grupo no tiene cupos disponibles");
         }
 
-        // dd($formularioInscripcion);
-
         $exito = false;
         if ($formularioInscripcion->existe()) 
         {   
@@ -120,6 +119,8 @@ class ConfirmarInscripcionUseCase {
         }
 
         (new RedimirAplazamientoUseCase)->ejecutar($ids_de_aplazamientos_para_redimir);
+
+        (new RecalcularValorAPagarConveniosCooperativaUseCase)->ejecutar($convenio);
 
         // EmailService::SendEmail("Confirmación de inscripción cursos de extensión - UCMC", Mensajes::CuerpoCorreoConfirmacionInscripcion($formularioInscripcion->getNumero()), env('EMAIL_DESTINATARIOS'));
 
