@@ -353,10 +353,11 @@ $(document).ready(function() {
         $('#idValorTotalAPagar').text(formatoMoneda(valorTotalAPagar));
 
         $('#valorPago').val(formatoMoneda(valorTotalAPagar));
-        
+
         if (esCooperativa) {
-            // Autocompletar voucher y valor a pagar
             $('#voucher').val(nombreDescuento);
+        } else {
+            $('#voucher').val('');
         }
     }
 
@@ -378,7 +379,9 @@ $(document).ready(function() {
     
     function formatoMoneda(numero) {
         return '$' + numero.toLocaleString('es-CO', {minimumFractionDigits: 0}) + ' COP';
-    }    
+    } 
+    
+    checkearConvenio();
 });
 
 
