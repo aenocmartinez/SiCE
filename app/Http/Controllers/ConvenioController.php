@@ -159,17 +159,20 @@ class ConvenioController extends Controller
 
         $convenioDto->calendarioId = $req['calendario'];
         $convenioDto->nombre = $req['nombre'];
-        $convenioDto->descuento = $req['descuento'];  
+        $convenioDto->descuento = $req['descuento'];
         $convenioDto->comentarios = $req['comentarios'];
 
-        $convenioDto->esCooperativa = true;
-        if (is_null(request()->esCooperativa)) {
-            $convenioDto->esCooperativa = false;
-        }
+        $convenioDto->esCooperativa = filled(request()->esCooperativa);
 
         if (isset(request()->id)) {
             $convenioDto->id = request()->id;
-        }             
+        }
+
+        if ($convenioDto->esCooperativa && request()->filled('reglas')) {
+            $convenioDto->reglasDeDescuento = array_values(request()->input('reglas'));
+        }
+
         return $convenioDto;
     }
+
 }

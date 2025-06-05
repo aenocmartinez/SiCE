@@ -4,12 +4,14 @@ namespace Src\usecase\convenios;
 
 use Src\dao\mysql\ConvenioDao;
 use Src\domain\Calendario;
+use Src\domain\ConvenioRegla;
 use Src\view\dto\ConvenioDto;
 use Src\view\dto\Response;
 
 class ActualizarConvenioUseCase {
 
     public function ejecutar(ConvenioDto $convenioDto): Response {
+
         $convenioRepository = new ConvenioDao();
 
         $convenio = $convenioRepository->buscarConvenioPorId($convenioDto->id);
@@ -30,6 +32,17 @@ class ActualizarConvenioUseCase {
         $convenio->setEsCooperativa($convenioDto->esCooperativa);
         $convenio->setComentarios($convenioDto->comentarios);
         $convenio->setCalendario($periodo);
+
+        foreach ($convenioDto->reglasDeDescuento as $reglaDto) {
+            $convenio->agregarReglaDescuento(
+                new ConvenioRegla(
+                    $reglaDto['min_participantes'],
+                    $reglaDto['max_participantes'],
+                    $reglaDto['descuento']
+                )
+            );
+        }
+
         
         $exito = $convenio->actualizar();
         if (!$exito) {

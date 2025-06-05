@@ -12,4 +12,5 @@ class ConvenioDto {
     public $descuento;
     public $esCooperativa;
     public $comentarios;
+    public array $reglasDeDescuento = [];
 }

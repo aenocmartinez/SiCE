@@ -18,4 +18,5 @@ interface ConvenioRepository  {
     public static function cerrarElUltimoConveniosUCMC(): bool;
     public static function obtenerConvenioUCMCActual(): Convenio;
     public static function buscarConveniosPorPeriodo(Calendario $periodo): array;
+    public static function obtenerReglasPorConvenio(int $convenioId): array;
 }

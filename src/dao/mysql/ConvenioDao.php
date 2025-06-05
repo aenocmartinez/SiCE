@@ -121,6 +121,9 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $calendarioDao = new CalendarioDao();
                 $calendario = $calendarioDao->buscarCalendarioPorId($c->calendario_id);
                 $convenio->setCalendario($calendario);
+
+                $convenio->setReglasDescuento(ConvenioDao::obtenerReglasPorConvenio($id));
+
             }
 
             
@@ -149,6 +152,8 @@ class ConvenioDao extends Model implements ConvenioRepository {
     
                 $calendario = $calendarioDao->buscarCalendarioPorId($c->calendario_id);
                 $convenio->setCalendario($calendario);
+
+                $convenio->setReglasDescuento(ConvenioDao::obtenerReglasPorConvenio($c->id));
             }
 
             
@@ -159,27 +164,49 @@ class ConvenioDao extends Model implements ConvenioRepository {
         return $convenio;
     }
 
-    public function crearConvenio(Convenio $convenio): bool {
+    public function crearConvenio(Convenio $convenio): bool 
+    {
         $exito = false;
-        try {       
 
+        try {
             $idUsuarioSesion = Auth::id();
             DB::statement("SET @usuario_sesion = $idUsuarioSesion");
-            
-            ConvenioDao::create([
+
+            DB::beginTransaction();
+
+            // Crear convenio y obtener ID
+            $nuevo = ConvenioDao::create([
                 'nombre' => $convenio->getNombre(),
-                'calendario_id' => $convenio->getCalendarioId(), 
-                'fec_ini' => $convenio->getFecInicio(), 
-                'fec_fin' => $convenio->getFecFin(), 
+                'calendario_id' => $convenio->getCalendarioId(),
+                'fec_ini' => $convenio->getFecInicio(),
+                'fec_fin' => $convenio->getFecFin(),
                 'descuento' => $convenio->getDescuento(),
                 'es_cooperativa' => $convenio->esCooperativa(),
                 'es_ucmc_actual' => $convenio->esUCMC(),
                 'comentarios' => $convenio->getComentarios(),
             ]);
-            
+
+            $convenioId = $nuevo->id;
+
+            // Insertar reglas si aplica
+            if ($convenio->esCooperativa() && $convenio->tieneReglasDeDescuento()) {
+                foreach ($convenio->getReglasDescuento() as $regla) {
+                    DB::table('reglas_descuento')->insert([
+                        'convenio_id' => $convenioId,
+                        'min_participantes' => $regla->getMinParticipantes(),
+                        'max_participantes' => $regla->getMaxParticipantes(),
+                        'descuento' => $regla->getDescuento(),
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+            }
+
+            DB::commit();
             $exito = true;
 
-        } catch(Exception $e) {          
+        } catch(Exception $e) {
+            DB::rollBack();
             Sentry::captureException($e);
         }
 
@@ -187,15 +214,16 @@ class ConvenioDao extends Model implements ConvenioRepository {
     }
 
     public function actualizarConvenio(Convenio $convenio): bool {
-        
         $exito = false;
+
         try {
+            DB::beginTransaction();
+
+            $idUsuarioSesion = Auth::id();
+            DB::statement("SET @usuario_sesion = $idUsuarioSesion");
+
             $convenioEncontrado = ConvenioDao::find($convenio->getId());
             if ($convenioEncontrado) {
-
-                $idUsuarioSesion = Auth::id();
-                DB::statement("SET @usuario_sesion = $idUsuarioSesion");
-
                 $convenioEncontrado->nombre = $convenio->getNombre();
                 $convenioEncontrado->calendario_id = $convenio->getCalendarioId();
                 $convenioEncontrado->fec_ini = $convenio->getFecInicio();
@@ -204,11 +232,29 @@ class ConvenioDao extends Model implements ConvenioRepository {
                 $convenioEncontrado->es_cooperativa = $convenio->esCooperativa();
                 $convenioEncontrado->comentarios = $convenio->getComentarios();
                 $convenioEncontrado->save();
+
+                // Si es cooperativa, sincronizar reglas
+                if ($convenio->esCooperativa()) {
+                    DB::table('reglas_descuento')->where('convenio_id', $convenio->getId())->delete();
+
+                    foreach ($convenio->getReglasDescuento() as $regla) {
+                        DB::table('reglas_descuento')->insert([
+                            'convenio_id' => $convenio->getId(),
+                            'min_participantes' => $regla->getMinParticipantes(),
+                            'max_participantes' => $regla->getMaxParticipantes(),
+                            'descuento' => $regla->getDescuento(),
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
+                }
             }
 
+            DB::commit();
             $exito = true;
 
-        } catch(Exception $e) {            
+        } catch(Exception $e) {
+            DB::rollBack();
             Sentry::captureException($e);
         }
 
@@ -413,4 +459,30 @@ class ConvenioDao extends Model implements ConvenioRepository {
 
         return $convenios;
     }
+
+    public static function obtenerReglasPorConvenio(int $convenioId): array
+    {
+        $reglas = [];
+
+        try {
+            $resultados = DB::table('reglas_descuento')
+                ->where('convenio_id', $convenioId)
+                ->orderBy('min_participantes')
+                ->get();
+
+            foreach ($resultados as $r) {
+                $reglas[] = new \Src\domain\ConvenioRegla(
+                    $r->min_participantes,
+                    $r->max_participantes,
+                    $r->descuento
+                );
+            }
+
+        } catch (\Exception $e) {
+            Sentry::captureException($e);
+        }
+
+        return $reglas;
+    }
+
 }

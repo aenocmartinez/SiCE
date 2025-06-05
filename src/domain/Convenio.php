@@ -23,6 +23,9 @@ class Convenio {
     private $comentarios;
     private $haSidoFacturado;
 
+    /** @var ConvenioRegla[] */
+    private array $reglasDescuento = [];
+
     public function __construct(string $nombre="")
     {
         $this->nombre = $nombre;
@@ -238,4 +241,28 @@ class Convenio {
 
         return ConvenioDao::buscarConveniosPorPeriodo($periodo);
     }
+
+    public function setReglasDescuento(array $reglas): void
+    {
+        $this->reglasDescuento = $reglas;
+    }
+
+    public function agregarReglaDescuento(ConvenioRegla $regla): void
+    {
+        $this->reglasDescuento[] = $regla;
+    }
+
+    /**
+     * @return ConvenioRegla[]
+     */
+    public function getReglasDescuento(): array
+    {
+        return $this->reglasDescuento;
+    }
+
+    public function tieneReglasDeDescuento(): bool
+    {
+        return count($this->reglasDescuento) > 0;
+    }
+
 }
