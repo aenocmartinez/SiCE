@@ -58,8 +58,38 @@
                         <input class="form-check-input" type="checkbox" id="esCooperativa" name="esCooperativa" {{ $checked }}>
                         <label class="form-check-label" for="disponible">Es una cooperativa</label>
                     </div> 
-                    
-                    <br>
+
+                    <!-- Reglas de descuento para cooperativas -->
+                    <div id="reglas-descuento-wrapper" class="mt-3" style="display: none;">
+                        <label class="form-label d-block fs-sm"><strong>Reglas de descuento por número de participantes</strong></label>
+
+                        <div id="reglas-container">
+                            <div class="row g-2 align-items-center mb-1 regla-row">
+                                <div class="col-4">
+                                    <input type="number" name="reglas[0][min_participantes]" class="form-control form-control-sm fs-xs" placeholder="Mín. participantes" required>
+                                </div>
+                                <div class="col-4">
+                                    <input type="number" name="reglas[0][max_participantes]" class="form-control form-control-sm fs-xs" placeholder="Máx. participantes" required>
+                                </div>
+                                <div class="col-3">
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" name="reglas[0][descuento]" class="form-control fs-xs" placeholder="%" required step="0.01" min="0" max="100">
+                                        <span class="input-group-text fs-xs">%</span>
+                                    </div>
+                                </div>
+                                <div class="col-1 text-end">
+                                    <button type="button" class="btn btn-sm btn-alt-danger" onclick="eliminarFila(this)">
+                                        <i class="fa fa-times fs-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" id="agregar-btn" class="btn btn-sm btn-alt-success fs-xs">
+                            <i class="fa fa-plus"></i> Agregar nueva regla
+                        </button>
+                    </div>
+
 
                 <!-- <label class="form-label" for="fec_ini">Fecha inicial</label>
                 <input type="text" 
@@ -119,3 +149,67 @@
 
 
 <script>One.helpersOnLoad(['js-flatpickr']);</script>
+
+<script>
+    let index = 1;
+
+    function agregarFila() {
+        const container = document.getElementById('reglas-container');
+        const div = document.createElement('div');
+        div.className = 'row g-2 align-items-center mb-1 regla-row';
+
+        div.innerHTML = `
+            <div class="col-4">
+                <input type="number" name="reglas[${index}][min_participantes]" class="form-control form-control-sm fs-xs" placeholder="Mín. participantes" required>
+            </div>
+            <div class="col-4">
+                <input type="number" name="reglas[${index}][max_participantes]" class="form-control form-control-sm fs-xs" placeholder="Máx. participantes" required>
+            </div>
+            <div class="col-3">
+                <div class="input-group input-group-sm">
+                    <input type="number" name="reglas[${index}][descuento]" class="form-control fs-xs" placeholder="%" required step="0.01" min="0" max="100">
+                    <span class="input-group-text fs-xs">%</span>
+                </div>
+            </div>
+            <div class="col-1 text-end">
+                <button type="button" class="btn btn-sm btn-alt-danger" onclick="eliminarFila(this)">
+                    <i class="fa fa-times fs-xs"></i>
+                </button>
+            </div>
+        `;
+
+        container.appendChild(div);
+        index++;
+    }
+
+    function eliminarFila(btn) {
+        const row = btn.closest('.regla-row');
+        if (row) {
+            row.remove();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkbox = document.getElementById('esCooperativa');
+        const wrapper = document.getElementById('reglas-descuento-wrapper');
+        const agregarBtn = document.getElementById('agregar-btn');
+        const container = document.getElementById('reglas-container');
+
+        function toggleReglas() {
+            if (checkbox.checked) {
+                wrapper.style.display = 'block';
+            } else {
+                wrapper.style.display = 'none';
+                // 🧹 Limpia todas las reglas excepto la inicial
+                container.innerHTML = '';
+                index = 0;
+                agregarFila(); // Deja una fila visible por defecto
+            }
+        }
+
+        checkbox.addEventListener('change', toggleReglas);
+        agregarBtn.addEventListener('click', agregarFila);
+
+        toggleReglas(); // Ejecutar al cargar la página
+    });
+</script>
