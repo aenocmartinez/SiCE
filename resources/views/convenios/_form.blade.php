@@ -1,8 +1,5 @@
 @php
-    $checked = '';
-    if ($convenio->existe()) {
-        $checked = $convenio->esCooperativa() ? 'checked' : '';
-    }
+    $checked = old('esCooperativa') === 'on' || ($convenio->existe() && $convenio->esCooperativa()) ? 'checked' : '';
 @endphp
 
 <div class="block block-rounded">
@@ -75,7 +72,7 @@
                                                 value="{{ old("reglas.$i.min_participantes") }}"
                                                 class="form-control form-control-sm fs-xs @error("reglas.$i.min_participantes") is-invalid @enderror"
                                                 placeholder="Mín. participantes"
-                                                required>
+                                                >
                                             @error("reglas.$i.min_participantes")
                                                 <span class="invalid-feedback d-block fs-xs">{{ $message }}</span>
                                             @enderror
@@ -87,7 +84,7 @@
                                                 value="{{ old("reglas.$i.max_participantes") }}"
                                                 class="form-control form-control-sm fs-xs @error("reglas.$i.max_participantes") is-invalid @enderror"
                                                 placeholder="Máx. participantes"
-                                                required>
+                                                >
                                             @error("reglas.$i.max_participantes")
                                                 <span class="invalid-feedback d-block fs-xs">{{ $message }}</span>
                                             @enderror
@@ -100,7 +97,7 @@
                                                     value="{{ old("reglas.$i.descuento") }}"
                                                     class="form-control fs-xs @error("reglas.$i.descuento") is-invalid @enderror"
                                                     placeholder="%"
-                                                    required step="0.01" min="0" max="100">
+                                                    step="0.01" min="0" max="100">
                                                 <span class="input-group-text fs-xs">%</span>
                                             </div>
                                             @error("reglas.$i.descuento")
@@ -162,34 +159,6 @@
                         </button>
                     </div>
 
-                <!-- <label class="form-label" for="fec_ini">Fecha inicial</label>
-                <input type="text" 
-                       class="js-flatpickr form-control @error('fec_ini') is-invalid @enderror" 
-                       id="fec_ini" 
-                       name="fec_ini" 
-                       placeholder="Y-m-d"
-                       value="{{ old('fec_ini', $convenio->getFecInicio()) }}"
-                       >
-                    @error('fec_ini')
-                        <span class="invalid-feedback" role="alert">
-                            {{ $message }}
-                        </span>
-                    @enderror            
-
-                    <br>
-                <label class="form-label" for="fec_fin">Fecha final</label>
-                <input type="text" 
-                       class="js-flatpickr form-control @error('fec_fin') is-invalid @enderror" 
-                       id="fec_fin" 
-                       name="fec_fin" 
-                       placeholder="Y-m-d"
-                       value="{{ old('fec_fin', $convenio->getFecFin()) }}"
-                       >
-                    @error('fec_fin')
-                        <span class="invalid-feedback" role="alert">
-                            {{ $message }}
-                        </span>
-                    @enderror -->
             </div>
 
             <!-- Columna 2 -->
@@ -231,14 +200,14 @@
 
         div.innerHTML = `
             <div class="col-4">
-                <input type="number" name="reglas[${index}][min_participantes]" class="form-control form-control-sm fs-xs" placeholder="Mín. participantes" required>
+                <input type="number" name="reglas[${index}][min_participantes]" class="form-control form-control-sm fs-xs" placeholder="Mín. participantes">
             </div>
             <div class="col-4">
-                <input type="number" name="reglas[${index}][max_participantes]" class="form-control form-control-sm fs-xs" placeholder="Máx. participantes" required>
+                <input type="number" name="reglas[${index}][max_participantes]" class="form-control form-control-sm fs-xs" placeholder="Máx. participantes">
             </div>
             <div class="col-3">
                 <div class="input-group input-group-sm">
-                    <input type="number" name="reglas[${index}][descuento]" class="form-control fs-xs" placeholder="%" required step="0.01" min="0" max="100">
+                    <input type="number" name="reglas[${index}][descuento]" class="form-control fs-xs" placeholder="%" step="0.01" min="0" max="100">
                     <span class="input-group-text fs-xs">%</span>
                 </div>
             </div>
@@ -267,12 +236,21 @@
         const container = document.getElementById('reglas-container');
 
         function toggleReglas() {
+            const inputs = wrapper.querySelectorAll('input');
+
             if (checkbox.checked) {
                 wrapper.style.display = 'block';
+
+                // Activar validaciones solo si es cooperativa
+                inputs.forEach(input => input.setAttribute('required', 'required'));
             } else {
                 wrapper.style.display = 'none';
+
+                // Quitar validaciones si no es cooperativa
+                inputs.forEach(input => input.removeAttribute('required'));
+
+                // Solo limpiar si no es una recarga con old()
                 if (!@json(old('reglas'))) {
-                    // Solo borrar si NO es una recarga con old()
                     container.innerHTML = '';
                     index = 0;
                     agregarFila();
@@ -286,3 +264,4 @@
         toggleReglas(); // Ejecutar al cargar la página
     });
 </script>
+
