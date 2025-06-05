@@ -50,6 +50,8 @@ class LegalizarInscripcionUseCase {
         
 
         $formulario->RedimirBeneficioConvenio();
+
+        (new RecalcularValorAPagarConveniosCooperativaUseCase)->ejecutar($convenio);
         
         $response->code = "200";
         $response->message = "El formulario se ha legalizado con éxito.";
