@@ -131,13 +131,9 @@
                     <!-- Comprobante de Pago -->
                     @if ($formulario->tieneComprobanteDePago())
                         <div class="text-center mt-4">
-                            @php
-                                $archivoPath = $formulario->getPathComprobantePago();
-                                $archivoPathInterno = str_replace('/storage/', 'public/', $archivoPath);
-                            @endphp
 
-                            @if (Storage::exists($archivoPathInterno))
-                                <a href="{{ Storage::url($archivoPathInterno) }}" class="btn btn-lg rounded-pill btn-alt-info px-4" target="_blank">
+                            @if ($formulario->tieneComprobanteDePago())
+                                <a href="{{ url($formulario->getPathComprobantePago()) }}" class="btn btn-lg rounded-pill btn-alt-info px-4" target="_blank">
                                     <i class="fa fa-download me-1"></i> Ver comprobante de pago
                                 </a>
                             @else
