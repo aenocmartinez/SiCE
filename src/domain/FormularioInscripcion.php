@@ -625,10 +625,13 @@ class FormularioInscripcion {
             ->first();
 
         // Total general
+        // $recaudoTotal = 
+        //     ($sumaPagados->RECAUDO_POR_CONVENIO ?? 0) +
+        //     ($sumaPagados->RECAUDO_SIN_CONVENIO ?? 0) +
+        //     ($sumaAplazados->RECAUDO_APLAZADO ?? 0);
         $recaudoTotal = 
             ($sumaPagados->RECAUDO_POR_CONVENIO ?? 0) +
-            ($sumaPagados->RECAUDO_SIN_CONVENIO ?? 0) +
-            ($sumaAplazados->RECAUDO_APLAZADO ?? 0);
+            ($sumaPagados->RECAUDO_SIN_CONVENIO ?? 0);        
 
         return [
             "RECAUDO_TOTAL"         => (float) $recaudoTotal,
@@ -660,7 +663,7 @@ class FormularioInscripcion {
             })
             ->join('cursos as c', 'c.id', '=', 'cc.curso_id')
             ->join('areas as a', 'a.id', '=', 'c.area_id')
-            ->whereIn('formulario_inscripcion.estado', ['Pagado', 'Aplazado'])
+            ->where('formulario_inscripcion.estado', 'Pagado')
             ->groupBy('a.nombre')
             ->select('a.nombre', 
                 DB::raw("REPLACE(FORMAT(SUM(formulario_inscripcion.total_a_pagar), 0), ',', '.') as TOTAL_RECAUDO"))

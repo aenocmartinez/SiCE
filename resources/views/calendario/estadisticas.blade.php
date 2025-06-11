@@ -54,22 +54,27 @@
 
             <div class="block-content bg-body-light text-center">
               <div class="row items-push text-uppercase">         
-                <div class="col-6 col-md-3">
-                  <div class="fw-semibold text-dark mb-1">Total recaudo</div>
-                  <a class="link-fx fs-6 text-primary" href="javascript:void(0)">{{ $data["total_recaudo"] }}</a>
+                <div class="col-6 col-md-4">
+                  <div class="fw-semibold text-dark mb-1"
+                      data-bs-toggle="tooltip" 
+                    title="Suma de recaudo por convenio + recuado sin descuento"
+                    >Total recaudo                   
+                  </div>
+                  <a class="link-fx fs-6 text-primary"
+                   href="javascript:void(0)">{{ $data["total_recaudo"] }}</a>
                 </div>
-                <div class="col-6 col-md-3">
+                <div class="col-6 col-md-4">
                   <div class="fw-semibold text-dark mb-1">Recaudo convenios</div>
                   <a class="link-fx fs-6 text-primary" href="javascript:void(0)">{{ $data['total_por_convenio'] }}</a>
                 </div>
-                <div class="col-6 col-md-3">
+                <div class="col-6 col-md-4">
                   <div class="fw-semibold text-dark mb-1">Recaudo sin dcto</div>
                   <a class="link-fx fs-6 text-primary" href="javascript:void(0)">{{ $data['total_sin_convenio'] }}</a>
                 </div>
-                <div class="col-6 col-md-3">
+                <!-- <div class="col-6 col-md-3">
                   <div class="fw-semibold text-dark mb-1">Aplazados</div>
                   <a class="link-fx fs-6 text-primary" href="javascript:void(0)">{{ $data['total_aplazados'] }}</a>
-                </div>                                
+                </div>                                 -->
               </div>
             </div>
 
