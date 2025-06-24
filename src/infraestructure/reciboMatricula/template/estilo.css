@@ -1,25 +1,23 @@
+
 body {
     font-family: Arial, sans-serif;
     background-color: #fff;
     margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    height: 100vh;
-    padding: 0.5in; /* Ajustar margen para impresión */
+    padding: 5mm;
 }
 .container {
     width: 100%;
     max-width: 800px;
     padding: 0;
     box-sizing: border-box;
-    height: 5.5in; /* Altura de media página carta */
+    margin: 0 auto;
+}
+.bloque-recibo {
     overflow: hidden;
-    margin: 0; /* Reducir espacio alrededor del contenedor */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #000;
+    page-break-inside: avoid;
 }
 .header {
     text-align: center;
@@ -59,7 +57,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     font-size: 9px;
-    margin-bottom: 5px; /* Reducir margen inferior de la tabla */
+    margin-bottom: 5px;
 }
 table, th, td {
     border: 1px solid #ddd;

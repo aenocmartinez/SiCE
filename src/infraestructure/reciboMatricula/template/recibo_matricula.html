@@ -2,51 +2,12 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>Recibo de Matrícula</title>
+    <link rel="stylesheet" href="{{CSS_PATH}}">
 </head>
 <body>
     <div class="container">
-        <div>
-            <div class="header">
-                <h1>Comprobante de Matrícula</h1>
-                <p>Universidad Colegio Mayor de Cundinamarca</p>
-                <p>NIT. 800.144.829-9</p>
-                <p>Teléfono: +57 3164718555</p>
-                <div class="period">Periodo: {{PERIODO}}</div>
-            </div>
-            <div class="personal-info">
-                <p><strong>Nombre:</strong> {{PARTICIPANTE_NOMBRE}}</p>
-                <p><strong>Cédula:</strong> {{PARTICIPANTE_CEDULA}}</p>
-                <p><strong>Teléfono:</strong> {{PARTICIPANTE_TELEFONO}}</p>
-                <p><strong>Email:</strong> {{PARTICIPANTE_EMAIL}}</p>
-                <p><strong>Dirección:</strong> {{PARTICIPANTE_DIRECCION}}</p>
-            </div>
-            <p class="date">Fecha de generación: {{FECHA_RECIBO}}</p>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Curso, Día, Jornada y Convenio</th>
-                    <th>Costo</th>
-                    <th>Valor Descuento</th>
-                    <th>Total</th>
-                    <th>Número de Formulario</th>
-                    <th>Estado</th>
-                    <th>Fecha Máxima de Legalización</th>
-                </tr>
-            </thead>
-            <tbody id="cursos">
-                {{CURSOS_MATRICULADOS}}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="4">Total</td>
-                    <td colspan="3">{{TOTAL_PAGO_MATRICULA}}</td>
-                </tr>
-            </tfoot>
-        </table>
-        <p class="class-start">Inicio de clase a partir del {{FECHA_INICIO_CLASE}} en el día y jornada de su curso matriculado</p>
+        {{BLOQUES_RECIBO_REPETIDOS}}
     </div>
 </body>
 </html>
