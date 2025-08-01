@@ -83,3 +83,7 @@ tfoot td {
     color: #333;
     text-align: center;
 }
+.header img {
+    max-width: 100%;
+    height: auto;
+}

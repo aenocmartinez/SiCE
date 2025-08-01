@@ -121,7 +121,7 @@
                                     @endif
                                 </div>
                                 <div class="d-flex">
-                                    @if (!$f->Anulado() && !$f->Aplazado())
+                                    @if (!$f->Anulado())
                                         <a href="{{ route('formulario-inscripcion.descargar-recibo-matricula', [$f->getParticipanteId(), $periodo]) }}" 
                                            class="btn btn-sm btn-outline-info rounded-pill shadow-sm me-1"
                                            data-bs-toggle="tooltip" 

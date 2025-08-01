@@ -659,6 +659,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 'formulario_inscripcion.valor_descuento',
                 'formulario_inscripcion.total_a_pagar',
                 'formulario_inscripcion.fecha_max_legalizacion',
+                'formulario_inscripcion.comentarios',
                 'grupos.jornada',
                 'grupos.dia',
                 'convenios.nombre as CONVENIO_NOMBRE' 
@@ -674,7 +675,8 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             ->join('participantes', 'participantes.id', '=', 'formulario_inscripcion.participante_id')
             ->leftJoin('convenios', 'convenios.id', '=', 'formulario_inscripcion.convenio_id') 
             ->where('formulario_inscripcion.estado', '<>', 'Anulado')
-            ->where('formulario_inscripcion.estado', '<>', 'Aplazado')
+            // ->where('formulario_inscripcion.estado', '<>', 'Aplazado')
+            // ->where('formulario_inscripcion.estado', '<>', 'Devuelto')
             ->get();
             
             foreach($items as $item) {                    
@@ -696,12 +698,12 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                     $item->dia,
                     $item->CONVENIO_NOMBRE,
                     FormatoFecha::fechaFormateadaA5DeAgostoDe2024($calendario->getFechaInicioClase()),
+                    $item->comentarios,
                 ];
             }
             
-        } catch (Exception $e) {
-            dd($e->getMessage());
-            // Sentry::captureException($e);
+        } catch (Exception $e) {            
+            Sentry::captureException($e);
         }
 
         return $datosReciboMatricula;
