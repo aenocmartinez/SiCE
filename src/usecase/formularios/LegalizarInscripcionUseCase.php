@@ -2,9 +2,10 @@
 
 namespace Src\usecase\formularios;
 
-use Carbon\Carbon;
-use Src\dao\mysql\ConvenioDao;
+
 use Src\dao\mysql\FormularioInscripcionDao;
+use Src\dao\mysql\ResumenParticipantesNuevosAntiguosDao;
+use Src\domain\Calendario;
 use Src\domain\Convenio;
 use Src\infraestructure\medioPago\PagoFactory;
 use Src\view\dto\Response;
@@ -52,6 +53,9 @@ class LegalizarInscripcionUseCase {
         $formulario->RedimirBeneficioConvenio();
 
         (new RecalcularValorAPagarConveniosCooperativaUseCase)->ejecutar($convenio);
+
+        $calendario = Calendario::Vigente();
+        (new ActualizarResumenParticipantesNuevosYAntiguosUseCase(new ResumenParticipantesNuevosAntiguosDao()))->ejecutar($calendario->getId());
         
         $response->code = "200";
         $response->message = "El formulario se ha legalizado con éxito.";

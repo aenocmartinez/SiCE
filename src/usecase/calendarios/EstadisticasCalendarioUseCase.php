@@ -6,6 +6,7 @@ use Src\dao\mysql\CalendarioDao;
 use Src\dao\mysql\CursoDao;
 use Src\dao\mysql\FormularioInscripcionDao;
 use Src\dao\mysql\ParticipanteDao;
+use Src\dao\mysql\ResumenParticipantesNuevosAntiguosDao;
 use Src\domain\Calendario;
 use Src\domain\FormularioInscripcion;
 use Src\domain\Grupo;
@@ -72,6 +73,8 @@ class EstadisticasCalendarioUseCase {
         $data['totalDevolucion'] = FormularioInscripcion::totalPorEstadoYCalendario('Devuelto', $calendario->getId());
         $data['totalCancelados'] = Grupo::totalGruposCancelados($calendario->getId());  
         $data['totalCursosSinCupos'] = Grupo::totalSinCupoDisponible($calendario->getId());
+
+        $data['resumenParticipantes'] = (new ResumenParticipantesNuevosAntiguosDao())->buscarResumenParticipantesPorCalendario($calendario->getId());
 
         return $data;
     }

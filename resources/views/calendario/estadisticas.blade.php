@@ -285,9 +285,37 @@
               
             </div>             
              <!-- Fin tarjeta de cerrados -->              
-          
+
+            <!-- Participantes nuevos -->
+            <div class="col-sm-6 col-xxl-4">
+              <div class="block block-rounded d-flex flex-column h-100 mb-0">
+                <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
+                  <dl class="mb-0">
+                    <dt class="fs-3 fw-bold">{{ $data['resumenParticipantes']->getTotalNuevos() }}</dt>
+                    <dd class="fs-sm fw-medium text-muted mb-0">Participantes nuevos</dd>
+                  </dl>
+                  <div class="item item-rounded-lg bg-body-light">
+                    <i class="fas fa-user-plus fs-3 text-success"></i>
+                  </div>
+                </div>
               </div>
             </div>
+
+            <!-- Participantes antiguos -->
+            <div class="col-sm-6 col-xxl-4">
+              <div class="block block-rounded d-flex flex-column h-100 mb-0">
+                <div class="block-content block-content-full flex-grow-1 d-flex justify-content-between align-items-center">
+                  <dl class="mb-0">
+                    <dt class="fs-3 fw-bold">{{ $data['resumenParticipantes']->getTotalAntiguos() }}</dt>
+                    <dd class="fs-sm fw-medium text-muted mb-0">Participantes antiguos</dd>
+                  </dl>
+                  <div class="item item-rounded-lg bg-body-light">
+                    <i class="fas fa-user-clock fs-3 text-info"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+
         </div>  
         
         <div class="col-xl-12">

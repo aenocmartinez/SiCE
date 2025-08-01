@@ -5,6 +5,7 @@ namespace Src\usecase\formularios;
 use Carbon\Carbon;
 use Src\dao\mysql\DiaFestivoDao;
 use Src\dao\mysql\FormularioInscripcionDao;
+use Src\dao\mysql\ResumenParticipantesNuevosAntiguosDao;
 use Src\infraestructure\diasFestivos\Calendario;
 use Src\domain\FormularioInscripcion;
 use Src\domain\Grupo;
@@ -15,6 +16,7 @@ use Src\infraestructure\util\UUID;
 use Src\usecase\convenios\BuscarConvenioPorIdUseCase;
 use Src\view\dto\ConfirmarInscripcionDto;
 use Src\view\dto\Response;
+use Src\domain\Calendario as CalendarioDomain;
 
 class ConfirmarInscripcionUseCase {
         
@@ -121,6 +123,9 @@ class ConfirmarInscripcionUseCase {
         (new RedimirAplazamientoUseCase)->ejecutar($ids_de_aplazamientos_para_redimir);
 
         (new RecalcularValorAPagarConveniosCooperativaUseCase)->ejecutar($convenio);
+
+        $calendario = CalendarioDomain::Vigente();
+        (new ActualizarResumenParticipantesNuevosYAntiguosUseCase(new ResumenParticipantesNuevosAntiguosDao()))->ejecutar($calendario->getId());        
 
         // EmailService::SendEmail("Confirmación de inscripción cursos de extensión - UCMC", Mensajes::CuerpoCorreoConfirmacionInscripcion($formularioInscripcion->getNumero()), env('EMAIL_DESTINATARIOS'));
 
