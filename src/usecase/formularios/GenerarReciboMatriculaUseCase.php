@@ -20,6 +20,7 @@ class GenerarReciboMatriculaUseCase
     const JORNADA = 13;
     const CONVENIO = 15;
     const COMENTARIO = 17;
+    const SALON = 18;
 
     public function ejecutar($formularioId = 0, $calendarioId): array
     {
@@ -40,6 +41,7 @@ class GenerarReciboMatriculaUseCase
         $participante_email = $datos_recibo_pago[0][6];
         $participante_direccion = $datos_recibo_pago[0][7];
         $fecha_inicio_clase = $datos_recibo_pago[0][16];
+        
 
         $path_template = __DIR__ . "/../../../src/infraestructure/reciboMatricula/template/recibo_matricula.html";
         $path_css1 = __DIR__ . "/../../../src/infraestructure/reciboMatricula/template/estilo.css";
@@ -68,8 +70,8 @@ class GenerarReciboMatriculaUseCase
 
             $cursos_matriculados .= "<tr>
                 <td>
-                    <span class=\"course-name\">{$item[self::CURSO_NOMBRE]}</span><br>
-                    <span class=\"course-details\">{$item[self::DIA]}/{$item[self::JORNADA]}$info_convenio</span>
+                    <span class=\"course-name\">{$item[self::CURSO_NOMBRE]}</span><br>                    
+                    <span class=\"course-details\">{$item[self::DIA]}/{$item[self::JORNADA]}<br>Salón: {$item[self::SALON]}$info_convenio</span>
                 </td>
                 <td>" . $formatter->formatCurrency($item[self::CURSO_COSTO], 'COP') . "</td>
                 <td>" . $formatter->formatCurrency($item[self::CURSO_VALOR_DESCUENTO], 'COP') . "</td>

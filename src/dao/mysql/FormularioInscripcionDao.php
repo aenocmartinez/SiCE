@@ -662,7 +662,8 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                 'formulario_inscripcion.comentarios',
                 'grupos.jornada',
                 'grupos.dia',
-                'convenios.nombre as CONVENIO_NOMBRE' 
+                'convenios.nombre as CONVENIO_NOMBRE',
+                'salones.nombre as SALON_NOMBRE' 
             ])
             ->join('grupos', function($join) use ($participanteId, $calendarioId) {
                 $join->on('grupos.id', '=', 'formulario_inscripcion.grupo_id')
@@ -671,6 +672,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
             })
             ->join('curso_calendario', 'curso_calendario.id', '=', 'grupos.curso_calendario_id')
             ->join('cursos', 'cursos.id', '=', 'curso_calendario.curso_id')
+            ->join('salones', 'salones.id', '=', 'grupos.salon_id')
             ->join('calendarios', 'calendarios.id', '=', 'curso_calendario.calendario_id')
             ->join('participantes', 'participantes.id', '=', 'formulario_inscripcion.participante_id')
             ->leftJoin('convenios', 'convenios.id', '=', 'formulario_inscripcion.convenio_id') 
@@ -699,6 +701,7 @@ class FormularioInscripcionDao extends Model implements FormularioRepository {
                     $item->CONVENIO_NOMBRE,
                     FormatoFecha::fechaFormateadaA5DeAgostoDe2024($calendario->getFechaInicioClase()),
                     $item->comentarios,
+                    $item->SALON_NOMBRE,
                 ];
             }
             
