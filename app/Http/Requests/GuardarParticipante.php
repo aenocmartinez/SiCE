@@ -42,7 +42,9 @@ class GuardarParticipante extends FormRequest
             'telefonoEmergencia' => 'required',
             'convenio' => 'nullable|integer',
             'id' => 'nullable',
-            'vinculadoUnicolMayor' => 'nullable'
+            'vinculadoUnicolMayor' => 'nullable',
+            'eps' => 'required|string',
+            'eps_otro' => 'required_if:eps,otro|string|nullable',
         ];
     }
 
@@ -58,6 +60,7 @@ class GuardarParticipante extends FormRequest
             'tipoDocumento.required' => 'Tipo de documento es obligatorio',
             'primerNombre.required' => 'Primer nombre es obligatorio',
             'primerApellido.required' => 'Primer apellido es obligatorio',
+            'eps_otro.required_if' => 'Debe especificar el nombre de la EPS si seleccionó "Otro"',
         ];
     }    
 }

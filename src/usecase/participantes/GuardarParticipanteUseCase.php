@@ -2,7 +2,9 @@
 
 namespace Src\usecase\participantes;
 
+use Src\dao\mysql\EpsDao;
 use Src\dao\mysql\ParticipanteDao;
+use Src\usecase\eps\CrearEpsUseCase;
 use Src\view\dto\ParticipanteDto;
 use Src\view\dto\Response;
 
@@ -21,6 +23,8 @@ class GuardarParticipanteUseCase
 
         // $participante = $participanteRepository->buscarParticipantePorDocumento($participanteDto->tipoDocumento, $participanteDto->documento);
 
+        $nombreEps = mb_strtoupper($participanteDto->eps, 'UTF-8');
+
         $participante->setPrimerNombre($participanteDto->primerNombre);
         $participante->setSegundoNombre($participanteDto->segundoNombre);
         $participante->setPrimerApellido($participanteDto->primerApellido);
@@ -33,10 +37,13 @@ class GuardarParticipanteUseCase
         $participante->setDireccion($participanteDto->direccion);        
         $participante->setTelefono($participanteDto->telefono);
         $participante->setEmail($participanteDto->email);
-        $participante->setEps($participanteDto->eps);
+        $participante->setEps($nombreEps);
         $participante->setContactoEmergencia($participanteDto->contactoEmergencia);
         $participante->setTelefonoEmergencia($participanteDto->telefonoEmergencia);
         $participante->setRepository($participanteRepository);
+
+        $crearEpsUseCase = new CrearEpsUseCase(new EpsDao());
+        $crearEpsUseCase->ejecutar($nombreEps);
         
         if (isset($participanteDto->vinculadoUnicolMayor)) {
             $participante->setVinculadoUnicolMayor($participanteDto->vinculadoUnicolMayor);

@@ -358,7 +358,8 @@ class FormularioInscripcionController extends Controller
         $participanteDto->direccion = $dato['direccion'];
         $participanteDto->telefono = $dato['telefono'];
         $participanteDto->email = $dato['email'];
-        $participanteDto->eps = $dato['eps'];
+        // $participanteDto->eps = $dato['eps'];
+        $participanteDto->eps = ($dato['eps'] === 'otro') ? $dato['eps_otro'] : $dato['eps'];
         $participanteDto->contactoEmergencia = $dato['contactoEmergencia'];
         $participanteDto->telefonoEmergencia = $dato['telefonoEmergencia'];
 

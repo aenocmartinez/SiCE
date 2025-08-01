@@ -2,6 +2,9 @@
 
 namespace Src\infraestructure\util;
 
+use Src\dao\mysql\EpsDao;
+use Src\usecase\eps\ListarEpsUseCase;
+
 class ListaDeValor {
 
     public static function diasSemana(): array {
@@ -51,41 +54,46 @@ class ListaDeValor {
     }
 
     public static function eps(): array {
-       return [
-            "COOSALUD EPS-S",
-            "NUEVA EPS",
-            "MUTUAL SER",
-            "ALIANSALUD EPS",
-            "SALUD TOTAL EPS S.A.",
-            "EPS SANITAS",
-            "EPS SURA",
-            "FAMISANAR",
-            "SERVICIO OCCIDENTAL DE SALUD EPS SOS",
-            "SALUD MIA",
-            "COMFENALCO VALLE",
-            "COMPENSAR EPS",
-            "EPM - EMPRESAS PUBLICAS DE MEDELLIN",
-            "FONDO DE PASIVO SOCIAL DE FERROCARRILES NACIONALES DE COLOMBIA",
-            "CAJACOPI ATLANTICO",
-            "CAPRESOCA",
-            "COMFACHOCO",
-            "COMFAORIENTE",
-            "EPS FAMILIAR DE COLOMBIA",
-            "ASMET SALUD",
-            "EMSSANAR E.S.S.",
-            "CAPITAL SALUD EPS-S",
-            "SANIDAD DEL EJÉRCITO",
-            "SAVIA SALUD EPS",
-            "SERVISALUD",
-            "DUSAKAWI EPSI",
-            "ASOCIACION INDIGENA DEL CAUCA EPSI",
-            "ANAS WAYUU EPSI",
-            "MALLAMAS EPSI",
-            "PIJAOS SALUD EPSI",
-            "SALUD BÓLIVAR EPS SAS",
-            "UNISALUD",
-            "NO ESTÁ AFILIADO"
-       ];       
+
+        $listarEps = new ListarEpsUseCase(new EpsDao());
+
+        return $listarEps->ejecutar();
+
+    //    return [
+    //         "COOSALUD EPS-S",
+    //         "NUEVA EPS",
+    //         "MUTUAL SER",
+    //         "ALIANSALUD EPS",
+    //         "SALUD TOTAL EPS S.A.",
+    //         "EPS SANITAS",
+    //         "EPS SURA",
+    //         "FAMISANAR",
+    //         "SERVICIO OCCIDENTAL DE SALUD EPS SOS",
+    //         "SALUD MIA",
+    //         "COMFENALCO VALLE",
+    //         "COMPENSAR EPS",
+    //         "EPM - EMPRESAS PUBLICAS DE MEDELLIN",
+    //         "FONDO DE PASIVO SOCIAL DE FERROCARRILES NACIONALES DE COLOMBIA",
+    //         "CAJACOPI ATLANTICO",
+    //         "CAPRESOCA",
+    //         "COMFACHOCO",
+    //         "COMFAORIENTE",
+    //         "EPS FAMILIAR DE COLOMBIA",
+    //         "ASMET SALUD",
+    //         "EMSSANAR E.S.S.",
+    //         "CAPITAL SALUD EPS-S",
+    //         "SANIDAD DEL EJÉRCITO",
+    //         "SAVIA SALUD EPS",
+    //         "SERVISALUD",
+    //         "DUSAKAWI EPSI",
+    //         "ASOCIACION INDIGENA DEL CAUCA EPSI",
+    //         "ANAS WAYUU EPSI",
+    //         "MALLAMAS EPSI",
+    //         "PIJAOS SALUD EPSI",
+    //         "SALUD BÓLIVAR EPS SAS",
+    //         "UNISALUD",
+    //         "NO ESTÁ AFILIADO"
+    //    ];       
     }
 
     public static function estadosFormularioInscripcion(): array {

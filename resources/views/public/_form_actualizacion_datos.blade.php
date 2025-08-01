@@ -112,16 +112,35 @@
         <select name="eps" class="form-control fs-sm @error('eps') is-invalid @enderror" id="eps">
                 <option value="" selected> - Seleccione una opción - </option>
                 @foreach ($listaEPS as $nombreEPS)
-                    <option value="{{ $nombreEPS }}" {{ old('eps', $participante->getEps()) == $nombreEPS ? 'selected' : '' }}>{{ $nombreEPS }}</option>    
+                <option value="{{ $nombreEPS }}" {{ old('eps', $participante->getEps()) == $nombreEPS ? 'selected' : '' }}>
+                        {{ $nombreEPS }}
+                </option>
                 @endforeach
-            </select>
-            <label class="form-label text-gray-dark fw-normal fs-sm" for="eps">EPS</label>
-            @error('eps')
-            <span class="invalid-feedback fs-sm" role="alert">
+                <option value="otro" {{ old('eps', $participante->getEps()) == 'otro' ? 'selected' : '' }}>Otro, ¿cuál?</option>
+        </select>
+        <label class="form-label text-gray-dark fw-normal fs-sm" for="eps">EPS</label>
+
+        @error('eps')
+        <span class="invalid-feedback fs-sm" role="alert">
                 {{ $message }}
-            </span>
-            @enderror
-        </div> 
+        </span>
+        @enderror
+        </div>
+
+        <div id="eps_otro_container" class="mt-2" style="{{ old('eps', $participante->getEps()) == 'otro' ? '' : 'display:none;' }}">
+        <label for="eps_otro" class="form-label text-gray-dark fw-normal fs-sm">Nombre de la EPS</label>
+        <input type="text"
+                name="eps_otro"
+                id="eps_otro"
+                placeholder="Ingrese el nombre de la EPS"
+                class="form-control fs-sm @error('eps_otro') is-invalid @enderror"
+                value="{{ old('eps_otro') }}">
+        @error('eps_otro')
+        <span class="invalid-feedback fs-sm" role="alert">
+                {{ $message }}
+        </span>
+        @enderror
+        </div>
         
         <br>
         <div class="form-floating">
@@ -260,3 +279,23 @@
 <script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
 <script src="{{asset('assets/js/plugins/flatpickr/flatpickr.min.js')}}"></script>
 <script>One.helpersOnLoad(['js-flatpickr']);</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectEps = document.getElementById('eps');
+        const containerOtro = document.getElementById('eps_otro_container');
+        const inputOtro = document.getElementById('eps_otro');
+
+        function toggleEpsOtro() {
+            if (selectEps.value === 'otro') {
+                containerOtro.style.display = 'block';
+            } else {
+                containerOtro.style.display = 'none';
+                inputOtro.value = '';
+            }
+        }
+
+        selectEps.addEventListener('change', toggleEpsOtro);
+        toggleEpsOtro(); // Ejecutar al cargar
+    });
+</script>

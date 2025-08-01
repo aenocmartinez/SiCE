@@ -110,18 +110,28 @@
                     @enderror  
                     
                     <br>
-                        <label class="form-label" for="eps">EPS</label>
-                        <select class="form-select @error('eps') is-invalid @enderror" id="eps" name="eps">
+                    <!-- Listado de eps -->
+                    <label class="form-label" for="eps">EPS</label>
+                    <select class="form-select @error('eps') is-invalid @enderror" id="eps" name="eps">
                         <option value="">Selecciona una eps</option>
-                            @foreach ($listaEps as $eps)            
-                                <option value="{{ $eps }}" {{ old('eps', $participante->getEps()) == $eps ? 'selected' : '' }}>{{ $eps }}</option>
-                            @endforeach
-                        </select>
-                        @error('eps')
-                            <span class="invalid-feedback" role="alert">
-                                {{ $message }}
-                            </span>
-                        @enderror                                             
+                        @foreach ($listaEps as $eps)
+                            <option value="{{ $eps }}" {{ old('eps', $participante->getEps()) == $eps ? 'selected' : '' }}>{{ $eps }}</option>
+                        @endforeach
+                        <option value="otro" {{ old('eps', $participante->getEps()) == 'otro' ? 'selected' : '' }}>Otro, ¿cuál?</option>
+                    </select>
+
+                    @error('eps')
+                        <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                    @enderror
+
+                    <div id="eps_otro_container" class="mt-2" style="{{ old('eps', $participante->getEps()) == 'otro' ? '' : 'display:none;' }}">
+                        <label for="eps_otro" class="form-label">Nombre de la EPS</label>
+                        <input type="text" class="form-control @error('eps_otro') is-invalid @enderror" name="eps_otro" id="eps_otro" value="{{ old('eps_otro') }}">
+                        @error('eps_otro')
+                            <span class="invalid-feedback" role="alert">{{ $message }}</span>
+                        @enderror
+                    </div>  
+                    <!-- Fin listado de eps -->                                             
 
             </div>
 
@@ -291,3 +301,18 @@
 <script src="{{asset('assets/js/lib/jquery.min.js')}}"></script>
 <script src="{{asset('assets/js/plugins/flatpickr/flatpickr.min.js')}}"></script>
 <script>One.helpersOnLoad(['js-flatpickr']);</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const select = document.getElementById('eps');
+        const container = document.getElementById('eps_otro_container');
+
+        select.addEventListener('change', function () {
+            if (select.value === 'otro') {
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+                document.getElementById('eps_otro').value = '';
+            }
+        });
+    });
+</script>

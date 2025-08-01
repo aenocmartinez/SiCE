@@ -34,6 +34,8 @@ class FormularioPublicoGuardarParticipante extends FormRequest
             'estadoCivil' => 'required',
             'email' => 'required|max:250|email',
             'contactoEmergencia' => 'required|max:150',
+            'eps' => 'required',
+            'eps_otro' => 'required_if:eps,otro|max:100',
         ];
     }
 
@@ -61,7 +63,11 @@ class FormularioPublicoGuardarParticipante extends FormRequest
             'email.max' => 'Se permiten máximo 250 caracteres',
             'email.email' => 'Correo electrónico no válido',
             'contactoEmergencia.required' => 'Nombre del contacto de emergencia es obligatorio',
-            'contactoEmergencia.max' => 'Se permiten máximo 150 caracteres',            
+            'contactoEmergencia.max' => 'Se permiten máximo 150 caracteres',       
+            'eps.required' => 'EPS es obligatorio',
+            'eps_otro.required_if' => 'Debe escribir el nombre de la EPS si seleccionó "Otro"',
+            'eps_otro.max' => 'Se permiten máximo 100 caracteres en el campo EPS otro',
+
         ];
     }       
 }

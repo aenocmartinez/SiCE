@@ -20,5 +20,5 @@ class ParticipanteDto {
     public string $eps;
     public string $contactoEmergencia;
     public string $telefonoEmergencia; 
-    public bool $vinculadoUnicolMayor;   
+    public bool $vinculadoUnicolMayor;       
 }
