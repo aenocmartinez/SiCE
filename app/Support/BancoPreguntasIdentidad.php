@@ -50,16 +50,16 @@ class BancoPreguntasIdentidad
             //     'campos' => ['ultimo_curso_aprobado'],
             //     'tipo' => 'simple',
             // ],
-            [
-                'texto' => '¿Cuál es el nombre de su contacto de emergencia?',
-                'campos' => ['contacto_emergencia'],
-                'tipo' => 'simple',
-            ],
-            [
-                'texto' => '¿Cuál es el número de teléfono de su contacto de emergencia?',
-                'campos' => ['telefono_contacto_emergencia'],
-                'tipo' => 'simple',
-            ],
+            // [
+            //     'texto' => '¿Cuál es el nombre de su contacto de emergencia?',
+            //     'campos' => ['contacto_emergencia'],
+            //     'tipo' => 'simple',
+            // ],
+            // [
+            //     'texto' => '¿Cuál es el número de teléfono de su contacto de emergencia?',
+            //     'campos' => ['telefono_contacto_emergencia'],
+            //     'tipo' => 'simple',
+            // ],
             [
                 'texto' => '¿Cuál es su primer nombre y primer apellido?',
                 'campos' => ['primer_nombre', 'primer_apellido'],
