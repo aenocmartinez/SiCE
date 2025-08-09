@@ -45,7 +45,10 @@ class AuthenticatedSessionController extends Controller
             return back()->withErrors(['email' => __('auth.failed')])->withInput();
         }
 
-        if (!Auth::user()->estaActivo())
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!$user->estaActivo())
         {
             Auth::guard('web')->logout();
 

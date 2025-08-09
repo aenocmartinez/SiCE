@@ -15,7 +15,9 @@ class CrearUsuario extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->esSuperAdmin();
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        return $user->esSuperAdmin();
     }
 
     /**
