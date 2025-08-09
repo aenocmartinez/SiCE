@@ -1116,5 +1116,44 @@ class GrupoDao extends Model implements GrupoRepository {
         ];
     }
   
+    public function obtenerUltimasAsistenciasParaMatriz(int $grupoId): array
+    {
+        $acUlt = DB::table('asistencia_clase as ac')
+            ->where('ac.grupo_id', $grupoId)
+            ->select('ac.sesion', 'ac.participante_id', DB::raw('MAX(ac.id) as ac_id'))
+            ->groupBy('ac.sesion', 'ac.participante_id');
+
+        $rows = DB::query()
+            ->fromSub($acUlt, 'acu')
+            ->join('asistencia_clase as ac', 'ac.id', '=', 'acu.ac_id') 
+            ->join('participantes as p', 'p.id', '=', 'ac.participante_id')
+            ->leftJoin('formulario_inscripcion as fi', function ($j) use ($grupoId) {
+                $j->on('fi.participante_id', '=', 'p.id')
+                ->where('fi.grupo_id', '=', $grupoId);
+            })
+            ->leftJoin('convenios as cv', 'cv.id', '=', 'fi.convenio_id')
+            ->orderBy('p.primer_apellido')
+            ->get([
+                'acu.sesion as sesion_num',
+                'p.primer_nombre','p.segundo_nombre','p.primer_apellido','p.segundo_apellido',
+                'p.documento as doc',           
+                'cv.nombre as convenio',
+                'ac.presente',
+                DB::raw("DATE_FORMAT(ac.created_at, '%Y-%m-%d') as fecha_registro"),
+            ]);
+            
+        return array_map(fn($r) => [
+            'sesion_num'     => (int)$r->sesion_num,
+            'primer_nombre'  => $r->primer_nombre,
+            'segundo_nombre' => $r->segundo_nombre,
+            'primer_apellido'=> $r->primer_apellido,
+            'segundo_apellido'=> $r->segundo_apellido,
+            'doc'            => $r->doc,
+            'convenio'       => $r->convenio,
+            'presente'       => (bool)$r->presente,
+            'fecha_registro' => $r->fecha_registro,
+        ], $rows->all());
+    }
+
     
 }

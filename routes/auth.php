@@ -255,6 +255,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/asistencia/asistencia-json', [OrientadorController::class, 'asistenciaPorSesionJson'])
         ->name('asistencia.asistencia-json'); // ?grupo_id=...&sesion=...
 
+    Route::get('/asistencia/participante/matriz', [OrientadorController::class, 'matrizAsistenciaPorGrupoJson'])->name('asistencia.participante-matriz');        
+
 
 
     // Firmas certificado

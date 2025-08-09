@@ -634,5 +634,5 @@ class CalendarioDao extends Model implements CalendarioRepository {
             ->get()
             ->map(fn($r) => ['id' => (int)$r->id, 'nombre' => $r->nombre])
             ->toArray();
-    }    
+    }      
 }

@@ -28,6 +28,7 @@ use Src\usecase\orientadores\ListarOrientadoresPaginadoUseCase;
 use Src\usecase\orientadores\ListarOrientadoresUseCase;
 use Src\usecase\orientadores\ObtenerDatosFormularioReporteAsistenciaUseCase;
 use Src\usecase\orientadores\ObtenerFormularioRegistroAsistenciaUseCase;
+use Src\usecase\orientadores\ObtenerMatrizAsistenciaPorGrupoUseCase;
 use Src\usecase\orientadores\RegistrarAsistenciaUseCase;
 use Src\view\dto\OrientadorDto;
 
@@ -261,12 +262,19 @@ class OrientadorController extends Controller
         ]);
     }
 
-    public function formularioReporteParticipante() {
-        
-        $response = (new ObtenerDatosFormularioReporteAsistenciaUseCase)->ejecutar();
-        // dd($response->data['datos']);
+    public function formularioReporteParticipante()
+    {
+        $uc = new ObtenerDatosFormularioReporteAsistenciaUseCase();
+        $response = $uc->ejecutar();
+
+        if ((string)$response->code !== '200') {
+            abort(404, $response->message ?? 'No disponible');
+        }
+
+        $periodos = $response->data['periodos'] ?? [];
+
         return view('orientadores.asistencia-participante', [
-            'datos' => $response->data['datos'],
+            'periodos' => $periodos,
         ]);
     }
     
@@ -328,6 +336,18 @@ class OrientadorController extends Controller
     {
         return view('orientadores.consultar_asistencia_por_sesion');
     }
-    
+
+    public function matrizAsistenciaPorGrupoJson(Request $request)
+    {
+        $grupoId = (int) $request->query('grupo_id');
+        if (!$grupoId) {
+            return response()->json(['message' => 'grupo_id es requerido'], 422);
+        }
+
+        $uc = new ObtenerMatrizAsistenciaPorGrupoUseCase();
+        $response = $uc->ejecutar($grupoId);
+
+        return response()->json($response->data, (int)$response->code);
+    }    
     
 }
