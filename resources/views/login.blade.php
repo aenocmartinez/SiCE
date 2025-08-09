@@ -52,7 +52,7 @@
                                             @csrf
                                             <div class="py-3">
                                                 <div class="mb-4">
-                                                    <input type="email" class="form-control form-control-alt form-control-lg @error('email') is-invalid @enderror" id="email" name="email" autocomplete="off" placeholder="Correo electrónico" value="{{ old('email') }}">
+                                                    <input type="text" class="form-control form-control-alt form-control-lg @error('email') is-invalid @enderror" id="email" name="email" autocomplete="off" placeholder="Email o número de documento" value="{{ old('email') }}">
                                                     @error('email')
                                                         <span class="invalid-feedback d-block" role="alert">
                                                             {{ $message }}

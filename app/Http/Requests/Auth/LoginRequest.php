@@ -11,54 +11,66 @@ use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
-    {        
+    {
         return [
-            'email' => ['required', 'string', 'email'],
+            // Acepta correo, teléfono o DNI en el mismo input
+            'email' => ['required', 'string'],
             'password' => ['required', 'string'],
-            'g-recaptcha-response' => ['required'], // Validar que el captcha sea obligatorio
+            'g-recaptcha-response' => ['required'],
         ];
     }
 
-    /**
-     * Get custom error messages for validation rules.
-     *
-     * @return array
-     */
     public function messages()
     {
         return [
             'g-recaptcha-response.required' => 'Por favor, completa el reCAPTCHA para continuar.',
+            'email.required' => 'Debe ingresar su correo, teléfono o DNI.',
         ];
+    }
+
+    /**
+     * Normaliza el identificador para compararlo siempre contra users.email
+     * - Correo: minúsculas
+     * - Teléfono: solo dígitos
+     * - DNI: sin espacios y MAYÚSCULAS
+     */
+    protected function normalizedIdentifier(): string
+    {
+        $raw = (string) $this->input('email', '');
+        $val = trim($raw);
+
+        if (filter_var($val, FILTER_VALIDATE_EMAIL)) {
+            return mb_strtolower($val);
+        }
+
+        // Teléfono (dígitos y símbolos comunes) -> solo dígitos
+        if (preg_match('/^[0-9\s\-\(\)\+]+$/', $val)) {
+            return preg_replace('/\D+/', '', $val);
+        }
+
+        // DNI genérico
+        $val = preg_replace('/\s+/', '', $val);
+        return mb_strtoupper($val);
     }
 
     /**
      * Attempt to authenticate the request's credentials.
      *
-     * @return void
-     *
      * @throws \Illuminate\Validation\ValidationException
      */
     public function authenticate()
-    {        
+    {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $identifier = $this->normalizedIdentifier();
+
+        if (! Auth::attempt(['email' => $identifier, 'password' => $this->password], $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -71,8 +83,6 @@ class LoginRequest extends FormRequest
 
     /**
      * Ensure the login request is not rate limited.
-     *
-     * @return void
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -96,11 +106,10 @@ class LoginRequest extends FormRequest
 
     /**
      * Get the rate limiting throttle key for the request.
-     *
-     * @return string
      */
     public function throttleKey()
     {
-        return Str::lower($this->input('email')).'|'.$this->ip();
+        // Usa el identificador normalizado para que el throttling sea consistente
+        return Str::lower($this->normalizedIdentifier()) . '|' . $this->ip();
     }
 }

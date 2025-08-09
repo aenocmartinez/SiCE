@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules;
+use Illuminate\Validation\Rule; 
 
 class ActualizarUsuario extends FormRequest
 {
@@ -26,14 +27,16 @@ class ActualizarUsuario extends FormRequest
     public function rules()
     {
         return [
-            'id' => 'int|required',
-            'nombre' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|exists:users',
+            'id'       => 'int|required',
+            'nombre'   => 'required|string|max:255',
+            // ✅ Sin 'email' (formato) y sin 'exists'.
+            // ✅ Evita duplicados en la columna users.email, ignorando el propio registro.
+            'email'    => ['required','string','max:255', Rule::unique('users','email')->ignore($this->id)],
             'password' => ['nullable', Rules\Password::defaults()],
-            'role' => 'required|string',
-            'estado' => 'nullable',
+            'role'     => 'required|string',
+            'estado'   => 'nullable',
             'puede_cargar_firmas' => 'nullable',
             'orientador_id' => 'nullable',
-        ];        
+        ];
     }
 }
