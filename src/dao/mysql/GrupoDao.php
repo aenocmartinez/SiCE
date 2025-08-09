@@ -956,5 +956,165 @@ class GrupoDao extends Model implements GrupoRepository {
             ->where('grupo_id', $grupoID)
             ->max('sesion') ?? 0;
     }
+
+    /**
+     * Lista grupos del orientador en un periodo (sin datos pesados).
+     * Retorna arreglo con: id, codigo_grupo, dia, jornada, salon, nombre_curso, area
+     */
+    public function listarGruposPorPeriodoYOrientador(int $periodoId, int $orientadorId): array
+    {
+        return DB::table('grupos as g')
+            ->join('salones as s','s.id','=','g.salon_id')
+            ->join('curso_calendario as cc','cc.id','=','g.curso_calendario_id')
+            ->join('cursos as c','c.id','=','cc.curso_id')
+            ->join('areas as a','a.id','=','c.area_id')
+            ->where('g.calendario_id', $periodoId)
+            ->where('g.orientador_id', $orientadorId)
+            ->where('g.cancelado', 0)
+            ->orderBy('g.id','desc')
+            ->get([
+                'g.id',
+                'g.nombre as codigo_grupo',
+                'g.dia',
+                'g.jornada',
+                's.nombre as salon',
+                'c.nombre as nombre_curso',
+                'a.nombre as area',
+            ])
+            ->map(fn($r) => [
+                'id'           => (int)$r->id,
+                'codigo_grupo' => $r->codigo_grupo,
+                'dia'          => $r->dia,
+                'jornada'      => $r->jornada,
+                'salon'        => $r->salon,
+                'nombre_curso' => $r->nombre_curso,
+                'area'         => $r->area,
+            ])
+            ->toArray();
+    }  
+    
+    /**
+     * Lista sesiones reales registradas para un grupo.
+     * Retorna [{ num, fecha }]
+     */
+    public function listarSesionesDeGrupo(int $grupoId): array
+    {
+        return DB::table('asistencia_clase as ac')
+            ->where('ac.grupo_id', $grupoId)
+            ->select('ac.sesion', DB::raw('MIN(ac.created_at) as fecha'))
+            ->groupBy('ac.sesion')
+            ->orderBy('ac.sesion')
+            ->get()
+            ->map(fn($r) => [
+                'num'   => (int)$r->sesion,
+                'fecha' => optional(\Illuminate\Support\Carbon::parse($r->fecha))->format('Y-m-d'),
+            ])
+            ->toArray();
+    }
+    
+    /**
+     * Encabezado/meta del grupo (curso, jornada, salón, día, área).
+     * Retorna null si no existe.
+     */
+    public function obtenerMetaDeGrupo(int $grupoId): ?array
+    {
+        $g = DB::table('grupos as gr')
+            ->join('salones as s','s.id','=','gr.salon_id')
+            ->join('curso_calendario as cc','cc.id','=','gr.curso_calendario_id')
+            ->join('cursos as c','c.id','=','cc.curso_id')
+            ->join('areas as a','a.id','=','c.area_id')
+            ->where('gr.id', $grupoId)
+            ->first([
+                'gr.id',
+                'gr.dia',
+                'gr.jornada',
+                's.nombre as salon',
+                'c.nombre as nombre_curso',
+                'a.nombre as area',
+            ]);
+
+        if (!$g) return null;
+
+        return [
+            'id'           => (int)$g->id,
+            'dia'          => $g->dia,
+            'jornada'      => $g->jornada,
+            'salon'        => $g->salon,
+            'nombre_curso' => $g->nombre_curso,
+            'area'         => $g->area,
+        ];
+    }
+    
+    /**
+     * Detalle de asistencia por sesión (convenio incluido vía LEFT JOIN).
+     * Retorna ['meta'=>..., 'participantes'=>[...]]
+     */
+    public function obtenerAsistenciaPorSesionDetalle(int $grupoId, int $sesion): array
+    {
+        $meta = $this->obtenerMetaDeGrupo($grupoId);
+
+        $acUlt = DB::table('asistencia_clase as ac')
+            ->where('ac.grupo_id', $grupoId)
+            ->where('ac.sesion', $sesion)
+            ->select('ac.participante_id', DB::raw('MAX(ac.id) as ac_id'))
+            ->groupBy('ac.participante_id');
+
+        $fiUlt = DB::table('formulario_inscripcion as fi')
+            ->where('fi.grupo_id', $grupoId)
+            ->select('fi.participante_id', DB::raw('MAX(fi.id) as fi_id'))
+            ->groupBy('fi.participante_id');
+
+        $filas = DB::query()
+            ->fromSub($acUlt, 'acu')
+            ->join('asistencia_clase as ac', 'ac.id', '=', 'acu.ac_id') 
+            ->join('participantes as p', 'p.id', '=', 'ac.participante_id')
+            ->leftJoinSub($fiUlt, 'fiu', 'fiu.participante_id', '=', 'p.id')
+            ->leftJoin('formulario_inscripcion as fi', 'fi.id', '=', 'fiu.fi_id')
+            ->leftJoin('convenios as cv', 'cv.id', '=', 'fi.convenio_id')
+            ->orderBy('p.primer_apellido')
+            ->get([
+                'p.primer_nombre',
+                'p.segundo_nombre',
+                'p.primer_apellido',
+                'p.segundo_apellido',
+                'p.documento as doc',
+                'cv.nombre as convenio',
+                'ac.presente',
+                'ac.created_at as fecha_registro',
+            ]);
+
+        $participantes = [];
+        $fechaCabecera = null;
+
+        foreach ($filas as $r) {
+            $nombre = trim(implode(' ', array_filter([
+                $r->primer_nombre,
+                $r->segundo_nombre,
+                $r->primer_apellido,
+                $r->segundo_apellido,
+            ])));
+
+            $fecha = optional(\Illuminate\Support\Carbon::parse($r->fecha_registro))->format('Y-m-d');
+            $fechaCabecera = $fechaCabecera ?? $fecha;
+
+            $participantes[] = [
+                'nombre'   => mb_strtoupper($nombre, 'utf-8'),
+                'doc'      => $r->doc,
+                'convenio' => $r->convenio ?? '',
+                'presente' => (bool) $r->presente,
+                'fecha'    => $fecha,
+            ];
+        }
+
+        if ($meta) {
+            $meta['fecha'] = $fechaCabecera;
+        }
+
+        return [
+            'meta'          => $meta,
+            'participantes' => $participantes,
+        ];
+    }
+  
     
 }

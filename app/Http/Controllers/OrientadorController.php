@@ -5,6 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AgregarAreaOrientador;
 use App\Http\Requests\GuardarOrientador;
 use App\Http\Requests\RegistrarAsistencia;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Src\dao\mysql\CalendarioDao;
+use Src\dao\mysql\GrupoDao;
+use Src\dao\mysql\OrientadorDao;
 use Src\domain\Calendario;
 use Src\domain\Orientador;
 use Src\infraestructure\util\ListaDeValor;
@@ -263,4 +269,65 @@ class OrientadorController extends Controller
             'datos' => $response->data['datos'],
         ]);
     }
+    
+    /**
+     * GET /asistencia/periodos-json
+     * Retorna [ { id, nombre }, ... ]
+     */
+    public function periodosJson()
+    {
+        $calDao = new \Src\dao\mysql\CalendarioDao();
+        return response()->json($calDao->listarCalendariosLivianos());
+    }
+
+
+    /**
+     * GET /asistencia/grupos-json?periodo_id=#
+     * Retorna los grupos del orientador autenticado en ese periodo.
+     */
+    public function gruposPorPeriodoJson(Request $request)
+    {
+        $periodoId = (int) $request->query('periodo_id');
+        if (!$periodoId) return response()->json(['message' => 'periodo_id es requerido'], 422);
+
+        $orientadorId = auth()->user()->orientador_id;
+
+        $grupoDao = new \Src\dao\mysql\GrupoDao();
+        return response()->json($grupoDao->listarGruposPorPeriodoYOrientador($periodoId, $orientadorId));
+    }
+
+    /**
+     * GET /asistencia/sesiones-json?grupo_id=#
+     * Retorna las sesiones existentes (num y fecha) del grupo.
+     */
+    public function sesionesPorGrupoJson(Request $request)
+    {
+        $grupoId = (int) $request->query('grupo_id');
+        if (!$grupoId) return response()->json(['message' => 'grupo_id es requerido'], 422);
+
+        $grupoDao = new \Src\dao\mysql\GrupoDao();
+        return response()->json($grupoDao->listarSesionesDeGrupo($grupoId));
+    }
+
+    /**
+     * GET /asistencia/asistencia-json?grupo_id=#&sesion=#
+     * Retorna meta del grupo y la lista de participantes con presente/ausente y convenio.
+     */
+    public function asistenciaPorSesionJson(Request $request)
+    {
+        $grupoId = (int) $request->query('grupo_id');
+        $sesion  = (int) $request->query('sesion');
+        if (!$grupoId || !$sesion) return response()->json(['message' => 'grupo_id y sesion son requeridos'], 422);
+
+        $grupoDao = new \Src\dao\mysql\GrupoDao();
+        return response()->json($grupoDao->obtenerAsistenciaPorSesionDetalle($grupoId, $sesion));
+    } 
+
+
+    public function formularioAsistenciaPorSesion()
+    {
+        return view('orientadores.consultar_asistencia_por_sesion');
+    }
+    
+    
 }

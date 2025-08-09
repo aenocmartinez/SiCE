@@ -29,7 +29,7 @@
 
   <!-- Tarjeta 2 -->
   <div class="col-md-6 col-xl-4">
-    <a class="block block-rounded block-link-shadow bg-success" href="{{ route('asistencia.formulario-reportes') }}">
+    <a class="block block-rounded block-link-shadow bg-success" href="{{ route('asistencia.por-sesion') }}">
       <div class="block-content block-content-full d-flex align-items-center justify-content-between">
         <div>
           <i class="fa fa-users fa-2x text-white-50"></i>

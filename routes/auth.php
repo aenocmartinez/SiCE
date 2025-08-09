@@ -239,6 +239,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/asistencia/reportes', [OrientadorController::class, 'formularioReportePorCurso'])->middleware('role:Admin,superAdmin,orientador')->name('asistencia.formulario-reportes');
     Route::get('/asistencia/participante', [OrientadorController::class, 'formularioReporteParticipante'])->middleware('role:Admin,superAdmin,orientador')->name('asistencia.participante');
 
+    Route::get('/asistencia/por-sesion', [OrientadorController::class, 'formularioAsistenciaPorSesion'])
+        ->middleware('role:Admin,superAdmin,orientador')
+        ->name('asistencia.por-sesion');
+    
+    Route::get('/asistencia/periodos-json', [OrientadorController::class, 'periodosJson'])
+        ->name('asistencia.periodos-json');
+
+    Route::get('/asistencia/grupos-json', [OrientadorController::class, 'gruposPorPeriodoJson'])
+        ->name('asistencia.grupos-json'); // ?periodo_id=...
+
+    Route::get('/asistencia/sesiones-json', [OrientadorController::class, 'sesionesPorGrupoJson'])
+        ->name('asistencia.sesiones-json'); // ?grupo_id=...
+
+    Route::get('/asistencia/asistencia-json', [OrientadorController::class, 'asistenciaPorSesionJson'])
+        ->name('asistencia.asistencia-json'); // ?grupo_id=...&sesion=...
+
+
+
     // Firmas certificado
     Route::get('/firmas/gestionar', [FirmaCertificadoController::class, 'gestionar'])->middleware('role:Admin,superAdmin')->name('firmas.gestionar');
     Route::post('/firmas/guardar', [FirmaCertificadoController::class, 'guardar'])->middleware('role:Admin,superAdmin')->name('firmas.guardar');

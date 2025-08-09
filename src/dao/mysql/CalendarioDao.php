@@ -624,4 +624,15 @@ class CalendarioDao extends Model implements CalendarioRepository {
                     ->pluck('cc.curso_id')
                     ->toArray(); 
     }   
+
+    /** Retorna [{id, nombre}] ordenado desc por id */
+    public function listarCalendariosLivianos(): array
+    {
+        return DB::table('calendarios')
+            ->select('id','nombre')
+            ->orderByDesc('id')
+            ->get()
+            ->map(fn($r) => ['id' => (int)$r->id, 'nombre' => $r->nombre])
+            ->toArray();
+    }    
 }

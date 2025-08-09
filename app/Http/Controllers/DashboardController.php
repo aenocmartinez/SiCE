@@ -12,7 +12,10 @@ class DashboardController extends Controller
 {
     public function index() {
 
-        if(Auth::user()->esOrientador()) 
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if($user->esOrientador()) 
         {   
             $datosDashboard = (new DashboardOrientadorUseCase)->ejecutar();                                 
             return view('dashboard.homeOrientador', [
