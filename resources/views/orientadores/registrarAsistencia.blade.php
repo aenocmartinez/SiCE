@@ -69,13 +69,14 @@
                                 <tr class="bg-body-dark fs-xs">
                                     <th>Nombre</th>
                                     <th>Documento</th>
+                                    <th>Teléfono</th>
                                     <th>Convenio</th>
                                     <th>Presente</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="4" class="text-muted">Seleccione un grupo para ver los participantes.</td>
+                                    <td colspan="5" class="text-muted">Seleccione un grupo para ver los participantes.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -135,6 +136,7 @@
 
                 const nombre = p[5];
                 const documento = p[6];
+                const telefono = p[7];
                 const participante_id = p[15] ?? i;
                 const convenio = p[12];
 
@@ -142,6 +144,7 @@
                 tr.innerHTML = `
                     <td class="fs-xs text-start">${nombre}</td>
                     <td class="fs-xs">${documento}</td>
+                    <td class="fs-xs">${telefono}</td>
                     <td class="fs-xs">${convenio}</td>
                     <td class="text-center">
                         <input type="hidden" name="asistencias[${i}][participante_id]" value="${participante_id}">
@@ -157,7 +160,7 @@
         } else {
             tablaParticipantes.innerHTML = `
                 <tr>
-                    <td colspan="4" class="text-muted">Este grupo no tiene participantes.</td>
+                    <td colspan="5" class="text-muted">Este grupo no tiene participantes.</td>
                 </tr>
             `;
         }
