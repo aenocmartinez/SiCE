@@ -43,7 +43,9 @@
                                         @foreach ($convenios as $convenio)
                                             @if ($convenio->getId() == $formulario->getParticipanteIdBeneficioConvenio())
                                                 <div>
-                                                    <span class="badge bg-success">{{ $convenio->getDescuento() }}%</span>
+                                                    <span class="badge bg-success">
+                                                        {{ ($convenio->esCooperativa() ? $convenio->getDescuentoAplicado() : $convenio->getDescuento()) }}%
+                                                    </span>
                                                     <span class="text-muted">{{ $convenio->getNombre() }}</span>
                                                 </div>
                                                 <div class="text-end text-muted">

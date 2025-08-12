@@ -112,7 +112,7 @@ class FormularioInscripcion {
     public function getParticipanteIdBeneficioConvenio() {
         $this->participante->buscarBeneficioVigentePorConvenio();
         
-        if ($this->participante->getIdBeneficioConvenio() > 0) {
+        if ($this->participante->getIdBeneficioConvenio() > 0) {            
             return $this->participante->getIdBeneficioConvenio();
         }
 
