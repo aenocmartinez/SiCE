@@ -92,7 +92,7 @@
                   <span class="nav-main-link-name">Salones</span>
                 </a>
                 <a class="nav-main-link {{ setActive(['orientadores.index', 'orientadores.*']) }}" href="{{ route('orientadores.index') }}">
-                  <span class="nav-main-link-name">Orientadores</span>
+                  <span class="nav-main-link-name">Instructores</span>
                 </a>
                 <a class="nav-main-link {{ setActive(['participantes.index', 'participantes.*']) }}" href="{{ route('participantes.index') }}">
                   <span class="nav-main-link-name">Participantes</span>

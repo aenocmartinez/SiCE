@@ -36,7 +36,7 @@
                             <td>{{ $grupo->getNombreCurso() }}</td>
                         </tr>
                         <tr class="fs-sm">
-                            <td>Orientador</td>
+                            <td>Instructor</td>
                             <td>{{ $grupo->getNombreOrientador() }}</td>
                         </tr>                        
                         <tr class="fs-sm">

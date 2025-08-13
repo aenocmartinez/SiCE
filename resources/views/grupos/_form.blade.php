@@ -133,9 +133,9 @@
 
                 <br>
 
-                <label class="form-label" for="orientador">Orientador</label>
+                <label class="form-label" for="orientador">Instructor</label>
                 <select class="form-select @error('orientador') is-invalid @enderror" id="orientador" name="orientador">
-                    <option value="">Selecciona un orientador</option>
+                    <option value="">Selecciona un instructor</option>
                 </select>   
                 @error('orientador')
                     <span class="invalid-feedback" role="alert">

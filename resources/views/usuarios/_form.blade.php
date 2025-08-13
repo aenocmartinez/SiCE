@@ -75,7 +75,7 @@
 
                     <br> 
                     
-                    <label class="form-label fw-light" for="orientador_id">Si además de administrador cumple rol de orientador seleccione al orientador</label>
+                    <label class="form-label fw-light" for="orientador_id">Si además de administrador cumple rol de instructor seleccione al instructor</label>
                     <select class="form-select @error('orientador_id') is-invalid @enderror" id="orientador_id" name="orientador_id">            
                         <option value=""> - </option>
                         @foreach ($orientadores as $orientador)                            

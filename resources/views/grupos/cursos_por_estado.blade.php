@@ -19,7 +19,7 @@
                 <th style="width: 27%;">Curso</th>
                 <th style="width: 5%;">Grupo</th>
                 <th style="width: 16%;">Horario</th>
-                <th style="width: 16%;">Orientador</th>
+                <th style="width: 16%;">Instructor</th>
                 <th style="width: 16%;">#Inscritos / Total de cupos</th>
                 <th style="width: 20%;"></th>
             </tr>

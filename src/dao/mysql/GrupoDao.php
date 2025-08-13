@@ -513,7 +513,7 @@ class GrupoDao extends Model implements GrupoRepository {
     
 
             
-            $participantes[] = ['CURSO', 'ORIENTADOR', 'GRUPO', 'DIA', 'JORNADA', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO', 'PERIODO', 'TOTAL_A_PAGAR', 'SALON'];
+            $participantes[] = ['CURSO', 'INSTRUCTOR', 'GRUPO', 'DIA', 'JORNADA', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO', 'PERIODO', 'TOTAL_A_PAGAR', 'SALON'];
             foreach($items as $item) {    
                 $nombre_salon = "";
                 if (!is_null($item->salon_nombre)) {
@@ -596,7 +596,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 ->orderBy('p.primer_apellido')
                 ->get();                                    
             
-            $participantes[] = ['CURSO', 'ORIENTADOR', 'GRUPO', 'DIA', 'JORNADA', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO', 'PERIODO', 'CONVENIO', 'SALON', 'AREA'];
+            $participantes[] = ['CURSO', 'INSTRUCTOR', 'GRUPO', 'DIA', 'JORNADA', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO', 'PERIODO', 'CONVENIO', 'SALON', 'AREA'];
             foreach($items as $item) {
                 $nombreConvenio = mb_strtoupper($item->nombre_convenio, 'UTF-8');                  
                 if ($item->nombre_convenio == "Convenio empleados y contratistas UnicolMayor") {
@@ -687,7 +687,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 ->orderBy('p.primer_apellido')
                 ->get();                                    
             
-            $participantes[] = ['CURSO', 'ORIENTADOR', 'GRUPO', 'DIA', 'JORNADA', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO', 'PERIODO', 'CONVENIO', 'SALON', 'AREA'];
+            $participantes[] = ['CURSO', 'INSTRUCTOR', 'GRUPO', 'DIA', 'JORNADA', 'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'CONVENIO', 'ESTADO', 'PERIODO', 'CONVENIO', 'SALON', 'AREA'];
             foreach($items as $item) {
                 $nombreConvenio = mb_strtoupper($item->nombre_convenio, 'UTF-8');                  
                 if ($item->nombre_convenio == "Convenio empleados y contratistas UnicolMayor") {

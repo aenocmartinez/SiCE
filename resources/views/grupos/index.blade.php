@@ -95,7 +95,7 @@
                             Periodo: {{ $grupo->getNombreCalendario() }}<br>
                             Horario: {{ $grupo->getDia() }} / {{ $grupo->getJornada() }}<br>
                             Salón: {{ $grupo->getSalon()->getNombre() }} <br>
-                            Orientador: {{ $grupo->getOrientador()->getNombre() }} 
+                            Instructor: {{ $grupo->getOrientador()->getNombre() }} 
                             @if ($grupo->estaHabilitadoParaPreInscripcion())
                                 <br>
                                 <span class="text-danger mb-5">Habilitado solo para preinscripción*</span>

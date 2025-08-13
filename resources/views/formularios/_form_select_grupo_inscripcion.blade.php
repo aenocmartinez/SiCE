@@ -97,9 +97,9 @@
                         </div>
 
                         <div class="col-md-3">
-                            <label class="form-label fs-xs" for="f_orientador">Orientador</label>
+                            <label class="form-label fs-xs" for="f_orientador">Instructor</label>
                             <select class="form-select fs-xs" id="f_orientador" name="f_orientador">
-                                <option value="">Todos los orientadores</option>
+                                <option value="">Todos los instructores</option>
                             </select>
                         </div>
                     </div>
@@ -126,7 +126,7 @@
                                 <span id="b_modalidad">({{ $grupo->getModalidad() }})</span>                            
                                 <br>
                                 <span style="font-size: 12px" id="b_orientador">
-                                    Orientador/a: {{ $grupo->getNombreOrientador() }}
+                                    Instructor/a: {{ $grupo->getNombreOrientador() }}
                                 </span>
                             </p>
                         </td>

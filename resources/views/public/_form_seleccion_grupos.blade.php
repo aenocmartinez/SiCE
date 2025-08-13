@@ -45,9 +45,9 @@
                     </select>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label for="selectInstructor" class="form-label fs-xs text-secondary">Orientador</label>
+                    <label for="selectInstructor" class="form-label fs-xs text-secondary">Instructor</label>
                     <select class="form-select form-select-sm fs-xs rounded-pill" id="selectInstructor">
-                        <option value="all">Todos los orientadores</option>
+                        <option value="all">Todos los instructores</option>
                         @foreach ($uniqueInstructors as $instructorName)
                             <option value="{{ $instructorName }}">{{ $instructorName }}</option>
                         @endforeach
@@ -110,7 +110,7 @@
                                         @endif
                                         <p class="card-text fs-xs text-secondary mb-3">
                                             <strong class="d-block text-dark">{{ $item->areaNombre }}</strong>
-                                            <span class="d-block text-muted" id="b_orientador">Orientador: {{ $grupo->nombreOrientador }}</span>
+                                            <span class="d-block text-muted" id="b_orientador">Instructor: {{ $grupo->nombreOrientador }}</span>
                                             <span class="d-block">
                                               <span id="b_dia">{{ $grupo->dia }}</span> / <span id="b_jornada">{{ $grupo->jornada }}</span>
                                             </span>

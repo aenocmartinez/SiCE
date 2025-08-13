@@ -265,7 +265,7 @@
                             96
                           </dt>
                           <dd class="text-white fs-sm fw-medium text-muted mb-0">
-                            Orientadores
+                            Instructores
                           </dd>
                         </dl>
                       </div>

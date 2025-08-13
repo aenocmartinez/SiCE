@@ -159,7 +159,7 @@ class ListaDeValor {
         return [
             [ 'value' => 'Admin', 'nombre' => 'Administrador'],
             [ 'value' => 'superAdmin', 'nombre' => 'Súper administrador'],
-            [ 'value' => 'orientador', 'nombre' => 'Orientador'],
+            [ 'value' => 'orientador', 'nombre' => 'Instructor'],
             [ 'value' => 'participante', 'nombre' => 'Participante'],
             [ 'value' => 'financiera', 'nombre' => 'Financiera'],                                                
         ];        

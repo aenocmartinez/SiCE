@@ -14,7 +14,7 @@ class EliminarOrientadorUseCase {
 
         $orientador = Orientador::buscarPorId($id, $orientadorRepository);
         if (!$orientador->existe()) {
-            return new Response('404', 'orientador no encontrado');
+            return new Response('404', 'instructor no encontrado');
         }
 
         $orientador->setRepository($orientadorRepository);

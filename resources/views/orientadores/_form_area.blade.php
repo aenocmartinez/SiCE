@@ -57,7 +57,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td class="text-center">El orientador no tiene áreas asociadas para mostrar</td>
+                        <td class="text-center">El instructor no tiene áreas asociadas para mostrar</td>
                     </tr>
                     @endforelse 
                 </table>                

@@ -172,7 +172,7 @@
 <div class="block block-rounded">
     <div class="block-content">
         <div class="row push">
-            <h5 class="fw-light">PERFIL DEL ORIENTADOR</h5>   
+            <h5 class="fw-light">PERFIL DEL INSTRUCTOR</h5>   
             <div class="col-12">
                 <textarea class="js-simplemde" rows="4" id="observacion" name="observacion">{{ old('observacion', $orientador->getObservacion()) }}</textarea>
             </div>

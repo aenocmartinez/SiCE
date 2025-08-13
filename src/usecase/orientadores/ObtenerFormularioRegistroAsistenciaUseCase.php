@@ -23,7 +23,7 @@ class ObtenerFormularioRegistroAsistenciaUseCase
         $orientador = $orientadorDao->buscarOrientadorPorId(Auth::user()->orientador_id);
         if (!$orientador->existe())
         {
-            return new Response("404", "Orientador no encontrado.");
+            return new Response("404", "Instructor no encontrado.");
         }
 
         $orientador->setGruposPorCalendario($periodo->getId());

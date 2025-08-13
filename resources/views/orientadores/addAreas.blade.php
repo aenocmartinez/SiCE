@@ -1,14 +1,14 @@
 @extends("plantillas.principal")
 
 @php
-    $titulo = "Áreas orientador";
+    $titulo = "Áreas instructor";
 @endphp
 
 @section("title", $titulo)
 
 @section("seccion")
     <a class="link-fx" href="{{ route('orientadores.index') }}">
-        Orientadores
+        Instructores
     </a>
 @endsection
 

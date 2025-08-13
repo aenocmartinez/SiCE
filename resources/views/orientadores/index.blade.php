@@ -1,7 +1,7 @@
 @extends("plantillas.principal")
 
-@section("title", "Módulo de orientadores")
-@section("description", "Listado y administración de orientadores vinculados a cursos de extensión.")
+@section("title", "Módulo de instructores")
+@section("description", "Listado y administración de instructores vinculados a cursos de extensión.")
 
 @section("content")
 
@@ -38,7 +38,7 @@
         
         <div class="col-lg-4 col-sm-12 col-xs-12" style="text-align: right;">
             <a href="{{ route('orientadores.create') }}" class="btn btn-lg btn-info">
-                <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear orientador
+                <i class="fa fa-circle-plus me-1 opacity-50"></i> Crear instructor
             </a>
         </div>
 
@@ -76,7 +76,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td class="text-center">No hay orientadores para mostrar</td>
+                    <td class="text-center">No hay instructores para mostrar</td>
                 </tr>
                 @endforelse 
             </table>
