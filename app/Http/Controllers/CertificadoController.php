@@ -22,7 +22,6 @@ class CertificadoController extends Controller
         return response()->streamDownload(function () use ($path) {
             readfile($path);
     
-            // Elimina el archivo cuando termine de enviarlo
             register_shutdown_function(function () use ($path) {
                 if (file_exists($path)) {
                     @unlink($path);
