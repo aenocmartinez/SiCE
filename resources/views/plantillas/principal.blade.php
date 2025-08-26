@@ -126,7 +126,7 @@
               </li>
 
 
-                @if (Auth::user()->cumpleFuncionesComoOrientador())              
+                @if (Auth::user()->cumpleFuncionesComoOrientador() || Auth::user()->esSuperAdmin())              
                   
                   <li class="nav-main-heading">Control de asistencias</li>
                   <li class="nav-main-item">
