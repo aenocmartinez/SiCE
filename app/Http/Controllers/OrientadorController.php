@@ -257,7 +257,7 @@ class OrientadorController extends Controller
 
         $response = (new ObtenerDatosFormularioReporteAsistenciaUseCase)->ejecutar();
 
-        return view('orientadores.formulario-reportes', [
+        return view('orientadores.consultar_asistencia_por_sesion', [
             'datos' => $response->data['datos']
         ]);
     }
