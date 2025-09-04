@@ -436,107 +436,149 @@ class CalendarioDao extends Model implements CalendarioRepository {
         }
     }
 
-    public static function listadoParticipantesPorCalendario($calendarioId=0): array {
+    public static function listadoParticipantesPorCalendario($calendarioId = 0): array
+    {
         $participantes = [];
 
         try {
+            // Subconsulta: cantidad de inscripciones vigentes por convenio en el calendario dado
+            $vigentesPorConvenio = DB::table('formulario_inscripcion as fi2')
+                ->join('grupos as g2', 'g2.id', '=', 'fi2.grupo_id')
+                ->where('g2.calendario_id', '=', $calendarioId)
+                ->whereNotIn('fi2.estado', ['Anulado', 'Devuelto', 'Aplazado'])
+                ->selectRaw('fi2.convenio_id, COUNT(*) as total_vigentes')
+                ->groupBy('fi2.convenio_id');
+
             $items = DB::table('participantes as p')
-                    ->join('formulario_inscripcion as fi', 'fi.participante_id', '=', 'p.id')
-                    ->join('grupos as g', function($join) use ($calendarioId) {
-                        $join->on('g.id', '=', 'fi.grupo_id')
-                            ->where('g.calendario_id', '=', $calendarioId);
-                    })
-                    ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
-                    ->join('calendarios as ca', 'ca.id', '=', 'g.calendario_id')
-                    ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
-                    ->join('cursos as cu', 'cu.id', '=', 'cc.curso_id')
-                    ->join('areas as a', 'a.id', '=', 'cu.area_id')
-                    ->leftJoin('convenios as c', 'c.id', '=', 'fi.convenio_id')
-                    ->select(
-                        'fi.numero_formulario',
-                        DB::raw("CONCAT(p.primer_nombre, ' ', p.segundo_nombre, ' ', p.primer_apellido, ' ', p.segundo_apellido) AS nombre_participante"),
-                        DB::raw("CONCAT(p.tipo_documento, ' - ', p.documento) AS documento_participante"),
-                        'p.telefono',
-                        'p.email',
-                        DB::raw("IF(c.nombre IS NULL, 'N/A', c.nombre) as convenio"),
-                        DB::raw("IF(c.descuento IS NULL, 0, c.descuento) as convenio_porcentaje"),
-                        DB::raw("
-                            CASE 
-                                WHEN fi.estado IN ('Anulado', 'Devuelto', 'Aplazado') THEN 'No legalizado'
-                                WHEN fi.convenio_id IS NULL THEN  
-                                    IF(fi.estado='Pagado', 'Legalizado', 'No legalizado') 
-                                ELSE
-                                    IF(c.es_cooperativa, 'Legalizado', 
-                                        IF(fi.estado='Pagado', 'Legalizado', 'No legalizado')
-                                    )
-                            END as estadoInscripcion
-                        "),
-                        'g.nombre as grupo',
-                        'g.dia',
-                        'g.jornada',
-                        'a.nombre as nombre_area',
-                        'cu.nombre as curso',
-                        'o.nombre as orientador',
-                        'ca.nombre as calendario',
-                        'fi.costo_curso',
-                        'fi.valor_descuento',
-                        'fi.total_a_pagar',
-                        'p.sexo',
-                        'p.estado_civil',
-                        'p.direccion',
-                        'p.eps',
-                        'p.contacto_emergencia',
-                        'p.telefono_emergencia',
-                        'p.vinculado_a_unicolmayor',
-                        'fi.created_at as fecha_inscripcion',
-                        'fi.estado',
-                        'fi.numero_formulario',
-                    )
-                    ->orderBy('p.primer_nombre')
-                    ->orderBy('p.primer_apellido')
-                    ->get();
+                ->join('formulario_inscripcion as fi', 'fi.participante_id', '=', 'p.id')
+                ->join('grupos as g', function ($join) use ($calendarioId) {
+                    $join->on('g.id', '=', 'fi.grupo_id')
+                        ->where('g.calendario_id', '=', $calendarioId);
+                })
+                ->join('orientadores as o', 'o.id', '=', 'g.orientador_id')
+                ->join('calendarios as ca', 'ca.id', '=', 'g.calendario_id')
+                ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
+                ->join('cursos as cu', 'cu.id', '=', 'cc.curso_id')
+                ->join('areas as a', 'a.id', '=', 'cu.area_id')
+                ->leftJoin('convenios as c', 'c.id', '=', 'fi.convenio_id')
 
+                // Traer total de vigentes por convenio para este calendario
+                ->leftJoinSub($vigentesPorConvenio, 't', function ($j) {
+                    $j->on('t.convenio_id', '=', 'c.id');
+                })
 
-            $participantes[] = ['PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'GENERO', 'ESTADO_CIVIL', 'DIRECCION', 'EPS', 'CONTACTO_EMERGENCIA', 'TELEFONO_EMERGENCIA', 'VINCULADO_UNICOLMAYOR', 'AREA', 'CURSO', 'GRUPO', 'DIA', 'JORNADA', 'CONVENIO', 'CONVENIO_PORCENTAJE_DESCUENTO', 'COSTO_CURSO', 'VALOR_DESCUENTO', 'TOTAL_PAGO', 'ESTADO_LEGALIZADO', 'ESTADO_FORMULARIO', 'PERIODO', 'NUMERO_FORMULARIO_INSCRIPCION', 'FECHA_INSCRIPCION'];
-            foreach($items as $item) {            
-                $tieneVinculoUnicolMayor = ($item->vinculado_a_unicolmayor ? 'SI' : 'NO');    
-                $fechaInscripcion = new \DateTime($item->fecha_inscripcion);        
-                $participantes[] = [mb_strtoupper($item->nombre_participante, 'UTF-8'),
-                                    mb_strtoupper($item->documento_participante, 'UTF-8'), 
-                                    $item->telefono, 
-                                    mb_strtoupper($item->email, 'UTF-8'),
-                                    mb_strtoupper($item->sexo, 'UTF-8'),
-                                    mb_strtoupper($item->estado_civil, 'UTF-8'),
-                                    mb_strtoupper($item->direccion, 'UTF-8'),
-                                    mb_strtoupper($item->eps, 'UTF-8'),
-                                    mb_strtoupper($item->contacto_emergencia, 'UTF-8'),
-                                    mb_strtoupper($item->telefono_emergencia, 'UTF-8'),
-                                    mb_strtoupper($tieneVinculoUnicolMayor, 'UTF-8'),
-                                    mb_strtoupper($item->nombre_area, 'UTF-8'),  
-                                    mb_strtoupper($item->curso, 'UTF-8'),                                    
-                                    $item->grupo, 
-                                    mb_strtoupper($item->dia, 'UTF-8'), 
-                                    mb_strtoupper($item->jornada, 'UTF-8'),                
-                                    mb_strtoupper($item->convenio, 'UTF-8'), 
-                                    mb_strtoupper($item->convenio_porcentaje),                                                                         
-                                    number_format($item->costo_curso, 0, '', ''),
-                                    number_format($item->valor_descuento, 0, '', ''),                                    
-                                    number_format($item->total_a_pagar, 0, '', ''),
-                                    mb_strtoupper($item->estadoInscripcion, 'UTF-8'),
-                                    mb_strtoupper($item->estado, 'UTF-8'),
-                                    mb_strtoupper($item->calendario, 'UTF-8'),
-                                    mb_strtoupper($item->numero_formulario),
-                                    $fechaInscripcion->format('Y-m-d')
-                                ];
+                ->select(
+                    'fi.numero_formulario',
+                    DB::raw("CONCAT(p.primer_nombre, ' ', p.segundo_nombre, ' ', p.primer_apellido, ' ', p.segundo_apellido) AS nombre_participante"),
+                    DB::raw("CONCAT(p.tipo_documento, ' - ', p.documento) AS documento_participante"),
+                    'p.telefono',
+                    'p.email',
+                    DB::raw("IF(c.nombre IS NULL, 'N/A', c.nombre) as convenio"),
+
+                    // Porcentaje del convenio (cooperativa => regla; si no hay regla, cae a c.descuento; sin convenio => 0)
+                    DB::raw("
+                        CASE
+                            WHEN fi.convenio_id IS NULL THEN 0
+                            WHEN c.es_cooperativa = 1 THEN COALESCE(
+                                (SELECT rd.descuento
+                                FROM reglas_descuento rd
+                                WHERE rd.convenio_id = c.id
+                                    AND t.total_vigentes BETWEEN rd.min_participantes AND rd.max_participantes
+                                ORDER BY rd.min_participantes DESC
+                                LIMIT 1
+                                ),
+                                c.descuento, 0
+                            )
+                            ELSE c.descuento
+                        END AS convenio_porcentaje
+                    "),
+
+                    DB::raw("
+                        CASE 
+                            WHEN fi.estado IN ('Anulado', 'Devuelto', 'Aplazado') THEN 'No legalizado'
+                            WHEN fi.convenio_id IS NULL THEN  
+                                IF(fi.estado='Pagado', 'Legalizado', 'No legalizado') 
+                            ELSE
+                                IF(c.es_cooperativa, 'Legalizado', 
+                                    IF(fi.estado='Pagado', 'Legalizado', 'No legalizado')
+                                )
+                        END as estadoInscripcion
+                    "),
+                    'g.nombre as grupo',
+                    'g.dia',
+                    'g.jornada',
+                    'a.nombre as nombre_area',
+                    'cu.nombre as curso',
+                    'o.nombre as orientador',
+                    'ca.nombre as calendario',
+                    'fi.costo_curso',
+                    'fi.valor_descuento',
+                    'fi.total_a_pagar',
+                    'p.sexo',
+                    'p.estado_civil',
+                    'p.direccion',
+                    'p.eps',
+                    'p.contacto_emergencia',
+                    'p.telefono_emergencia',
+                    'p.vinculado_a_unicolmayor',
+                    'fi.created_at as fecha_inscripcion',
+                    'fi.estado',
+                    'fi.numero_formulario'
+                )
+                ->orderBy('p.primer_nombre')
+                ->orderBy('p.primer_apellido')
+                ->get();
+
+            // Encabezados
+            $participantes[] = [
+                'PARTICIPANTE', 'DOCUMENTO', 'TELEFONO', 'CORREO_ELECTRONICO', 'GENERO',
+                'ESTADO_CIVIL', 'DIRECCION', 'EPS', 'CONTACTO_EMERGENCIA', 'TELEFONO_EMERGENCIA',
+                'VINCULADO_UNICOLMAYOR', 'AREA', 'CURSO', 'GRUPO', 'DIA', 'JORNADA',
+                'CONVENIO', 'CONVENIO_PORCENTAJE_DESCUENTO', 'COSTO_CURSO', 'VALOR_DESCUENTO',
+                'TOTAL_PAGO', 'ESTADO_LEGALIZADO', 'ESTADO_FORMULARIO', 'PERIODO',
+                'NUMERO_FORMULARIO_INSCRIPCION', 'FECHA_INSCRIPCION'
+            ];
+
+            foreach ($items as $item) {
+                $tieneVinculoUnicolMayor = ($item->vinculado_a_unicolmayor ? 'SI' : 'NO');
+                $fechaInscripcion = new \DateTime($item->fecha_inscripcion);
+
+                $participantes[] = [
+                    mb_strtoupper($item->nombre_participante, 'UTF-8'),
+                    mb_strtoupper($item->documento_participante, 'UTF-8'),
+                    $item->telefono,
+                    mb_strtoupper($item->email, 'UTF-8'),
+                    mb_strtoupper($item->sexo, 'UTF-8'),
+                    mb_strtoupper($item->estado_civil, 'UTF-8'),
+                    mb_strtoupper($item->direccion, 'UTF-8'),
+                    mb_strtoupper($item->eps, 'UTF-8'),
+                    mb_strtoupper($item->contacto_emergencia, 'UTF-8'),
+                    mb_strtoupper($item->telefono_emergencia, 'UTF-8'),
+                    mb_strtoupper($tieneVinculoUnicolMayor, 'UTF-8'),
+                    mb_strtoupper($item->nombre_area, 'UTF-8'),
+                    mb_strtoupper($item->curso, 'UTF-8'),
+                    $item->grupo,
+                    mb_strtoupper($item->dia, 'UTF-8'),
+                    mb_strtoupper($item->jornada, 'UTF-8'),
+                    mb_strtoupper($item->convenio, 'UTF-8'),
+                    // El porcentaje ya viene resuelto arriba (numérico). Si prefieres con símbolo, concatena aquí.
+                    (string)$item->convenio_porcentaje,
+                    number_format($item->costo_curso, 0, '', ''),
+                    number_format($item->valor_descuento, 0, '', ''),
+                    number_format($item->total_a_pagar, 0, '', ''),
+                    mb_strtoupper($item->estadoInscripcion, 'UTF-8'),
+                    mb_strtoupper($item->estado, 'UTF-8'),
+                    mb_strtoupper($item->calendario, 'UTF-8'),
+                    mb_strtoupper($item->numero_formulario),
+                    $fechaInscripcion->format('Y-m-d')
+                ];
             }
-
-
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             Sentry::captureException($e);
         }
-        
-        return $participantes;        
-    } 
+
+        return $participantes;
+    }
     
     public static function listaDeGrupos($calendarioId): array {
         $grupos = [];
