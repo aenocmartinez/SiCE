@@ -168,6 +168,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/grupos/estado-cursos/{tipo}', [GrupoController::class, 'listarCursosAbiertosOCerrados'])->middleware('role:Admin,superAdmin')->name('grupos.estado-cursos');
     Route::get('/grupos/{id}/participantes-pendientes-pago', [GrupoController::class, 'listarParticipantesPendientesDePagoPorGrupo'])->middleware('role:Admin,superAdmin')->name('grupos.participantesPendientesPago');
 
+    Route::get('/grupos/{id}/descargar-registro-asistencia', [GrupoController::class, 'descargarMatrizAsistencia'])->middleware('role:Admin,superAdmin')->name('grupos.descargar-registro-asistencia');
+
     Route::get('/tipo-salones/{id}/editar', [TipoSalonController::class, 'edit'])->middleware('role:Admin,superAdmin')->name('tipo-salones.edit');
     Route::get('/tipo-salones/crear', [TipoSalonController::class, 'create'])->middleware('role:Admin,superAdmin')->name('tipo-salones.create');
     Route::post('/tipo-salones', [TipoSalonController::class, 'store'])->middleware('role:Admin,superAdmin')->name('tipo-salones.store');

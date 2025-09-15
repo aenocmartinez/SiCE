@@ -199,6 +199,13 @@
 
                                 <div class="text-center d-flex justify-content-center align-items-center">
                                     @if (!$grupo->estaCancelado())
+
+                                    <a href="{{ route('grupos.descargar-registro-asistencia', $grupo->getId()) }}" 
+                                        class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info me-2">
+                                        <i class="fa fa-fw fa-download"></i> Descargar registro asistencia
+                                    </a>
+
+                                    
                                     <a href="{{ route('grupos.descargar-planilla-asistencia', $grupo->getId()) }}" 
                                         class="fs-xs fw-semibold d-inline-block py-1 px-3 btn rounded-pill btn-outline-info me-2">
                                         <i class="fa fa-fw fa-download"></i> Planilla asistencia

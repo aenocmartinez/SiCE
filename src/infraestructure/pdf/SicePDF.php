@@ -33,13 +33,13 @@ class SicePDF {
             // $mpdf->WriteHTML($stylesheet2, \Mpdf\HTMLParserMode::HEADER_CSS);
 
             date_default_timezone_set('America/Bogota');
-            $html .= '
-                    <br><br><br><br><br>
-                    <div style="margin-left: 50px;">
-                        <p style="width: 200px; border-bottom: 1px solid #000; display: inline-block; margin-bottom: 2px;">&nbsp;</p>
-                        <p style="margin-top: 0;">Firma del docente</p>
-                    </div>
-                ';
+            // $html .= '
+            //         <br><br><br><br><br>
+            //         <div style="margin-left: 50px;">
+            //             <p style="width: 200px; border-bottom: 1px solid #000; display: inline-block; margin-bottom: 2px;">&nbsp;</p>
+            //             <p style="margin-top: 0;">Firma del docente</p>
+            //         </div>
+            //     ';
             
             // Añadir pie de página con la fecha y hora de Colombia
             $footerText = 'Vicerrectoría de Investigación, Innovación y Extensión Subdirección de Proyección y Extensión';

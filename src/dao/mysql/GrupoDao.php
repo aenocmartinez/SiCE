@@ -1023,6 +1023,8 @@ class GrupoDao extends Model implements GrupoRepository {
             ->join('curso_calendario as cc','cc.id','=','gr.curso_calendario_id')
             ->join('cursos as c','c.id','=','cc.curso_id')
             ->join('areas as a','a.id','=','c.area_id')
+            ->join('orientadores as o','o.id','=','gr.orientador_id')
+            ->join('calendarios as ca','ca.id','=','cc.calendario_id')
             ->where('gr.id', $grupoId)
             ->first([
                 'gr.id',
@@ -1031,17 +1033,21 @@ class GrupoDao extends Model implements GrupoRepository {
                 's.nombre as salon',
                 'c.nombre as nombre_curso',
                 'a.nombre as area',
+                'o.nombre as orientador',
+                'ca.nombre as calendario',
             ]);
 
         if (!$g) return null;
 
         return [
-            'id'           => (int)$g->id,
-            'dia'          => $g->dia,
-            'jornada'      => $g->jornada,
-            'salon'        => $g->salon,
-            'nombre_curso' => $g->nombre_curso,
-            'area'         => $g->area,
+            'id'           => (int) $g->id,
+            'dia'          => mb_convert_case($g->dia ?? '', MB_CASE_TITLE, "UTF-8"),
+            'jornada'      => mb_convert_case($g->jornada ?? '', MB_CASE_TITLE, "UTF-8"),
+            'salon'        => mb_convert_case($g->salon ?? '', MB_CASE_TITLE, "UTF-8"),
+            'nombre_curso' => mb_convert_case($g->nombre_curso ?? '', MB_CASE_TITLE, "UTF-8"),
+            'area'         => mb_convert_case($g->area ?? '', MB_CASE_TITLE, "UTF-8"),
+            'orientador'   => mb_convert_case($g->orientador ?? '', MB_CASE_TITLE, "UTF-8"),
+            'calendario'   => mb_convert_case($g->calendario ?? '', MB_CASE_TITLE, "UTF-8"),
         ];
     }
     

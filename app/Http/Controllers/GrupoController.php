@@ -25,6 +25,7 @@ use Src\usecase\grupos\ListarGruposUseCase;
 use Src\usecase\grupos\ListarParticipantesGrupoUseCase as GruposListarParticipantesGrupoUseCase;
 use Src\usecase\grupos\ListarParticipantesPlanillaAsistenciaUseCase;
 use Src\usecase\orientadores\ListarOrientadoresUseCase;
+use Src\usecase\orientadores\ObtenerMatrizAsistenciaPorGrupoUseCase;
 use Src\usecase\salones\ListarSalonesPorEstadoUseCase;
 use Src\view\dto\GrupoDto;
 
@@ -240,9 +241,217 @@ class GrupoController extends Controller
         return response()->stream($callback, 200, $headers);        
     }
 
+    // public function descargarMatrizAsistencia($grupoId=0) {    
+
+    //     $datos = (new ObtenerMatrizAsistenciaPorGrupoUseCase)->ejecutar($grupoId);
+    //     if ($datos->code != "200") {
+    //         return redirect()->route('grupos.index')->with('code', $datos->code)->with('status', $datos->message);
+    //     }        
+        
+    //     $fileName = 'registro_asistencia_G'.$grupoId.'.csv';
+
+    //     $headers = [
+    //         'Content-Type' => 'text/csv',
+    //         'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+    //     ];
+
+    //     $callback = function () use ($datos) {
+    //         $file = fopen('php://output', 'w');
+
+    //         // Encabezados
+    //         $header = ['Nombres', 'Documento', 'Convenio'];
+    //         foreach ($datos->data['sesiones'] as $s) {
+    //             $header[] = "Sesión: " . $s['num'] . " (" . ($s['fecha'] ?? '') . ")";
+    //         }
+    //         fputcsv($file, $header);
+
+    //         // Filas de participantes
+    //         foreach ($datos->data['participantes'] as $p) {
+    //             $row = [
+    //                 $p['nombre'],
+    //                 $p['doc'],
+    //                 $p['convenio'],
+    //             ];
+    //             foreach ($datos->data['sesiones'] as $s) {
+    //                 $asistio = $p['sesiones'][$s['num']] ?? false;
+    //                 $row[] = $asistio ? 'SI' : 'NO';
+    //             }
+    //             fputcsv($file, $row);
+    //         }
+
+    //         fclose($file);
+    //     };
+
+    //     return response()->stream($callback, 200, $headers);        
+    // }
+
+public function descargarMatrizAsistencia($grupoId = 0)
+{
+    $datos = (new ObtenerMatrizAsistenciaPorGrupoUseCase)->ejecutar($grupoId);
+    if ($datos->code != "200") {
+        return redirect()
+            ->route('grupos.index')
+            ->with('code', $datos->code)
+            ->with('status', $datos->message);
+    }
+
+    $meta = $datos->data['meta'] ?? [];
+    $metaId         = (int)($meta['id']           ?? $grupoId);
+    $metaDia        = $meta['dia']                ?? '';
+    $metaJornada    = $meta['jornada']            ?? '';
+    $metaSalon      = $meta['salon']              ?? '';
+    $metaCurso      = $meta['nombre_curso']       ?? '';
+    $metaArea       = $meta['area']               ?? '';
+    $metaOrientador = $meta['orientador']         ?? '';
+    $metaPeriodo    = $meta['calendario']         ?? '';
+
+    $numeroParticipantes = is_countable($datos->data['participantes'] ?? [])
+        ? count($datos->data['participantes'])
+        : 0;
+
+    $headersSesiones = range(1, 16);
+
+    $sesionesConRegistro = array_fill_keys($headersSesiones, false);
+    foreach ($datos->data['participantes'] as $p) {
+        $ses = $p['sesiones'] ?? [];
+        if (is_array($ses)) {
+            foreach ($headersSesiones as $num) {
+                if (array_key_exists($num, $ses)) {
+                    $sesionesConRegistro[$num] = true;
+                }
+            }
+        }
+    }
+
+    $fechasPorSesion = array_fill(1, 16, '');
+    if (!empty($datos->data['sesiones']) && is_array($datos->data['sesiones'])) {
+        foreach ($datos->data['sesiones'] as $s) {
+            $num = isset($s['num']) ? (int)$s['num'] : 0;
+            if ($num >= 1 && $num <= 16) {
+                $raw = $s['fecha'] ?? '';
+                $fmt = '';
+                if (!empty($raw)) {
+                    $ts = strtotime($raw);
+                    $fmt = $ts ? date('d/m/Y', $ts) : $raw;
+                }
+                $fechasPorSesion[$num] = $fmt;
+            }
+        }
+    }
+
+    $tituloPlano = "Universidad Colegio Mayor de Cundinamarca - Cursos de Extensión - Registro de Asistencia";
+
+    $thead = '<tr>';
+    $thead .= '<th class="th-participantes">PARTICIPANTES</th>';
+    foreach ($headersSesiones as $n) {
+        $fecha = $fechasPorSesion[$n] ?? '';
+        $thead .= '<th class="th-sesion center">';
+        $thead .=    '<div class="num">Ses.&nbsp;'.$n.'</div>';
+        if (!empty($fecha)) {
+            $thead .= '<div class="fecha">'.htmlspecialchars($fecha, ENT_QUOTES, 'UTF-8').'</div>';
+        }
+        $thead .= '</th>';
+    }
+    $thead .= '<th class="th-convenio">CONVENIO</th>';
+    $thead .= '</tr>';
+
+
+    $tbody = '';
+    foreach ($datos->data['participantes'] as $p) {
+
+        $nombre = mb_strtoupper($p['nombre'] ?? '', 'UTF-8');
+        $doc    = mb_strtoupper($p['doc']    ?? '', 'UTF-8');
+        $conv   = mb_strtoupper($p['convenio'] ?? '', 'UTF-8');
+
+        $celdaParticipante = sprintf(
+            '<td class="student-name">%s<br><span class="doc">%s</span></td>',
+            htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8'),
+            htmlspecialchars($doc, ENT_QUOTES, 'UTF-8')
+        );
+
+        $celdasSesiones = '';
+        $sesionesDelParticipante = $p['sesiones'] ?? [];
+        foreach ($headersSesiones as $num) {
+            if (is_array($sesionesDelParticipante) && array_key_exists($num, $sesionesDelParticipante)) {
+                $valor = $sesionesDelParticipante[$num];
+               
+                $celdasSesiones .= '<td class="day-cell center">'.($valor ? 'SI' : 'NO').'</td>';
+            } else {
+
+                $celdasSesiones .= '<td class="day-cell center">'.($sesionesConRegistro[$num] ? 'NO' : '').'</td>';
+            }
+        }
+
+        $celdaConvenio = '<td class="convenio-cell">'.htmlspecialchars($conv, ENT_QUOTES, 'UTF-8').'</td>';
+
+        $tbody .= '<tr>'.$celdaParticipante.$celdasSesiones.$celdaConvenio.'</tr>';
+    }
+
+    $html = <<<HTML
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="utf-8">
+    </head>
+    <body>
+
+      <div class="sheet-header">
+        <h1 class="titulo dropcap">{$tituloPlano}</h1>
+      </div>
+
+      <table class="meta-block">
+        <tr>
+          <th>CURSO:</th><td>{$metaCurso}</td>
+          <th>GRUPO:</th><td>G{$metaId}</td>
+        </tr>
+        <tr>
+          <th>ÁREA:</th><td>{$metaArea}</td>
+          <th>SALÓN:</th><td>{$metaSalon}</td>
+        </tr>
+        <tr>
+          <th>HORARIO:</th><td>{$metaDia}, {$metaJornada}</td>
+          <th>PERÍODO:</th><td>{$metaPeriodo}</td>
+        </tr>
+        <tr>
+          <th>INSTRUCTOR:</th><td>{$metaOrientador}</td>
+          <th>NÚMERO PARTICIPANTES:</th><td>{$numeroParticipantes}</td>
+        </tr>
+      </table>
+
+      <table class="asistencia">
+        <thead>{$thead}</thead>
+        <tbody>{$tbody}</tbody>
+      </table>
+    </body>
+    </html>
+    HTML;
+
+    $path_css1 = __DIR__ . "/../../../src/infraestructure/registroAsistencia/template/style.css";
+    $nombre_archivo = "REGISTRO_ASISTENCIA_G{$metaId}.pdf";
+
+    $dataPdf = new DataPDF($nombre_archivo);
+    $dataPdf->setData([
+        'path_css1'   => $path_css1,
+        'html'        => $html,
+        'format'      => 'Letter',
+        'orientation' => 'L',
+    ]);
+
+    SicePDF::generarFormatoPago($dataPdf);
+
+    $ruta_archivo = storage_path() . '/' . $nombre_archivo;
+    $headers = [
+        'Content-Type'        => 'application/pdf',
+        'Content-Disposition' => 'attachment; filename="' . $nombre_archivo . '"',
+    ];
+
+    return response()->download($ruta_archivo, $nombre_archivo, $headers)->deleteFileAfterSend(true);
+}
+
+
     public function descargarPlanillaAsistencia($grupoId=0) {    
 
-        $datos = (new ListarParticipantesPlanillaAsistenciaUseCase)->ejecutar($grupoId);
+        $datos = (new ListarParticipantesPlanillaAsistenciaUseCase)->ejecutar($grupoId);        
         if (sizeof($datos) == 1) {
             return redirect()->route('grupos.index')->with('code', "500")->with('status', "No tiene participantes inscritos");
         }            
