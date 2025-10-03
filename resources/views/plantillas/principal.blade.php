@@ -123,6 +123,10 @@
                   <span class="nav-main-link-name">Consultar comentarios</span>
                 </a>
 
+                <a class="nav-main-link {{ setActive(['correcciones', 'correcciones.*']) }}" href="{{ route('correcciones.asistencia') }}">
+                  <span class="nav-main-link-name">Corrección de asistencias</span>
+                </a>                
+
               </li>
 
 
@@ -252,7 +256,7 @@
                 <h1 class="fw-light mb-0">
                 @yield('title')
                 </h1>
-                <h2 class="fs-base lh-base fw-normal text-muted mb-5">              
+                <h2 class="fs-base lh-base fw-normal text-muted mb-1">              
                 @yield('description')
                 </h2>
               </div>
@@ -355,5 +359,7 @@
           window.location.href = "{{ route('formulario-inscripcion.descargar-formato-pago', [session('nombre_archivo')]) }}";
       </script>
       @endif
+      
+      @stack('page-scripts')
   </body>
 </html>

@@ -14,6 +14,7 @@ use App\Http\Controllers\CalendarioController;
 use App\Http\Controllers\CambiosTrasladosController;
 use App\Http\Controllers\CertificadoController;
 use App\Http\Controllers\ConvenioController;
+use App\Http\Controllers\CorreccionAsistenciaController;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\DashboardController;
 
@@ -257,7 +258,26 @@ Route::middleware('auth')->group(function () {
     Route::get('/asistencia/asistencia-json', [OrientadorController::class, 'asistenciaPorSesionJson'])
         ->name('asistencia.asistencia-json'); // ?grupo_id=...&sesion=...
 
-    Route::get('/asistencia/participante/matriz', [OrientadorController::class, 'matrizAsistenciaPorGrupoJson'])->name('asistencia.participante-matriz');        
+    Route::get('/asistencia/participante/matriz', [OrientadorController::class, 'matrizAsistenciaPorGrupoJson'])->name('asistencia.participante-matriz');    
+    
+    // Correcciones de asistencia
+    Route::get('/correcciones/asistencia', [CorreccionAsistenciaController::class, 'index'])->name('correcciones.asistencia');
+    Route::post('/correcciones/buscar-participante', [CorreccionAsistenciaController::class, 'buscarParticipantePorDocumento'])->middleware('role:Admin,superAdmin')->name('correcciones.buscar-participante');
+    Route::get('/correcciones/asistencia/grupos-json', [CorreccionAsistenciaController::class, 'gruposPorPeriodoJson'])->name('correcciones.asistencia.grupos-json');
+
+    Route::get('/correcciones/participantes/{participanteId}/periodos',
+        [CorreccionAsistenciaController::class, 'periodosDeParticipante']
+    )->middleware('role:Admin,superAdmin')->name('correcciones.participante.periodos');
+
+    Route::get('/correcciones/asistencia/sesiones/{participanteId}/{grupoId}',
+        [CorreccionAsistenciaController::class, 'sesionesDeParticipanteEnGrupo']
+    )->name('correcciones.asistencia.sesiones');
+
+    Route::get('/correcciones/asistencia/participante/grupos-json',
+        [CorreccionAsistenciaController::class, 'gruposPorPeriodoDeParticipante']
+    )->name('correcciones.asistencia.grupos-json');
+
+
 
 
 

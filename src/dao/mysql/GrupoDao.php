@@ -1161,5 +1161,41 @@ class GrupoDao extends Model implements GrupoRepository {
         ], $rows->all());
     }
 
+
+    /**
+     * Lista grupos del orientador en un periodo (sin datos pesados).
+     * Retorna arreglo con: id, codigo_grupo, dia, jornada, salon, nombre_curso, area
+     */
+    public function listarGruposPorPeriodo(int $periodoId): array
+    {
+        return DB::table('grupos as g')
+            ->join('salones as s','s.id','=','g.salon_id')
+            ->join('curso_calendario as cc','cc.id','=','g.curso_calendario_id')
+            ->join('cursos as c','c.id','=','cc.curso_id')
+            ->join('areas as a','a.id','=','c.area_id')
+            ->where('g.calendario_id', $periodoId)
+            ->where('g.cancelado', 0)
+            ->orderBy('g.id','desc')
+            ->get([
+                'g.id',
+                'g.nombre as codigo_grupo',
+                'g.dia',
+                'g.jornada',
+                's.nombre as salon',
+                'c.nombre as nombre_curso',
+                'a.nombre as area',
+            ])
+            ->map(fn($r) => [
+                'id'           => (int)$r->id,
+                'codigo_grupo' => $r->codigo_grupo,
+                'dia'          => $r->dia,
+                'jornada'      => $r->jornada,
+                'salon'        => $r->salon,
+                'nombre_curso' => $r->nombre_curso,
+                'area'         => $r->area,
+            ])
+            ->toArray();
+    }  
+
     
 }
