@@ -35,16 +35,16 @@ class BancoPreguntasIdentidad
             //     'campos' => ['eps'],
             //     'tipo' => 'simple',
             // ],
-            [
-                'texto' => 'Complete su número de teléfono: 320 *** **89',
-                'campos' => ['telefono'],
-                'tipo' => 'oculto_telefono',
-            ],
-            [
-                'texto' => 'Complete su correo: ***@dominio',
-                'campos' => ['email'],
-                'tipo' => 'oculto_correo',
-            ],
+            // [
+            //     'texto' => 'Complete su número de teléfono: 320 *** **89',
+            //     'campos' => ['telefono'],
+            //     'tipo' => 'oculto_telefono',
+            // ],
+            // [
+            //     'texto' => 'Complete su correo: ***@dominio',
+            //     'campos' => ['email'],
+            //     'tipo' => 'oculto_correo',
+            // ],
             // [
             //     'texto' => '¿Cuál fue el año de su último curso aprobado?',
             //     'campos' => ['ultimo_curso_aprobado'],
