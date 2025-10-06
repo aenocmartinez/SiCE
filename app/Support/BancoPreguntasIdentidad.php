@@ -165,6 +165,115 @@ class BancoPreguntasIdentidad
     //     };
     // }    
 
+    private static function normalizar(string $texto): string
+    {
+        // Elimina espacios al inicio y final
+        $texto = trim($texto);
+
+        // Convierte a minúsculas
+        $texto = mb_strtolower($texto, 'UTF-8');
+
+        // Sustituye caracteres acentuados y eñes
+        $originales = ['á', 'é', 'í', 'ó', 'ú', 'ñ'];
+        $reemplazos = ['a', 'e', 'i', 'o', 'u', 'n'];
+        $texto = str_replace($originales, $reemplazos, $texto);
+
+        // También sustituimos sus versiones mayúsculas por si acaso
+        $originalesM = ['Á', 'É', 'Í', 'Ó', 'Ú', 'Ñ'];
+        $reemplazosM = ['a', 'e', 'i', 'o', 'u', 'n'];
+        $texto = str_replace($originalesM, $reemplazosM, $texto);
+
+        // Reemplaza múltiples espacios por uno solo
+        $texto = preg_replace('/\s+/', ' ', $texto);
+
+        return $texto;
+    }    
+
+    // public static function respuestaEsperada(array $pregunta, Participante $participante): string
+    // {
+    //     $tipo = $pregunta['tipo'];
+    //     $extra = isset($pregunta['extra']) ? $pregunta['extra'] : null;
+
+    //     $map = [
+    //         'primer_nombre' => 'getPrimerNombre',
+    //         'segundo_nombre' => 'getSegundoNombre',
+    //         'primer_apellido' => 'getPrimerApellido',
+    //         'segundo_apellido' => 'getSegundoApellido',
+    //         'fecha_nacimiento' => 'getFechaNacimiento',
+    //         'tipo_documento' => 'getTipoDocumento',
+    //         'documento' => 'getDocumento',
+    //         'direccion' => 'getDireccion',
+    //         'telefono' => 'getTelefono',
+    //         'email' => 'getEmail',
+    //         'eps' => 'getEps',
+    //         'estado_civil' => 'getEstadoCivil',
+    //         'sexo' => 'getSexo',
+    //         'contacto_emergencia' => 'getContactoEmergencia',
+    //         'telefono_contacto_emergencia' => 'getTelefonoEmergencia',
+    //         'ultimo_curso_aprobado' => 'getFormularioInscripcion',
+    //     ];
+
+    //     $valores = collect($pregunta['campos'])->map(function ($campo) use ($map, $participante) {
+    //         if (!isset($map[$campo])) {
+    //             throw new \Exception("Getter no definido para el campo '$campo'");
+    //         }
+
+    //         $getter = $map[$campo];
+    //         $valor = $participante->$getter();
+
+    //         if ($campo === 'ultimo_curso_aprobado') {
+    //             try {
+    //                 $valor = $participante->cursosAprobados();
+    //                 if (empty($valor)) {
+    //                     return '';
+    //                 }
+
+    //                 $ultimo = collect($valor)->last();
+    //                 return date('Y', strtotime($ultimo->getFechaFin()));
+    //             } catch (\Throwable $e) {
+    //                 return '';
+    //             }
+    //         }
+
+    //         return strtolower(trim($valor));
+    //     });
+
+    //     switch ($tipo) {
+    //         case 'atomizada':
+    //             switch ($extra) {
+    //                 case 'year':
+    //                     return date('Y', strtotime($valores[0]));
+    //                 case 'month':
+    //                     return date('m', strtotime($valores[0]));
+    //                 case 'day':
+    //                     return date('d', strtotime($valores[0]));
+    //                 default:
+    //                     return $valores[0];
+    //             }
+
+    //         case 'parcial':
+    //             switch ($extra) {
+    //                 case 'ultimos_3':
+    //                     return substr($valores[0], -3);
+    //                 case 'primeros_3':
+    //                     return substr($valores[0], 0, 3);
+    //                 default:
+    //                     return $valores[0];
+    //             }
+
+    //         case 'compuesta':
+    //             return $valores->implode(' ');
+
+    //         case 'oculto_correo':
+    //         case 'oculto_direccion':
+    //         case 'oculto_telefono':
+    //         case 'oculto_anio_nacimiento':
+    //         case 'simple':
+    //         default:
+    //             return $valores[0];
+    //     }
+    // }
+
     public static function respuestaEsperada(array $pregunta, Participante $participante): string
     {
         $tipo = $pregunta['tipo'];
@@ -211,7 +320,7 @@ class BancoPreguntasIdentidad
                 }
             }
 
-            return strtolower(trim($valor));
+            return self::normalizar($valor ?? '');
         });
 
         switch ($tipo) {
@@ -224,29 +333,24 @@ class BancoPreguntasIdentidad
                     case 'day':
                         return date('d', strtotime($valores[0]));
                     default:
-                        return $valores[0];
+                        return self::normalizar($valores[0]);
                 }
 
             case 'parcial':
                 switch ($extra) {
                     case 'ultimos_3':
-                        return substr($valores[0], -3);
+                        return self::normalizar(substr($valores[0], -3));
                     case 'primeros_3':
-                        return substr($valores[0], 0, 3);
+                        return self::normalizar(substr($valores[0], 0, 3));
                     default:
-                        return $valores[0];
+                        return self::normalizar($valores[0]);
                 }
 
             case 'compuesta':
-                return $valores->implode(' ');
+                return self::normalizar($valores->implode(' '));
 
-            case 'oculto_correo':
-            case 'oculto_direccion':
-            case 'oculto_telefono':
-            case 'oculto_anio_nacimiento':
-            case 'simple':
             default:
-                return $valores[0];
+                return self::normalizar($valores[0]);
         }
     }
 
