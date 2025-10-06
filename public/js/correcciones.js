@@ -340,22 +340,33 @@ function render_formulario_sesiones(data){
   // Normalizamos datos de cada sesión y pintamos filas
   sesiones
     .map((s, idx) => {
-      const id = Number(s.id ?? s.sesion_id ?? 0);
+      // id estable de la SESIÓN (no del registro de asistencia). Probamos varias llaves.
+      const session_id =
+        Number(
+          s.sesion_id ??
+          s.session_id ??
+          s.sid ??
+          s.session ??
+          s.sesion ??
+          s.id ??               // a veces el backend manda "id" como id de sesión
+          0
+        );
+
       const numero = Number(s.numero ?? s.nro ?? s.orden ?? s.num ?? (idx + 1));
       const asistio = Number(s.asistio ?? s.presente ?? s.asistencia ?? 0);
 
-      // Fecha de registro del participante
+      // Fecha de registro del participante (si existe)
       const fecha_registro = String(
         s.fecha_registro_participante ??
         s.fecha_registro ??
         s.fecha_asistencia ??
         s.fecha_participante ??
-        s.fecha ?? 
+        s.fecha ??
         s.fecha_iso ??
         ''
       ).trim();
 
-      return { id, numero, asistio, fecha_registro };
+      return { session_id, numero, asistio, fecha_registro };
     })
     .sort((a,b) => a.numero - b.numero)
     .forEach((s) => {
@@ -371,9 +382,13 @@ function render_formulario_sesiones(data){
         estadoTexto = 'No asistió';
         estadoClase = 'text-danger fw-semibold';
       } else {
+        // no hay registro para el participante en esa sesión
         estadoTexto = 'Sin registro';
         estadoClase = 'text-muted fst-italic';
       }
+
+      // switch habilitado sólo si tenemos un id de sesión válido
+      const canToggle = Number.isFinite(s.session_id) && s.session_id > 0;
 
       tr.innerHTML = `
         <td>Sesión ${s.numero || ''}</td>
@@ -381,17 +396,20 @@ function render_formulario_sesiones(data){
         <td>
           <div class="form-check form-switch mb-0">
             <input class="form-check-input sesion-switch" type="checkbox"
-              data-sesion_id="${s.id}" ${s.asistio ? 'checked' : ''}>
+              data-sesion_id="${canToggle ? s.session_id : ''}"
+              ${s.asistio ? 'checked' : ''} ${!canToggle ? 'disabled' : ''} ${!canToggle ? 'title="No se encontró el id de la sesión"' : ''}>
           </div>
         </td>
       `;
 
-      // Guardar estado inicial y nuevo
-      cambiosPendientes[s.id] = {
-        sesion_id: s.id,
-        asistio_inicial: s.asistio,
-        asistio_nuevo: s.asistio
-      };
+      // Persistimos estado inicial/nuevo para detectar cambios (sólo si tenemos id válido)
+      if (canToggle) {
+        cambiosPendientes[s.session_id] = {
+          sesion_id: s.session_id,
+          asistio_inicial: s.asistio,
+          asistio_nuevo: s.asistio
+        };
+      }
 
       tbody.appendChild(tr);
     });
@@ -408,8 +426,8 @@ function render_formulario_sesiones(data){
   const footer = document.createElement('div');
   footer.className = 'd-flex align-items-center gap-2 mt-3';
   footer.innerHTML = `
-    <button id="btn_guardar" class="btn btn-primary" disabled>Guardar cambios</button>
-    <button id="btn_cancelar" class="btn btn-outline-secondary">Cancelar</button>
+    <button id="btn_guardar" type="button" class="btn btn-primary" disabled>Guardar cambios</button>
+    <button id="btn_cancelar" type="button" class="btn btn-outline-secondary">Cancelar</button>
     <span id="hint_guardado" class="text-muted small ms-2"></span>
   `;
 
@@ -419,8 +437,12 @@ function render_formulario_sesiones(data){
 
   // --- Listeners de switches ---
   contSesiones.querySelectorAll('.sesion-switch').forEach(chk => {
+    if (chk.disabled) return; // ignoramos si no hay id de sesión
+
     chk.addEventListener('change', () => {
       const sid = Number(chk.dataset.sesion_id);
+      if (!Number.isFinite(sid) || !(sid in cambiosPendientes)) return;
+
       cambiosPendientes[sid].asistio_nuevo = chk.checked ? 1 : 0;
       evaluar_habilitar_guardar();
     });
