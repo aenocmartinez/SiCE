@@ -10,7 +10,6 @@
   <div class="card shadow-sm border-0 rounded-4">
     <div class="card-body p-3 p-md-4">
       <div class="d-flex align-items-center justify-content-between mb-2">
-        
         <small id="hint" class="text-secondary">Ingresa tipo y número de documento</small>
       </div>
 
@@ -52,42 +51,40 @@
   </div>
 
   <!-- PASO 2: PERIODOS DEL PARTICIPANTE -->
-<div id="panel-periodos" class="mt-3 d-none">
-  <div class="card shadow-sm border-0 rounded-4">
-    <div class="card-body p-3 p-md-4">
-      <div class="d-flex align-items-center justify-content-between mb-2">
-        <h2 class="h6 mb-0 text-muted">Selecciona el periodo</h2>
-        <small class="text-secondary" id="resumen-participante"></small>
-      </div>
+  <div id="panel-periodos" class="mt-3 d-none">
+    <div class="card shadow-sm border-0 rounded-4">
+      <div class="card-body p-3 p-md-4">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h2 class="h6 mb-0 text-muted">Selecciona el periodo</h2>
+          <small class="text-secondary" id="resumen-participante"></small>
+        </div>
 
-      <div id="chips-periodos" class="d-flex flex-wrap gap-2"></div>
+        <div id="chips-periodos" class="d-flex flex-wrap gap-2"></div>
 
-      <div id="alert-periodos" class="alert alert-warning alert-slim mt-3 d-none">
-        El participante no tiene periodos asociados.
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- PASO 3: GRUPOS EN EL PERIODO (lo llenaremos después) -->
-<div id="panel-grupos" class="mt-3 d-none">
-  <div class="card shadow-sm border-0 rounded-4">
-    <div class="card-body p-3 p-md-4">
-      <div class="d-flex align-items-center justify-content-between mb-2">
-        <h2 class="h6 mb-0 text-muted">Grupos del periodo</h2>
-        <small class="text-secondary" id="resumen-periodo"></small>
-      </div>
-
-      <ul id="lista-grupos" class="list-group rounded-4 overflow-hidden"></ul>
-
-      <div id="alert-grupos" class="alert alert-warning alert-slim mt-3 d-none">
-        No se encontraron grupos en este periodo.
+        <div id="alert-periodos" class="alert alert-warning alert-slim mt-3 d-none">
+          El participante no tiene periodos asociados.
+        </div>
       </div>
     </div>
   </div>
-</div>
 
+  <!-- PASO 3: GRUPOS EN EL PERIODO -->
+  <div id="panel-grupos" class="mt-3 d-none">
+    <div class="card shadow-sm border-0 rounded-4">
+      <div class="card-body p-3 p-md-4">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h2 class="h6 mb-0 text-muted">Grupos del periodo</h2>
+          <small class="text-secondary" id="resumen-periodo"></small>
+        </div>
 
+        <ul id="lista-grupos" class="list-group rounded-4 overflow-hidden"></ul>
+
+        <div id="alert-grupos" class="alert alert-warning alert-slim mt-3 d-none">
+          No se encontraron grupos en este periodo.
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>
 
@@ -121,21 +118,17 @@
     border-radius:.75rem; padding:.6rem .8rem; margin:0;
   }
 </style>
-
 @endsection
 
 @push('page-scripts')
-  <script>
-    window.CorreccionesCFG = {
-      buscarParticipante: "{{ route('correcciones.buscar-participante') }}",
-      periodosTpl: "{{ route('correcciones.participante.periodos', ['participanteId' => '__ID__']) }}",
-      sesionesTpl: "{{ route('correcciones.asistencia.sesiones', ['participanteId' => '__PID__', 'grupoId' => '__GID__']) }}",
-      gruposJson: "{{ route('correcciones.asistencia.grupos-json') }}", // <-- nuevo
-      csrf: "{{ csrf_token() }}"
-    };
-  </script>
-  <script src="{{ asset('js/correcciones.js') }}"></script>
+<script>
+  window.CorreccionesCFG = {
+    buscarParticipante: "{{ route('correcciones.buscar-participante') }}",
+    periodosTpl: "{{ route('correcciones.participante.periodos', ['participanteId' => '__ID__']) }}",
+    sesionesTpl: "{{ route('correcciones.asistencia.sesiones', ['participanteId' => '__PID__', 'grupoId' => '__GID__']) }}",
+    gruposJson: "{{ route('correcciones.asistencia.grupos-json') }}",
+    csrf: "{{ csrf_token() }}"
+  };
+</script>
+<script src="{{ asset('js/correcciones.js') }}"></script>
 @endpush
-
-
-

@@ -2,7 +2,7 @@
 const URLS = {
   buscarParticipante: window.CorreccionesCFG.buscarParticipante,
   periodosTpl:       window.CorreccionesCFG.periodosTpl,   // /correcciones/participantes/{id}/periodos
-  gruposJson:        window.CorreccionesCFG.gruposJson,    // /correcciones/asistencia/grupos-json?participante_id=..&periodo_id=..
+  gruposJson:        window.CorreccionesCFG.gruposJson,    // /correcciones/asistencia/participante/grupos-json?participante_id=..&periodo_id=..
   sesionesTpl:       window.CorreccionesCFG.sesionesTpl,   // /correcciones/asistencia/sesiones/{PID}/{GID}
 };
 const CSRF = window.CorreccionesCFG.csrf;
@@ -37,6 +37,34 @@ let periodosCache      = []; // [{id,nombre}]
 tipoEl.addEventListener('change', () => docEl.focus());
 docEl.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ frm.requestSubmit(); } });
 
+// Helpers HTTP
+async function getJson(url, opts = {}) {
+  const res = await fetch(url, {
+    method: 'GET',
+    credentials: 'same-origin',
+    headers: {
+      'Accept': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+      ...(opts.headers || {})
+    }
+  });
+
+  // Manejo explícito de 422 para ver validaciones del backend
+  if (res.status === 422) {
+    const err = await res.json().catch(() => ({}));
+    const details = (err && err.errors) ? JSON.stringify(err.errors) : 'Validación falló.';
+    throw new Error(`HTTP 422 - ${details}`);
+  }
+
+  if (!res.ok) {
+    let extra = '';
+    try { const j = await res.json(); extra = ` - ${JSON.stringify(j)}`; } catch(_) {}
+    throw new Error(`HTTP ${res.status}${extra}`);
+  }
+
+  return res.json();
+}
+
 // Submit buscador
 frm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -64,6 +92,7 @@ frm.addEventListener('submit', async (e) => {
         'X-Requested-With':'XMLHttpRequest',
         'X-CSRF-TOKEN': CSRF
       },
+      // Mantengo snake_case en la búsqueda para consistencia
       body: JSON.stringify({ tipo_doc: tipo, documento: doc })
     });
 
@@ -132,10 +161,7 @@ async function seleccionarParticipante(p){
   panelPeriodos.classList.remove('d-none');
 
   try {
-    const res = await fetch(url, { headers: { 'Accept':'application/json', 'X-Requested-With':'XMLHttpRequest' } });
-    if (!res.ok) throw new Error('HTTP '+res.status);
-
-    const data = await res.json();
+    const data = await getJson(url);
     const periodos = Array.isArray(data) ? data : (data.periodos ?? []);
 
     periodosCache = periodos
@@ -166,27 +192,27 @@ function paintChips(periodos){
     btn.className = 'btn btn-outline-primary btn-sm rounded-pill';
     btn.textContent = per.nombre;
     btn.dataset.id = per.id;
-    btn.addEventListener('click', () => onPeriodoClick(per.id));
+    btn.addEventListener('click', () => on_periodo_click(per.id));
     chipsPeriodos.appendChild(btn);
 
-    if (periodos.length === 1 && idx === 0) onPeriodoClick(per.id); // autoselect
+    if (periodos.length === 1 && idx === 0) on_periodo_click(per.id); // autoselect
   });
 }
 
-// ---- Paso 3: click en periodo -> pedir GRUPOS al endpoint grupos-json
-async function onPeriodoClick(periodoId){
-  periodoActualId = periodoId;
+// ---- Paso 3: click en periodo -> pedir GRUPOS al endpoint grupos-json (snake_case)
+async function on_periodo_click(periodo_id){
+  periodoActualId = periodo_id;
 
   // activar chip
   [...chipsPeriodos.querySelectorAll('button')].forEach(b=>{
-    const active = Number(b.dataset.id) === Number(periodoId);
+    const active = Number(b.dataset.id) === Number(periodo_id);
     b.classList.toggle('btn-primary', active);
     b.classList.toggle('text-white', active);
     b.classList.toggle('btn-outline-primary', !active);
   });
 
   // resume
-  const per = periodosCache.find(x => Number(x.id) === Number(periodoId));
+  const per = periodosCache.find(x => Number(x.id) === Number(periodo_id));
   resumenPer.textContent = per ? per.nombre : '';
 
   resetGrupos();
@@ -194,11 +220,8 @@ async function onPeriodoClick(periodoId){
   panelGrupos.classList.remove('d-none');
 
   try{
-    const url = `${URLS.gruposJson}?participante_id=${encodeURIComponent(participanteActual.id)}&periodo_id=${encodeURIComponent(periodoId)}`;
-    const res = await fetch(url, { headers:{ 'Accept':'application/json', 'X-Requested-With':'XMLHttpRequest' }, credentials:'same-origin' });
-    if(!res.ok) throw new Error('HTTP '+res.status);
-
-    const data = await res.json();
+    const url = `${URLS.gruposJson}?participante_id=${encodeURIComponent(participanteActual.id)}&periodo_id=${encodeURIComponent(periodo_id)}`;
+    const data = await getJson(url);
     const grupos = Array.isArray(data) ? data : (data.grupos ?? []);
 
     paintGrupos(grupos);
@@ -231,13 +254,13 @@ function paintGrupos(grupos){
       <span class="badge text-bg-light me-2">${Number(g.sesiones_registradas ?? 0)} sesiones registradas</span>
       <button class="btn btn-outline-primary btn-sm">Elegir</button>
     `;
-    li.querySelector('button').addEventListener('click', () => onElegirGrupo(g));
+    li.querySelector('button').addEventListener('click', () => on_elegir_grupo(g));
     listaGrupos.appendChild(li);
   });
 }
 
 // ---- Paso 4: elegir grupo -> pedir SESIONES (para el formulario)
-async function onElegirGrupo(g){
+async function on_elegir_grupo(g){
   if (!participanteActual || !g || !g.id) return;
 
   try{
@@ -245,12 +268,9 @@ async function onElegirGrupo(g){
       .replace('__PID__', encodeURIComponent(participanteActual.id))
       .replace('__GID__', encodeURIComponent(g.id));
 
-    const res = await fetch(url, { headers:{ 'Accept':'application/json', 'X-Requested-With':'XMLHttpRequest' }, credentials:'same-origin' });
-    if(!res.ok) throw new Error('HTTP '+res.status);
-
-    const data = await res.json();
+    const data = await getJson(url);
     console.log('Sesiones recibidas:', data);
-    // TODO: aquí renderizas el formulario con data.sesiones y data.ultimo_registro
+    // TODO: render del formulario con data.sesiones y data.ultimo_registro
   }catch(e){
     console.error(e);
     showMessage('No fue posible cargar las sesiones del grupo.', 'danger');

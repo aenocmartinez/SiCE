@@ -263,7 +263,7 @@ Route::middleware('auth')->group(function () {
     // Correcciones de asistencia
     Route::get('/correcciones/asistencia', [CorreccionAsistenciaController::class, 'index'])->name('correcciones.asistencia');
     Route::post('/correcciones/buscar-participante', [CorreccionAsistenciaController::class, 'buscarParticipantePorDocumento'])->middleware('role:Admin,superAdmin')->name('correcciones.buscar-participante');
-    Route::get('/correcciones/asistencia/grupos-json', [CorreccionAsistenciaController::class, 'gruposPorPeriodoJson'])->name('correcciones.asistencia.grupos-json');
+    // Route::get('/correcciones/asistencia/grupos-json', [CorreccionAsistenciaController::class, 'gruposPorPeriodoJson'])->name('correcciones.asistencia.grupos-json');
 
     Route::get('/correcciones/participantes/{participanteId}/periodos',
         [CorreccionAsistenciaController::class, 'periodosDeParticipante']
