@@ -60,16 +60,26 @@ class BancoPreguntasIdentidad
             //     'campos' => ['telefono_contacto_emergencia'],
             //     'tipo' => 'simple',
             // ],
-            [
-                'texto' => '¿Cuál es su primer nombre y primer apellido?',
-                'campos' => ['primer_nombre', 'primer_apellido'],
-                'tipo' => 'compuesta',
-            ],
+            // [
+            //     'texto' => '¿Cuál es su primer nombre y primer apellido?',
+            //     'campos' => ['primer_nombre', 'primer_apellido'],
+            //     'tipo' => 'compuesta',
+            // ],
             // [
             //     'texto' => '¿Cuál es su dirección de residencia?',
             //     'campos' => ['direccion'],
             //     'tipo' => 'simple',
             // ],
+            [
+                'texto' => '¿Cuál es su primer nombre?',
+                'campos' => ['primer_nombre'],
+                'tipo' => 'simple',
+            ],
+            [
+                'texto' => '¿Cuál es su primer apellido?',
+                'campos' => ['primer_apellido'],
+                'tipo' => 'simple',
+            ],            
         ];
     }    
 
