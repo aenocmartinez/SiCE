@@ -300,77 +300,111 @@ async function on_elegir_grupo(g){
 }
 
 function render_formulario_sesiones(data){
-  panelSesiones.classList.remove('d-none');
-  alertSesiones.classList.add('d-none');
-  contSesiones.innerHTML = '';
+  // --- Limpieza y estado ---
+  panelSesiones?.classList.remove('d-none');
+  alertSesiones?.classList.add('d-none');
+  if (contSesiones) contSesiones.innerHTML = '';
+  cambiosPendientes = {};
 
   const sesiones = Array.isArray(data?.sesiones) ? data.sesiones : [];
   const ultimo   = Number(data?.ultimo_registro ?? 0);
 
-  resumenGrupo.textContent = `${esc(grupoActual?.curso ?? grupoActual?.nombreCurso ?? '')}`;
+  // Encabezado (curso + último registro)
+  const cursoTxt = String(grupoActual?.curso ?? grupoActual?.nombreCurso ?? '').trim();
+  if (resumenGrupo) {
+    resumenGrupo.textContent = [cursoTxt, `Último registro: ${ultimo || '—'}`]
+      .filter(Boolean)
+      .join(' · ');
+  }
 
   if (!sesiones.length){
-    alertSesiones.classList.remove('d-none');
+    alertSesiones?.classList.remove('d-none');
     return;
   }
 
-  // Toolbar
-  const toolbar = document.createElement('div');
-  toolbar.className = 'd-flex align-items-center gap-2 mb-2';
-  toolbar.innerHTML = `
-    <button type="button" class="btn btn-light btn-sm" id="btn_sel_todo">Seleccionar todo</button>
-    <button type="button" class="btn btn-light btn-sm" id="btn_sel_nada">Seleccionar nada</button>
-    <span class="ms-auto text-muted small">Último registro: ${ultimo || '—'}</span>
-  `;
-
-  // Tabla
+  // --- Tabla: Sesión | Estado / Fecha | Asistió ---
   const table = document.createElement('table');
   table.className = 'table table-sm align-middle';
   table.innerHTML = `
     <thead>
       <tr>
-        <th style="width:90px;">#</th>
-        <th>Fecha</th>
-        <th>Hora</th>
-        <th>Nombre</th>
-        <th style="width:120px;">Asistió</th>
+        <th style="width:140px;">SESIÓN</th>
+        <th>ESTADO / FECHA DE REGISTRO</th>
+        <th style="width:120px; text-align:left;">ASISTIÓ</th>
       </tr>
     </thead>
     <tbody></tbody>
   `;
   const tbody = table.querySelector('tbody');
 
-  sesiones.forEach((s, idx) => {
-    const tr = document.createElement('tr');
-    const asistio = Number(s.asistio ?? 0);
+  // Normalizamos datos de cada sesión y pintamos filas
+  sesiones
+    .map((s, idx) => {
+      const id = Number(s.id ?? s.sesion_id ?? 0);
+      const numero = Number(s.numero ?? s.nro ?? s.orden ?? s.num ?? (idx + 1));
+      const asistio = Number(s.asistio ?? s.presente ?? s.asistencia ?? 0);
 
-    tr.innerHTML = `
-      <td>${idx+1}</td>
-      <td>${esc(s.fecha ?? '')}</td>
-      <td>${esc(s.hora ?? '')}</td>
-      <td>${esc(s.nombre ?? '')}</td>
-      <td>
-        <div class="form-check form-switch mb-0">
-          <input class="form-check-input sesion-switch" type="checkbox"
-            data-sesion_id="${s.id}" ${asistio ? 'checked' : ''}>
-        </div>
-      </td>
-    `;
+      // Fecha de registro del participante
+      const fecha_registro = String(
+        s.fecha_registro_participante ??
+        s.fecha_registro ??
+        s.fecha_asistencia ??
+        s.fecha_participante ??
+        s.fecha ?? 
+        s.fecha_iso ??
+        ''
+      ).trim();
 
-    // estado inicial
-    cambiosPendientes[s.id] = { sesion_id: s.id, asistio_inicial: asistio, asistio_nuevo: asistio };
-    tbody.appendChild(tr);
-  });
+      return { id, numero, asistio, fecha_registro };
+    })
+    .sort((a,b) => a.numero - b.numero)
+    .forEach((s) => {
+      const tr = document.createElement('tr');
 
-  // Observación
+      let estadoTexto = '';
+      let estadoClase = '';
+
+      if (s.asistio && s.fecha_registro) {
+        estadoTexto = esc(s.fecha_registro);
+        estadoClase = 'text-success fw-semibold';
+      } else if (!s.asistio && s.fecha_registro) {
+        estadoTexto = 'No asistió';
+        estadoClase = 'text-danger fw-semibold';
+      } else {
+        estadoTexto = 'Sin registro';
+        estadoClase = 'text-muted fst-italic';
+      }
+
+      tr.innerHTML = `
+        <td>Sesión ${s.numero || ''}</td>
+        <td class="${estadoClase}">${estadoTexto}</td>
+        <td>
+          <div class="form-check form-switch mb-0">
+            <input class="form-check-input sesion-switch" type="checkbox"
+              data-sesion_id="${s.id}" ${s.asistio ? 'checked' : ''}>
+          </div>
+        </td>
+      `;
+
+      // Guardar estado inicial y nuevo
+      cambiosPendientes[s.id] = {
+        sesion_id: s.id,
+        asistio_inicial: s.asistio,
+        asistio_nuevo: s.asistio
+      };
+
+      tbody.appendChild(tr);
+    });
+
+  // --- Observación y acciones ---
   const obs = document.createElement('div');
   obs.className = 'mt-2';
   obs.innerHTML = `
     <label class="form-label mb-1">Observación o motivo (opcional)</label>
-    <textarea id="obs_correccion" class="form-control" rows="2" placeholder="Ej. Corrección por error de digitación"></textarea>
+    <textarea id="obs_correccion" class="form-control" rows="2"
+      placeholder="Ej. Corrección por error de digitación"></textarea>
   `;
 
-  // Footer acciones
   const footer = document.createElement('div');
   footer.className = 'd-flex align-items-center gap-2 mt-3';
   footer.innerHTML = `
@@ -379,35 +413,31 @@ function render_formulario_sesiones(data){
     <span id="hint_guardado" class="text-muted small ms-2"></span>
   `;
 
-  contSesiones.appendChild(toolbar);
   contSesiones.appendChild(table);
   contSesiones.appendChild(obs);
   contSesiones.appendChild(footer);
 
-  // Listeners
+  // --- Listeners de switches ---
   contSesiones.querySelectorAll('.sesion-switch').forEach(chk => {
     chk.addEventListener('change', () => {
       const sid = Number(chk.dataset.sesion_id);
-      const nuevo = chk.checked ? 1 : 0;
-      cambiosPendientes[sid].asistio_nuevo = nuevo;
+      cambiosPendientes[sid].asistio_nuevo = chk.checked ? 1 : 0;
       evaluar_habilitar_guardar();
     });
   });
 
-  document.getElementById('btn_sel_todo').addEventListener('click', () => {
-    contSesiones.querySelectorAll('.sesion-switch').forEach(chk => { chk.checked = true; chk.dispatchEvent(new Event('change')); });
-  });
-
-  document.getElementById('btn_sel_nada').addEventListener('click', () => {
-    contSesiones.querySelectorAll('.sesion-switch').forEach(chk => { chk.checked = false; chk.dispatchEvent(new Event('change')); });
-  });
-
+  // --- Botones finales ---
   document.getElementById('btn_cancelar').addEventListener('click', () => {
-    resetSesiones();
+    panelSesiones?.classList.add('d-none');
+    if (contSesiones) contSesiones.innerHTML = '';
+    cambiosPendientes = {};
   });
-
   document.getElementById('btn_guardar').addEventListener('click', on_guardar_correcciones);
+
+  // Estado inicial del botón guardar
+  evaluar_habilitar_guardar();
 }
+
 
 function hay_cambios(){
   return Object.values(cambiosPendientes).some(x => x.asistio_inicial !== x.asistio_nuevo);
