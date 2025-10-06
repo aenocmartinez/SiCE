@@ -86,6 +86,25 @@
     </div>
   </div>
 
+  <!-- PASO 4: SESIONES DEL GRUPO SELECCIONADO -->
+  <div id="panel-sesiones" class="mt-3 d-none">
+    <div class="card shadow-sm border-0 rounded-4">
+      <div class="card-body p-3 p-md-4">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h2 class="h6 mb-0 text-muted">Sesiones del grupo</h2>
+          <small class="text-secondary" id="resumen-grupo"></small>
+        </div>
+
+        <!-- 👇 ESTE div es el que usa el JS -->
+        <div id="contenedor-sesiones"></div>
+
+        <div id="alert-sesiones" class="alert alert-warning alert-slim mt-3 d-none">
+          No hay sesiones para este grupo.
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <style>
@@ -117,7 +136,13 @@
   .alert-slim {
     border-radius:.75rem; padding:.6rem .8rem; margin:0;
   }
+
+  #lista-sesiones .list-group-item { display:flex; align-items:center; justify-content:space-between; }
+  #lista-sesiones .desc { line-height:1.15; }
+  #lista-sesiones .desc .title { font-weight:600; }
+  #lista-sesiones .desc .meta { color:#6b7280; font-size:.925rem; }
 </style>
+
 @endsection
 
 @push('page-scripts')
@@ -127,6 +152,7 @@
     periodosTpl: "{{ route('correcciones.participante.periodos', ['participanteId' => '__ID__']) }}",
     sesionesTpl: "{{ route('correcciones.asistencia.sesiones', ['participanteId' => '__PID__', 'grupoId' => '__GID__']) }}",
     gruposJson: "{{ route('correcciones.asistencia.grupos-json') }}",
+    guardarCorrecciones: "{{ route('correcciones.asistencia.guardar-correcciones') }}", 
     csrf: "{{ csrf_token() }}"
   };
 </script>

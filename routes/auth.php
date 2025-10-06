@@ -277,7 +277,9 @@ Route::middleware('auth')->group(function () {
         [CorreccionAsistenciaController::class, 'gruposPorPeriodoDeParticipante']
     )->name('correcciones.asistencia.grupos-json');
 
-
+    Route::post('/correcciones/asistencia/guardar',
+        [CorreccionAsistenciaController::class, 'guardarCorrecciones']
+    )->middleware('role:Admin,superAdmin')->name('correcciones.asistencia.guardar-correcciones');
 
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GuardarCorreccionesAsistenciaRequest;
 use Illuminate\Http\Request;
 use Src\dao\mysql\ParticipanteDao;
 use Src\usecase\participantes\BuscarParticipantePorDocumentoUseCase;
@@ -53,13 +54,32 @@ class CorreccionAsistenciaController extends Controller
 
     public function gruposPorPeriodoDeParticipante(Request $req)
     {
-        $data = $req->validate([
-            'participanteId' => ['required','integer','min:1'],
-            'periodoId'      => ['required','integer','min:1'],
+
+        $payload = [
+            'participante_id' => $req->query('participante_id', $req->input('participante_id', $req->input('participanteId'))),
+            'periodo_id'      => $req->query('periodo_id',      $req->input('periodo_id',      $req->input('periodoId'))),
+        ];
+
+        $validator = validator($payload, [
+            'participante_id' => ['required','integer','min:1'],
+            'periodo_id'      => ['required','integer','min:1'],
+        ], [], [
+            'participante_id' => 'participante',
+            'periodo_id'      => 'periodo',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
+        $participanteId = (int) $payload['participante_id'];
+        $periodoId      = (int) $payload['periodo_id'];
+
         $grupos = (new ListarGruposDelParticipanteEnPeriodoUseCase(new ParticipanteDao()))
-                    ->ejecutar($data['participanteId'], $data['periodoId']);
+                    ->ejecutar($participanteId, $periodoId);
 
         return response()->json(['grupos' => $grupos ?? []]);
     }
@@ -90,5 +110,22 @@ class CorreccionAsistenciaController extends Controller
         return response()->json($payload ?? ['ultimo_registro'=>0,'sesiones'=>[]]);
     }
 
+    public function guardarCorrecciones(GuardarCorreccionesAsistenciaRequest $request)
+    {
+        // Aquí ya tenemos datos limpios y normalizados desde el FormRequest
+        $data = $request->validated();
+
+        // (Por ahora solo probaremos la conexión)
+        return response()->json([
+            'ok' => true,
+            'mensaje' => 'Request validado correctamente.',
+            'resumen' => [
+                'participante_id' => $data['participante_id'],
+                'grupo_id' => $data['grupo_id'],
+                'total_cambios' => count($data['cambios']),
+                'observacion' => $data['observacion'] ?? null,
+            ],
+        ]);
+    }
 
 }
