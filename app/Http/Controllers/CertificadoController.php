@@ -43,6 +43,9 @@ class CertificadoController extends Controller
         $path = $response->data['path'];
         $filename = $response->data['filename'];
 
+        dd($path);
+        dd($filename);
+
         return response()
             ->download($path, $filename, [
                 'Content-Type'              => 'application/pdf',
