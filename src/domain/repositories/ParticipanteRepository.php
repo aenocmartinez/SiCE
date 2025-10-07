@@ -28,4 +28,7 @@ interface ParticipanteRepository {
     public function formularios_inscritos_en_un_periodo($particite_id, $periodo_id): array;
     public function listarCursosAprobados(int $participanteID): array;
     public function listarCursosParticipados(int $participanteID): array;
+    public function listarPeriodosMatriculadosDeUnParticipante(int $participanteID=0): array;
+    public function ListarGruposDelParticipanteEnPeriodo(int $participanteID, int $periodoID): array;
+    public function listarSesionesDeParticipanteEnGrupo(int $participanteID, int $periodoID): array;
 }

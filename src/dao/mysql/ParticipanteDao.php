@@ -2,6 +2,7 @@
 
 namespace Src\dao\mysql;
 
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -727,33 +728,6 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
     
     public function listarCursosParticipados(int $participanteID): array
     {
-        // $resultados = DB::table('asistencia_clase as a')
-        // ->join('grupos as g', 'a.grupo_id', '=', 'g.id')
-        // ->join('curso_calendario as cc', 'g.curso_calendario_id', '=', 'cc.id')
-        // ->join('cursos as cu', 'cc.curso_id', '=', 'cu.id')
-        // ->join('calendarios as ca', 'cc.calendario_id', '=', 'ca.id') 
-        // ->joinSub(
-        //     DB::table('asistencia_clase')
-        //         ->select('grupo_id', DB::raw('COUNT(DISTINCT sesion) as total_sesiones'))
-        //         ->groupBy('grupo_id'),
-        //     'sesiones',
-        //     'sesiones.grupo_id',
-        //     '=',
-        //     'a.grupo_id'
-        // )
-        // ->where('a.participante_id', $participanteID)
-        // ->where('g.cancelado', false)
-        // ->groupBy('cu.id', 'cu.nombre', 'g.id', 'sesiones.total_sesiones', 'ca.nombre') 
-        // ->orderByDesc(DB::raw('ROUND(100 * SUM(a.presente) / sesiones.total_sesiones, 2)'))
-        // ->get([
-        //     'cu.id as curso_id',
-        //     'cu.nombre as nombre_curso',
-        //     'g.id as grupo_id',
-        //     DB::raw('SUM(a.presente) as asistencias'),
-        //     'sesiones.total_sesiones',
-        //     DB::raw('ROUND(100 * SUM(a.presente) / sesiones.total_sesiones, 2) as porcentaje_asistencia'),
-        //     'ca.nombre as nombre_calendario'
-        // ]);
         $resultados = DB::table('asistencia_clase as a')
             ->join('grupos as g', 'a.grupo_id', '=', 'g.id')
             ->join('curso_calendario as cc', 'g.curso_calendario_id', '=', 'cc.id')
@@ -787,5 +761,121 @@ class ParticipanteDao extends Model implements ParticipanteRepository {
             );
         })->all();
     }
-        
+
+    public function listarPeriodosMatriculadosDeUnParticipante(int $participanteID = 0): array
+    {
+        if ($participanteID <= 0) {
+            return [];
+        }
+
+        $rows = DB::table('calendarios as c')
+            ->join('grupos as g', 'g.calendario_id', '=', 'c.id')
+            ->join('formulario_inscripcion as f', 'f.grupo_id', '=', 'g.id')
+            ->where('f.estado', 'Pagado')
+            ->where('f.participante_id', $participanteID)
+            ->distinct()
+            ->orderByDesc('c.id')
+            ->get([
+                'c.id as calendario_id',
+                'c.nombre as periodo',
+            ]);
+
+        return $rows->map(fn ($r) => [
+            'id'     => (int) $r->calendario_id,
+            'nombre' => (string) $r->periodo,
+        ])->all();
+    }
+
+    public function ListarGruposDelParticipanteEnPeriodo(int $participanteID, int $periodoID): array
+    {
+        if ($participanteID <= 0 || $periodoID <= 0) {
+            return [];
+        }
+
+        $rows = DB::table('calendarios as c')
+            ->join('grupos as g', 'g.calendario_id', '=', 'c.id')
+            ->join('curso_calendario as cc', 'cc.id', '=', 'g.curso_calendario_id')
+            ->join('cursos as cs', 'cs.id', '=', 'cc.curso_id')
+            ->join('salones as s', 's.id', '=', 'g.salon_id')
+            ->join('formulario_inscripcion as f', 'f.grupo_id', '=', 'g.id')
+            ->leftJoin('asistencia_clase as ac', function ($j) {
+                $j->on('ac.grupo_id', '=', 'g.id')
+                ->on('ac.participante_id', '=', 'f.participante_id');
+            })
+            ->where('f.estado', 'Pagado')
+            ->where('f.participante_id', $participanteID)
+            ->where('g.calendario_id', $periodoID)
+            ->groupBy('g.id', 'cs.nombre', 'g.dia', 'g.jornada', 's.nombre')
+            ->get([
+                'g.id as grupoID',
+                'cs.nombre as nombreCurso',
+                'g.dia',
+                'g.jornada',
+                's.nombre as salon',
+                DB::raw('COUNT(ac.id) as sesiones_registradas'),
+            ]);
+
+    
+        return collect($rows)->map(fn($r) => [
+            'id'                   => (int) $r->grupoID,
+            'curso'                => (string) $r->nombreCurso,
+            'dia'                  => (string) $r->dia,
+            'jornada'              => (string) $r->jornada,
+            'salon'                => (string) $r->salon,
+            'sesiones_registradas' => (int) $r->sesiones_registradas,            
+        ])->all();
+    }
+
+
+    public function listarSesionesDeParticipanteEnGrupo(int $participanteID, int $grupoID): array
+    {
+        $inscrito = DB::table('formulario_inscripcion')
+            ->where('participante_id', $participanteID)
+            ->where('grupo_id', $grupoID)
+            ->where('estado', 'Pagado')
+            ->exists();
+
+        if (!$inscrito) {
+            return ['ultimo_registro' => 0, 'sesiones' => []];
+        }
+
+        $ultimo = (int) (DB::table('asistencia_clase')
+            ->where('grupo_id', $grupoID)
+            ->max('sesion') ?? 0);
+
+        if ($ultimo <= 0) {
+            return ['ultimo_registro' => 0, 'sesiones' => []];
+        }
+
+        $registros = DB::table('asistencia_clase')
+            ->where('grupo_id', $grupoID)
+            ->where('participante_id', $participanteID)
+            ->where('sesion', '<=', $ultimo)
+            ->orderBy('sesion', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->get(['sesion', 'presente', 'created_at'])
+            ->unique('sesion') 
+            ->keyBy('sesion'); 
+
+        $sesiones = [];
+        for ($i = 1; $i <= $ultimo; $i++) {
+            $row = $registros->get($i);
+
+            $sesiones[] = [
+                'sesion'      => $i,
+                'registrada'  => (bool) $row,
+                'presente'    => $row ? (int) $row->presente : null,
+                'fecha'       => $row ? Carbon::parse($row->created_at)->format('Y-m-d H:i:s') : null,
+                'observacion' => null, 
+            ];
+        }
+
+        return [
+            'ultimo_registro' => $ultimo, 
+            'sesiones'        => $sesiones,
+        ];
+    }
+
+
+    
 }

@@ -1161,5 +1161,103 @@ class GrupoDao extends Model implements GrupoRepository {
         ], $rows->all());
     }
 
+
+    /**
+     * Lista grupos del orientador en un periodo (sin datos pesados).
+     * Retorna arreglo con: id, codigo_grupo, dia, jornada, salon, nombre_curso, area
+     */
+    public function listarGruposPorPeriodo(int $periodoId): array
+    {
+        return DB::table('grupos as g')
+            ->join('salones as s','s.id','=','g.salon_id')
+            ->join('curso_calendario as cc','cc.id','=','g.curso_calendario_id')
+            ->join('cursos as c','c.id','=','cc.curso_id')
+            ->join('areas as a','a.id','=','c.area_id')
+            ->where('g.calendario_id', $periodoId)
+            ->where('g.cancelado', 0)
+            ->orderBy('g.id','desc')
+            ->get([
+                'g.id',
+                'g.nombre as codigo_grupo',
+                'g.dia',
+                'g.jornada',
+                's.nombre as salon',
+                'c.nombre as nombre_curso',
+                'a.nombre as area',
+            ])
+            ->map(fn($r) => [
+                'id'           => (int)$r->id,
+                'codigo_grupo' => $r->codigo_grupo,
+                'dia'          => $r->dia,
+                'jornada'      => $r->jornada,
+                'salon'        => $r->salon,
+                'nombre_curso' => $r->nombre_curso,
+                'area'         => $r->area,
+            ])
+            ->toArray();
+    }  
+
+    /** Comprueba si existe registro para (grupo, participante, sesión) */
+    private function existeAsistencia(int $grupoID, int $participanteID, int $sesionNumero): bool
+    {
+        return DB::table('asistencia_clase')
+            ->where('grupo_id', $grupoID)
+            ->where('participante_id', $participanteID)
+            ->where('sesion', $sesionNumero)
+            ->exists();
+    }
     
+    public function actualizarAsistenciaAClase(int $grupoID, AsistenciaClase $asistencia): bool
+    {
+        try {
+            DB::table('asistencia_clase')
+                ->where('grupo_id', $grupoID)
+                ->where('participante_id', $asistencia->getParticipante()->getId())
+                ->where('sesion', $asistencia->getSesion())
+                ->update([
+                    'presente'                => $asistencia->estaPresente(), // 0|1
+                    'orientador_que_registra' => Auth::id(),
+                    'updated_at'              => now(),
+                ]);
+            return true;
+        } catch (\Throwable $e) {
+            // Sentry::captureException($e);
+            return false;
+        }
+    }    
+
+    public function guardarAsistenciaCorreccion(int $grupoId, AsistenciaClase $asistencia): bool
+    {
+        try {
+            $participanteId = $asistencia->getParticipante()->getId();
+            $sesion         = $asistencia->getSesion();
+
+            if ($this->existeAsistencia($grupoId, $participanteId, $sesion)) {
+                DB::table('asistencia_clase')
+                    ->where('grupo_id', $grupoId)
+                    ->where('participante_id', $participanteId)
+                    ->where('sesion', $sesion)
+                    ->update([
+                        'presente'               => $asistencia->estaPresente(),
+                        'orientador_que_registra'=> Auth::id(),
+                    ]);
+            } else {
+                DB::table('asistencia_clase')->insert([
+                    'grupo_id'               => $grupoId,
+                    'participante_id'        => $participanteId,
+                    'sesion'                 => $sesion,
+                    'presente'               => $asistencia->estaPresente(),
+                    'orientador_que_registra'=> Auth::id(),
+                    'created_at'             => now(),
+                ]);
+            }
+
+            return true;
+
+        } catch (\Exception $e) {
+            Sentry::captureException($e);
+            return false;
+        }
+    }
+
 }
