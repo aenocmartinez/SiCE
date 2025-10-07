@@ -34,6 +34,14 @@ function skeleton(){ return `<li class="list-group-item"><div class="d-flex alig
 function chipsSkeleton(n=3){ return Array.from({length:n}).map(()=>`<span class="placeholder col-2 rounded-pill" style="height:32px;"></span>`).join(' '); }
 function gruposSkeleton(n=2){ return Array.from({length:n}).map(()=>`<li class="list-group-item"><div class="placeholder-glow"><span class="placeholder col-5"></span><span class="placeholder col-3 ms-2"></span></div></li>`).join(''); }
 
+function date_only(str) {
+  if (!str) return '';
+  const s = String(str).trim();
+  // formatos comunes: "YYYY-MM-DD hh:mm:ss", "YYYY-MM-DDThh:mm:ss", etc.
+  const m = s.match(/^(\d{4}-\d{2}-\d{2})/);
+  return m ? m[1] : s;
+}
+
 // ---------------------- Refs búsqueda ----------------------
 const frm  = document.getElementById('frm-buscar');
 const btn  = document.getElementById('btnBuscar');
@@ -261,10 +269,20 @@ function paintGrupos(grupos){
   grupos.forEach(g => {
     const li = document.createElement('li');
     li.className = 'list-group-item d-flex align-items-center gap-3';
+
+    // intenta resolver el nombre del docente/orientador
+    const instructor =
+      g.orientador ?? g.orientador_nombre ?? g.instructor ?? g.instructor_nombre ??
+      g.docente ?? g.profesor ?? g.tutor ?? '';
+
+    const linea1 = `${esc(g.dia ?? '')} · ${esc(g.jornada ?? '')} · G${esc(g.id ?? '')}`;
+    const linea2 = instructor ? `Instructor: ${esc(instructor)}` : '';
+
     li.innerHTML = `
       <div class="flex-fill">
         <div class="fw-semibold">${esc(g.curso ?? g.nombreCurso ?? '')}</div>
-        <div class="text-muted small">${esc(g.dia ?? '')} · ${esc(g.jornada ?? '')} · ${esc(g.salon ?? '')}</div>
+        <div class="text-muted small">${linea1}</div>
+        ${linea2 ? `<div class="text-muted small">${linea2}</div>` : ``}
       </div>
       <span class="badge text-bg-light me-2">${Number(g.sesiones_registradas ?? 0)} sesiones registradas</span>
       <button class="btn btn-outline-primary btn-sm">Elegir</button>
@@ -335,14 +353,14 @@ function render_formulario_sesiones(data){
     return;
   }
 
-  // --- Tabla: Sesión | Estado / Fecha | Asistió ---
+  // --- Tabla: Sesión | Fecha de registro | Asistió ---
   const table = document.createElement('table');
   table.className = 'table table-sm align-middle';
   table.innerHTML = `
     <thead>
       <tr>
         <th style="width:140px;">SESIÓN</th>
-        <th>ESTADO / FECHA DE REGISTRO</th>
+        <th>FECHA DE REGISTRO</th>
         <th style="width:120px; text-align:left;">ASISTIÓ</th>
       </tr>
     </thead>
@@ -363,7 +381,7 @@ function render_formulario_sesiones(data){
           s.id ?? 0
         );
 
-      const numero = Number(s.numero ?? s.nro ?? s.orden ?? s.num ?? (idx + 1));
+      const numero  = Number(s.numero ?? s.nro ?? s.orden ?? s.num ?? (idx + 1));
       const asistio = Number(s.asistio ?? s.presente ?? s.asistencia ?? 0);
 
       const fecha_registro = String(
@@ -382,15 +400,21 @@ function render_formulario_sesiones(data){
     .forEach((s) => {
       const tr = document.createElement('tr');
 
+      // Texto/estilo de la columna FECHA DE REGISTRO
+      // - Si asistió y hay fecha: mostramos SOLO la fecha (verde)
+      // - Si NO asistió pero hay registro: mostramos "No asistió" (rojo)
+      // - Si no hay registro: "Sin registro" (gris)
       let estadoTexto = '';
       let estadoClase = '';
 
-      if (s.asistio && s.fecha_registro) {
-        estadoTexto = esc(s.fecha_registro);
-        estadoClase = 'text-success fw-semibold';
-      } else if (!s.asistio && s.fecha_registro) {
-        estadoTexto = 'No asistió';
-        estadoClase = 'text-danger fw-semibold';
+      if (s.fecha_registro) {
+        if (s.asistio) {
+          estadoTexto = esc(date_only(s.fecha_registro));
+          estadoClase = 'text-success fw-semibold';
+        } else {
+          estadoTexto = 'No asistió';
+          estadoClase = 'text-danger fw-semibold';
+        }
       } else {
         estadoTexto = 'Sin registro';
         estadoClase = 'text-muted fst-italic';
