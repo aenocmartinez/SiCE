@@ -78,7 +78,6 @@ frm.addEventListener('submit', async (e) => {
         'X-Requested-With':'XMLHttpRequest',
         'X-CSRF-TOKEN': CSRF
       },
-      // <- mantiene snake_case de tu backend
       body: JSON.stringify({ tipo_doc: tipo, documento: doc })
     });
 
@@ -134,7 +133,7 @@ function renderItem(p){
 
 // ---------------------- Refs Periodos/Grupos ----------------------
 const panelPeriodos = document.getElementById('panel-periodos');
-const chipsPeriodos = document.getElementById('chips-periodos');
+const chipsPeriodos = document.getElementById('chips-periodos'); // contenedor
 const alertPeriodos = document.getElementById('alert-periodos');
 const resumenPart   = document.getElementById('resumen-participante');
 
@@ -147,7 +146,13 @@ let participanteActual = null;
 let periodoActualId    = null;
 let periodosCache      = []; // [{id,nombre}]
 
-function resetPeriodos(){ chipsPeriodos.innerHTML=''; alertPeriodos.classList.add('d-none'); panelPeriodos.classList.add('d-none'); periodosCache=[]; periodoActualId=null; }
+function resetPeriodos(){
+  chipsPeriodos.innerHTML='';
+  alertPeriodos.classList.add('d-none');
+  panelPeriodos.classList.add('d-none');
+  periodosCache=[];
+  periodoActualId=null;
+}
 function resetGrupos(){ listaGrupos.innerHTML=''; alertGrupos.classList.add('d-none'); panelGrupos.classList.add('d-none'); }
 
 // ---- Paso 2: seleccionar participante -> cargar periodos
@@ -181,6 +186,7 @@ async function seleccionarParticipante(p){
   }
 }
 
+// 👉 NUEVO: periodos como <select> (escala mejor que chips)
 function paintChips(periodos){
   chipsPeriodos.innerHTML = '';
   alertPeriodos.classList.add('d-none');
@@ -190,30 +196,37 @@ function paintChips(periodos){
     return;
   }
 
-  periodos.forEach((per, idx) => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'btn btn-outline-primary btn-sm rounded-pill';
-    btn.textContent = per.nombre;
-    btn.dataset.id = per.id;
-    btn.addEventListener('click', () => on_periodo_click(per.id));
-    chipsPeriodos.appendChild(btn);
+  const select = document.createElement('select');
+  select.className = 'form-select form-select-sm w-auto d-inline-block';
+  const defaultOpt = document.createElement('option');
+  defaultOpt.value = '';
+  defaultOpt.textContent = 'Seleccione un periodo';
+  select.appendChild(defaultOpt);
 
-    if (periodos.length === 1 && idx === 0) on_periodo_click(per.id); // autoselect
+  periodos.forEach(per => {
+    const opt = document.createElement('option');
+    opt.value = per.id;
+    opt.textContent = per.nombre;
+    select.appendChild(opt);
   });
+
+  select.addEventListener('change', e => {
+    const val = Number(e.target.value);
+    if (val) on_periodo_click(val);
+  });
+
+  chipsPeriodos.appendChild(select);
+
+  // Autoselect si solo hay uno
+  if (periodos.length === 1) {
+    select.selectedIndex = 1; // el primero después del placeholder
+    on_periodo_click(periodos[0].id);
+  }
 }
 
 // ---- Paso 3: click en periodo -> pedir GRUPOS
 async function on_periodo_click(periodo_id){
   periodoActualId = periodo_id;
-
-  // activar chip
-  [...chipsPeriodos.querySelectorAll('button')].forEach(b=>{
-    const active = Number(b.dataset.id) === Number(periodo_id);
-    b.classList.toggle('btn-primary', active);
-    b.classList.toggle('text-white', active);
-    b.classList.toggle('btn-outline-primary', !active);
-  });
 
   const per = periodosCache.find(x => Number(x.id) === Number(periodo_id));
   resumenPer.textContent = per ? per.nombre : '';
@@ -291,7 +304,7 @@ async function on_elegir_grupo(g){
       .replace('__GID__', encodeURIComponent(g.id));
 
     const data = await getJson(url);
-    // data = { ultimo_registro: <int>, sesiones: [{id, numero?, fecha, hora, nombre, asistio (0|1)}] }
+    // data = { ultimo_registro: <int>, sesiones: [{id, numero?, fecha_registro?, asistio (0|1)}] }
     render_formulario_sesiones(data);
   }catch(e){
     console.error(e);
@@ -340,7 +353,6 @@ function render_formulario_sesiones(data){
   // Normalizamos datos de cada sesión y pintamos filas
   sesiones
     .map((s, idx) => {
-      // id estable de la SESIÓN (no del registro de asistencia). Probamos varias llaves.
       const session_id =
         Number(
           s.sesion_id ??
@@ -348,14 +360,12 @@ function render_formulario_sesiones(data){
           s.sid ??
           s.session ??
           s.sesion ??
-          s.id ??               // a veces el backend manda "id" como id de sesión
-          0
+          s.id ?? 0
         );
 
       const numero = Number(s.numero ?? s.nro ?? s.orden ?? s.num ?? (idx + 1));
       const asistio = Number(s.asistio ?? s.presente ?? s.asistencia ?? 0);
 
-      // Fecha de registro del participante (si existe)
       const fecha_registro = String(
         s.fecha_registro_participante ??
         s.fecha_registro ??
@@ -382,12 +392,10 @@ function render_formulario_sesiones(data){
         estadoTexto = 'No asistió';
         estadoClase = 'text-danger fw-semibold';
       } else {
-        // no hay registro para el participante en esa sesión
         estadoTexto = 'Sin registro';
         estadoClase = 'text-muted fst-italic';
       }
 
-      // switch habilitado sólo si tenemos un id de sesión válido
       const canToggle = Number.isFinite(s.session_id) && s.session_id > 0;
 
       tr.innerHTML = `
@@ -403,11 +411,10 @@ function render_formulario_sesiones(data){
         </td>
       `;
 
-      // Persistimos estado inicial/nuevo para detectar cambios (sólo si tenemos id válido)
       if (canToggle) {
         cambiosPendientes[s.session_id] = {
           sesion_id: s.session_id,
-          numero: s.numero || 0,           // <-- guardamos el número
+          numero: s.numero || 0,
           asistio_inicial: s.asistio,
           asistio_nuevo: s.asistio
         };
@@ -416,15 +423,7 @@ function render_formulario_sesiones(data){
       tbody.appendChild(tr);
     });
 
-  // --- Observación y acciones ---
-  const obs = document.createElement('div');
-  obs.className = 'mt-2';
-  obs.innerHTML = `
-    <label class="form-label mb-1">Observación o motivo (opcional)</label>
-    <textarea id="obs_correccion" class="form-control" rows="2"
-      placeholder="Ej. Corrección por error de digitación"></textarea>
-  `;
-
+  // --- Footer acciones (sin observación) ---
   const footer = document.createElement('div');
   footer.className = 'd-flex align-items-center gap-2 mt-3';
   footer.innerHTML = `
@@ -434,12 +433,11 @@ function render_formulario_sesiones(data){
   `;
 
   contSesiones.appendChild(table);
-  contSesiones.appendChild(obs);
   contSesiones.appendChild(footer);
 
   // --- Listeners de switches ---
   contSesiones.querySelectorAll('.sesion-switch').forEach(chk => {
-    if (chk.disabled) return; // ignoramos si no hay id de sesión
+    if (chk.disabled) return;
 
     chk.addEventListener('change', () => {
       const sid = Number(chk.dataset.sesion_id);
@@ -447,7 +445,6 @@ function render_formulario_sesiones(data){
 
       cambiosPendientes[sid].asistio_nuevo = chk.checked ? 1 : 0;
 
-      // si por alguna razón número no había quedado, lo tomamos del DOM
       if (!cambiosPendientes[sid].numero) {
         cambiosPendientes[sid].numero = Number(chk.dataset.numero || 0);
       }
@@ -464,10 +461,8 @@ function render_formulario_sesiones(data){
   });
   document.getElementById('btn_guardar').addEventListener('click', on_guardar_correcciones);
 
-  // Estado inicial del botón guardar
   evaluar_habilitar_guardar();
 }
-
 
 function hay_cambios(){
   return Object.values(cambiosPendientes).some(x => x.asistio_inicial !== x.asistio_nuevo);
@@ -498,8 +493,7 @@ async function on_guardar_correcciones(){
   const payload = {
     participante_id: Number(participanteActual.id),
     grupo_id: Number(grupoActual.id),
-    cambios: cambios,
-    observacion: (document.getElementById('obs_correccion')?.value || '').trim()
+    cambios: cambios
   };
 
   try{
@@ -524,16 +518,34 @@ async function on_guardar_correcciones(){
       throw new Error('Error HTTP ' + res.status + ' ' + JSON.stringify(j));
     }
 
-    // éxito
-    hint.textContent = 'Cambios guardados.';
-    showMessage('Asistencias actualizadas correctamente.', 'success');
+    // éxito (SweetAlert2 con fallback)
+    hint.textContent = '';
+    if (window.Swal && typeof window.Swal.fire === 'function') {
+      Swal.fire({
+        icon: 'success',
+        title: 'Asistencias actualizadas',
+        text: 'Los cambios se guardaron correctamente.',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    } else {
+      showMessage('Asistencias actualizadas correctamente.', 'success');
+    }
 
     // refrescar estado final
     await on_elegir_grupo(grupoActual);
   }catch(e){
     console.error(e);
     hint.textContent = '';
-    showMessage('No fue posible guardar las correcciones. ' + e.message, 'danger');
+    if (window.Swal && typeof window.Swal.fire === 'function') {
+      Swal.fire({
+        icon: 'error',
+        title: 'No fue posible guardar',
+        text: e.message || 'Inténtalo nuevamente.'
+      });
+    } else {
+      showMessage('No fue posible guardar las correcciones. ' + e.message, 'danger');
+    }
     document.getElementById('btn_guardar').disabled = false;
   }
 }
