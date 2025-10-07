@@ -270,12 +270,16 @@ function paintGrupos(grupos){
     const li = document.createElement('li');
     li.className = 'list-group-item d-flex align-items-center gap-3';
 
+    // id del grupo (preferimos g.id; si tu backend usa otra clave, añade aquí)
+    const gid = g.id ?? g.grupo_id ?? g.grupoId ?? null;
+
     // intenta resolver el nombre del docente/orientador
     const instructor =
       g.orientador ?? g.orientador_nombre ?? g.instructor ?? g.instructor_nombre ??
       g.docente ?? g.profesor ?? g.tutor ?? '';
 
-    const linea1 = `${esc(g.dia ?? '')} · ${esc(g.jornada ?? '')} · G${esc(g.id ?? '')}`;
+    // línea con día · jornada · G<ID>
+    const linea1 = `${esc(g.dia ?? '')} · ${esc(g.jornada ?? '')} · ${gid ? 'G' + esc(gid) : ''}`;
     const linea2 = instructor ? `Instructor: ${esc(instructor)}` : '';
 
     li.innerHTML = `
@@ -287,6 +291,7 @@ function paintGrupos(grupos){
       <span class="badge text-bg-light me-2">${Number(g.sesiones_registradas ?? 0)} sesiones registradas</span>
       <button class="btn btn-outline-primary btn-sm">Elegir</button>
     `;
+
     li.querySelector('button').addEventListener('click', () => on_elegir_grupo(g));
     listaGrupos.appendChild(li);
   });
