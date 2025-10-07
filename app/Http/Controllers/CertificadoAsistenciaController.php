@@ -109,47 +109,84 @@ class CertificadoAsistenciaController extends Controller
         return view('certificados.cursos_participados', compact('participante'));
     }
 
+    // public function descargarCertificadoPublico($participanteID, $grupoID)
+    // {
+    //     $sessionID = session('participante_id');
+    //     if (!$sessionID || (int)$participanteID !== (int)$sessionID) {
+    //         return redirect()->route('certificado.asistencia.formulario')
+    //             ->withErrors(['error' => 'Acceso no autorizado al certificado.']);
+    //     }
+
+    //     $participante = (new BuscarParticipantePorIdUseCase)->ejecutar($participanteID);
+    //     if (!$participante->existe()) {
+    //         return redirect()->route('certificado.asistencia.formulario')
+    //             ->withErrors(['error' => 'Participante no encontrado.']);
+    //     }
+    
+    //     $cursoValido = collect($participante->cursosParticipados())->first(function ($curso) use ($grupoID) {
+    //         return $curso->grupo_id == $grupoID && $curso->aprobado;
+    //     });
+    
+    //     if (!$cursoValido) {
+    //         return redirect()->route('certificado.asistencia.cursos')
+    //             ->withErrors(['error' => 'No tiene permitido descargar el certificado para este curso.']);
+    //     }
+
+    //     $response = (new GenerarCertificadoWordUseCase)->ejecutar($participanteID, $grupoID, false);
+    
+    //     if ($response->code !== "200") {
+    //         return redirect()->route('certificado.asistencia.cursos')
+    //             ->withErrors(['error' => $response->message]);
+    //     }
+    
+    //     $path = $response->data['path'];
+    //     $filename = $response->data['filename'];
+    
+    //     return response()->streamDownload(function () use ($path) {
+    //         readfile($path);
+    //         register_shutdown_function(function () use ($path) {
+    //             if (file_exists($path)) {
+    //                 @unlink($path);
+    //             }
+    //         });
+    //     }, $filename);
+    // }
+
     public function descargarCertificadoPublico($participanteID, $grupoID)
     {
         $sessionID = session('participante_id');
         if (!$sessionID || (int)$participanteID !== (int)$sessionID) {
-            return redirect()->route('certificado.asistencia.formulario')
-                ->withErrors(['error' => 'Acceso no autorizado al certificado.']);
+            abort(403, 'Acceso no autorizado al certificado.');
         }
 
         $participante = (new BuscarParticipantePorIdUseCase)->ejecutar($participanteID);
         if (!$participante->existe()) {
-            return redirect()->route('certificado.asistencia.formulario')
-                ->withErrors(['error' => 'Participante no encontrado.']);
+            abort(404, 'Participante no encontrado.');
         }
-    
-        $cursoValido = collect($participante->cursosParticipados())->first(function ($curso) use ($grupoID) {
-            return $curso->grupo_id == $grupoID && $curso->aprobado;
-        });
-    
+
+        $cursoValido = collect($participante->cursosParticipados())
+            ->first(fn ($curso) => (int)$curso->grupo_id === (int)$grupoID && $curso->aprobado);
+
         if (!$cursoValido) {
-            return redirect()->route('certificado.asistencia.cursos')
-                ->withErrors(['error' => 'No tiene permitido descargar el certificado para este curso.']);
+            abort(403, 'No tiene permitido descargar el certificado para este curso.');
         }
 
         $response = (new GenerarCertificadoWordUseCase)->ejecutar($participanteID, $grupoID, false);
-    
         if ($response->code !== "200") {
-            return redirect()->route('certificado.asistencia.cursos')
-                ->withErrors(['error' => $response->message]);
+            abort(500, $response->message);
         }
-    
+
         $path = $response->data['path'];
         $filename = $response->data['filename'];
-    
-        return response()->streamDownload(function () use ($path) {
-            readfile($path);
-            register_shutdown_function(function () use ($path) {
-                if (file_exists($path)) {
-                    @unlink($path);
-                }
-            });
-        }, $filename);
+
+        return response()
+            ->download($path, $filename, [
+                'Content-Type'              => 'application/pdf',
+                'Content-Transfer-Encoding' => 'binary',
+                'Cache-Control'             => 'no-store, must-revalidate',
+                'Pragma'                    => 'no-cache',
+            ])
+            ->deleteFileAfterSend(true);
     }
 
     public function validarPorCodigo(Request $request)

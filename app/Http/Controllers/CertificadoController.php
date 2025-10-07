@@ -32,7 +32,6 @@ class CertificadoController extends Controller
     
     public function descargar($participanteID, $grupoID)
     {
-        dd("Entra aqui");
         $response = (new GenerarCertificadoWordUseCase)->ejecutar($participanteID, $grupoID);
 
         if ($response->code !== "200") {
@@ -43,9 +42,6 @@ class CertificadoController extends Controller
 
         $path = $response->data['path'];
         $filename = $response->data['filename'];
-
-        dd($path);
-        dd($filename);
 
         return response()
             ->download($path, $filename, [
