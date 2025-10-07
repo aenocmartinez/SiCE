@@ -1059,25 +1059,27 @@ class GrupoDao extends Model implements GrupoRepository {
     {
         $meta = $this->obtenerMetaDeGrupo($grupoId);
 
-        $acUlt = DB::table('asistencia_clase as ac')
-            ->where('ac.grupo_id', $grupoId)
-            ->where('ac.sesion', $sesion)
-            ->select('ac.participante_id', DB::raw('MAX(ac.id) as ac_id'))
-            ->groupBy('ac.participante_id');
-
         $fiUlt = DB::table('formulario_inscripcion as fi')
             ->where('fi.grupo_id', $grupoId)
             ->select('fi.participante_id', DB::raw('MAX(fi.id) as fi_id'))
             ->groupBy('fi.participante_id');
 
+        $acUltSesion = DB::table('asistencia_clase as ac')
+            ->where('ac.grupo_id', $grupoId)
+            ->where('ac.sesion', $sesion)
+            ->select('ac.participante_id', DB::raw('MAX(ac.id) as ac_id'))
+            ->groupBy('ac.participante_id');
+
         $filas = DB::query()
-            ->fromSub($acUlt, 'acu')
-            ->join('asistencia_clase as ac', 'ac.id', '=', 'acu.ac_id') 
-            ->join('participantes as p', 'p.id', '=', 'ac.participante_id')
-            ->leftJoinSub($fiUlt, 'fiu', 'fiu.participante_id', '=', 'p.id')
+            ->fromSub($fiUlt, 'fiu')
+            ->join('participantes as p', 'p.id', '=', 'fiu.participante_id')
             ->leftJoin('formulario_inscripcion as fi', 'fi.id', '=', 'fiu.fi_id')
             ->leftJoin('convenios as cv', 'cv.id', '=', 'fi.convenio_id')
+            ->leftJoinSub($acUltSesion, 'acu', 'acu.participante_id', '=', 'p.id')
+            ->leftJoin('asistencia_clase as ac', 'ac.id', '=', 'acu.ac_id')
             ->orderBy('p.primer_apellido')
+            ->orderBy('p.segundo_apellido')
+            ->orderBy('p.primer_nombre')
             ->get([
                 'p.primer_nombre',
                 'p.segundo_nombre',
@@ -1085,7 +1087,7 @@ class GrupoDao extends Model implements GrupoRepository {
                 'p.segundo_apellido',
                 'p.documento as doc',
                 'cv.nombre as convenio',
-                'ac.presente',
+                'ac.presente',                
                 'ac.created_at as fecha_registro',
             ]);
 
@@ -1100,20 +1102,25 @@ class GrupoDao extends Model implements GrupoRepository {
                 $r->segundo_apellido,
             ])));
 
-            $fecha = optional(\Illuminate\Support\Carbon::parse($r->fecha_registro))->format('Y-m-d');
-            $fechaCabecera = $fechaCabecera ?? $fecha;
+            $fecha = $r->fecha_registro
+                ? optional(\Illuminate\Support\Carbon::parse($r->fecha_registro))->format('Y-m-d')
+                : null;
+
+            if ($fecha && !$fechaCabecera) {
+                $fechaCabecera = $fecha;
+            }
 
             $participantes[] = [
                 'nombre'   => mb_strtoupper($nombre, 'utf-8'),
                 'doc'      => $r->doc,
                 'convenio' => $r->convenio ?? '',
-                'presente' => (bool) $r->presente,
+                'presente' => is_null($r->presente) ? null : (bool) $r->presente,
                 'fecha'    => $fecha,
             ];
         }
 
         if ($meta) {
-            $meta['fecha'] = $fechaCabecera;
+            $meta['fecha'] = $fechaCabecera; 
         }
 
         return [
