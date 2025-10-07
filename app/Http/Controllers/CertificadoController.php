@@ -32,6 +32,7 @@ class CertificadoController extends Controller
     
     public function descargar($participanteID, $grupoID)
     {
+        dd("Entra aqui");
         $response = (new GenerarCertificadoWordUseCase)->ejecutar($participanteID, $grupoID);
 
         if ($response->code !== "200") {
