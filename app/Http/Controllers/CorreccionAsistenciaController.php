@@ -113,54 +113,38 @@ class CorreccionAsistenciaController extends Controller
         return response()->json($payload ?? ['ultimo_registro'=>0,'sesiones'=>[]]);
     }
 
-    // public function guardarCorrecciones(GuardarCorreccionesAsistenciaRequest $request)
-    // {
-    //     $data = $request->validated();
-
-    //     return response()->json([
-    //         'ok' => true,
-    //         'mensaje' => 'Request validado correctamente.',
-    //         'resumen' => [
-    //             'participante_id' => $data['participante_id'],
-    //             'grupo_id' => $data['grupo_id'],
-    //             'total_cambios' => count($data['cambios']),
-    //             'observacion' => $data['observacion'] ?? null,
-    //         ],
-    //     ]);
-    // }
-
     public function guardarCorrecciones(GuardarCorreccionesAsistenciaRequest $request)
     {
         $d = $request->validated();
-
+    
         $input = new CorregirAsistenciasInput(
-            participanteId: (int) $d['participante_id'],
-            grupoId:        (int) $d['grupo_id'],
-            cambios:        $d['cambios'],
-            observacion:    $d['observacion'] ?? null,
-            actorId:        auth()->id(),
-            actorNombre:    auth()->user()->name ?? 'sistema',
-            actorIp:        $request->ip(),
-            actorUserAgent: (string) $request->userAgent()
+            (int) $d['participante_id'],              
+            (int) $d['grupo_id'],                     
+            $d['cambios'],                            
+            $d['observacion'] ?? null,                
+            auth()->id(),                             
+            optional(auth()->user())->name ?? 'sistema', 
+            $request->ip(),                           
+            (string) $request->userAgent()            
         );
 
         try {
-            $grupoDao   = new GrupoDao();
-            $partDao    = new ParticipanteDao();
-            $listarUC   = new ListarSesionesDeParticipanteEnGrupoUseCase($partDao);
+            $grupoDao = new GrupoDao();
+            $partDao  = new ParticipanteDao();
+            $listarUC = new ListarSesionesDeParticipanteEnGrupoUseCase($partDao);
 
             $uc = new CorregirAsistenciasUseCase($grupoDao, $partDao, $listarUC);
 
             $out = $uc->ejecutar($input);
 
             return response()->json([
-                'ok'       => true,
-                'mensaje'  => 'Correcciones aplicadas.',
-                'resumen'  => $out->resumen,        
-                'estado'   => $out->estado_final,   
+                'ok'      => true,
+                'mensaje' => 'Correcciones aplicadas.',
+                'resumen' => $out->resumen,
+                'estado'  => $out->estado_final,
             ]);
         } catch (\Throwable $e) {
-            // log($e->getMessage());
+            // logger()->error('guardarCorrecciones error', ['msg' => $e->getMessage()]);
             return response()->json([
                 'ok'      => false,
                 'message' => 'No fue posible aplicar las correcciones.',
@@ -168,5 +152,6 @@ class CorreccionAsistenciaController extends Controller
             ], 500);
         }
     }
+
 
 }

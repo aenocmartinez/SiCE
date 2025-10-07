@@ -5,13 +5,23 @@ namespace Src\view\dto;
 
 final class PeriodoDTO
 {
-    public function __construct(
-        public int $id,
-        public string $nombre
-    ) {}
+    /** @var int */
+    public $id;
+
+    /** @var string */
+    public $nombre;
+
+    public function __construct(int $id, string $nombre)
+    {
+        $this->id = $id;
+        $this->nombre = $nombre;
+    }
 
     public function toArray(): array
     {
-        return ['id'=>$this->id, 'nombre'=>$this->nombre];
+        return [
+            'id'      => $this->id,
+            'nombre'  => $this->nombre,
+        ];
     }
 }

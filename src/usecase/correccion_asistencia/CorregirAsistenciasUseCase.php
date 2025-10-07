@@ -12,11 +12,24 @@ use Src\view\dto\CorregirAsistenciasOutput;
 
 class CorregirAsistenciasUseCase
 {
+    /** @var GrupoDao */
+    private $grupoDao;
+
+    /** @var ParticipanteDao */
+    private $participanteDao;
+
+    /** @var ListarSesionesDeParticipanteEnGrupoUseCase */
+    private $listarSesionesUc;
+
     public function __construct(
-        private GrupoDao $grupoDao,
-        private ParticipanteDao $participanteDao,
-        private ListarSesionesDeParticipanteEnGrupoUseCase $listarSesionesUc,
-    ) {}
+        GrupoDao $grupoDao,
+        ParticipanteDao $participanteDao,
+        ListarSesionesDeParticipanteEnGrupoUseCase $listarSesionesUc
+    ) {
+        $this->grupoDao = $grupoDao;
+        $this->participanteDao = $participanteDao;
+        $this->listarSesionesUc = $listarSesionesUc;
+    }
 
     public function ejecutar(CorregirAsistenciasInput $in): CorregirAsistenciasOutput
     {
@@ -83,8 +96,8 @@ class CorregirAsistenciasUseCase
         $final = $this->listarSesionesUc->ejecutar($in->participanteId, $in->grupoId);
 
         return new CorregirAsistenciasOutput(
-            resumen: ['creados' => $creados, 'actualizados' => $actualizados],
-            estado_final: $final
+            ['creados' => $creados, 'actualizados' => $actualizados],
+            $final
         );
     }
 }
