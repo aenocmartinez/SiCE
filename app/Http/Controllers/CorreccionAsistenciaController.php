@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\GuardarCorreccionesAsistenciaRequest;
 use Illuminate\Http\Request;
+use Src\dao\mysql\GrupoDao;
 use Src\dao\mysql\ParticipanteDao;
-use Src\usecase\asistencias\dto\CorregirAsistenciasInput;
+use Src\usecase\correccion_asistencia\CorregirAsistenciasUseCase;
 use Src\usecase\participantes\BuscarParticipantePorDocumentoUseCase;
 use Src\usecase\participantes\ListarGruposDelParticipanteEnPeriodoUseCase;
 use Src\usecase\participantes\ListarPeriodosDeParticipanteUseCase;
 use Src\usecase\participantes\ListarSesionesDeParticipanteEnGrupoUseCase;
 use Src\view\dto\BuscarParticipantePorDocumentoDTO;
+use Src\view\dto\CorregirAsistenciasInput;
 
 class CorreccionAsistenciaController extends Controller
 {
@@ -129,72 +131,42 @@ class CorreccionAsistenciaController extends Controller
 
     public function guardarCorrecciones(GuardarCorreccionesAsistenciaRequest $request)
     {
-        $data = $request->validated();
-
-        $participanteId = (int) $data['participante_id'];
-        $grupoId        = (int) $data['grupo_id'];
-        $cambios        = $data['cambios'];       
-        $observacion    = $data['observacion'] ?? null;
-
-        $listar = new ListarSesionesDeParticipanteEnGrupoUseCase(new ParticipanteDao());
-        $actual = $listar->ejecutar($participanteId, $grupoId);
-        $sesionesActuales = is_array($actual['sesiones'] ?? null) ? $actual['sesiones'] : [];
-
-        $mapActual = [];
-        foreach ($sesionesActuales as $s) {
-            $sid = (int)($s['id'] ?? $s['sesion_id'] ?? 0);
-            if ($sid > 0) {
-                $mapActual[$sid] = (int)($s['asistio'] ?? $s['presente'] ?? $s['asistencia'] ?? 0);
-            }
-        }
-        $nuevoPorSesion = [];
-        foreach ($cambios as $chg) {
-            $sid = (int)$chg['sesion_id'];
-            $val = (int)$chg['asistio']; // 0|1
-            if ($sid > 0) $nuevoPorSesion[$sid] = $val;
-        }
-
-        $marcar   = []; // sesiones a poner en 1 (crear/activar)
-        $desmarcar= []; // sesiones a poner en 0 (eliminar/anular)
-
-        foreach ($nuevoPorSesion as $sid => $nuevo) {
-            $antes = (int)($mapActual[$sid] ?? 0);
-            if ($nuevo !== $antes) {
-                if ($nuevo === 1) $marcar[] = $sid;
-                else $desmarcar[] = $sid;
-            }
-        }
+        $d = $request->validated();
 
         $input = new CorregirAsistenciasInput(
-            participanteId: $participanteId,
-            grupoId:        $grupoId,
-            marcar:         $marcar,
-            desmarcar:      $desmarcar,
-            observacion:    $observacion,
+            participanteId: (int) $d['participante_id'],
+            grupoId:        (int) $d['grupo_id'],
+            cambios:        $d['cambios'],
+            observacion:    $d['observacion'] ?? null,
             actorId:        auth()->id(),
             actorNombre:    auth()->user()->name ?? 'sistema',
             actorIp:        $request->ip(),
             actorUserAgent: (string) $request->userAgent()
         );
 
-        // 5) Ejecutar el caso de uso
-        // $usecase   = new CorregirAsistenciasUseCase(new ParticipanteDao());
-        // $resultado = $usecase->ejecutar($input);
+        try {
+            $grupoDao   = new GrupoDao();
+            $partDao    = new ParticipanteDao();
+            $listarUC   = new ListarSesionesDeParticipanteEnGrupoUseCase($partDao);
 
-        // 6) (Opcional) volver a consultar estado final para refrescar UI
-        // $nuevoEstado = $listar->ejecutar($participanteId, $grupoId);
+            $uc = new CorregirAsistenciasUseCase($grupoDao, $partDao, $listarUC);
 
-        return response()->json([
-            'ok'       => true,
-            'mensaje'  => 'Correcciones aplicadas.',
-            'resumen'  => [
-                'marcadas'    => count($marcar),
-                'desmarcadas' => count($desmarcar),
-            ],
-            // 'estado'   => $nuevoEstado,
-            // 'debug'    => $resultado, // si tu usecase retorna info extra útil
-        ]);
+            $out = $uc->ejecutar($input);
+
+            return response()->json([
+                'ok'       => true,
+                'mensaje'  => 'Correcciones aplicadas.',
+                'resumen'  => $out->resumen,        
+                'estado'   => $out->estado_final,   
+            ]);
+        } catch (\Throwable $e) {
+            // log($e->getMessage());
+            return response()->json([
+                'ok'      => false,
+                'message' => 'No fue posible aplicar las correcciones.',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
     }
-
 
 }

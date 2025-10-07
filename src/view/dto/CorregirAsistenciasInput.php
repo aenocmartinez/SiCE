@@ -1,18 +1,15 @@
 <?php
 
-namespace Src\usecase\asistencias\dto;
+namespace Src\view\dto;
 
 class CorregirAsistenciasInput
 {
     public function __construct(
         public int $participanteId,
         public int $grupoId,
-        /** @var int[] sesiones a marcar (crear/activar) */
-        public array $marcar,
-        /** @var int[] sesiones a desmarcar (eliminar/anular) */
-        public array $desmarcar,
+        /** @var array<int,array{sesion_id:int, asistio:int}> */
+        public array $cambios,          
         public ?string $observacion = null,
-        // auditoría:
         public ?int $actorId = null,
         public ?string $actorNombre = null,
         public ?string $actorIp = null,

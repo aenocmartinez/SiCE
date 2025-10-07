@@ -1197,5 +1197,67 @@ class GrupoDao extends Model implements GrupoRepository {
             ->toArray();
     }  
 
+    /** Comprueba si existe registro para (grupo, participante, sesión) */
+    private function existeAsistencia(int $grupoID, int $participanteID, int $sesionNumero): bool
+    {
+        return DB::table('asistencia_clase')
+            ->where('grupo_id', $grupoID)
+            ->where('participante_id', $participanteID)
+            ->where('sesion', $sesionNumero)
+            ->exists();
+    }
     
+    public function actualizarAsistenciaAClase(int $grupoID, AsistenciaClase $asistencia): bool
+    {
+        try {
+            DB::table('asistencia_clase')
+                ->where('grupo_id', $grupoID)
+                ->where('participante_id', $asistencia->getParticipante()->getId())
+                ->where('sesion', $asistencia->getSesion())
+                ->update([
+                    'presente'                => $asistencia->estaPresente(), // 0|1
+                    'orientador_que_registra' => Auth::id(),
+                    'updated_at'              => now(),
+                ]);
+            return true;
+        } catch (\Throwable $e) {
+            // Sentry::captureException($e);
+            return false;
+        }
+    }    
+
+    public function guardarAsistenciaCorreccion(int $grupoId, AsistenciaClase $asistencia): bool
+    {
+        try {
+            $participanteId = $asistencia->getParticipante()->getId();
+            $sesion         = $asistencia->getSesion();
+
+            if ($this->existeAsistencia($grupoId, $participanteId, $sesion)) {
+                DB::table('asistencia_clase')
+                    ->where('grupo_id', $grupoId)
+                    ->where('participante_id', $participanteId)
+                    ->where('sesion', $sesion)
+                    ->update([
+                        'presente'               => $asistencia->estaPresente(),
+                        'orientador_que_registra'=> Auth::id(),
+                    ]);
+            } else {
+                DB::table('asistencia_clase')->insert([
+                    'grupo_id'               => $grupoId,
+                    'participante_id'        => $participanteId,
+                    'sesion'                 => $sesion,
+                    'presente'               => $asistencia->estaPresente(),
+                    'orientador_que_registra'=> Auth::id(),
+                    'created_at'             => now(),
+                ]);
+            }
+
+            return true;
+
+        } catch (\Exception $e) {
+            Sentry::captureException($e);
+            return false;
+        }
+    }
+
 }

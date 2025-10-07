@@ -268,7 +268,7 @@ const alertSesiones   = document.getElementById('alert-sesiones');
 const resumenGrupo    = document.getElementById('resumen-grupo');
 
 let grupoActual = null;
-let cambiosPendientes = {}; // { [sesion_id]: { sesion_id, asistio_inicial, asistio_nuevo } }
+let cambiosPendientes = {}; // { [sesion_id]: { sesion_id, numero, asistio_inicial, asistio_nuevo } }
 
 function resetSesiones(){
   if (!panelSesiones || !contSesiones || !alertSesiones) return;
@@ -291,7 +291,7 @@ async function on_elegir_grupo(g){
       .replace('__GID__', encodeURIComponent(g.id));
 
     const data = await getJson(url);
-    // data = { ultimo_registro: <int>, sesiones: [{id, fecha, hora, nombre, asistio (0|1)}] }
+    // data = { ultimo_registro: <int>, sesiones: [{id, numero?, fecha, hora, nombre, asistio (0|1)}] }
     render_formulario_sesiones(data);
   }catch(e){
     console.error(e);
@@ -397,6 +397,7 @@ function render_formulario_sesiones(data){
           <div class="form-check form-switch mb-0">
             <input class="form-check-input sesion-switch" type="checkbox"
               data-sesion_id="${canToggle ? s.session_id : ''}"
+              data-numero="${s.numero || ''}"
               ${s.asistio ? 'checked' : ''} ${!canToggle ? 'disabled' : ''} ${!canToggle ? 'title="No se encontró el id de la sesión"' : ''}>
           </div>
         </td>
@@ -406,6 +407,7 @@ function render_formulario_sesiones(data){
       if (canToggle) {
         cambiosPendientes[s.session_id] = {
           sesion_id: s.session_id,
+          numero: s.numero || 0,           // <-- guardamos el número
           asistio_inicial: s.asistio,
           asistio_nuevo: s.asistio
         };
@@ -444,6 +446,12 @@ function render_formulario_sesiones(data){
       if (!Number.isFinite(sid) || !(sid in cambiosPendientes)) return;
 
       cambiosPendientes[sid].asistio_nuevo = chk.checked ? 1 : 0;
+
+      // si por alguna razón número no había quedado, lo tomamos del DOM
+      if (!cambiosPendientes[sid].numero) {
+        cambiosPendientes[sid].numero = Number(chk.dataset.numero || 0);
+      }
+
       evaluar_habilitar_guardar();
     });
   });
@@ -479,7 +487,13 @@ async function on_guardar_correcciones(){
   // Solo sesiones cambiadas
   const cambios = Object.values(cambiosPendientes)
     .filter(x => x.asistio_inicial !== x.asistio_nuevo)
-    .map(x => ({ sesion_id: x.sesion_id, asistio: x.asistio_nuevo }));
+    .map(x => ({
+      sesion_id: x.sesion_id,
+      numero: Number(x.numero) || Number(
+        document.querySelector(`.sesion-switch[data-sesion_id="${x.sesion_id}"]`)?.dataset?.numero || 0
+      ),
+      asistio: x.asistio_nuevo
+    }));
 
   const payload = {
     participante_id: Number(participanteActual.id),
