@@ -52,7 +52,7 @@
                             <a href="{{ route('certificados.publicos.descargar', ['participanteID' => $participante->getId(), 'grupoID' => $curso->grupo_id]) }}"
                                class="btn btn-sm btn-primary rounded-pill"
                                title="Descargar certificado de asistencia">
-                                <i class="fa fa-download me-1"></i> Descargar
+                                <i class="fa fa-download me-1"></i> Descargar 1
                             </a>
                         @else
                             <span class="badge bg-secondary text-white" title="Solo disponible para cursos aprobados">
